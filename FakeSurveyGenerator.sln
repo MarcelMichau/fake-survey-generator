@@ -3,7 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Domain.Tests", "FakeSurveyGenerator.Domain.Tests\FakeSurveyGenerator.Domain.Tests.csproj", "{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain", "FakeSurveyGenerator.Domain\FakeSurveyGenerator.Domain.csproj", "{E82B70C1-4FA4-4286-BB27-5413A03EA792}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
