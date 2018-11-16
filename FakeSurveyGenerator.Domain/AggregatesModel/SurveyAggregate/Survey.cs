@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
         public string Topic { get; }
         public string RespondentType { get; }
         public int NumberOfRespondents { get; }
-        public DateTime CreatedOn { get; }
+        public DateTime CreatedOn { get; private set; }
 
         private readonly List<SurveyOption> _options;
 
