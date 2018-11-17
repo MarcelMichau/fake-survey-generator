@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace FakeSurveyGenerator.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var topic = "Chosen UI framework";
             var numberOfRespondents = 500;
@@ -28,11 +29,11 @@ namespace FakeSurveyGenerator.API.Controllers
             survey.AddSurveyOption("React");
             survey.AddSurveyOption("Vue");
 
-            var result = survey.CalculateResult();
+            var result = survey.CalculateOutcome();
 
             var insertedSurvey = _surveyRepository.Add(result);
 
-            await _surveyRepository.UnitOfWork.SaveChangesAsync();
+            await _surveyRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(insertedSurvey);
         }

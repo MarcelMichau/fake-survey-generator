@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Exceptions;
+using FakeSurveyGenerator.Domain.Services;
 using Xunit;
 
 namespace FakeSurveyGenerator.Domain.Tests
@@ -95,7 +96,24 @@ namespace FakeSurveyGenerator.Domain.Tests
         }
 
         [Fact]
-        public void Should_Be_Able_To_Calculate_Results_Of_Survey()
+        public void Should_Not_Be_Able_To_Calculate_Results_Of_Survey_With_No_Options()
+        {
+            var topic = "Tabs or spaces?";
+            var numberOfRespondents = 1000;
+            var respondentType = "Developers";
+
+            var survey = new Survey(topic, numberOfRespondents, respondentType);
+
+            var voteDistributionStrategy = new RandomVoteDistributionStrategy();
+
+            Assert.Throws<SurveyDomainException>(() =>
+            {
+                var result = survey.CalculateOutcome(voteDistributionStrategy);
+            });
+        }
+
+        [Fact]
+        public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_Random_Outcome()
         {
             var topic = "Tabs or spaces?";
             var numberOfRespondents = 1000;
@@ -106,13 +124,16 @@ namespace FakeSurveyGenerator.Domain.Tests
             survey.AddSurveyOption("Tabs");
             survey.AddSurveyOption("Spaces");
 
-            var result = survey.CalculateResult();
+            var voteDistributionStrategy = new RandomVoteDistributionStrategy();
+
+            var result = survey.CalculateOutcome(voteDistributionStrategy);
 
             Assert.Equal(numberOfRespondents, result.Options.Sum(option => option.NumberOfVotes));
+            Assert.True(result.Options.All(option => option.NumberOfVotes > 0));
         }
 
         [Fact]
-        public void Should_Not_Be_Able_To_Calculate_Results_Of_Survey_With_No_Options()
+        public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_One_Sided_Outcome()
         {
             var topic = "Tabs or spaces?";
             var numberOfRespondents = 1000;
@@ -120,10 +141,30 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
-            Assert.Throws<SurveyDomainException>(() =>
-            {
-                var result = survey.CalculateResult();
-            });
+            survey.AddSurveyOption("Tabs");
+            survey.AddSurveyOption("Spaces");
+
+            var voteDistributionStrategy = new OneSidedVoteDistributionStrategy();
+
+            var result = survey.CalculateOutcome(voteDistributionStrategy);
+
+            Assert.Equal(numberOfRespondents, result.Options.Max(option => option.NumberOfVotes));
+        }
+
+        [Fact]
+        public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_Preferences()
+        {
+            var topic = "Tabs or spaces?";
+            var numberOfRespondents = 1000;
+            var respondentType = "Developers";
+
+            var survey = new Survey(topic, numberOfRespondents, respondentType);
+
+            survey.AddSurveyOption("Tabs", 1);
+            survey.AddSurveyOption("Spaces", 2);
+
+            Assert.Equal(1, survey.Options.First().PreferredOutcomeRank);
+            Assert.Equal(2, survey.Options.Last().PreferredOutcomeRank);
         }
     }
 }

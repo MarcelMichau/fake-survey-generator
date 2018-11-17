@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FakeSurveyGenerator.Domain.Exceptions;
 using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Domain.Services;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
@@ -42,18 +43,22 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             _options.Add(newOption);
         }
 
-        public Survey CalculateResult()
+        public void AddSurveyOption(string optionText, int preferredOutcomeRank)
+        {
+            if (preferredOutcomeRank > _options.Count + 1 || _options.Any(option => option.PreferredOutcomeRank == preferredOutcomeRank))
+                throw new SurveyDomainException("Another option already exists with this rank or rank is out of range");
+
+            var newOption = new SurveyOption(optionText, preferredOutcomeRank);
+
+            _options.Add(newOption);
+        }
+
+        public Survey CalculateOutcome(IVoteDistributionStrategy strategy)
         {
             if (!_options.Any())
                 throw new SurveyDomainException("Cannot calculate a survey with no options");
 
-            var random = new Random();
-
-            for (var i = 0; i < NumberOfRespondents; i++)
-            {
-                var randomIndex = random.Next(0, _options.Count);
-                _options[randomIndex].AddVote();
-            }
+            strategy.DistributeVotes(_options, NumberOfRespondents);
 
             return this;
         }
