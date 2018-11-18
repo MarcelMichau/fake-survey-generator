@@ -33,8 +33,16 @@ namespace FakeSurveyGenerator.Infrastructure
             surveyConfiguration.Property(o => o.Id)
                 .ForSqlServerUseSequenceHiLo("SurveySeq", DEFAULT_SCHEMA);
 
-            surveyConfiguration.Property<string>("Topic").IsRequired();
-            surveyConfiguration.Property<string>("RespondentType").IsRequired();
+            surveyConfiguration.Ignore(b => b.DomainEvents);
+
+            surveyConfiguration.Property<string>("Topic")
+                .HasMaxLength(250)
+                .IsRequired();
+
+            surveyConfiguration.Property<string>("RespondentType")
+                .HasMaxLength(250)
+                .IsRequired();
+
             surveyConfiguration.Property<int>("NumberOfRespondents").IsRequired();
             surveyConfiguration.Property<DateTime>("CreatedOn").IsRequired();
 
@@ -51,8 +59,14 @@ namespace FakeSurveyGenerator.Infrastructure
             surveyOptionConfiguration.Property(o => o.Id)
                 .ForSqlServerUseSequenceHiLo("SurveyOptionSeq", DEFAULT_SCHEMA);
 
-            surveyOptionConfiguration.Property<string>("OptionText").IsRequired();
+            surveyOptionConfiguration.Ignore(b => b.DomainEvents);
+
+            surveyOptionConfiguration.Property<string>("OptionText")
+                .HasMaxLength(250)
+                .IsRequired();
+
             surveyOptionConfiguration.Property<int>("NumberOfVotes").IsRequired();
+            surveyOptionConfiguration.Property<int>("PreferredOutcomeRank");
         }
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))

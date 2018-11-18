@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+using FakeSurveyGenerator.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FakeSurveyGenerator.API.Controllers
@@ -19,17 +20,20 @@ namespace FakeSurveyGenerator.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var topic = "Chosen UI framework";
-            var numberOfRespondents = 500;
-            var respondentType = "Plebs";
+            var topic = "To be or not to be";
+            var numberOfRespondents = 1500;
+            var respondentType = "Late Victorian Prostitutes";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption("Angular");
-            survey.AddSurveyOption("React");
-            survey.AddSurveyOption("Vue");
+            survey.AddSurveyOption("Yes", 1);
+            survey.AddSurveyOption("No", 2);
+            survey.AddSurveyOption("Maybe", 3);
+            survey.AddSurveyOption("I didn't understand the question", 4);
 
-            var result = survey.CalculateOutcome();
+            var voteDistributionStrategy = new RandomVoteDistributionStrategy();
+
+            var result = survey.CalculateOutcome(voteDistributionStrategy);
 
             var insertedSurvey = _surveyRepository.Add(result);
 

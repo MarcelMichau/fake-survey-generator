@@ -31,10 +31,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             var numberOfRespondents = 1;
             var respondentType = "Developers";
 
-            Assert.Throws<SurveyDomainException>(() =>
-            {
-                var survey = new Survey(topic, numberOfRespondents, respondentType);
-            });
+            Assert.Throws<SurveyDomainException>(() => new Survey(topic, numberOfRespondents, respondentType));
         }
 
         [Fact]
@@ -44,10 +41,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             var numberOfRespondents = 0;
             var respondentType = "Writers";
 
-            Assert.Throws<SurveyDomainException>(() =>
-            {
-                var survey = new Survey(topic, numberOfRespondents, respondentType);
-            });
+            Assert.Throws<SurveyDomainException>(() => new Survey(topic, numberOfRespondents, respondentType));
         }
 
         [Fact]
@@ -57,10 +51,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             var numberOfRespondents = 1;
             var respondentType = "";
 
-            Assert.Throws<SurveyDomainException>(() =>
-            {
-                var survey = new Survey(topic, numberOfRespondents, respondentType);
-            });
+            Assert.Throws<SurveyDomainException>(() => new Survey(topic, numberOfRespondents, respondentType));
         }
 
         [Fact]
@@ -106,10 +97,7 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             var voteDistributionStrategy = new RandomVoteDistributionStrategy();
 
-            Assert.Throws<SurveyDomainException>(() =>
-            {
-                var result = survey.CalculateOutcome(voteDistributionStrategy);
-            });
+            Assert.Throws<SurveyDomainException>(() => survey.CalculateOutcome(voteDistributionStrategy));
         }
 
         [Fact]
@@ -165,6 +153,40 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             Assert.Equal(1, survey.Options.First().PreferredOutcomeRank);
             Assert.Equal(2, survey.Options.Last().PreferredOutcomeRank);
+        }
+
+        [Fact]
+        public void Should_Not_Be_Able_To_Add_Preferred_Option_Which_Is_Out_Of_Range()
+        {
+            var topic = "Tabs or spaces?";
+            var numberOfRespondents = 1000;
+            var respondentType = "Developers";
+
+            var survey = new Survey(topic, numberOfRespondents, respondentType);
+
+            survey.AddSurveyOption("Tabs", 1);
+
+            Assert.Throws<SurveyDomainException>(() =>
+            {
+                survey.AddSurveyOption("Spaces", 4);
+            });
+        }
+
+        [Fact]
+        public void Should_Not_Be_Able_To_Add_Preferred_Option_Which_Is_Already_Assigned()
+        {
+            var topic = "Tabs or spaces?";
+            var numberOfRespondents = 1000;
+            var respondentType = "Developers";
+
+            var survey = new Survey(topic, numberOfRespondents, respondentType);
+
+            survey.AddSurveyOption("Tabs", 1);
+
+            Assert.Throws<SurveyDomainException>(() =>
+            {
+                survey.AddSurveyOption("Spaces", 1);
+            });
         }
     }
 }

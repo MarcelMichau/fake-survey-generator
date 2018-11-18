@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrastructure", "FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj", "{25EE11ED-3B2A-420B-8D4D-7AB7F2D67C79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.API", "FakeSurveyGenerator.API\FakeSurveyGenerator.API.csproj", "{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.API", "FakeSurveyGenerator.API\FakeSurveyGenerator.API.csproj", "{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.API.Tests.Integration", "FakeSurveyGenerator.API.Tests.Integration\FakeSurveyGenerator.API.Tests.Integration.csproj", "{B02093B4-1C5B-4075-86EA-49522800357A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B02093B4-1C5B-4075-86EA-49522800357A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B02093B4-1C5B-4075-86EA-49522800357A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B02093B4-1C5B-4075-86EA-49522800357A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B02093B4-1C5B-4075-86EA-49522800357A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

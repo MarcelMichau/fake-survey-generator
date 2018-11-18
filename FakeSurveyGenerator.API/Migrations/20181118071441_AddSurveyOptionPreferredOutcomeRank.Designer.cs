@@ -4,14 +4,16 @@ using FakeSurveyGenerator.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FakeSurveyGenerator.API.Migrations
 {
     [DbContext(typeof(SurveyContext))]
-    partial class SurveyContextModelSnapshot : ModelSnapshot
+    [Migration("20181118071441_AddSurveyOptionPreferredOutcomeRank")]
+    partial class AddSurveyOptionPreferredOutcomeRank
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,12 +36,10 @@ namespace FakeSurveyGenerator.API.Migrations
                     b.Property<int>("NumberOfRespondents");
 
                     b.Property<string>("RespondentType")
-                        .IsRequired()
-                        .HasMaxLength(250);
+                        .IsRequired();
 
                     b.Property<string>("Topic")
-                        .IsRequired()
-                        .HasMaxLength(250);
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -57,8 +57,7 @@ namespace FakeSurveyGenerator.API.Migrations
                     b.Property<int>("NumberOfVotes");
 
                     b.Property<string>("OptionText")
-                        .IsRequired()
-                        .HasMaxLength(250);
+                        .IsRequired();
 
                     b.Property<int>("PreferredOutcomeRank");
 
