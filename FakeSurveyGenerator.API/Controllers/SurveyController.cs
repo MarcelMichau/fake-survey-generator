@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.API.Application.Commands;
+using FakeSurveyGenerator.API.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,14 +12,24 @@ namespace FakeSurveyGenerator.API.Controllers
     public class SurveyController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly ISurveyQueries _surveyQueries;
 
-        public SurveyController(IMediator mediator)
+        public SurveyController(IMediator mediator, ISurveyQueries surveyQueries)
         {
             _mediator = mediator;
+            _surveyQueries = surveyQueries;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSurvey(int id)
+        {
+            var result = await _surveyQueries.GetSurveyAsync(id);
+
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateSurvey([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(command, cancellationToken);
 

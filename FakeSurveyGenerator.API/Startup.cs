@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FakeSurveyGenerator.API.Application.Queries;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Repositories;
@@ -29,13 +30,13 @@ namespace FakeSurveyGenerator.API
 
             services.AddMediatR();
 
+            services.AddScoped<ISurveyQueries>(s => new SurveyQueries(Configuration.GetConnectionString("SurveyContext")));
             services.AddScoped<ISurveyRepository, SurveyRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var connection = @"Server=localhost;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0";
             services.AddDbContext<SurveyContext>
-                (options => options.UseSqlServer(connection, b => b.MigrationsAssembly("FakeSurveyGenerator.API")));
+                (options => options.UseSqlServer(Configuration.GetConnectionString("SurveyContext"), b => b.MigrationsAssembly("FakeSurveyGenerator.API")));
 
             services.AddSwaggerGen(c =>
             {

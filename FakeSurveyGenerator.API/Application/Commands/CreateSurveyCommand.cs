@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+using FakeSurveyGenerator.API.Application.Models;
 using MediatR;
 
 namespace FakeSurveyGenerator.API.Application.Commands
 {
     [DataContract]
-    public class CreateSurveyCommand : IRequest<Survey>
+    public class CreateSurveyCommand : IRequest<SurveyModel>
     {
         [DataMember]
         public string SurveyTopic { get; private set; }

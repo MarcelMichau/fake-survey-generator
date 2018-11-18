@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.API.Application;
 using FakeSurveyGenerator.API.Application.Commands;
 using FakeSurveyGenerator.API.Application.Models;
 using Newtonsoft.Json;
@@ -12,11 +11,11 @@ using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class BasicTest : IClassFixture<InMemoryDatabaseWebApplicationFactory>
+    public class SurveyControllerTests : IClassFixture<InMemoryDatabaseWebApplicationFactory>
     {
         private readonly InMemoryDatabaseWebApplicationFactory _factory;
 
-        public BasicTest(InMemoryDatabaseWebApplicationFactory factory)
+        public SurveyControllerTests(InMemoryDatabaseWebApplicationFactory factory)
         {
             _factory = factory;
         }
