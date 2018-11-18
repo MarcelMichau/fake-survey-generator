@@ -34,7 +34,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 
         private readonly List<SurveyOption> _options;
 
-        public IReadOnlyCollection<SurveyOption> Options => _options;
+        public IReadOnlyList<SurveyOption> Options => _options;
 
         public void AddSurveyOption(string optionText)
         {
@@ -58,7 +58,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             if (!_options.Any())
                 throw new SurveyDomainException("Cannot calculate a survey with no options");
 
-            strategy.DistributeVotes(_options, NumberOfRespondents);
+            strategy.DistributeVotes(this);
 
             return this;
         }

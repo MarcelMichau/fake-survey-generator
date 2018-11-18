@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Domain.Services
 {
     public class OneSidedVoteDistributionStrategy : IVoteDistributionStrategy
     {
-        public void DistributeVotes(List<SurveyOption> surveyOptions, int numberOfRespondents)
+        public void DistributeVotes(Survey survey)
         {
             var random = new Random();
 
-            var winningOptionIndex = random.Next(0, surveyOptions.Count);
+            var winningOptionIndex = random.Next(0, survey.Options.Count);
 
-            for (var i = 0; i < numberOfRespondents; i++)
+            for (var i = 0; i < survey.NumberOfRespondents; i++)
             {
-                surveyOptions[winningOptionIndex].AddVote();
+                survey.Options[winningOptionIndex].AddVote();
             }
         }
     }
