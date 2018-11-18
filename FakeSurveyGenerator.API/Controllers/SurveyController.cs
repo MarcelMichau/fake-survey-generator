@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using FakeSurveyGenerator.API.Application;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,18 +19,17 @@ namespace FakeSurveyGenerator.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
         {
-            var topic = "To be or not to be";
-            var numberOfRespondents = 1500;
-            var respondentType = "Late Victorian Prostitutes";
+            var survey = new Survey(command.SurveyTopic, command.NumberOfRespondents, command.RespondentType);
 
-            var survey = new Survey(topic, numberOfRespondents, respondentType);
-
-            survey.AddSurveyOption("Yes", 1);
-            survey.AddSurveyOption("No", 2);
-            survey.AddSurveyOption("Maybe", 3);
-            survey.AddSurveyOption("I didn't understand the question", 4);
+            foreach (var option in command.SurveyOptions)
+            {
+                if (option.PreferredOutcomeRank.HasValue)
+                    survey.AddSurveyOption(option.OptionText, option.PreferredOutcomeRank.Value);
+                else
+                    survey.AddSurveyOption(option.OptionText);
+            }
 
             var voteDistributionStrategy = new RandomVoteDistributionStrategy();
 

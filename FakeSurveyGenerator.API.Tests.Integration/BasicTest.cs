@@ -1,6 +1,11 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.API.Models;
+using FakeSurveyGenerator.API.Application;
+using FakeSurveyGenerator.API.Application.Models;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -20,7 +25,20 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             var client = _factory.CreateClient();
 
-            var response = await client.PostAsync("/api/survey", null);
+            var createSurveyCommand = new CreateSurveyCommand("How awesome is this?", 350, "Individuals",
+                new List<SurveyOptionDto>
+                {
+                    new SurveyOptionDto
+                    {
+                        OptionText = "Very awesome"
+                    },
+                    new SurveyOptionDto
+                    {
+                        OptionText = "Not so much"
+                    }
+                });
+
+            var response = await client.PostAsync("/api/survey", new StringContent(JsonConvert.SerializeObject(createSurveyCommand), Encoding.UTF8, MediaTypeNames.Application.Json));
 
             response.EnsureSuccessStatusCode();
 
@@ -28,7 +46,8 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             var surveyResult = JsonConvert.DeserializeObject<SurveyModel>(content);
 
-            Assert.Equal(1500, surveyResult.Options.Sum(option => option.NumberOfVotes));
+            Assert.Equal(350, surveyResult.Options.Sum(option => option.NumberOfVotes));
+            Assert.Equal("How awesome is this?", surveyResult.Topic);
             Assert.True(surveyResult.Options.All(option => option.NumberOfVotes > 0));
         }
     }

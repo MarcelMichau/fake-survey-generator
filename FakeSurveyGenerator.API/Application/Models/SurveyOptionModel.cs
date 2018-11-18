@@ -1,4 +1,4 @@
-﻿namespace FakeSurveyGenerator.API.Models
+﻿namespace FakeSurveyGenerator.API.Application.Models
 {
     public class SurveyOptionModel
     {

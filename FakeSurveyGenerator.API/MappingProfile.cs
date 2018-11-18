@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FakeSurveyGenerator.API.Models;
+using FakeSurveyGenerator.API.Application.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.API

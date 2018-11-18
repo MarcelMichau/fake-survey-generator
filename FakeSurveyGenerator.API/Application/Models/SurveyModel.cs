@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FakeSurveyGenerator.API.Models
+namespace FakeSurveyGenerator.API.Application.Models
 {
     public class SurveyModel
     {
