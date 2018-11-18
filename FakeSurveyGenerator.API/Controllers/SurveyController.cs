@@ -1,8 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.API.Application;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.Services;
+using FakeSurveyGenerator.API.Application.Commands;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FakeSurveyGenerator.API.Controllers
@@ -11,35 +10,19 @@ namespace FakeSurveyGenerator.API.Controllers
     [ApiController]
     public class SurveyController : Controller
     {
-        private readonly ISurveyRepository _surveyRepository;
+        private readonly IMediator _mediator;
 
-        public SurveyController(ISurveyRepository surveyRepository)
+        public SurveyController(IMediator mediator)
         {
-            _surveyRepository = surveyRepository;
+            _mediator = mediator;
         }
 
         [HttpPost]
         public async Task<IActionResult> Index([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
         {
-            var survey = new Survey(command.SurveyTopic, command.NumberOfRespondents, command.RespondentType);
+            var result = await _mediator.Send(command, cancellationToken);
 
-            foreach (var option in command.SurveyOptions)
-            {
-                if (option.PreferredOutcomeRank.HasValue)
-                    survey.AddSurveyOption(option.OptionText, option.PreferredOutcomeRank.Value);
-                else
-                    survey.AddSurveyOption(option.OptionText);
-            }
-
-            var voteDistributionStrategy = new RandomVoteDistributionStrategy();
-
-            var result = survey.CalculateOutcome(voteDistributionStrategy);
-
-            var insertedSurvey = _surveyRepository.Add(result);
-
-            await _surveyRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-            return Ok(insertedSurvey);
+            return Ok(result);
         }
     }
 }

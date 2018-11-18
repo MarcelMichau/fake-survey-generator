@@ -5,6 +5,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.API.Application;
+using FakeSurveyGenerator.API.Application.Commands;
 using FakeSurveyGenerator.API.Application.Models;
 using Newtonsoft.Json;
 using Xunit;
