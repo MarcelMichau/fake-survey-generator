@@ -20,7 +20,7 @@ namespace FakeSurveyGenerator.API.Controllers
             _surveyQueries = surveyQueries;
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetSurvey(int id)
         {
             var result = await _surveyQueries.GetSurveyAsync(id);

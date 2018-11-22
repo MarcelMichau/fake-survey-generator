@@ -19,11 +19,11 @@ namespace FakeSurveyGenerator.API.Application.Commands
             _mapper = mapper;
         }
 
-        public async Task<SurveyModel> Handle(CreateSurveyCommand command, CancellationToken cancellationToken)
+        public async Task<SurveyModel> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
         {
-            var survey = new Survey(command.SurveyTopic, command.NumberOfRespondents, command.RespondentType);
+            var survey = new Survey(request.SurveyTopic, request.NumberOfRespondents, request.RespondentType);
 
-            foreach (var option in command.SurveyOptions)
+            foreach (var option in request.SurveyOptions)
             {
                 if (option.PreferredOutcomeRank.HasValue)
                     survey.AddSurveyOption(option.OptionText, option.PreferredOutcomeRank.Value);

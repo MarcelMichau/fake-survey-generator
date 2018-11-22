@@ -42,6 +42,8 @@ namespace FakeSurveyGenerator.API
             {
                 c.SwaggerDoc("v1", new Info { Title = "Fake Survey Generator API", Version = "v1" });
             });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +67,21 @@ namespace FakeSurveyGenerator.API
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1");
             });
+
+            UpdateDatabase(app);
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<SurveyContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
     }
 }
