@@ -3,7 +3,7 @@ using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Domain.Services
 {
-    public class RandomVoteDistributionStrategy : IVoteDistributionStrategy
+    public class RandomVoteDistribution : IVoteDistribution
     {
         public void DistributeVotes(Survey survey)
         {

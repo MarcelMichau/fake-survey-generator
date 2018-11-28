@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Linq;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -31,9 +32,14 @@ namespace FakeSurveyGenerator.API.Application.Commands
                     survey.AddSurveyOption(option.OptionText);
             }
 
-            var voteDistributionStrategy = new RandomVoteDistributionStrategy();
+            IVoteDistribution voteDistribution;
 
-            var result = survey.CalculateOutcome(voteDistributionStrategy);
+            if (request.SurveyOptions.Any(option => option.PreferredOutcomeRank > 0))
+                voteDistribution = new RankedVoteDistribution();
+            else
+                voteDistribution = new RandomVoteDistribution();
+
+            var result = survey.CalculateOutcome(voteDistribution);
 
             var insertedSurvey = _surveyRepository.Add(result);
 

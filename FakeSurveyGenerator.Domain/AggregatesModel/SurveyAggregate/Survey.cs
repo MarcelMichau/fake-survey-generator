@@ -53,7 +53,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             _options.Add(newOption);
         }
 
-        public Survey CalculateOutcome(IVoteDistributionStrategy strategy)
+        public Survey CalculateOutcome(IVoteDistribution strategy)
         {
             if (!_options.Any())
                 throw new SurveyDomainException("Cannot calculate a survey with no options");
