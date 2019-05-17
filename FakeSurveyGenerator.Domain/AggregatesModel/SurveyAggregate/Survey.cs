@@ -43,12 +43,12 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             _options.Add(newOption);
         }
 
-        public void AddSurveyOption(string optionText, int preferredOutcomeRank)
+        public void AddSurveyOption(string optionText, int preferredNumberOfVotes)
         {
-            if (preferredOutcomeRank > _options.Count + 1 || _options.Any(option => option.PreferredOutcomeRank == preferredOutcomeRank))
-                throw new SurveyDomainException("Another option already exists with this rank or rank is out of range");
+            if (preferredNumberOfVotes > NumberOfRespondents || _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes > NumberOfRespondents)
+                throw new SurveyDomainException($"Preferred number of votes: {preferredNumberOfVotes} is higher than the number of respondents: {NumberOfRespondents}");
 
-            var newOption = new SurveyOption(optionText, preferredOutcomeRank);
+            var newOption = new SurveyOption(optionText, preferredNumberOfVotes);
 
             _options.Add(newOption);
         }

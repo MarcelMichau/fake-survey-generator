@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string OptionText { get; set; }
         public int NumberOfVotes { get; set; }
-        public int PreferredOutcomeRank { get; set; }
+        public int PreferredNumberOfVotes { get; set; }
     }
 }

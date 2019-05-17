@@ -26,26 +26,26 @@ namespace FakeSurveyGenerator.API.Application.Commands
 
             foreach (var option in request.SurveyOptions)
             {
-                if (option.PreferredOutcomeRank.HasValue)
-                    survey.AddSurveyOption(option.OptionText, option.PreferredOutcomeRank.Value);
+                if (option.PreferredNumberOfVotes.HasValue)
+                    survey.AddSurveyOption(option.OptionText, option.PreferredNumberOfVotes.Value);
                 else
                     survey.AddSurveyOption(option.OptionText);
             }
 
             IVoteDistribution voteDistribution;
 
-            if (request.SurveyOptions.Any(option => option.PreferredOutcomeRank > 0))
-                voteDistribution = new RankedVoteDistribution();
+            if (request.SurveyOptions.Any(option => option.PreferredNumberOfVotes > 0))
+                voteDistribution = new FixedVoteDistribution();
             else
                 voteDistribution = new RandomVoteDistribution();
 
             var result = survey.CalculateOutcome(voteDistribution);
 
-            var insertedSurvey = _surveyRepository.Add(result);
+            _surveyRepository.Add(result);
 
             await _surveyRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<SurveyModel>(insertedSurvey);
+            return _mapper.Map<SurveyModel>(result);
         }
     }
 }

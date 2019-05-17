@@ -17,9 +17,9 @@ namespace FakeSurveyGenerator.Infrastructure.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Survey Add(Survey survey)
+        public void Add(Survey survey)
         {
-            return _context.Surveys.Add(survey).Entity;
+            _context.Surveys.Add(survey);
         }
 
         public void Update(Survey survey)

@@ -5,7 +5,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
     public interface ISurveyRepository : IRepository<Survey>
     {
-        Survey Add(Survey survey);
+        void Add(Survey survey);
 
         void Update(Survey survey);
 

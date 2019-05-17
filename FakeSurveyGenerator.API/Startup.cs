@@ -33,7 +33,7 @@ namespace FakeSurveyGenerator.API
             services.AddScoped<ISurveyQueries>(s => new SurveyQueries(Configuration.GetConnectionString("SurveyContext")));
             services.AddScoped<ISurveyRepository, SurveyRepository>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<SurveyContext>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("SurveyContext"), b => b.MigrationsAssembly("FakeSurveyGenerator.API")));
@@ -43,12 +43,14 @@ namespace FakeSurveyGenerator.API
                 c.SwaggerDoc("v1", new Info { Title = "Fake Survey Generator API", Version = "v1" });
             });
 
-            
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseHealthChecks("/health");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -79,7 +81,8 @@ namespace FakeSurveyGenerator.API
             {
                 using (var context = serviceScope.ServiceProvider.GetService<SurveyContext>())
                 {
-                    context.Database.Migrate();
+                    if (context.Database.IsSqlServer())
+                        context.Database.Migrate();
                 }
             }
         }

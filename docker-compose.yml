@@ -7,9 +7,9 @@ services:
       context: .
       dockerfile: FakeSurveyGenerator.API/Dockerfile
     depends_on:
-      - sql.data
+      - sqlserver
 
-  sql.data:
+  sqlserver:
     image: mcr.microsoft.com/mssql/server:2017-latest
     environment:
       - ACCEPT_EULA=Y

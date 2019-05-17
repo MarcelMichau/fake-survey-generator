@@ -37,6 +37,6 @@ namespace FakeSurveyGenerator.API.Application.Commands
     public class SurveyOptionDto
     {
         public string OptionText { get; set; }
-        public int? PreferredOutcomeRank { get; set; }
+        public int? PreferredNumberOfVotes { get; set; }
     }
 }

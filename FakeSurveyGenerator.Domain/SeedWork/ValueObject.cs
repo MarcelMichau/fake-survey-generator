@@ -30,9 +30,9 @@ namespace FakeSurveyGenerator.Domain.SeedWork
             {
                 return false;
             }
-            ValueObject other = (ValueObject)obj;
-            IEnumerator<object> thisValues = GetAtomicValues().GetEnumerator();
-            IEnumerator<object> otherValues = other.GetAtomicValues().GetEnumerator();
+            var other = (ValueObject)obj;
+            var thisValues = GetAtomicValues().GetEnumerator();
+            var otherValues = other.GetAtomicValues().GetEnumerator();
             while (thisValues.MoveNext() && otherValues.MoveNext())
             {
                 if (ReferenceEquals(thisValues.Current, null) ^ ReferenceEquals(otherValues.Current, null))
@@ -57,7 +57,7 @@ namespace FakeSurveyGenerator.Domain.SeedWork
 
         public ValueObject GetCopy()
         {
-            return this.MemberwiseClone() as ValueObject;
+            return MemberwiseClone() as ValueObject;
         }
     }
 }

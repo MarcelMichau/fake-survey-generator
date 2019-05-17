@@ -66,7 +66,7 @@ namespace FakeSurveyGenerator.Infrastructure
                 .IsRequired();
 
             surveyOptionConfiguration.Property<int>("NumberOfVotes").IsRequired();
-            surveyOptionConfiguration.Property<int>("PreferredOutcomeRank");
+            surveyOptionConfiguration.Property<int>("PreferredNumberOfVotes");
         }
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))

@@ -11,21 +11,21 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
                 throw new SurveyDomainException("Survey Option cannot be empty");
 
             OptionText = optionText;
-            PreferredOutcomeRank = 0;
+            PreferredNumberOfVotes = 0;
         }
 
-        public SurveyOption(string optionText, int preferredOutcomeRank)
+        public SurveyOption(string optionText, int preferredNumberOfVotes)
         {
             if (string.IsNullOrWhiteSpace(optionText))
                 throw new SurveyDomainException("Survey Option cannot be empty");
 
             OptionText = optionText;
-            PreferredOutcomeRank = preferredOutcomeRank;
+            PreferredNumberOfVotes = preferredNumberOfVotes;
         }
 
         public string OptionText { get; }
         public int NumberOfVotes { get; private set; }
-        public int PreferredOutcomeRank { get; private set; }
+        public int PreferredNumberOfVotes { get; private set; }
 
         internal void AddVote()
         {

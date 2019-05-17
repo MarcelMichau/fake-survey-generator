@@ -140,7 +140,7 @@ namespace FakeSurveyGenerator.Domain.Tests
         }
 
         [Fact]
-        public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_Preferences()
+        public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_Fixed_Outcome()
         {
             var topic = "Tabs or spaces?";
             var numberOfRespondents = 1000;
@@ -148,52 +148,19 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption("Tabs", 1);
-            survey.AddSurveyOption("Spaces", 2);
+            survey.AddSurveyOption("Tabs", 600);
+            survey.AddSurveyOption("Spaces", 400);
 
-            var voteDistribution = new RankedVoteDistribution();
-
-            var result = survey.CalculateOutcome(voteDistribution);
-
-            Assert.Equal(1, survey.Options.First().PreferredOutcomeRank);
-            Assert.Equal(2, survey.Options.Last().PreferredOutcomeRank);
-
-            Assert.True(result.Options.First(option => option.OptionText == "Tabs").NumberOfVotes > result.Options.First(option => option.OptionText == "Spaces").NumberOfVotes);
-        }
-
-        [Fact]
-        public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_Preferences_For_Many_Options()
-        {
-            var topic = "Many Options!!!!";
-            var numberOfRespondents = 10000;
-            var respondentType = "Generic People";
-
-            var survey = new Survey(topic, numberOfRespondents, respondentType);
-
-            var numberOfOptions = 50;
-
-            for (var i = 0; i < numberOfOptions; i++)
-            {
-                survey.AddSurveyOption("Option", i + 1);
-            }
-
-            var voteDistribution = new RankedVoteDistribution();
+            var voteDistribution = new FixedVoteDistribution();
 
             var result = survey.CalculateOutcome(voteDistribution);
 
-            Assert.Equal(1, survey.Options.First().PreferredOutcomeRank);
-            Assert.Equal(numberOfOptions, survey.Options.Last().PreferredOutcomeRank);
-
-            for (var i = 0; i < numberOfOptions - 1; i++)
-            {
-                Assert.True(result.Options[i].NumberOfVotes > result.Options[i + 1].NumberOfVotes, $"Option at index {i} has {result.Options[i].NumberOfVotes} vote(s), Option at index {i + 1} has {result.Options[i + 1].NumberOfVotes} vote(s)");
-            }
-
-            Assert.Equal(numberOfRespondents, result.Options.Sum(option => option.NumberOfVotes));
+            Assert.Equal(600, survey.Options.First().NumberOfVotes);
+            Assert.Equal(400, survey.Options.Last().NumberOfVotes);
         }
 
         [Fact]
-        public void Should_Not_Be_Able_To_Add_Preferred_Option_Which_Is_Out_Of_Range()
+        public void Should_Not_Be_Able_To_Add_Preferred_Number_Of_Votes_Greater_Than_Respondents()
         {
             var topic = "Tabs or spaces?";
             var numberOfRespondents = 1000;
@@ -205,12 +172,12 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             Assert.Throws<SurveyDomainException>(() =>
             {
-                survey.AddSurveyOption("Spaces", 4);
+                survey.AddSurveyOption("Spaces", 1001);
             });
         }
 
         [Fact]
-        public void Should_Not_Be_Able_To_Add_Preferred_Option_Which_Is_Already_Assigned()
+        public void Should_Not_Be_Able_To_Add_Preferred_Number_Of_Votes_If_Total_Exceeds_Respondents()
         {
             var topic = "Tabs or spaces?";
             var numberOfRespondents = 1000;
@@ -218,11 +185,11 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption("Tabs", 1);
+            survey.AddSurveyOption("Tabs", 500);
 
             Assert.Throws<SurveyDomainException>(() =>
             {
-                survey.AddSurveyOption("Spaces", 1);
+                survey.AddSurveyOption("Spaces", 501);
             });
         }
     }
