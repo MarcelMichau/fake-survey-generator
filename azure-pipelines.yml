@@ -16,10 +16,12 @@ steps:
 - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
   displayName: 'Build Solution'
 
-- script: dotnet test FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj
+- script: dotnet test FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
   displayName: 'Run Unit Tests'
 
-- script: dotnet test FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
+- script: dotnet test FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
+  displayName: 'Run Integration Tests'
+
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
