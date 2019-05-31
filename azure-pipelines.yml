@@ -15,5 +15,6 @@ variables:
   imageName: fakesurveygeneratorapi
 
 steps:
-- script: ECHO "$(Build.SourceVersion)"
-  displayName: 'Display Source Version'
+
+- script: |
+    echo "$(Build.SourceVersion)"
