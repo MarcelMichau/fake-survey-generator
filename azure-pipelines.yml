@@ -32,7 +32,7 @@ steps:
 
 - script: |
     docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
-    docker login -u $(dockerId) --password-stdin $env:DOCKER_PASSWORD
+    docker login -u $(dockerId) -p $env:DOCKER_PASSWORD
     docker push $(dockerId)/$(imageName)
   env:
     DOCKER_PASSWORD: $(dockerPassword)
