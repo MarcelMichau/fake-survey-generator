@@ -15,51 +15,5 @@ variables:
   imageName: fakesurveygeneratorapi
 
 steps:
-- script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
-  displayName: 'Build Solution'
-
-- script: dotnet test FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
-  displayName: 'Run Unit Tests'
-
-- script: dotnet test FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
-  displayName: 'Run Integration Tests'
-
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
-
-- script: |
-    docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
-    echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
-    docker push $(dockerId)/$(imageName)
-  env:
-    DOCKER_PASSWORD: $(dockerPassword)
-
-- task: HelmInstaller@1
-  inputs:
-    helmVersionToInstall: 'latest'
-
-- task: HelmDeploy@0
-  inputs:
-    command: 'package'
-    chartPath: 'fakesurveygenerator'
-
-- task: AzureCLI@1
-  inputs:
-    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az configure --defaults acr=marcelmichaucrv1'
-
-- task: AzureCLI@1
-  inputs:
-    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az acr helm repo add'
-
-- task: AzureCLI@1
-  inputs:
-    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
-    scriptLocation: 'inlineScript'
-    inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/fakesurveygenerator-0.1.0.tgz'
+- script: ECHO "$(Build.SourceVersion)"
+  displayName: 'Display Source Version'
