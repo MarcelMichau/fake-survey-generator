@@ -16,10 +16,6 @@ variables:
   versionTag: $(git describe)
 
 steps:
-# Create a variable
-- script: |
-    echo '##vso[task.setvariable variable=tagVersion]crushed tomatoes'
-
 - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
   displayName: 'Build Solution'
 
