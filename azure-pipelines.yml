@@ -32,5 +32,5 @@ steps:
 
 - script: |
     docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
-    docker login -u $(dockerId) -p $(dockerPassword)
+    docker login -u $(dockerId) --password-stdin $(dockerPassword)
     docker push $(dockerId)/$(imageName)
