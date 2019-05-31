@@ -36,3 +36,12 @@ steps:
     docker push $(dockerId)/$(imageName)
   env:
     DOCKER_PASSWORD: $(dockerPassword)
+
+- task: HelmInstaller@1
+  inputs:
+    helmVersionToInstall: 'latest'
+
+- task: HelmDeploy@0
+  inputs:
+    command: 'package'
+    chartPath: '.'
