@@ -15,6 +15,17 @@ variables:
   imageName: fakesurveygeneratorapi
 
 steps:
+- powershell: |
+    # Using an input-macro:
+    Write-Host "This works: $(mySecret)"
+
+    # Using the env var directly:
+    Write-Host "This does not work: $env:MYSECRET"
+
+    # Using the mapped env var:
+    Write-Host "This works: $env:MY_MAPPED_ENV_VAR"
+  env:
+    MY_MAPPED_ENV_VAR: $(dockerPassword)
 - script: |
     echo $env:DOCKER_PASSWORD
     docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
