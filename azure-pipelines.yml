@@ -50,7 +50,7 @@ steps:
   inputs:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
-    inlineScript: 'az configure --defaults acr=marcelmichaucrv1.azurecr.io'
+    inlineScript: 'az configure --defaults acr=marcelmichaucrv1'
 
 - task: AzureCLI@1
   inputs:
