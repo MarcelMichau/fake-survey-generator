@@ -15,27 +15,27 @@ variables:
   imageName: fakesurveygeneratorapi
 
 steps:
-# - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
-#   displayName: 'Build Solution'
+- script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
+  displayName: 'Build Solution'
 
-# - script: dotnet test FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
-#   displayName: 'Run Unit Tests'
+- script: dotnet test FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
+  displayName: 'Run Unit Tests'
 
-# - script: dotnet test FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
-#   displayName: 'Run Integration Tests'
+- script: dotnet test FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
+  displayName: 'Run Integration Tests'
 
-# - task: PublishTestResults@2
-#   condition: succeededOrFailed()
-#   inputs:
-#     testRunner: VSTest
-#     testResultsFiles: '**/*.trx'
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
 
-# - script: |
-#     docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
-#     echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
-#     docker push $(dockerId)/$(imageName)
-#   env:
-#     DOCKER_PASSWORD: $(dockerPassword)
+- script: |
+    docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
+    echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
+    docker push $(dockerId)/$(imageName)
+  env:
+    DOCKER_PASSWORD: $(dockerPassword)
 
 - task: HelmInstaller@1
   inputs:
