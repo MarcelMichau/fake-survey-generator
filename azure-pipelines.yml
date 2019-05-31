@@ -13,8 +13,13 @@ variables:
   buildConfiguration: 'Release'
   dockerId: marcelmichau
   imageName: fakesurveygeneratorapi
+  versionTag: $(git describe)
 
 steps:
+# Create a variable
+- script: |
+    echo '##vso[task.setvariable variable=tagVersion]crushed tomatoes'
+
 - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
   displayName: 'Build Solution'
 
@@ -31,7 +36,7 @@ steps:
     testResultsFiles: '**/*.trx'
 
 - script: |
-    docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
+    docker build -t $(dockerId)/$(imageName):$(versionTag) -f FakeSurveyGenerator.API/Dockerfile .
     echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
     docker push $(dockerId)/$(imageName)
   env:
@@ -62,4 +67,4 @@ steps:
   inputs:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
-    inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/fakesurveygenerator-0.1.0.tgz'
+    inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/fakesurveygenerator-$(versionTag).tgz'
