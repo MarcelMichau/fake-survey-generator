@@ -24,5 +24,7 @@ steps:
 
     # Using the mapped env var:
     Write-Host "This works: $env:MY_MAPPED_ENV_VAR"
+
+    docker login $(dockerId) -p $env:MY_MAPPED_ENV_VAR"
   env:
     MY_MAPPED_ENV_VAR: $(dockerPassword)
