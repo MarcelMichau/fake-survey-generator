@@ -31,9 +31,8 @@ steps:
     testResultsFiles: '**/*.trx'
 
 - script: |
-    echo $env:DOCKER_PASSWORD
     docker build -t $(dockerId)/$(imageName) -f FakeSurveyGenerator.API/Dockerfile .
-    echo "$env:DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
+    ECHO "$env:DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
     docker push $(dockerId)/$(imageName)
   env:
     DOCKER_PASSWORD: $(dockerPassword)
