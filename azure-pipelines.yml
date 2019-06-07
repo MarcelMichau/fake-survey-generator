@@ -45,6 +45,7 @@ steps:
 - task: HelmDeploy@0
   inputs:
     command: 'package'
+    arguments: '--version $(versionTag)'
     chartPath: 'fakesurveygenerator'
 
 - task: AzureCLI@1
