@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Reflection;
+using AutoMapper;
 using FakeSurveyGenerator.API.Application.Queries;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
@@ -26,9 +28,9 @@ namespace FakeSurveyGenerator.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddMediatR();
+            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
             services.AddScoped<ISurveyQueries>(s => new SurveyQueries(Configuration.GetConnectionString("SurveyContext")));
             services.AddScoped<ISurveyRepository, SurveyRepository>();
@@ -43,12 +45,16 @@ namespace FakeSurveyGenerator.API
                 c.SwaggerDoc("v1", new Info { Title = "Fake Survey Generator API", Version = "v1" });
             });
 
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddDbContextCheck<SurveyContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseHealthChecks("/health");
 
             if (env.IsDevelopment())

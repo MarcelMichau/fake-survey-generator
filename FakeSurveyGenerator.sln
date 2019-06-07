@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2050
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain.Tests", "FakeSurveyGenerator.Domain.Tests\FakeSurveyGenerator.Domain.Tests.csproj", "{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}"
 EndProject
@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.dockerignore = .dockerignore
 		.gitignore = .gitignore
 		.helmignore = .helmignore
+		azure-pipelines.yml = azure-pipelines.yml
 		Chart.yaml = Chart.yaml
 		values.yaml = values.yaml
 	EndProjectSection
