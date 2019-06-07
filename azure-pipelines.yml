@@ -13,7 +13,7 @@ variables:
   buildConfiguration: 'Release'
   dockerId: marcelmichau
   imageName: fakesurveygeneratorapi
-  versionTag: $(build.buildId)
+  versionTag: $(build.buildNumber)
 
 steps:
 - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
