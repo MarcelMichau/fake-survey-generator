@@ -35,14 +35,15 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
   paths:
-    - fakesurveygenerator.marcelmichau.com
+    - aks-test.fakesurveygenerator.marcelmichau.dev
   hosts:
-    - fakesurveygenerator.marcelmichau.com
+    - aks-test.fakesurveygenerator.marcelmichau.dev
   tls:
-    - secretName: marcelmichau-com-tls
+    - secretName: marcelmichau-dev-tls-secret
       hosts:
-        - fakesurveygenerator.marcelmichau.com
+        - aks-test.fakesurveygenerator.marcelmichau.dev
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
