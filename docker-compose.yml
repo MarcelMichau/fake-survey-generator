@@ -4,8 +4,8 @@ services:
   fakesurveygenerator.ui:
     image: ${DOCKER_REGISTRY-}fakesurveygeneratorui
     build:
-      context: ./FakeSurveyGenerator.UI/ui
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: FakeSurveyGenerator.UI/ui/Dockerfile
     depends_on:
       - fakesurveygenerator.api
 

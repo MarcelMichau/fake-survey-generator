@@ -3,18 +3,24 @@ import React, { useState } from 'react';
 const GetSurvey = ({ surveyId, onUpdateSurveyId, onFetch, surveyDetail }) => {
 	return (
 		<div>
-			<label>
-				Survey ID
-				<div>
-					<input
-						type="text"
-						value={surveyId}
-						onChange={e => onUpdateSurveyId(e.target.value)}
-					/>
-				</div>
-			</label>
+			<form className="pure-form">
+				{' '}
+				<label>
+					Survey ID
+					<div>
+						<input
+							style={{ margin: '1em auto', color: 'black' }}
+							type="text"
+							value={surveyId}
+							onChange={e => onUpdateSurveyId(e.target.value)}
+						/>
+					</div>
+				</label>
+			</form>
 
-			<button onClick={onFetch}>Fetch</button>
+			<button className="pure-button pure-button-primary" onClick={onFetch}>
+				Fetch
+			</button>
 
 			{surveyDetail && (
 				<div
@@ -32,13 +38,23 @@ const GetSurvey = ({ surveyId, onUpdateSurveyId, onFetch, surveyDetail }) => {
 					</h2>
 					<h3>And the results were:</h3>
 
-					<ul>
-						{surveyDetail.options.map((option, index) => (
-							<li key={index}>
-								{option.optionText} - {option.numberOfVotes} votes
-							</li>
-						))}
-					</ul>
+					<ol>
+						{surveyDetail.options
+							.sort((x, y) => y.numberOfVotes - x.numberOfVotes)
+							.map((option, index) => (
+								<li key={option.id}>
+									{index === 0 ? (
+										<strong style={{ color: 'rgb(28, 184, 65)' }}>
+											{option.optionText} - {option.numberOfVotes} votes
+										</strong>
+									) : (
+										<span>
+											{option.optionText} - {option.numberOfVotes} votes
+										</span>
+									)}
+								</li>
+							))}
+					</ol>
 				</div>
 			)}
 		</div>
@@ -83,11 +99,12 @@ const CreateSurvey = ({ onCreateSurvey }) => {
 
 	return (
 		<div>
-			<form onSubmit={onSubmit}>
+			<form onSubmit={onSubmit} className="pure-form">
 				<label>
 					Target Audience
 					<div>
 						<input
+							style={{ margin: '1em auto', color: 'black' }}
 							type="text"
 							value={respondentType}
 							onChange={e => setRespondentType(e.target.value)}
@@ -98,6 +115,7 @@ const CreateSurvey = ({ onCreateSurvey }) => {
 					Question
 					<div>
 						<input
+							style={{ margin: '1em auto', color: 'black' }}
 							type="text"
 							value={topic}
 							onChange={e => setTopic(e.target.value)}
@@ -108,6 +126,7 @@ const CreateSurvey = ({ onCreateSurvey }) => {
 					Number of Respondents
 					<div>
 						<input
+							style={{ margin: '1em auto', color: 'black' }}
 							type="number"
 							value={numberOfRespondents}
 							onChange={e => setNumberOfRespondents(Number(e.target.value))}
@@ -123,6 +142,7 @@ const CreateSurvey = ({ onCreateSurvey }) => {
 							#{option.id}
 							<div>
 								<input
+									style={{ margin: '1em auto', color: 'black' }}
 									type="text"
 									value={option.optionText}
 									onChange={e => updateOption(option.id, e.target.value)}
@@ -134,6 +154,12 @@ const CreateSurvey = ({ onCreateSurvey }) => {
 
 				<div>
 					<button
+						style={{
+							margin: '1em',
+							background: 'rgb(28, 184, 65)',
+							color: 'white'
+						}}
+						className="pure-button"
 						type="button"
 						onClick={() =>
 							setOptions([
@@ -146,7 +172,9 @@ const CreateSurvey = ({ onCreateSurvey }) => {
 					</button>
 				</div>
 
-				<button type="submit">Create Survey</button>
+				<button className="pure-button pure-button-primary" type="submit">
+					Create Survey
+				</button>
 			</form>
 		</div>
 	);
@@ -178,18 +206,8 @@ function App() {
 	};
 
 	return (
-		<div>
-			<h1>Fake Survey Generator UI</h1>
-
-			<p>This UI is basic AF</p>
-
-			<p>It can just:</p>
-			<ul>
-				<li>Fetch a survey by ID</li>
-				<li>Create a new survey</li>
-			</ul>
-
-			<p>That is all.</p>
+		<div style={{ textAlign: 'center' }}>
+			<h1>Fake Survey Generator</h1>
 
 			<h2>Get Survey</h2>
 			<GetSurvey
@@ -198,7 +216,7 @@ function App() {
 				onFetch={() => fetchSurvey(surveyId)}
 				surveyDetail={surveyDetail}
 			/>
-
+			<div style={{ margin: '2em' }}>---- ¯\_(ツ)_/¯ ----</div>
 			<h2>Create Survey</h2>
 			<CreateSurvey onCreateSurvey={createSurvey} />
 		</div>
