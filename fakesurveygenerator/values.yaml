@@ -4,15 +4,25 @@
 
 replicaCount: 1
 
-api:
+ui:
   image:
-    repository: marcelmichau/fakesurveygeneratorapi
-    tag: latest
+    repository: marcelmichau/fakesurveygeneratorui
+    tag: "latest"
     pullPolicy: IfNotPresent
 
   service:
-    type: NodePort
-    port: 30001
+    type: ClusterIP
+    port: 80
+
+api:
+  image:
+    repository: marcelmichau/fakesurveygeneratorapi
+    tag: "20190710.1"
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
 
   config:
     database: FakeSurveyGenerator
@@ -34,16 +44,22 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
   paths:
-    - aks-test.fakesurveygenerator.marcelmichau.dev
+    - kube.local
   hosts:
-    - aks-test.fakesurveygenerator.marcelmichau.dev
-  tls:
-    - secretName: marcelmichau-dev-tls-secret
-      hosts:
-        - aks-test.fakesurveygenerator.marcelmichau.dev
+    - kube.local
+
+# ingress:
+#   enabled: true
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#   paths:
+#     - routePath: /
+#       name: ui
+#     - routePath: /api
+#       name: api
+#   hosts:
+#     - kube.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

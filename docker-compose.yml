@@ -1,6 +1,14 @@
 version: '3.4'
 
 services:
+  fakesurveygenerator.ui:
+    image: ${DOCKER_REGISTRY-}fakesurveygeneratorui
+    build:
+      context: ./FakeSurveyGenerator.UI/ui
+      dockerfile: Dockerfile
+    depends_on:
+      - fakesurveygenerator.api
+
   fakesurveygenerator.api:
     image: ${DOCKER_REGISTRY-}fakesurveygeneratorapi
     build:

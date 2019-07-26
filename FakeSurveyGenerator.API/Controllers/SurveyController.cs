@@ -20,6 +20,10 @@ namespace FakeSurveyGenerator.API.Controllers
             _surveyQueries = surveyQueries;
         }
 
+        /// <summary>
+        /// Retrieves a specific survey.
+        /// </summary>
+        /// <param name="id"></param> 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSurvey(int id)
         {
@@ -28,6 +32,9 @@ namespace FakeSurveyGenerator.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Creates a new survey.
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateSurvey([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
         {

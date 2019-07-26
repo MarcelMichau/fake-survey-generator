@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using AutoMapper;
 using FakeSurveyGenerator.API.Application.Queries;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace FakeSurveyGenerator.API
@@ -42,7 +44,22 @@ namespace FakeSurveyGenerator.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Fake Survey Generator API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Fake Survey Generator API",
+                    Version = "v1",
+                    Description = "This is an API. That generates surveys. Fake ones. For fun. That is all.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Marcel Michau",
+                        Email = string.Empty,
+                        Url = new Uri("https://marcelmichau.dev"),
+                    }
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             services.AddHealthChecks()

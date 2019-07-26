@@ -32,7 +32,7 @@ spec:
         paths:
 	{{- range $ingressPaths }}
            - backend:
-              serviceName: {{ $fullName }}-api
+              serviceName: {{ $fullName }}-ui
               servicePort: http
 	{{- end }}
   {{- end }}
