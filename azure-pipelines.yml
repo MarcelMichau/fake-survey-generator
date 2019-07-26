@@ -12,7 +12,8 @@ pool:
 variables:
   buildConfiguration: 'Release'
   dockerId: marcelmichau
-  imageName: fakesurveygeneratorapi
+  apiImageName: fakesurveygeneratorapi
+  uiImageName: fakesurveygeneratorui
   versionTag: $(build.buildNumber)
 
 steps:
@@ -32,9 +33,11 @@ steps:
     testResultsFiles: '**/*.trx'
 
 - script: |
-    docker build -t $(dockerId)/$(imageName):$(versionTag) -f FakeSurveyGenerator.API/Dockerfile .
+    docker build -t $(dockerId)/$(apiImageName):$(versionTag) -f FakeSurveyGenerator.API/Dockerfile .
+    docker build -t $(dockerId)/$(uiImageName):$(versionTag) -f FakeSurveyGenerator.UI/ui/Dockerfile .
     echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
-    docker push $(dockerId)/$(imageName)
+    docker push $(dockerId)/$(apiImageName)
+    docker push $(dockerId)/$(uiImageName)
   env:
     DOCKER_PASSWORD: $(dockerPassword)
 
