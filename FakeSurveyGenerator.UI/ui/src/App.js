@@ -38,7 +38,7 @@ const GetSurvey = ({ surveyId, onUpdateSurveyId, onFetch, surveyDetail }) => {
 					</h2>
 					<h3>And the results were:</h3>
 
-					<ol>
+					<ol style={{ display: 'inline-block', textAlign: 'left' }}>
 						{surveyDetail.options
 							.sort((x, y) => y.numberOfVotes - x.numberOfVotes)
 							.map((option, index) => (
