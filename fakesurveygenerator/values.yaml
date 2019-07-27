@@ -25,6 +25,8 @@ api:
     port: 80
 
   config:
+    azureDatabaseEnabled: false
+    databaseServer: tcp:localhost,1433
     database: FakeSurveyGenerator
     user: SA
     password: <YourStrong!Passw0rd>
