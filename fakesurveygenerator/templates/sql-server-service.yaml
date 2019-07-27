@@ -1,3 +1,4 @@
+{{- if not .Values.api.config.azureDatabaseEnabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -17,3 +18,4 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "..name" . }}-database
     app.kubernetes.io/instance: {{ .Release.Name }}-database
+{{- end }}
