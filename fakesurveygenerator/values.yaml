@@ -46,10 +46,16 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
   paths:
-    - kube.local
+    - aks-test.fakesurveygenerator.marcelmichau.dev
   hosts:
-    - kube.local
+    - aks-test.fakesurveygenerator.marcelmichau.dev
+  tls:
+    - secretName: marcelmichau-dev-tls-secret
+      hosts:
+        - aks-test.fakesurveygenerator.marcelmichau.dev
 
 # ingress:
 #   enabled: true
