@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FakeSurveyGenerator.API.Migrations
+namespace FakeSurveyGenerator.EF.Design.Migrations
 {
     public partial class RenamePreferredOutcomeRank : Migration
     {

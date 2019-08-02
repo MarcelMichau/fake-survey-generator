@@ -5,6 +5,9 @@
 
 trigger:
 - master
+- feat/*
+- fix/*
+- chore/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -31,40 +34,64 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+  displayName: 'Publish Test Results'
 
 - script: |
-    docker build -t $(dockerId)/$(apiImageName):$(versionTag) -f FakeSurveyGenerator.API/Dockerfile .
-    docker build -t $(dockerId)/$(uiImageName):$(versionTag) -f FakeSurveyGenerator.UI/ui/Dockerfile .
+    dotnet ef migrations script -o DbMigrationScript.sql -i
+  workingDirectory: FakeSurveyGenerator.EF.Design
+  displayName: 'Create Database Migration Script'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: FakeSurveyGenerator.EF.Design/DbMigrationScript.sql
+    artifactName: DbMigrationScript
+  displayName: 'Publish Database Migration Script'
+
+- script: |
+    docker build -t $(dockerId)/$(apiImageName):$(versionTag) -t $(dockerId)/$(apiImageName):latest -f FakeSurveyGenerator.API/Dockerfile .
+    docker build -t $(dockerId)/$(uiImageName):$(versionTag) -t $(dockerId)/$(uiImageName):latest -f FakeSurveyGenerator.UI/ui/Dockerfile .
     echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
     docker push $(dockerId)/$(apiImageName)
     docker push $(dockerId)/$(uiImageName)
   env:
     DOCKER_PASSWORD: $(dockerPassword)
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Build & Push Docker Images'
 
 - task: HelmInstaller@1
   inputs:
     helmVersionToInstall: 'latest'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Install Helm'
 
 - task: HelmDeploy@0
   inputs:
     command: 'package'
     arguments: '--version $(versionTag)'
     chartPath: 'fakesurveygenerator'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Helm Package'
 
 - task: AzureCLI@1
   inputs:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az configure --defaults acr=marcelmichaucrv1'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Set Azure Container Registry Default in Azure CLI'
 
 - task: AzureCLI@1
   inputs:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az acr helm repo add'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
 - task: AzureCLI@1
   inputs:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/fakesurveygenerator-$(versionTag).tgz'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Push Helm Chart to Azure Container Registry'
