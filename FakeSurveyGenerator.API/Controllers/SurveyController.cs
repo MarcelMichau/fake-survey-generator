@@ -9,7 +9,7 @@ namespace FakeSurveyGenerator.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SurveyController : Controller
+    public class SurveyController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ISurveyQueries _surveyQueries;

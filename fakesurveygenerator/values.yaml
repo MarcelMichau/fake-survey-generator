@@ -49,13 +49,16 @@ ingress:
     kubernetes.io/tls-acme: "true"
     certmanager.k8s.io/cluster-issuer: letsencrypt-staging
   paths:
-    - aks-test.fakesurveygenerator.marcelmichau.dev
+    - routePath: /
+      name: ui
+    - routePath: /api
+      name: api
+    - routePath: /swagger
+      name: api
+    - routePath: /health
+      name: api
   hosts:
-    - aks-test.fakesurveygenerator.marcelmichau.dev
-  tls:
-    - secretName: marcelmichau-dev-tls-secret
-      hosts:
-        - aks-test.fakesurveygenerator.marcelmichau.dev
+    - kube.local
 
 # ingress:
 #   enabled: true

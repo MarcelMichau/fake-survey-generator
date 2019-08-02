@@ -30,10 +30,11 @@ spec:
     - host: {{ . | quote }}
       http:
         paths:
-	{{- range $ingressPaths }}
-           - backend:
-              serviceName: {{ $fullName }}-ui
+	      {{- range $ingressPaths }}
+          - path: {{ .routePath }}
+            backend:
+              serviceName: {{ $fullName }}-{{ .name }}
               servicePort: http
-	{{- end }}
+	      {{- end }}
   {{- end }}
 {{- end }}

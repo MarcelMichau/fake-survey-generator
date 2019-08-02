@@ -27,20 +27,8 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          volumeMounts:
-            - mountPath: /etc/nginx/nginx.conf # mount nginx-conf volumn to /etc/nginx
-              subPath: nginx.conf
-              readOnly: true
-              name: nginx-conf
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-        - name: nginx-conf
-          configMap:
-            name: {{ include "..fullname" . }}-ui-config-map # place ConfigMap `nginx-conf` on /etc/nginx
-            items:
-              - key: nginx.conf
-                path: nginx.conf
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FakeSurveyGenerator.EF.Design.Migrations
+namespace FakeSurveyGenerator.Infrastructure.Migrations
 {
     public partial class InitialCreate : Migration
     {

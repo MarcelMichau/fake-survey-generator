@@ -40,7 +40,7 @@ namespace FakeSurveyGenerator.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<SurveyContext>
-                (options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("FakeSurveyGenerator.EF.Design")));
+                (options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("FakeSurveyGenerator.Infrastructure")));
 
             services.AddSwaggerGen(c =>
             {
