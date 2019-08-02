@@ -19,27 +19,28 @@ namespace FakeSurveyGenerator.API
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
-            services.AddScoped<ISurveyQueries>(s => new SurveyQueries(Configuration.GetConnectionString("SurveyContext")));
+            services.AddScoped<ISurveyQueries>(s => new SurveyQueries(connectionString));
             services.AddScoped<ISurveyRepository, SurveyRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<SurveyContext>
-                (options => options.UseSqlServer(Configuration.GetConnectionString("SurveyContext"), b => b.MigrationsAssembly("FakeSurveyGenerator.API")));
+                (options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("FakeSurveyGenerator.EF.Design")));
 
             services.AddSwaggerGen(c =>
             {
@@ -65,7 +66,6 @@ namespace FakeSurveyGenerator.API
                 .AddDbContextCheck<SurveyContext>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseDefaultFiles();
@@ -92,18 +92,21 @@ namespace FakeSurveyGenerator.API
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1");
             });
 
-            UpdateDatabase(app);
+            UpdateDatabase(app, env);
         }
 
-        private static void UpdateDatabase(IApplicationBuilder app)
+        private static void UpdateDatabase(IApplicationBuilder app, IHostingEnvironment env)
         {
+            if (!env.IsDevelopment()) // Only migrate database on startup when running in Development environment
+                return;
+
             using (var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
             {
                 using (var context = serviceScope.ServiceProvider.GetService<SurveyContext>())
                 {
-                    if (context.Database.IsSqlServer())
+                    if (context.Database.IsSqlServer()) // Do not migrate database when running integration tests with in-memory database
                         context.Database.Migrate();
                 }
             }

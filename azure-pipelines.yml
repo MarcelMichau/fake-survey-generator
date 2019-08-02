@@ -33,8 +33,17 @@ steps:
     testResultsFiles: '**/*.trx'
 
 - script: |
-    docker build -t $(dockerId)/$(apiImageName):$(versionTag) -f FakeSurveyGenerator.API/Dockerfile .
-    docker build -t $(dockerId)/$(uiImageName):$(versionTag) -f FakeSurveyGenerator.UI/ui/Dockerfile .
+    dotnet ef migrations script -o DbMigrationScript.sql -i
+  workingDirectory: FakeSurveyGenerator.EF.Design
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: FakeSurveyGenerator.EF.Design/DbMigrationScript.sql
+    artifactName: DbMigrationScript
+
+- script: |
+    docker build -t $(dockerId)/$(apiImageName):$(versionTag) $(dockerId)/$(apiImageName):latest -f FakeSurveyGenerator.API/Dockerfile .
+    docker build -t $(dockerId)/$(uiImageName):$(versionTag) $(dockerId)/$(uiImageName):latest -f FakeSurveyGenerator.UI/ui/Dockerfile .
     echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
     docker push $(dockerId)/$(apiImageName)
     docker push $(dockerId)/$(uiImageName)
