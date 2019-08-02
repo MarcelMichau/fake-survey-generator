@@ -30,6 +30,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "..fullname" . }}-api-config-map
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

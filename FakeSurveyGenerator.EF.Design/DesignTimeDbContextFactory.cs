@@ -12,7 +12,7 @@ namespace FakeSurveyGenerator.EF.Design
                 "Server=localhost;Database=ef-core-design;Trusted_Connection=True;MultipleActiveResultSets=true";
 
             var builder = new DbContextOptionsBuilder<SurveyContext>();
-            builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("FakeSurveyGenerator.EF.Design"));
+            builder.UseSqlServer(connectionString, b => b.MigrationsAssembly("FakeSurveyGenerator.Infrastructure"));
             return new SurveyContext(builder.Options);
         }
     }
