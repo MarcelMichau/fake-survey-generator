@@ -31,7 +31,16 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}"
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "44300",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__SurveyContext": "Server=(localdb)\\mssqllocaldb;Database=fake-survey-generator-local;Trusted_Connection=True;MultipleActiveResultSets=true"
+      },
+      "httpPort": 10000,
+      "useSSL": true,
+      "sslPort": 44300
     }
   }
 }

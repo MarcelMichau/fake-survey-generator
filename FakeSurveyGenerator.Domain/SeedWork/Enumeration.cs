@@ -7,9 +7,9 @@ namespace FakeSurveyGenerator.Domain.SeedWork
 {
     public abstract class Enumeration : IComparable
     {
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public int Id { get; private set; }
+        public int Id { get; }
 
         protected Enumeration()
         {
@@ -34,9 +34,8 @@ namespace FakeSurveyGenerator.Domain.SeedWork
             foreach (var info in fields)
             {
                 var instance = new T();
-                var locatedValue = info.GetValue(instance) as T;
 
-                if (locatedValue != null)
+                if (info.GetValue(instance) is T locatedValue)
                 {
                     yield return locatedValue;
                 }
@@ -45,14 +44,12 @@ namespace FakeSurveyGenerator.Domain.SeedWork
 
         public override bool Equals(object obj)
         {
-            var otherValue = obj as Enumeration;
-
-            if (otherValue == null)
+            if (!(obj is Enumeration otherValue))
             {
                 return false;
             }
 
-            var typeMatches = GetType().Equals(obj.GetType());
+            var typeMatches = GetType() == obj.GetType();
             var valueMatches = Id.Equals(otherValue.Id);
 
             return typeMatches && valueMatches;
@@ -81,18 +78,16 @@ namespace FakeSurveyGenerator.Domain.SeedWork
             return matchingItem;
         }
 
-        private static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration, new()
+        private static T Parse<T, TK>(TK value, string description, Func<T, bool> predicate) where T : Enumeration, new()
         {
             var matchingItem = GetAll<T>().FirstOrDefault(predicate);
 
-            if (matchingItem == null)
-            {
-                var message = string.Format("'{0}' is not a valid {1} in {2}", value, description, typeof(T));
+            if (matchingItem != null) return matchingItem;
 
-                throw new InvalidOperationException(message);
-            }
+            var message = $"'{value}' is not a valid {description} in {typeof(T)}";
 
-            return matchingItem;
+            throw new InvalidOperationException(message);
+
         }
 
         public int CompareTo(object other)

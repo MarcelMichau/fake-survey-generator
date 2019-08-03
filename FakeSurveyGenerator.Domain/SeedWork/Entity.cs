@@ -13,7 +13,7 @@ namespace FakeSurveyGenerator.Domain.SeedWork
 
         public void AddDomainEvent(INotification eventItem)
         {
-            DomainEvents = DomainEvents ?? new List<INotification>();
+            DomainEvents ??= new List<INotification>();
             DomainEvents.Add(eventItem);
         }
 
@@ -24,7 +24,7 @@ namespace FakeSurveyGenerator.Domain.SeedWork
 
         public bool IsTransient()
         {
-            return Id == default(int);
+            return Id == default;
         }
 
         public override bool Equals(object obj)
