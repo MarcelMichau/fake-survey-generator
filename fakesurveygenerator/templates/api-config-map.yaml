@@ -12,5 +12,6 @@ data:
   ConnectionStrings__SurveyContext: Server={{ .Values.api.config.databaseServer }};Initial Catalog={{ .Values.api.config.database }};Persist Security Info=False;User ID={{ .Values.api.config.user }};Password={{ .Values.api.config.password }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
   {{- else }}
   ConnectionStrings__SurveyContext: Server={{ include "..fullname" . }}-database;Database={{ .Values.api.config.database }};user id={{ .Values.api.config.user }};pwd={{ .Values.api.config.password }};ConnectRetryCount=0
+  ASPNETCORE_ENVIRONMENT: Development
   {{- end }}
   
