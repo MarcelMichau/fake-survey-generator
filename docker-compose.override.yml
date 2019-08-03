@@ -4,6 +4,8 @@ services:
   fakesurveygenerator.ui:
     ports:
       - "3000:80"
+    volumes:
+      - ./FakeSurveyGenerator.UI/ui/nginx.conf:/etc/nginx/nginx.conf:ro
 
   fakesurveygenerator.api:
     environment:
