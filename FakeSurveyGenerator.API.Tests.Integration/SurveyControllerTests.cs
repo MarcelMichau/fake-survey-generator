@@ -6,16 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.API.Application.Commands;
 using FakeSurveyGenerator.API.Application.Models;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class SurveyControllerTests : IClassFixture<InMemoryDatabaseWebApplicationFactory>
+    public class SurveyControllerTests : IClassFixture<InMemoryDatabaseWebApplicationFactory<Startup>>
     {
-        private readonly InMemoryDatabaseWebApplicationFactory _factory;
+        private readonly InMemoryDatabaseWebApplicationFactory<Startup> _factory;
 
-        public SurveyControllerTests(InMemoryDatabaseWebApplicationFactory factory)
+        public SurveyControllerTests(InMemoryDatabaseWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
         }

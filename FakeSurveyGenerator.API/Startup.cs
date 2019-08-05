@@ -28,7 +28,8 @@ namespace FakeSurveyGenerator.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers()
+                .AddNewtonsoftJson();
 
             var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
 
