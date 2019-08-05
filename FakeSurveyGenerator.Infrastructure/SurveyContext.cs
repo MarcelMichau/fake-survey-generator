@@ -13,7 +13,7 @@ namespace FakeSurveyGenerator.Infrastructure
         public SurveyContext(DbContextOptions options) : base(options)
         {   }
 
-        const string DEFAULT_SCHEMA = "Survey";
+        private const string DefaultSchema = "Survey";
 
         public DbSet<Survey> Surveys { get; set; }
         public DbSet<SurveyOption> SurveyOptions { get; set; }
@@ -26,12 +26,12 @@ namespace FakeSurveyGenerator.Infrastructure
 
         private void ConfigureSurvey(EntityTypeBuilder<Survey> surveyConfiguration)
         {
-            surveyConfiguration.ToTable("Survey", DEFAULT_SCHEMA);
+            surveyConfiguration.ToTable("Survey", DefaultSchema);
 
             surveyConfiguration.HasKey(o => o.Id);
 
             surveyConfiguration.Property(o => o.Id)
-                .ForSqlServerUseSequenceHiLo("SurveySeq", DEFAULT_SCHEMA);
+                .ForSqlServerUseSequenceHiLo("SurveySeq", DefaultSchema);
 
             surveyConfiguration.Ignore(b => b.DomainEvents);
 
@@ -50,14 +50,14 @@ namespace FakeSurveyGenerator.Infrastructure
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
 
-        private void ConfigureSurveyOption(EntityTypeBuilder<SurveyOption> surveyOptionConfiguration)
+        private static void ConfigureSurveyOption(EntityTypeBuilder<SurveyOption> surveyOptionConfiguration)
         {
-            surveyOptionConfiguration.ToTable("SurveyOption", DEFAULT_SCHEMA);
+            surveyOptionConfiguration.ToTable("SurveyOption", DefaultSchema);
 
             surveyOptionConfiguration.HasKey(o => o.Id);
 
             surveyOptionConfiguration.Property(o => o.Id)
-                .ForSqlServerUseSequenceHiLo("SurveyOptionSeq", DEFAULT_SCHEMA);
+                .ForSqlServerUseSequenceHiLo("SurveyOptionSeq", DefaultSchema);
 
             surveyOptionConfiguration.Ignore(b => b.DomainEvents);
 
@@ -69,7 +69,7 @@ namespace FakeSurveyGenerator.Infrastructure
             surveyOptionConfiguration.Property<int>("PreferredNumberOfVotes");
         }
 
-        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
         {
             await base.SaveChangesAsync(cancellationToken);
 

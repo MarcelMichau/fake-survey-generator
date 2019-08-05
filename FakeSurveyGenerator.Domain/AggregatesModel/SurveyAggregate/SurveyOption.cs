@@ -25,7 +25,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 
         public string OptionText { get; }
         public int NumberOfVotes { get; private set; }
-        public int PreferredNumberOfVotes { get; private set; }
+        public int PreferredNumberOfVotes { get; }
 
         internal void AddVote()
         {

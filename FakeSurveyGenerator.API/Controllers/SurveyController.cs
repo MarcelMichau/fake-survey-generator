@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FakeSurveyGenerator.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class SurveyController : ControllerBase
     {
         private readonly IMediator _mediator;

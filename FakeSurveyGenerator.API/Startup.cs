@@ -9,10 +9,10 @@ using FakeSurveyGenerator.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 namespace FakeSurveyGenerator.API
@@ -28,6 +28,9 @@ namespace FakeSurveyGenerator.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
             var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -36,8 +39,6 @@ namespace FakeSurveyGenerator.API
 
             services.AddScoped<ISurveyQueries>(s => new SurveyQueries(connectionString));
             services.AddScoped<ISurveyRepository, SurveyRepository>();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<SurveyContext>
                 (options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("FakeSurveyGenerator.Infrastructure")));
@@ -66,12 +67,10 @@ namespace FakeSurveyGenerator.API
                 .AddDbContextCheck<SurveyContext>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
-            app.UseHealthChecks("/health");
 
             if (env.IsDevelopment())
             {
@@ -83,7 +82,13 @@ namespace FakeSurveyGenerator.API
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
+            });
 
             app.UseSwagger();
 
@@ -95,21 +100,18 @@ namespace FakeSurveyGenerator.API
             UpdateDatabase(app, env);
         }
 
-        private static void UpdateDatabase(IApplicationBuilder app, IHostingEnvironment env)
+        private static void UpdateDatabase(IApplicationBuilder app, IHostEnvironment env)
         {
             if (!env.IsDevelopment()) // Only migrate database on startup when running in Development environment
                 return;
 
-            using (var serviceScope = app.ApplicationServices
+            using var serviceScope = app.ApplicationServices
                 .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<SurveyContext>())
-                {
-                    if (context.Database.IsSqlServer()) // Do not migrate database when running integration tests with in-memory database
-                        context.Database.Migrate();
-                }
-            }
+                .CreateScope();
+
+            using var context = serviceScope.ServiceProvider.GetService<SurveyContext>();
+            if (context.Database.IsSqlServer()) // Do not migrate database when running integration tests with in-memory database
+                context.Database.Migrate();
         }
     }
 }

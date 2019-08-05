@@ -19,34 +19,32 @@ namespace FakeSurveyGenerator.API.Application.Queries
 
         public async Task<SurveyModel> GetSurveyAsync(int id)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
+            await using var connection = new SqlConnection(_connectionString);
+            connection.Open();
 
-                var lookup = new Dictionary<int, SurveyModel>();
-                await connection.QueryAsync<SurveyModel, SurveyOptionModel, SurveyModel>(@"
+            var lookup = new Dictionary<int, SurveyModel>();
+            await connection.QueryAsync<SurveyModel, SurveyOptionModel, SurveyModel>(@"
                 SELECT s.*, so.*
                 FROM Survey.Survey s
                 INNER JOIN Survey.SurveyOption so ON so.SurveyId = s.Id
                 WHERE s.Id = @id
                 ", (s, so) => {
-                    if (!lookup.TryGetValue(s.Id, out var survey))
-                    {
-                        lookup.Add(s.Id, survey = s);
-                    }
-                    if (survey.Options == null)
-                        survey.Options = new List<SurveyOptionModel>();
-                    survey.Options.Add(so);
-                    return survey;
-                }, new { id });
+                if (!lookup.TryGetValue(s.Id, out var survey))
+                {
+                    lookup.Add(s.Id, survey = s);
+                }
+                if (survey.Options == null)
+                    survey.Options = new List<SurveyOptionModel>();
+                survey.Options.Add(so);
+                return survey;
+            }, new { id });
 
-                var result = lookup.Values;
+            var result = lookup.Values;
 
-                if (!result.Any())
-                    throw new KeyNotFoundException();
+            if (!result.Any())
+                throw new KeyNotFoundException();
 
-                return result.First();
-            }
+            return result.First();
         }
     }
 }

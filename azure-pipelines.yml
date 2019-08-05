@@ -20,6 +20,11 @@ variables:
   versionTag: $(build.buildNumber)
 
 steps:
+- task: DotNetCoreInstaller@0
+  displayName: 'Install .net core 3.0 (preview)'
+  inputs:
+    version: '3.0.100-preview7-012821'
+
 - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
   displayName: 'Build Solution'
 
@@ -35,6 +40,10 @@ steps:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
   displayName: 'Publish Test Results'
+
+- script: |
+    dotnet tool install --global dotnet-ef --version 3.0.0-*
+  displayName: 'Install EF Core Global Tool'
 
 - script: |
     dotnet ef migrations script -o DbMigrationScript.sql -i
