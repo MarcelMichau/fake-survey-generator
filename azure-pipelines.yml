@@ -42,11 +42,11 @@ steps:
   displayName: 'Publish Test Results'
 
 - script: |
-  dotnet tool install --global dotnet-ef --version 3.0.0-*
+    dotnet tool install --global dotnet-ef --version 3.0.0-*
   displayName: 'Install EF Core Global Tool'
 
 - script: |
-  dotnet ef migrations script -o DbMigrationScript.sql -i
+    dotnet ef migrations script -o DbMigrationScript.sql -i
   workingDirectory: FakeSurveyGenerator.EF.Design
   displayName: 'Create Database Migration Script'
 
