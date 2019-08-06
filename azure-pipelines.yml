@@ -28,10 +28,10 @@ steps:
 - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
   displayName: 'Build Solution'
 
-- script: dotnet test FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
+- script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
   displayName: 'Run Unit Tests'
 
-- script: dotnet test FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
+- script: dotnet test src/server/FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
   displayName: 'Run Integration Tests'
 
 - task: PublishTestResults@2
@@ -47,18 +47,18 @@ steps:
 
 - script: |
     dotnet ef migrations script -o DbMigrationScript.sql -i
-  workingDirectory: FakeSurveyGenerator.EF.Design
+  workingDirectory: src/server/FakeSurveyGenerator.EF.Design
   displayName: 'Create Database Migration Script'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathToPublish: FakeSurveyGenerator.EF.Design/DbMigrationScript.sql
+    pathToPublish: src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql
     artifactName: DbMigrationScript
   displayName: 'Publish Database Migration Script'
 
 - script: |
-    docker build -t $(dockerId)/$(apiImageName):$(versionTag) -t $(dockerId)/$(apiImageName):latest -f FakeSurveyGenerator.API/Dockerfile .
-    docker build -t $(dockerId)/$(uiImageName):$(versionTag) -t $(dockerId)/$(uiImageName):latest -f FakeSurveyGenerator.UI/ui/Dockerfile .
+    docker build -t $(dockerId)/$(apiImageName):$(versionTag) -t $(dockerId)/$(apiImageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
+    docker build -t $(dockerId)/$(uiImageName):$(versionTag) -t $(dockerId)/$(uiImageName):latest -f src/client/ui/Dockerfile .
     echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
     docker push $(dockerId)/$(apiImageName)
     docker push $(dockerId)/$(uiImageName)

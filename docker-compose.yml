@@ -5,7 +5,7 @@ services:
     image: ${DOCKER_REGISTRY-}fakesurveygeneratorui
     build:
       context: .
-      dockerfile: FakeSurveyGenerator.UI/ui/Dockerfile
+      dockerfile: src/client/ui/Dockerfile
     depends_on:
       - fakesurveygenerator.api
 
@@ -13,7 +13,7 @@ services:
     image: ${DOCKER_REGISTRY-}fakesurveygeneratorapi
     build:
       context: .
-      dockerfile: FakeSurveyGenerator.API/Dockerfile
+      dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
     depends_on:
       - sqlserver
 
