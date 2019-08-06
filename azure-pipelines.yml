@@ -25,7 +25,7 @@ steps:
   inputs:
     version: '3.0.100-preview7-012821'
 
-- script: dotnet build src/server/FakeSurveyGenerator.sln --configuration $(buildConfiguration)
+- script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
   displayName: 'Build Solution'
 
 - script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
