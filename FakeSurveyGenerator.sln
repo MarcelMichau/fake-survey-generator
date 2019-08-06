@@ -3,29 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain.Tests", "FakeSurveyGenerator.Domain.Tests\FakeSurveyGenerator.Domain.Tests.csproj", "{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain", "FakeSurveyGenerator.Domain\FakeSurveyGenerator.Domain.csproj", "{E82B70C1-4FA4-4286-BB27-5413A03EA792}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrastructure", "FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj", "{25EE11ED-3B2A-420B-8D4D-7AB7F2D67C79}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.API", "FakeSurveyGenerator.API\FakeSurveyGenerator.API.csproj", "{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.API.Tests.Integration", "FakeSurveyGenerator.API.Tests.Integration\FakeSurveyGenerator.API.Tests.Integration.csproj", "{B02093B4-1C5B-4075-86EA-49522800357A}"
-EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{438984B1-9FA7-45B5-8716-CDE285922F9B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A43BD25B-4C9D-4EA5-A213-5628AB3F30AB}"
-	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
-		.gitignore = .gitignore
-		.helmignore = .helmignore
-		azure-pipelines.yml = azure-pipelines.yml
-		Chart.yaml = Chart.yaml
-		values.yaml = values.yaml
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.API", "src\server\FakeSurveyGenerator.API\FakeSurveyGenerator.API.csproj", "{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.EF.Design", "FakeSurveyGenerator.EF.Design\FakeSurveyGenerator.EF.Design.csproj", "{54D276E9-7A37-4B28-82B0-A37C55BD999B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.API.Tests.Integration", "src\server\FakeSurveyGenerator.API.Tests.Integration\FakeSurveyGenerator.API.Tests.Integration.csproj", "{F18CFDB2-EA79-4AC3-BC06-203A31F35486}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain", "src\server\FakeSurveyGenerator.Domain\FakeSurveyGenerator.Domain.csproj", "{C936D670-5D01-45D3-9625-3AB91C8CAFA6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain.Tests", "src\server\FakeSurveyGenerator.Domain.Tests\FakeSurveyGenerator.Domain.Tests.csproj", "{62E03C8E-7FD4-4CE9-B686-40840950C98A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.EF.Design", "src\server\FakeSurveyGenerator.EF.Design\FakeSurveyGenerator.EF.Design.csproj", "{99EA5DC3-56B7-4473-8574-B304461B4B76}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrastructure", "src\server\FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj", "{C6D87595-DDB3-40DB-BC66-4B86E11988BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6465B709-BA6F-4AE9-B22C-C8E28CCA9AC6}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		azure-pipelines.yml = azure-pipelines.yml
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,34 +31,34 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22B9FC54-C0FD-4F2A-A2F6-DCC9820C4D64}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E82B70C1-4FA4-4286-BB27-5413A03EA792}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25EE11ED-3B2A-420B-8D4D-7AB7F2D67C79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25EE11ED-3B2A-420B-8D4D-7AB7F2D67C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25EE11ED-3B2A-420B-8D4D-7AB7F2D67C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25EE11ED-3B2A-420B-8D4D-7AB7F2D67C79}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C0480A5-0B3F-41CB-A5F1-AFDF4F020F5C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B02093B4-1C5B-4075-86EA-49522800357A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B02093B4-1C5B-4075-86EA-49522800357A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B02093B4-1C5B-4075-86EA-49522800357A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B02093B4-1C5B-4075-86EA-49522800357A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54D276E9-7A37-4B28-82B0-A37C55BD999B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54D276E9-7A37-4B28-82B0-A37C55BD999B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54D276E9-7A37-4B28-82B0-A37C55BD999B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54D276E9-7A37-4B28-82B0-A37C55BD999B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
