@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.API.Application.Commands;
 using FakeSurveyGenerator.API.Application.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Xunit;
 
