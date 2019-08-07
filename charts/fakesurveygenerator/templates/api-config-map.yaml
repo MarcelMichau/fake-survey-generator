@@ -14,4 +14,14 @@ data:
   ConnectionStrings__SurveyContext: Server={{ include "..fullname" . }}-database;Database={{ .Values.api.config.database }};user id={{ .Values.api.config.user }};pwd={{ .Values.api.config.password }};ConnectRetryCount=0
   ASPNETCORE_ENVIRONMENT: Development
   {{- end }}
+  {{- if .Values.api.config.azureRedisCacheEnabled }}
+  REDIS_URL: {{ .Values.api.config.redisUrl }}
+  REDIS_PASSWORD: {{ .Values.api.config.redisPassword }}
+  REDIS_SSL: true
+  {{- else }}
+  REDIS_URL: {{ include "..fullname" . }}-{{ .Values.api.config.redisUrl }}
+  REDIS_PASSWORD: {{ .Values.api.config.redisPassword }}
+  REDIS_SSL: false
+  {{- end }}
+  
   

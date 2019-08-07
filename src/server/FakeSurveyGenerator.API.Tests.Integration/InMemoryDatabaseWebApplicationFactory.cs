@@ -42,6 +42,9 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             Environment.SetEnvironmentVariable("ConnectionStrings__SurveyContext", "Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0");
+            Environment.SetEnvironmentVariable("REDIS_URL", "Test");
+            Environment.SetEnvironmentVariable("REDIS_PASSWORD", "Test");
+            Environment.SetEnvironmentVariable("REDIS_SSL", "false");
 
             builder.ConfigureServices(services =>
             {

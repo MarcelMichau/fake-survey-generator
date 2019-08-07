@@ -26,6 +26,9 @@ api:
     database: FakeSurveyGenerator
     user: SA
     password: <YourStrong!Passw0rd>
+    azureRedisCacheEnabled: false
+    redisUrl: redis
+    redisPassword: testing
 
 database:
   image:
@@ -34,6 +37,16 @@ database:
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
+
+redis:
+  image:
+    repository: redis
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  config:
+    password: testing
 
 nameOverride: ""
 fullnameOverride: ""
