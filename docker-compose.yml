@@ -22,3 +22,6 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
+  
+  redis:
+    image: redis

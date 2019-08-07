@@ -10,10 +10,12 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 namespace FakeSurveyGenerator.API
 {
@@ -37,11 +39,19 @@ namespace FakeSurveyGenerator.API
 
             services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
-            services.AddScoped<ISurveyQueries>(s => new SurveyQueries(connectionString));
-            services.AddScoped<ISurveyRepository, SurveyRepository>();
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.ConfigurationOptions = new ConfigurationOptions
+                {
+                    EndPoints = { Environment.GetEnvironmentVariable("REDIS_URL") },
+                    Password = Environment.GetEnvironmentVariable("REDIS_PASSWORD"),
+                    Ssl = Convert.ToBoolean(Environment.GetEnvironmentVariable("REDIS_SSL"))
+                };
+            });
 
             services.AddDbContext<SurveyContext>
-                (options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("FakeSurveyGenerator.Infrastructure")));
+            (options => options.UseSqlServer(connectionString,
+                b => b.MigrationsAssembly("FakeSurveyGenerator.Infrastructure")));
 
             services.AddSwaggerGen(c =>
             {
@@ -65,6 +75,8 @@ namespace FakeSurveyGenerator.API
 
             services.AddHealthChecks()
                 .AddDbContextCheck<SurveyContext>();
+
+            SetupDi(services, connectionString);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -92,12 +104,16 @@ namespace FakeSurveyGenerator.API
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1"); });
 
             UpdateDatabase(app, env);
+        }
+
+        private static void SetupDi(IServiceCollection services, string connectionString)
+        {
+            services.AddScoped<ISurveyQueries>(serviceProvider => new SurveyQueries(connectionString,
+                serviceProvider.GetService<IDistributedCache>()));
+            services.AddScoped<ISurveyRepository, SurveyRepository>();
         }
 
         private static void UpdateDatabase(IApplicationBuilder app, IHostEnvironment env)
