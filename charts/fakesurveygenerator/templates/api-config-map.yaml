@@ -18,10 +18,12 @@ data:
   REDIS_URL: {{ .Values.api.config.redisUrl }}
   REDIS_PASSWORD: {{ .Values.api.config.redisPassword }}
   REDIS_SSL: "true"
+  REDIS_DEFAULT_DATABASE: "{{ .Values.api.config.redisDefaultDatabase }}"
   {{- else }}
   REDIS_URL: {{ include "..fullname" . }}-{{ .Values.api.config.redisUrl }}
   REDIS_PASSWORD: {{ .Values.api.config.redisPassword }}
   REDIS_SSL: "false"
+  REDIS_DEFAULT_DATABASE: "{{ .Values.api.config.redisDefaultDatabase }}"
   {{- end }}
   
   

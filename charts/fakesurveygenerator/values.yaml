@@ -29,12 +29,14 @@ api:
     azureRedisCacheEnabled: false
     redisUrl: redis
     redisPassword: testing
+    redisDefaultDatabase: 0
 
 database:
   image:
     repository: mcr.microsoft.com/mssql/server
     tag: 2017-latest
     pullPolicy: IfNotPresent
+    
   service:
     type: ClusterIP
 

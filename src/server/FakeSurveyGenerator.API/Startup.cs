@@ -45,7 +45,8 @@ namespace FakeSurveyGenerator.API
                 {
                     EndPoints = { Environment.GetEnvironmentVariable("REDIS_URL") },
                     Password = Environment.GetEnvironmentVariable("REDIS_PASSWORD"),
-                    Ssl = Convert.ToBoolean(Environment.GetEnvironmentVariable("REDIS_SSL"))
+                    Ssl = Convert.ToBoolean(Environment.GetEnvironmentVariable("REDIS_SSL")),
+                    DefaultDatabase = Convert.ToInt16(Environment.GetEnvironmentVariable("REDIS_DEFAULT_DATABASE"))
                 };
             });
 

@@ -55,7 +55,10 @@ namespace FakeSurveyGenerator.API.Application.Queries
 
             var surveyResult = result.First();
 
-            await _cache.SetStringAsync(id.ToString(), System.Text.Json.JsonSerializer.Serialize(surveyResult));
+            await _cache.SetStringAsync(id.ToString(), System.Text.Json.JsonSerializer.Serialize(surveyResult), new DistributedCacheEntryOptions
+            {
+                SlidingExpiration = new TimeSpan(1, 0, 0)
+            });
 
             return surveyResult;
         }

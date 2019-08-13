@@ -1,0 +1,27 @@
+apiVersion: skaffold/v1beta13
+kind: Config
+build:
+  tagPolicy:
+    sha256: {}
+  artifacts:
+    - image: marcelmichau/fakesurveygeneratorui
+      context: .
+      docker:
+        dockerfile: src/client/ui/Dockerfile
+    - image: marcelmichau/fakesurveygeneratorapi
+      context: .
+      docker:
+        dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
+deploy:
+  helm:
+    releases:
+      - name: fakesurveygenerator
+        chartPath: ./charts/fakesurveygenerator
+        namespace: default
+        values:
+          ui.image: marcelmichau/fakesurveygeneratorui
+          api.image: marcelmichau/fakesurveygeneratorapi
+        valuesFiles:
+          - charts/fakesurveygenerator/values.yaml
+        imageStrategy:
+          helm: {}
