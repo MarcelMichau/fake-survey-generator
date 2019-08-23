@@ -59,13 +59,16 @@ steps:
 - script: |
     docker build -t $(dockerId)/$(apiImageName):$(versionTag) -t $(dockerId)/$(apiImageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
     docker build -t $(dockerId)/$(uiImageName):$(versionTag) -t $(dockerId)/$(uiImageName):latest -f src/client/ui/Dockerfile .
+  displayName: 'Build Docker Images'
+
+- script: |
     echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
     docker push $(dockerId)/$(apiImageName)
     docker push $(dockerId)/$(uiImageName)
   env:
     DOCKER_PASSWORD: $(dockerPassword)
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  displayName: 'Build & Push Docker Images'
+  displayName: 'Push Docker Images to Docker Hub'
 
 - task: HelmInstaller@1
   inputs:

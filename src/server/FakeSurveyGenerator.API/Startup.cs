@@ -6,8 +6,10 @@ using FakeSurveyGenerator.API.Application.Queries;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Repositories;
+using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -74,8 +76,7 @@ namespace FakeSurveyGenerator.API
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddHealthChecks()
-                .AddDbContextCheck<SurveyContext>();
+            services.AddCustomHealthChecks(_configuration);
 
             SetupDi(services, connectionString);
         }
@@ -100,8 +101,13 @@ namespace FakeSurveyGenerator.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
+
+            app.UseHealthChecksUI();
 
             app.UseSwagger();
 
