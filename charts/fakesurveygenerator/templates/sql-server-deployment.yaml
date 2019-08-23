@@ -31,10 +31,7 @@ spec:
           - name: ACCEPT_EULA
             value: "Y"
           - name: SA_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mssql
-                key: SA_PASSWORD
+            value: <YourStrong!Passw0rd>
           ports:
             - containerPort: 1433
           resources:

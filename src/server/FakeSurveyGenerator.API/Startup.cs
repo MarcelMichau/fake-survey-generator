@@ -65,7 +65,7 @@ namespace FakeSurveyGenerator.API
                     {
                         Name = "Marcel Michau",
                         Email = string.Empty,
-                        Url = new Uri("https://marcelmichau.dev"),
+                        Url = new Uri("https://marcelmichau.dev")
                     }
                 });
 
