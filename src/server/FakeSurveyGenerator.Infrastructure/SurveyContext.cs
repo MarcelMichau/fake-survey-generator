@@ -31,7 +31,7 @@ namespace FakeSurveyGenerator.Infrastructure
             surveyConfiguration.HasKey(o => o.Id);
 
             surveyConfiguration.Property(o => o.Id)
-                .ForSqlServerUseSequenceHiLo("SurveySeq", DefaultSchema);
+                .UseHiLo("SurveySeq", DefaultSchema);
 
             surveyConfiguration.Ignore(b => b.DomainEvents);
 
@@ -57,7 +57,7 @@ namespace FakeSurveyGenerator.Infrastructure
             surveyOptionConfiguration.HasKey(o => o.Id);
 
             surveyOptionConfiguration.Property(o => o.Id)
-                .ForSqlServerUseSequenceHiLo("SurveyOptionSeq", DefaultSchema);
+                .UseHiLo("SurveyOptionSeq", DefaultSchema);
 
             surveyOptionConfiguration.Ignore(b => b.DomainEvents);
 
