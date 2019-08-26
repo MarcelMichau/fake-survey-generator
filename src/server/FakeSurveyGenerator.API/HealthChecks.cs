@@ -20,7 +20,7 @@ namespace FakeSurveyGenerator.API
                     failureStatus: HealthStatus.Unhealthy);
 
             healthChecksBuilder
-                .AddRedis(Environment.GetEnvironmentVariable("REDIS_URL"), "RedisCache-check",
+                .AddRedis($"{Environment.GetEnvironmentVariable("REDIS_URL")},ssl={Environment.GetEnvironmentVariable("REDIS_SSL")},password={Environment.GetEnvironmentVariable("REDIS_PASSWORD")}", "RedisCache-check",
                     tags: new[] {"redis-cache"},
                     failureStatus: HealthStatus.Degraded);
 
