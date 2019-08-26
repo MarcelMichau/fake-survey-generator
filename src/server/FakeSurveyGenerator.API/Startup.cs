@@ -6,8 +6,10 @@ using FakeSurveyGenerator.API.Application.Queries;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Repositories;
+using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -33,11 +35,10 @@ namespace FakeSurveyGenerator.API
             services.AddControllers()
                 .AddNewtonsoftJson();
 
-            var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
+            var currentAssembly = typeof(Startup).GetTypeInfo().Assembly;
 
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+            services.AddAutoMapper(currentAssembly);
+            services.AddMediatR(currentAssembly);
 
             services.AddStackExchangeRedisCache(options =>
             {
@@ -49,6 +50,8 @@ namespace FakeSurveyGenerator.API
                     DefaultDatabase = Convert.ToInt16(Environment.GetEnvironmentVariable("REDIS_DEFAULT_DATABASE"))
                 };
             });
+
+            var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
 
             services.AddDbContext<SurveyContext>
             (options => options.UseSqlServer(connectionString,
@@ -74,8 +77,7 @@ namespace FakeSurveyGenerator.API
                 c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddHealthChecks()
-                .AddDbContextCheck<SurveyContext>();
+            services.AddCustomHealthChecks(_configuration);
 
             SetupDi(services, connectionString);
         }
@@ -100,8 +102,13 @@ namespace FakeSurveyGenerator.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
+
+            app.UseHealthChecksUI();
 
             app.UseSwagger();
 
