@@ -63,6 +63,7 @@ The client side consists of the following main components:
 The client side makes use of the following tools, libraries & frameworks:
 
 - React
+- NGINX
 - Docker
 
 ### Common
@@ -85,6 +86,39 @@ The hosted version utilizes the following:
 
 ## How do I run this thing?
 
+In order to run FSG on your local machine, you will need the following prerequisites:
+
+To run with Docker Compose:
+
+- Docker Desktop
+- Visual Studio (optional)
+
+To run with Docker Compose:
+
+1. In a Terminal/Command Prompt/PowerShell window in the project root, run:
+
+   `docker-compose up`
+
+2. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
+
+or
+
+1. Open `FakeSurveyGenerator.sln` in Visual Studio:
+
+2. Make sure that the `docker-compose` project is selected as the startup project
+
+3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
+
+4. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
+
+To run on local Kubernetes:
+
+- Docker Desktop with Kubernetes enabled
+- NGINX Ingress installed on the Kubernetes cluster
+- Skaffold
+
+To deploy to a local Kubernetes cluster:
+
 1. Create an entry in your `hosts` file as follows:
 
    `127.0.0.1 kube.local`
@@ -93,8 +127,8 @@ The hosted version utilizes the following:
 
    `skaffold run`
 
-3. In a browser, navigate to http://kube.local
+3. In a browser, navigate to http://kube.local to open up the Fake Survey Generator UI
 
 ## How do I contribute?
 
-If you find a bug, want to add a feature, or just want to correct a spelling mistake, open up a PR!
+If you find a bug, want to add a feature, or want to improve the documentation, open up a PR!
