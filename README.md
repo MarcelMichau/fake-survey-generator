@@ -53,6 +53,7 @@ The server side makes use of the following tools, libraries & frameworks:
 - Swagger
 - AutoMapper
 - MediatR
+- AspNetCore.Diagnostics.HealthChecks
 - Docker
 
 ### Client
@@ -75,6 +76,11 @@ The hosted version of the application is deployed to two environments:
 
 - Test - https://aks-test.fakesurveygenerator.marcelmichau.dev
 - Production - https://aks.fakesurveygenerator.marcelmichau.dev
+
+The following endpoints are accessible:
+
+- [/swagger](https://aks.fakesurveygenerator.marcelmichau.dev/swagger/index.html) - The Swagger documentation page for the API
+- [/health](https://aks.fakesurveygenerator.marcelmichau.dev/health) - Health Checks endpoint used by Kubernetes liveness probe
 
 The hosted version utilizes the following:
 
