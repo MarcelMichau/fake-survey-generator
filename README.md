@@ -48,6 +48,7 @@ The server side makes use of the following tools, libraries & frameworks:
 - .NET Core 3.0
 - ASP.NET Core 3.0 Web API
 - Entity Framework Core 3.0 with Code-First Migrations
+- Dapper
 - Redis
 - Swagger
 - AutoMapper
@@ -113,7 +114,7 @@ or
 
 To run on local Kubernetes:
 
-- Docker Desktop with Kubernetes enabled
+- Docker Desktop with Kubernetes enabled (Ensure that at least 2048 MB of Memory is allocated to Docker Engine)
 - NGINX Ingress installed on the Kubernetes cluster
 - Skaffold
 
