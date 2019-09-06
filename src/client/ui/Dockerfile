@@ -1,7 +1,6 @@
 FROM node:12.9.1-alpine as build
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/yarn.lock ./
-RUN yarn config set strict-ssl false
 RUN yarn
 COPY src/client/ui/. ./
 RUN chmod +x node_modules/.bin/react-scripts

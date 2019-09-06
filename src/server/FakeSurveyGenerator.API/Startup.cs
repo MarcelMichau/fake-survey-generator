@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Reflection;
 using AutoMapper;
@@ -19,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 
@@ -106,48 +106,11 @@ namespace FakeSurveyGenerator.API
                         new List<string>{ "openid", "profile", "fake-survey-generator-api" }
                     }
                 });
-
-                //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                //{
-                //    Description = "JWT Authorization header using the Bearer scheme.",
-                //    Name = "Authorization",
-                //    In = ParameterLocation.Header,
-                //    Scheme = "bearer",
-                //    Type = SecuritySchemeType.Http,
-                //    BearerFormat = "JWT"
-                //});
-                //c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                //{
-                //    {
-                //        new OpenApiSecurityScheme
-                //        {
-                //            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-                //        },
-                //        new List<string>()
-                //    }
-                //});
             });
 
             services.AddCustomHealthChecks(_configuration);
 
             SetupDi(services, connectionString);
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-            //services.AddAuthentication(options =>
-            //    {
-            //        options.DefaultScheme = "Cookies";
-            //        options.DefaultChallengeScheme = "oidc";
-            //    })
-            //    .AddCookie("Cookies")
-            //    .AddOpenIdConnect("oidc", options =>
-            //    {
-            //        options.Authority = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
-            //        options.RequireHttpsMetadata = false;
-
-            //        options.ClientId = "fake-survey-generator-api-swagger";
-            //        options.SaveTokens = true;
-            //    });
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
@@ -155,6 +118,11 @@ namespace FakeSurveyGenerator.API
                     options.Authority = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
                     options.RequireHttpsMetadata = false;
                     options.Audience = "fake-survey-generator-api";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuers = new List<string> {"https://localhost:44320", _configuration.GetValue<string>("IDENTITY_PROVIDER_URL") }
+                    };
                 });
         }
 

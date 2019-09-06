@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fake-survey-generator-api.fullname" . }}
+  labels:
+{{ include "fake-survey-generator-api.labels" . | indent 4 }}
+data:
+  {{- if .Values.azureDatabaseEnabled }}
+  ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;User ID={{ .Values.user }};Password={{ .Values.password }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+  {{- else }}
+  ConnectionStrings__SurveyContext: Server={{ .Release.Name }}-sql-server;Database={{ .Values.database }};user id={{ .Values.user }};pwd={{ .Values.password }};ConnectRetryCount=0
+  ASPNETCORE_ENVIRONMENT: Development
+  {{- end }}
+  {{- if .Values.azureRedisCacheEnabled }}
+  REDIS_URL: {{ .Values.redisUrl }}
+  REDIS_PASSWORD: {{ .Values.redisPassword }}
+  REDIS_SSL: "true"
+  REDIS_DEFAULT_DATABASE: "{{ .Values.redisDefaultDatabase }}"
+  IDENTITY_PROVIDER_URL: http://{{ .Release.Name }}-identityserver
+  {{- else }}
+  REDIS_URL: {{ .Release.Name }}-{{ .Values.redisUrl }}
+  REDIS_PASSWORD: {{ .Values.redisPassword }}
+  REDIS_SSL: "false"
+  REDIS_DEFAULT_DATABASE: "{{ .Values.redisDefaultDatabase }}"
+  IDENTITY_PROVIDER_URL: http://{{ .Release.Name }}-identityserver
+  {{- end }}
