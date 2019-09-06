@@ -17,9 +17,19 @@ services:
       - REDIS_SSL=false
       - REDIS_URL=redis
       - REDIS_DEFAULT_DATABASE=0
+      - IDENTITY_PROVIDER_URL=http://marcelmichau.idp
     ports:
       - "6523:80"
       - "44367:443"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+
+  marcelmichau.idp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44320
+    ports:
+      - "33352:80"
+      - "44320:443"

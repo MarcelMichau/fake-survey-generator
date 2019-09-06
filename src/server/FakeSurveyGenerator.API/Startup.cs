@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using AutoMapper;
@@ -16,6 +17,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 
@@ -32,6 +35,8 @@ namespace FakeSurveyGenerator.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthorization();
+
             services.AddControllers()
                 .AddNewtonsoftJson();
 
@@ -44,10 +49,10 @@ namespace FakeSurveyGenerator.API
             {
                 options.ConfigurationOptions = new ConfigurationOptions
                 {
-                    EndPoints = { Environment.GetEnvironmentVariable("REDIS_URL") },
-                    Password = Environment.GetEnvironmentVariable("REDIS_PASSWORD"),
-                    Ssl = Convert.ToBoolean(Environment.GetEnvironmentVariable("REDIS_SSL")),
-                    DefaultDatabase = Convert.ToInt16(Environment.GetEnvironmentVariable("REDIS_DEFAULT_DATABASE"))
+                    EndPoints = {_configuration.GetValue<string>("REDIS_URL")},
+                    Password = _configuration.GetValue<string>("REDIS_PASSWORD"),
+                    Ssl = _configuration.GetValue<bool>("REDIS_SSL"),
+                    DefaultDatabase = _configuration.GetValue<int>("REDIS_DEFAULT_DATABASE")
                 };
             });
 
@@ -75,11 +80,65 @@ namespace FakeSurveyGenerator.API
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = "OAuth2 Authentication",
+                    OpenIdConnectUrl = new Uri("https://localhost:44320/.well-known/openid-configuration"),
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Implicit = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri("https://localhost:44320/connect/authorize"),
+                            Scopes = new Dictionary<string, string> {{"openid", "Standard OpenID Scope"}, {"profile", "Standard OpenID Scope" }}
+                        }
+                    }
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "oauth2"}
+                        },
+                        new List<string>()
+                    }
+                });
+
+                //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                //{
+                //    Description = "JWT Authorization header using the Bearer scheme.",
+                //    Name = "Authorization",
+                //    In = ParameterLocation.Header,
+                //    Scheme = "bearer",
+                //    Type = SecuritySchemeType.Http,
+                //    BearerFormat = "JWT"
+                //});
+                //c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                //{
+                //    {
+                //        new OpenApiSecurityScheme
+                //        {
+                //            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                //        },
+                //        new List<string>()
+                //    }
+                //});
             });
 
             services.AddCustomHealthChecks(_configuration);
 
             SetupDi(services, connectionString);
+
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
+                    options.RequireHttpsMetadata = false;
+                    options.Audience = "fake-survey-generator-api";
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -90,6 +149,7 @@ namespace FakeSurveyGenerator.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                IdentityModelEventSource.ShowPII = true;
             }
             else
             {
@@ -98,6 +158,9 @@ namespace FakeSurveyGenerator.API
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -112,7 +175,13 @@ namespace FakeSurveyGenerator.API
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1"); });
+            app.UseSwaggerUI(c =>
+            {
+                c.EnableDeepLinking();
+                c.InjectJavascript("/swagger/idTokenOverride.js");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1");
+                c.OAuthClientId("fake-survey-generator-api-swagger");
+            });
 
             UpdateDatabase(app, env);
         }

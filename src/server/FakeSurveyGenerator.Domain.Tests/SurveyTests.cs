@@ -155,8 +155,8 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             var result = survey.CalculateOutcome(voteDistribution);
 
-            Assert.Equal(600, survey.Options.First().NumberOfVotes);
-            Assert.Equal(400, survey.Options.Last().NumberOfVotes);
+            Assert.Equal(600, result.Options.First().NumberOfVotes);
+            Assert.Equal(400, result.Options.Last().NumberOfVotes);
         }
 
         [Fact]

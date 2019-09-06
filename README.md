@@ -7,7 +7,7 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 </p>
 
 <p align="center">
-<a href="https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/MarcelMichau.fake-survey-generator?branchName=master">
+<a href="https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build">
     <img src="https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/MarcelMichau.fake-survey-generator?branchName=master" alt="Azure DevOps Build Status" />
   </a>
 </p>

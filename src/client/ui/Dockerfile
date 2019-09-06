@@ -1,4 +1,4 @@
-FROM node:12.8.0-alpine as build
+FROM node:12.9.1-alpine as build
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/yarn.lock ./
 RUN yarn
@@ -6,7 +6,7 @@ COPY src/client/ui/. ./
 RUN chmod +x node_modules/.bin/react-scripts
 RUN yarn build
 
-FROM nginx:1.17.2-alpine
+FROM nginx:1.17.3-alpine
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
