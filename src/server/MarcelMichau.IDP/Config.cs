@@ -26,7 +26,7 @@ namespace MarcelMichau.IDP
             {
                 new Client
                 {
-                    ClientId = "client",
+                    ClientId = "fake-survey-generator-api-swagger-ui",
 
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
@@ -55,7 +55,8 @@ namespace MarcelMichau.IDP
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "fake-survey-generator-api"
                     },
                     AllowAccessTokensViaBrowser = true
                 }

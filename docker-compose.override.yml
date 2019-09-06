@@ -33,3 +33,6 @@ services:
     ports:
       - "33352:80"
       - "44320:443"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
