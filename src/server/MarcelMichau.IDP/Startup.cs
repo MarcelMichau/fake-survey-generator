@@ -28,11 +28,10 @@ namespace MarcelMichau.IDP
             if (_environment.IsDevelopment())
             {
                 builder.AddDeveloperSigningCredential();
-                
             }
             else
             {
-                throw new Exception("Need to configure key material");
+                throw new Exception("Key material not configured.");
             }
 
             services.AddControllersWithViews();

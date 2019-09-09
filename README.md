@@ -14,7 +14,7 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 
 ## What is this?
 
-This is an application of moderate complexity, used as a playground for experimentation. Simply put: This is where I mess around with code.
+This is an application of moderate complexity, used as a playground for experimentation. Simply put: This is where I mess around with code.  It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 
 ## Why is this here?
 
@@ -36,25 +36,31 @@ There are two main components to FSG:
 
 The server side consists of the following main components:
 
-- Web API
-- Domain Project
-- Infrastructure Project
-- Domain Unit Tests Project
-- API Integration Tests Project
-- EF Design Project (used purely for EF Core design-time tooling)
+- Fake Survey Generator API
+  - Domain Project
+  - Infrastructure Project
+  - Domain Unit Tests Project
+  - API Integration Tests Project
+  - EF Design Project (used purely for EF Core design-time tooling)
+- Identity Provider API
 
 The server side makes use of the following tools, libraries & frameworks:
 
-- .NET Core 3.0
-- ASP.NET Core 3.0 Web API
-- Entity Framework Core 3.0 with Code-First Migrations
-- Dapper
-- Redis
-- Swagger
-- AutoMapper
-- MediatR
-- AspNetCore.Diagnostics.HealthChecks
-- Docker
+- Fake Survey Generator API
+  - .NET Core 3.0
+  - ASP.NET Core 3.0 Web API
+  - Entity Framework Core 3.0 with Code-First Migrations
+  - Dapper
+  - Redis
+  - Swagger
+  - AutoMapper
+  - MediatR
+  - AspNetCore.Diagnostics.HealthChecks
+  - Docker
+- Identity Provider API
+  - .NET Core 3.0
+  - ASP.NET Core 3.0 MVC
+  - IdentityServer
 
 ### Client
 
