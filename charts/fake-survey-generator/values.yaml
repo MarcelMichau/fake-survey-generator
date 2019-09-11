@@ -14,7 +14,11 @@ fake-survey-generator-api:
   redisDefaultDatabase: 0
 
 redis:
+  enabled: true
   password: testing
+
+sql-server:
+  enabled: true
 
 ingress:
   enabled: true
