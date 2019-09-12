@@ -71,13 +71,13 @@ steps:
     docker push $(dockerId)/$(imageName)
   env:
     DOCKER_PASSWORD: $(dockerPassword)
-  # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Push Image to Docker Hub'
 
 - task: HelmInstaller@1
   inputs:
     helmVersionToInstall: 'latest'
-  # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Install Helm'
 
 - task: HelmDeploy@0
@@ -85,7 +85,7 @@ steps:
     command: 'package'
     arguments: '--version $(versionTag)'
     chartPath: 'charts/fake-survey-generator/charts/fake-survey-generator-api'
-  # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Helm Package'
 
 - task: AzureCLI@1
@@ -93,7 +93,7 @@ steps:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az configure --defaults acr=marcelmichaucrv1'
-  # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Set Azure Container Registry Default in Azure CLI'
 
 - task: AzureCLI@1
@@ -101,7 +101,7 @@ steps:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az acr helm repo add'
-  # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
 - task: AzureCLI@1
@@ -109,5 +109,5 @@ steps:
     azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/fake-survey-generator-api-$(versionTag).tgz'
-  # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Push Helm Chart to Azure Container Registry'
