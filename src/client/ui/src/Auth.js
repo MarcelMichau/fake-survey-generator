@@ -136,8 +136,6 @@ const urlBase64Decode = str => {
 };
 
 const Auth = () => {
-	const 
-
 	const [isAuthorized, setIsAuthorized] = useState(false);
 
 	useEffect(() => {
