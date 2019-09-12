@@ -1,0 +1,71 @@
+trigger:
+  branches:
+    include:
+    - master
+    - feat/*
+    - fix/*
+    - chore/*
+  paths:
+    include:
+    - src/client/ui/*
+    - charts/fake-survey-generator/charts/fake-survey-generator-ui/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  dockerId: marcelmichau
+  imageName: fakesurveygeneratorui
+  versionTag: $(build.buildNumber)
+
+steps:
+- script: |
+    docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
+  displayName: 'Build Docker Image'
+
+- script: |
+    echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
+    docker push $(dockerId)/$(imageName)
+  env:
+    DOCKER_PASSWORD: $(dockerPassword)
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Push Image to Docker Hub'
+
+- task: HelmInstaller@1
+  inputs:
+    helmVersionToInstall: 'latest'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Install Helm'
+
+- task: HelmDeploy@0
+  inputs:
+    command: 'package'
+    arguments: '--version $(versionTag)'
+    chartPath: 'charts/fake-survey-generator-ui'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Helm Package'
+
+- task: AzureCLI@1
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az configure --defaults acr=marcelmichaucrv1'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+- task: AzureCLI@1
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az acr helm repo add'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+- task: AzureCLI@1
+  inputs:
+    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/fake-survey-generator-ui-$(versionTag).tgz'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: 'Push Helm Chart to Azure Container Registry'
