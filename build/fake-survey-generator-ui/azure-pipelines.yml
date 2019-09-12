@@ -42,7 +42,7 @@ steps:
   inputs:
     command: 'package'
     arguments: '--version $(versionTag)'
-    chartPath: 'charts/fake-survey-generator-ui'
+    chartPath: 'charts/fake-survey-generator/fake-survey-generator-ui'
   # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Helm Package'
 
