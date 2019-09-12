@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Auth from './Auth';
 
 const GetSurvey = ({ surveyId, onUpdateSurveyId, onFetch, surveyDetail }) => {
 	return (
@@ -206,19 +207,24 @@ function App() {
 	};
 
 	return (
-		<div style={{ textAlign: 'center' }}>
-			<h1>Fake Survey Generator</h1>
+		<div>
+			<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+				<Auth></Auth>
+			</div>
+			<div style={{ textAlign: 'center' }}>
+				<h1>Fake Survey Generator</h1>
 
-			<h2>Get Survey</h2>
-			<GetSurvey
-				surveyId={surveyId}
-				onUpdateSurveyId={value => setSurveyId(value)}
-				onFetch={() => fetchSurvey(surveyId)}
-				surveyDetail={surveyDetail}
-			/>
-			<div style={{ margin: '2em' }}>---- ¯\_(ツ)_/¯ ----</div>
-			<h2>Create Survey</h2>
-			<CreateSurvey onCreateSurvey={createSurvey} />
+				<h2>Get Survey</h2>
+				<GetSurvey
+					surveyId={surveyId}
+					onUpdateSurveyId={value => setSurveyId(value)}
+					onFetch={() => fetchSurvey(surveyId)}
+					surveyDetail={surveyDetail}
+				/>
+				<div style={{ margin: '2em' }}>---- ¯\_(ツ)_/¯ ----</div>
+				<h2>Create Survey</h2>
+				<CreateSurvey onCreateSurvey={createSurvey} />
+			</div>
 		</div>
 	);
 }

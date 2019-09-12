@@ -58,6 +58,26 @@ namespace MarcelMichau.IDP
                         "fake-survey-generator-api"
                     },
                     AllowAccessTokensViaBrowser = true
+                },
+                new Client
+                {
+                    ClientId = "fake-survey-generator-ui",
+                    ClientName = "Fake Survey Generator UI",
+                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    // where to redirect to after login
+                    RedirectUris = { "https://localhost:3001/" },
+
+                    // where to redirect to after logout
+                    PostLogoutRedirectUris = { "https://localhost:3001/" },
+
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "fake-survey-generator-api"
+                    },
+                    AllowAccessTokensViaBrowser = true
                 }
             };
         }
