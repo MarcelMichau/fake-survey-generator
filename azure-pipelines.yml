@@ -85,11 +85,13 @@ stages:
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         displayName: 'Push Docker Images to Docker Hub'
 
-- stage: Publish_Chart
+- stage: Publish_Stage
+  displayName: 'Publish Stage'
   variables:
     versionTag: $(build.buildNumber)
   jobs:
     - job: Publish_Chart
+      displayName: 'Publish Fake Survey Generator Chart'
       pool:
         vmImage: 'ubuntu-latest'
       steps:
@@ -109,7 +111,7 @@ stages:
 
             - task: AzureCLI@1
               inputs:
-                azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+                azureSubscription: 'MyARMConnection'
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az configure --defaults acr=$(registryName)'
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -117,7 +119,7 @@ stages:
 
             - task: AzureCLI@1
               inputs:
-                azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+                azureSubscription: 'MyARMConnection'
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az acr helm repo add'
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -125,13 +127,14 @@ stages:
 
             - task: AzureCLI@1
               inputs:
-                azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+                azureSubscription: 'MyARMConnection'
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
               displayName: 'Push Helm Chart to Azure Container Registry'
 
 - stage: Deployment_Stage
+  displayName: 'Deployment Stage'
   jobs:
     - deployment: Deployment_Job
       displayName: Deploy Fake Survey Generator
@@ -170,7 +173,7 @@ stages:
 
            - task: AzureCLI@1
              inputs:
-               azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+               azureSubscription: 'MyARMConnection'
                scriptLocation: 'inlineScript'
                inlineScript: 'az configure --defaults acr=$(registryName)'
              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -178,7 +181,7 @@ stages:
 
            - task: AzureCLI@1
              inputs:
-               azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+               azureSubscription: 'MyARMConnection'
                scriptLocation: 'inlineScript'
                inlineScript: 'az acr helm repo add'
              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
