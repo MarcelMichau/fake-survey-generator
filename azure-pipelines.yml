@@ -62,6 +62,14 @@ stages:
           docker build -t $(dockerId)/$(apiImageName):$(versionTag) -t $(dockerId)/$(apiImageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
         displayName: 'Build Docker Images'
 
+      - script: |
+          echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
+          docker push $(dockerId)/$(apiImageName)
+        env:
+          DOCKER_PASSWORD: $(dockerPassword)
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        displayName: 'Push Docker Images to Docker Hub'
+
     - job: Build_UI
       pool:
         vmImage: 'ubuntu-latest'
@@ -69,27 +77,22 @@ stages:
       - script: |
             docker build -t $(dockerId)/$(uiImageName):$(versionTag) -t $(dockerId)/$(uiImageName):latest -f src/client/ui/Dockerfile .
         displayName: 'Build Docker Images'
+      - script: |
+          echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
+          docker push $(dockerId)/$(uiImageName)
+        env:
+          DOCKER_PASSWORD: $(dockerPassword)
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        displayName: 'Push Docker Images to Docker Hub'
 
-- stage: Publish_Images
+- stage: Publish_Chart
   variables:
-    dockerId: marcelmichau
-    apiImageName: fakesurveygeneratorapi
-    uiImageName: fakesurveygeneratorui
     versionTag: $(build.buildNumber)
   jobs:
-    - job: Publish_Images
+    - job: Publish_Chart
       pool:
         vmImage: 'ubuntu-latest'
       steps:
-            - script: |
-                echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
-                docker push $(dockerId)/$(apiImageName)
-                docker push $(dockerId)/$(uiImageName)
-              env:
-                DOCKER_PASSWORD: $(dockerPassword)
-              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-              displayName: 'Push Docker Images to Docker Hub'
-
             - task: HelmInstaller@1
               inputs:
                 helmVersionToInstall: 'latest'
@@ -108,7 +111,7 @@ stages:
               inputs:
                 azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
                 scriptLocation: 'inlineScript'
-                inlineScript: 'az configure --defaults acr=marcelmichaucrv1'
+                inlineScript: 'az configure --defaults acr=$(registryName)'
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
               displayName: 'Set Azure Container Registry Default in Azure CLI'
 
