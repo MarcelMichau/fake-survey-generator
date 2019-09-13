@@ -149,7 +149,7 @@ stages:
         redisDefaultDatabase: 0
         replicaCount: 2
         targetNamespace: test-env
-      environment: 'aks-test'
+      environment: 'aks.test-env'
       strategy:
        runOnce:
          deploy:
@@ -163,7 +163,7 @@ stages:
            - task: HelmDeploy@0
              inputs:
                connectionType: 'Kubernetes Service Connection'
-               kubernetesServiceConnection: 'Azure Kubernetes Service - Test Environment-kubernetes-cluster-v3-test-env-1568272352006'
+               kubernetesServiceConnection: 'AKS Test'
                command: 'init'
                arguments: '--service-account tiller'
                tillerNamespace: '$(targetNamespace)'
@@ -188,9 +188,10 @@ stages:
              displayName: 'helm upgrade'
              inputs:
                connectionType: 'Kubernetes Service Connection'
-               kubernetesServiceConnection: 'AKS - Test Environment'
+               kubernetesServiceConnection: 'AKS Test'
                namespace: '$(targetNamespace)'
-               command: upgrade
+               command: 'upgrade'
+               chartType: 'Name'
                chartName: '$(registryName)/$(projectName)'
                releaseName: '$(projectName)-$(environmentSuffix)'
                arguments: '--version $(build.buildNumber) --set ui.image.repository=$(uiImageRepository) --set ui.image.tag=$(build.buildNumber) --set api.config.azureDatabaseEnabled=$(azureDatabaseEnabled) --set api.config.databaseServer=$(databaseServer) --set api.config.azureRedisCacheEnabled=$(azureRedisCacheEnabled) --set api.config.redisUrl=$(azureRedisServer) --set api.config.redisPassword=$(azureRedisPassword) --set api.config.redisDefaultDatabase=$(redisDefaultDatabase) --set api.image.repository=$(apiImageRepository) --set api.image.tag=$(build.buildNumber) --set api.config.database=$(apiDatabaseName) --set api.config.user=$(apiDatabaseUser) --set api.config.password=$(apiDatabasePassword) --set ingress.hosts={$(ingressHost)} --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
