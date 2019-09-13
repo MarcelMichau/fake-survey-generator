@@ -45,7 +45,7 @@ stages:
         displayName: 'Publish Test Results'
 
       - script: |
-          dotnet tool install --global dotnet-ef --version 3.0.0-*
+          dotnet tool install --global dotnet-ef --version 3.0.0-preview8.19405.11
         displayName: 'Install EF Core Global Tool'
 
       - script: |
