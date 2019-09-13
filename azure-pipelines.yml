@@ -9,15 +9,14 @@ trigger:
 - fix/*
 - chore/*
 
-variables:
-  buildConfiguration: 'Release'
-  dockerId: marcelmichau
-  apiImageName: fakesurveygeneratorapi
-  uiImageName: fakesurveygeneratorui
-  versionTag: $(build.buildNumber)
-
 stages:
 - stage: Build
+  variables:
+    buildConfiguration: 'Release'
+    dockerId: marcelmichau
+    apiImageName: fakesurveygeneratorapi
+    uiImageName: fakesurveygeneratorui
+    versionTag: $(build.buildNumber)
   jobs:
     - job: Build_Stuff
       pool:
@@ -112,6 +111,18 @@ stages:
         displayName: 'Push Helm Chart to Azure Container Registry'
 
 - stage: Deploy_To_Test
+  variables:
+    apiDatabaseName: fake-survey-generator-db-test
+    apiDatabaseUser: fake-survey-generator-api-test
+    databaseServer: $(databaseServerTestStage)
+    databaseLogin: azure-pipelines-user-test
+    environmentSuffix: test
+    ingressClusterIssuerName: letsencrypt-prod
+    ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
+    ingressTlsSecretName: marcelmichau-dev-tls-secret
+    redisDefaultDatabase: 0
+    replicaCount: 2
+    targetNamespace: test-env
   jobs:
     - job: Deploy_To_Test
       pool:
@@ -120,4 +131,44 @@ stages:
       - script: |
           echo "DEPLOYING!!!"
         displayName: 'Simulating deployment stage'
-        
+      - task: KubectlInstaller@0
+        displayName: 'Install Kubectl latest'
+
+      - task: HelmInstaller@1
+        displayName: 'Install Helm 2.14.0'
+
+      - task: HelmDeploy@0
+        inputs:
+          connectionType: 'Kubernetes Service Connection'
+          kubernetesServiceConnection: 'Azure Kubernetes Service - Test Environment-kubernetes-cluster-v3-test-env-1568272352006'
+          command: 'init'
+          arguments: '--service-account tiller'
+          tillerNamespace: '$(targetNamespace)'
+
+      - task: AzureCLI@1
+        inputs:
+          azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+          scriptLocation: 'inlineScript'
+          inlineScript: 'az configure --defaults acr=$(registryName)'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+      - task: AzureCLI@1
+        inputs:
+          azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+          scriptLocation: 'inlineScript'
+          inlineScript: 'az acr helm repo add'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+      - task: HelmDeploy@0
+        displayName: 'helm upgrade'
+        inputs:
+          connectionType: 'Kubernetes Service Connection'
+          kubernetesServiceConnection: 'AKS - Test Environment'
+          namespace: '$(targetNamespace)'
+          command: upgrade
+          chartName: '$(registryName)/$(projectName)'
+          releaseName: '$(projectName)-$(environmentSuffix)'
+          arguments: '--version $(build.buildNumber) --set ui.image.repository=$(uiImageRepository) --set ui.image.tag=$(build.buildNumber) --set api.config.azureDatabaseEnabled=$(azureDatabaseEnabled) --set api.config.databaseServer=$(databaseServer) --set api.config.azureRedisCacheEnabled=$(azureRedisCacheEnabled) --set api.config.redisUrl=$(azureRedisServer) --set api.config.redisPassword=$(azureRedisPassword) --set api.config.redisDefaultDatabase=$(redisDefaultDatabase) --set api.image.repository=$(apiImageRepository) --set api.image.tag=$(build.buildNumber) --set api.config.database=$(apiDatabaseName) --set api.config.user=$(apiDatabaseUser) --set api.config.password=$(apiDatabasePassword) --set ingress.hosts={$(ingressHost)} --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+          tillerNamespace: '$(targetNamespace)'
