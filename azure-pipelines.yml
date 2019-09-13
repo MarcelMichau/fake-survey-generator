@@ -52,10 +52,10 @@ stages:
         workingDirectory: src/server/FakeSurveyGenerator.EF.Design
         displayName: 'Create Database Migration Script'
 
-      - task: PublishBuildArtifacts@1
+      - task: PublishPipelineArtifact@1
         inputs:
-          pathToPublish: src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql
-          artifactName: DbMigrationScript
+          targetPath: 'src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql'
+          artifact: 'DbMigrationScript'
         displayName: 'Publish Database Migration Script'
 
       - script: |
