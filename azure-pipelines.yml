@@ -111,7 +111,7 @@ stages:
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         displayName: 'Push Helm Chart to Azure Container Registry'
 
-- stage: Deploy to Test
+- stage: Deploy_To_Test
   jobs:
     - job: Deploy_To_Test
       pool:
