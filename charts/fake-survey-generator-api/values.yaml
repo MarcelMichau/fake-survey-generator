@@ -2,6 +2,16 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+azureDatabaseEnabled: false
+databaseServer: tcp:localhost,1433
+database: FakeSurveyGenerator
+user: SA
+password: <YourStrong!Passw0rd>
+azureRedisCacheEnabled: false
+redisUrl: redis
+redisPassword: testing
+redisDefaultDatabase: 0
+
 replicaCount: 1
 
 image:

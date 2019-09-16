@@ -1,4 +1,4 @@
-apiVersion: skaffold/v1beta13
+apiVersion: skaffold/v1beta14
 kind: Config
 build:
   tagPolicy:
@@ -19,14 +19,34 @@ build:
 deploy:
   helm:
     releases:
-      - name: fake-survey-generator
-        chartPath: ./charts/fake-survey-generator
+      - name: fake-survey-generator-ui
+        chartPath: ./charts/fake-survey-generator-ui
         namespace: default
         values:
-          fake-survey-generator-ui.image: marcelmichau/fakesurveygeneratorui
-          fake-survey-generator-api.image: marcelmichau/fakesurveygeneratorapi
-          identityserver.image: marcelmichau/identityserver
-        valuesFiles:
-          - charts/fake-survey-generator/values.yaml
+          image: marcelmichau/fakesurveygeneratorui
+        imageStrategy:
+          helm: {}
+      - name: fake-survey-generator-api
+        chartPath: ./charts/fake-survey-generator-api
+        namespace: default
+        values:
+          image: marcelmichau/fakesurveygeneratorapi
+        imageStrategy:
+          helm: {}
+      - name: identityserver
+        chartPath: ./charts/identityserver
+        namespace: default
+        values:
+          image: marcelmichau/identityserver
+        imageStrategy:
+          helm: {}
+      - name: sql-server
+        chartPath: ./charts/sql-server
+        namespace: default
+        imageStrategy:
+          helm: {}
+      - name: redis
+        chartPath: ./charts/redis
+        namespace: default
         imageStrategy:
           helm: {}
