@@ -8,7 +8,7 @@ trigger:
   paths:
     include:
     - src/server/MarcelMichau.IDP/*
-    - charts/identityserver/*
+    - charts/fake-survey-generator/charts/identityserver/*
     - build/identityserver/*
 
 pool:
@@ -43,13 +43,13 @@ steps:
   inputs:
     command: 'package'
     arguments: '--version $(versionTag)'
-    chartPath: 'charts/identityserver'
+    chartPath: 'charts/fake-survey-generator/charts/identityserver'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Helm Package'
 
 - task: AzureCLI@1
   inputs:
-    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+    azureSubscription: 'MyARMConnection'
     scriptLocation: 'inlineScript'
     inlineScript: 'az configure --defaults acr=marcelmichaucrv1'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -57,7 +57,7 @@ steps:
 
 - task: AzureCLI@1
   inputs:
-    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+    azureSubscription: 'MyARMConnection'
     scriptLocation: 'inlineScript'
     inlineScript: 'az acr helm repo add'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -65,7 +65,7 @@ steps:
 
 - task: AzureCLI@1
   inputs:
-    azureSubscription: 'Visual Studio Enterprise(492e64aa-2506-4b65-8105-b490c3c34a40)'
+    azureSubscription: 'MyARMConnection'
     scriptLocation: 'inlineScript'
     inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/identityserver-$(versionTag).tgz'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
