@@ -13,7 +13,7 @@ trigger:
     - src/server/FakeSurveyGenerator.Domain.Tests/*
     - src/server/FakeSurveyGenerator.EF.Design/*
     - src/server/FakeSurveyGenerator.Infrastructure/*
-    - charts/fake-survey-generator/charts/fake-survey-generator-api/*
+    - charts/fake-survey-generator-api/*
     - build/fake-survey-generator-api/*
 
 pool:
@@ -84,7 +84,7 @@ steps:
   inputs:
     command: 'package'
     arguments: '--version $(versionTag)'
-    chartPath: 'charts/fake-survey-generator/charts/fake-survey-generator-api'
+    chartPath: 'charts/fake-survey-generator-api'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Helm Package'
 
