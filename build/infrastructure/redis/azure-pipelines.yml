@@ -17,7 +17,7 @@ stages:
       versionTag: $(build.buildNumber)
     jobs:
       - job: Publish_Chart
-        displayName: 'Publish Fake Survey Generator API Chart'
+        displayName: 'Publish Redis Chart'
         pool:
           vmImage: 'ubuntu-latest'
         steps:
