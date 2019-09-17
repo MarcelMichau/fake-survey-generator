@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -25,31 +23,15 @@ namespace MarcelMichau.IDP
             {
                 new Client
                 {
-                    ClientId = "fake-survey-generator-api-swagger-ui",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
-                    AllowedScopes = { "fake-survey-generator-api" }
-                },
-                new Client
-                {
                     ClientId = "fake-survey-generator-api-swagger",
                     ClientName = "Fake Survey Generator API Swagger",
                     AllowedGrantTypes = GrantTypes.Implicit,
 
                     // where to redirect to after login
-                    RedirectUris = { "https://localhost:44367/swagger/oauth2-redirect.html" },
+                    RedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/swagger/oauth2-redirect.html" },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "https://localhost:44367" },
+                    PostLogoutRedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/swagger" },
 
                     AllowedScopes = new List<string>
                     {
@@ -66,10 +48,10 @@ namespace MarcelMichau.IDP
                     AllowedGrantTypes = GrantTypes.Implicit,
 
                     // where to redirect to after login
-                    RedirectUris = { "https://localhost:3001/" },
+                    RedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/" },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "https://localhost:3001/" },
+                    PostLogoutRedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/" },
 
                     AllowedScopes = new List<string>
                     {

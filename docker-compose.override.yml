@@ -17,7 +17,7 @@ services:
       - REDIS_SSL=false
       - REDIS_URL=redis
       - REDIS_DEFAULT_DATABASE=0
-      - IDENTITY_PROVIDER_URL=http://marcelmichau.idp
+      - IDENTITY_PROVIDER_URL=https://localhost:44320
     ports:
       - "6523:80"
       - "44367:443"

@@ -184,22 +184,44 @@ const CreateSurvey = ({ onCreateSurvey }) => {
 function App() {
 	const [surveyId, setSurveyId] = useState(1);
 	const [surveyDetail, setSurveyDetail] = useState(null);
+	const [errorMessage, setErrorMessage] = useState('');
 
 	const fetchSurvey = async surveyId => {
-		const response = await fetch(`/api/survey/${surveyId}`);
+		const token = localStorage.getItem('authorizationData');
+
+		const response = await fetch(`/api/survey/${surveyId}`, {
+			headers: {
+				'Authorization': `Bearer ${token}`
+			}
+		});
+
+        if (response.status === 401){
+			setErrorMessage('Unauthorised: You need to login to fetch surveys');
+			return;
+		}
+
 		const data = await response.json();
 
 		setSurveyDetail(data);
 	};
 
 	const createSurvey = async surveyCommand => {
+        const token = localStorage.getItem('authorizationData');
+
 		const response = await fetch(`/api/survey`, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${token}`
 			},
 			body: JSON.stringify(surveyCommand)
 		});
+
+        if (response.status === 401){
+			setErrorMessage('Unauthorised: You need to login to create surveys');
+			return;
+		}
+
 		const data = await response.json();
 
 		setSurveyId(data.id);
@@ -213,7 +235,9 @@ function App() {
 			</div>
 			<div style={{ textAlign: 'center' }}>
 				<h1>Fake Survey Generator</h1>
-
+                {errorMessage !== '' && <p style={{
+							color: 'red'
+						}}>{errorMessage}</p>}
 				<h2>Get Survey</h2>
 				<GetSurvey
 					surveyId={surveyId}

@@ -19,4 +19,4 @@ data:
   {{- else }}
   REDIS_SSL: "false"
   {{- end }}
-  IDENTITY_PROVIDER_URL: http://identityserver
+  IDENTITY_PROVIDER_URL: {{ .Values.identityProviderUrl }}
