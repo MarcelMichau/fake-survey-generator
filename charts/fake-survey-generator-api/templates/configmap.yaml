@@ -8,19 +8,15 @@ data:
   {{- if .Values.azureDatabaseEnabled }}
   ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;User ID={{ .Values.user }};Password={{ .Values.password }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
   {{- else }}
-  ConnectionStrings__SurveyContext: Server=sql-server;Database={{ .Values.database }};user id={{ .Values.user }};pwd={{ .Values.password }};ConnectRetryCount=0
+  ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Database={{ .Values.database }};user id={{ .Values.user }};pwd={{ .Values.password }};ConnectRetryCount=0
   ASPNETCORE_ENVIRONMENT: Development
   {{- end }}
+  REDIS_URL: {{ .Values.redisUrl }}
+  REDIS_PASSWORD: {{ .Values.redisPassword }}
+  REDIS_DEFAULT_DATABASE: "{{ .Values.redisDefaultDatabase }}"
   {{- if .Values.azureRedisCacheEnabled }}
-  REDIS_URL: {{ .Values.redisUrl }}
-  REDIS_PASSWORD: {{ .Values.redisPassword }}
   REDIS_SSL: "true"
-  REDIS_DEFAULT_DATABASE: "{{ .Values.redisDefaultDatabase }}"
-  IDENTITY_PROVIDER_URL: http://identityserver
   {{- else }}
-  REDIS_URL: {{ .Values.redisUrl }}
-  REDIS_PASSWORD: {{ .Values.redisPassword }}
   REDIS_SSL: "false"
-  REDIS_DEFAULT_DATABASE: "{{ .Values.redisDefaultDatabase }}"
-  IDENTITY_PROVIDER_URL: http://identityserver
   {{- end }}
+  IDENTITY_PROVIDER_URL: http://identityserver

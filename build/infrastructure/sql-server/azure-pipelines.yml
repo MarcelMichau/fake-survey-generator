@@ -7,76 +7,10 @@ trigger:
     - chore/*
   paths:
     include:
-    - src/server/FakeSurveyGenerator.API/*
-    - src/server/FakeSurveyGenerator.API.Tests.Integration/*
-    - src/server/FakeSurveyGenerator.Domain/*
-    - src/server/FakeSurveyGenerator.Domain.Tests/*
-    - src/server/FakeSurveyGenerator.EF.Design/*
-    - src/server/FakeSurveyGenerator.Infrastructure/*
-    - charts/fake-survey-generator-api/*
-    - build/fake-survey-generator-api/*
+    - charts/sql-server/*
+    - build/infrastructure/sql-server/*
 
 stages:
-  - stage: Build
-    jobs:
-      - job: Build
-        pool:
-          vmImage: 'ubuntu-latest'
-
-        variables:
-          buildConfiguration: 'Release'
-          imageName: fakesurveygeneratorapi
-          versionTag: $(build.buildNumber)
-
-        steps:
-        - task: DotNetCoreInstaller@0
-          displayName: 'Install .net core 3.0 (preview)'
-          inputs:
-            version: '3.0.100-preview9-014004'
-
-        - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
-          displayName: 'Build Solution'
-
-        - script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
-          displayName: 'Run Unit Tests'
-
-        - script: dotnet test src/server/FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
-          displayName: 'Run Integration Tests'
-
-        - task: PublishTestResults@2
-          condition: succeededOrFailed()
-          inputs:
-            testRunner: VSTest
-            testResultsFiles: '**/*.trx'
-          displayName: 'Publish Test Results'
-
-        - script: |
-            dotnet tool install --global dotnet-ef --version 3.0.0-preview9.19423.6
-          displayName: 'Install EF Core Global Tool'
-
-        - script: |
-            dotnet ef migrations script -o DbMigrationScript.sql -i
-          workingDirectory: src/server/FakeSurveyGenerator.EF.Design
-          displayName: 'Create Database Migration Script'
-
-        - task: PublishBuildArtifacts@1
-          inputs:
-            pathToPublish: src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql
-            artifactName: DbMigrationScript
-          displayName: 'Publish Database Migration Script'
-
-        - script: |
-            docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
-          displayName: 'Build Docker Image'
-
-        - script: |
-            echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
-            docker push $(dockerId)/$(imageName)
-          env:
-            DOCKER_PASSWORD: $(dockerPassword)
-          condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-          displayName: 'Push Image to Docker Hub'
-
   - stage: Publish_Stage
     displayName: 'Publish Stage'
     variables:
@@ -97,7 +31,7 @@ stages:
                 inputs:
                   command: 'package'
                   arguments: '--version $(versionTag)'
-                  chartPath: 'charts/fake-survey-generator-api'
+                  chartPath: 'charts/sql-server'
                 condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Helm Package'
 
@@ -130,15 +64,11 @@ stages:
     displayName: 'Deployment Stage'
     jobs:
       - deployment: Deployment_Job
-        displayName: Deploy Fake Survey Generator API
+        displayName: Deploy SQL Server
         pool:
           vmImage: 'ubuntu-latest'
         variables:
           environmentSuffix: integration
-          ingressClusterIssuerName: letsencrypt-prod
-          ingressHost: aks-integration.fakesurveygenerator.marcelmichau.dev
-          ingressTlsSecretName: marcelmichau-dev-tls-secret
-          replicaCount: 2
           targetNamespace: integration-env
         environment: 'aks-integration.integration-env'
         strategy:
@@ -185,5 +115,5 @@ stages:
                   chartType: 'Name'
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
-                  arguments: '--version $(build.buildNumber) --set azureDatabaseEnabled=$(integrationEnvAzureDatabaseEnabled) --set databaseServer=$(integrationEnvDatabaseServer) --set azureRedisCacheEnabled=$(integrationEnvAzureRedisCacheEnabled) --set redisUrl=$(integrationEnvRedisServer) --set api.config.redisPassword=$(integrationEnvRedisPassword) --set redisDefaultDatabase=$(integrationEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(integrationEnvDatabaseName) --set user=$(integrationEnvDatabaseUser) --set password=$(integrationEnvDatabasePassword) --set ingress.hosts[0].host={$(integrationEnvIngressHost)} --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  arguments: '--version $(build.buildNumber)'
                   tillerNamespace: '$(targetNamespace)'
