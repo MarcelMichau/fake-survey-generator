@@ -97,7 +97,7 @@ stages:
                 inputs:
                   command: 'package'
                   arguments: '--version $(versionTag)'
-                  chartPath: 'charts/fake-survey-generator-api'
+                  chartPath: 'charts/$(projectName)'
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Helm Package'
 
