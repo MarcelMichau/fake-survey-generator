@@ -144,5 +144,5 @@ stages:
                   chartType: 'Name'
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
-                  arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host={$(integrationEnvIngressHost)} --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
                   tillerNamespace: '$(targetNamespace)'
