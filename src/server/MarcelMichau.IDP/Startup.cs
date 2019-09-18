@@ -85,6 +85,22 @@ namespace MarcelMichau.IDP
 
             app.UseForwardedHeaders();
 
+            app.Use((context, next) =>
+            {
+                var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
+
+                logger.LogInformation("------- Request Headers After UseForwardedHeaders START ------");
+
+                foreach (var (key, value) in context.Request.Headers)
+                {
+                    logger.LogInformation($"Header Name: {key}, Header Value: {value}");
+                }
+
+                logger.LogInformation("------- Request Headers After UseForwardedHeaders END ------");
+
+                return next();
+            });
+
             app.UseAuthorization();
 
             if (env.IsDevelopment())
