@@ -11,7 +11,7 @@ azureRedisCacheEnabled: false
 redisUrl: redis
 redisPassword: testing
 redisDefaultDatabase: 0
-identityProviderFrontChannelUrl: http://identity.k8s.local
+identityProviderFrontChannelUrl: https://identity.k8s.local
 identityProviderBackChannelUrl: http://identityserver
 
 replicaCount: 1
@@ -39,10 +39,10 @@ ingress:
         - /swagger
         - /health
 
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+   - secretName: k8s-local-tls-secret
+     hosts:
+       - k8s.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

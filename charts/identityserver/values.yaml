@@ -2,8 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-swaggerClientUrl: http://k8s.local/swagger
-uiClientUrl: http://k8s.local/
+swaggerClientUrl: https://k8s.local/swagger
+uiClientUrl: https://k8s.local/
 azureRedisCacheEnabled: false
 redisUrl: redis
 redisPassword: testing
@@ -30,10 +30,10 @@ ingress:
   hosts:
     - host: identity.k8s.local
 
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+   - secretName: identity-k8s-local-tls-secret
+     hosts:
+       - identity.k8s.local
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
