@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-const AUTH_BASE_URL = determineAuthBaseUrl();
-
 const determineAuthBaseUrl = () => {
 	if (window.location.hostname.includes('local'))
 	   return `${window.location.protocol}//identity.k8s.local`;
@@ -14,6 +12,8 @@ const determineAuthBaseUrl = () => {
 
 	return `${window.location.protocol}//aks.identity.marcelmichau.dev`;
 }
+
+const AUTH_BASE_URL = determineAuthBaseUrl();
 
 const login = () => {
 	resetAuthorizationData();
