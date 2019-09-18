@@ -49,7 +49,7 @@ namespace MarcelMichau.IDP
                 services.AddDataProtection(opts => { opts.ApplicationDiscriminator = "identityserver"; })
                     .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(new ConfigurationOptions
                     {
-                        EndPoints = {_configuration.GetValue<string>("REDIS_URL")},
+                        EndPoints = { _configuration.GetValue<string>("REDIS_URL") },
                         Password = _configuration.GetValue<string>("REDIS_PASSWORD"),
                         Ssl = _configuration.GetValue<bool>("REDIS_SSL"),
                         DefaultDatabase = _configuration.GetValue<int>("REDIS_DEFAULT_DATABASE")
@@ -60,17 +60,6 @@ namespace MarcelMichau.IDP
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UsePathBase(new PathString("/identity"));
-
-            //app.Use((context, next) =>
-            //{
-            //    if (context.Request.Path.Value.Contains("/identity"))
-            //        return next();
-
-            //    context.Request.PathBase = new PathString("/identity");
-            //    return next();
-            //});
-
             app.UseAuthorization();
 
             if (env.IsDevelopment())

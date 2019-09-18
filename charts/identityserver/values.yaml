@@ -28,9 +28,7 @@ ingress:
   enabled: true
   annotations: {}
   hosts:
-    - host: k8s.local
-      paths:
-        - /identity
+    - host: identity.k8s.local
 
   tls: []
   #  - secretName: chart-example-tls
