@@ -11,7 +11,8 @@ azureRedisCacheEnabled: false
 redisUrl: redis
 redisPassword: testing
 redisDefaultDatabase: 0
-identityProviderUrl: http://identityserver
+identityProviderFrontChannelUrl: http://k8s.local/identity
+identityProviderBackChannelUrl: http://identityserver
 
 replicaCount: 1
 

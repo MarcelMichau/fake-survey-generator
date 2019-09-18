@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
-const AUTH_BASE_URL = 'https://localhost:44320';
+const AUTH_BASE_URL = `${window.location.protocol}//${window.location.hostname}/identity`;
 
 const login = () => {
-    resetAuthorizationData();
+	resetAuthorizationData();
 
 	let authorizationUrl = AUTH_BASE_URL + '/connect/authorize';
 	let client_id = 'fake-survey-generator-ui';
@@ -41,7 +41,7 @@ const login = () => {
 };
 
 const authCallback = () => {
-    resetAuthorizationData();
+	resetAuthorizationData();
 
 	let hash = window.location.hash.substr(1);
 
@@ -92,7 +92,7 @@ const authCallback = () => {
 const setAuthorizationData = (token, id_token) => {
 	if (localStorage.getItem('authorizationData') !== '') {
 		localStorage.setItem('authorizationData', '');
-	}		
+	}
 
 	localStorage.setItem('authorizationData', token);
 	localStorage.setItem('authorizationDataIdToken', id_token);
@@ -105,7 +105,7 @@ const resetAuthorizationData = () => {
 	localStorage.setItem('authorizationData', '');
 	localStorage.setItem('authorizationDataIdToken', '');
 	localStorage.setItem('IsAuthorized', false);
-}
+};
 
 const getDataFromToken = token => {
 	let data = {};
@@ -129,7 +129,7 @@ const urlBase64Decode = str => {
 			output += '=';
 			break;
 		default:
-			throw 'Illegal base64url string!';
+			throw new Error('Illegal base64url string!');
 	}
 
 	return window.atob(output);
@@ -141,13 +141,17 @@ const logout = () => {
 	let post_logout_redirect_uri = window.location.origin + '/';
 
 	let url =
-		authorizationUrl + '?' +
-		'id_token_hint=' + encodeURI(id_token_hint) + '&' +		
-		'post_logout_redirect_uri=' + encodeURI(post_logout_redirect_uri);
+		authorizationUrl +
+		'?' +
+		'id_token_hint=' +
+		encodeURI(id_token_hint) +
+		'&' +
+		'post_logout_redirect_uri=' +
+		encodeURI(post_logout_redirect_uri);
 
 	resetAuthorizationData();
 	window.location.href = url;
-}
+};
 
 const Auth = () => {
 	const hasBeenAuthorized = localStorage.getItem('IsAuthorized') === 'true';

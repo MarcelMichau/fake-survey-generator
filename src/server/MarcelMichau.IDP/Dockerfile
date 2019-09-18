@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview9-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-rc1-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview9-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-rc1-buster AS build
 WORKDIR /src
 COPY src/server/MarcelMichau.IDP/MarcelMichau.IDP.csproj MarcelMichau.IDP/
 RUN dotnet restore MarcelMichau.IDP/MarcelMichau.IDP.csproj

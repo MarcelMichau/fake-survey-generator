@@ -17,7 +17,7 @@ namespace MarcelMichau.IDP
             };
         }
 
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<Client> GetClients(string uiClientUrl, string swaggerUiClientUrl)
         {
             return new List<Client>
             {
@@ -28,10 +28,10 @@ namespace MarcelMichau.IDP
                     AllowedGrantTypes = GrantTypes.Implicit,
 
                     // where to redirect to after login
-                    RedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/swagger/oauth2-redirect.html" },
+                    RedirectUris = { $"{swaggerUiClientUrl}/oauth2-redirect.html" },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/swagger" },
+                    PostLogoutRedirectUris = { $"{swaggerUiClientUrl}" },
 
                     AllowedScopes = new List<string>
                     {
@@ -48,10 +48,10 @@ namespace MarcelMichau.IDP
                     AllowedGrantTypes = GrantTypes.Implicit,
 
                     // where to redirect to after login
-                    RedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/" },
+                    RedirectUris = { uiClientUrl },
 
                     // where to redirect to after logout
-                    PostLogoutRedirectUris = { "https://aks-integration.fakesurveygenerator.marcelmichau.dev/" },
+                    PostLogoutRedirectUris = { uiClientUrl },
 
                     AllowedScopes = new List<string>
                     {

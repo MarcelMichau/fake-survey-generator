@@ -32,7 +32,7 @@ stages:
         - task: DotNetCoreInstaller@0
           displayName: 'Install .net core 3.0 (preview)'
           inputs:
-            version: '3.0.100-preview9-014004'
+            version: '3.0.100-rc1-014190'
 
         - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
           displayName: 'Build Solution'
@@ -51,7 +51,7 @@ stages:
           displayName: 'Publish Test Results'
 
         - script: |
-            dotnet tool install --global dotnet-ef --version 3.0.0-preview9.19423.6
+            dotnet tool install --global dotnet-ef --version 3.0.0-rc1.19456.14
           displayName: 'Install EF Core Global Tool'
 
         - script: |

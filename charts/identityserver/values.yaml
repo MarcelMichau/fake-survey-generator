@@ -2,6 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+swaggerClientUrl: http://k8s.local/swagger
+uiClientUrl: http://k8s.local/
+azureRedisCacheEnabled: false
+redisUrl: redis
+redisPassword: testing
+redisDefaultDatabase: 0
+
 replicaCount: 1
 
 image:
@@ -20,8 +27,6 @@ service:
 ingress:
   enabled: true
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
   hosts:
     - host: k8s.local
       paths:

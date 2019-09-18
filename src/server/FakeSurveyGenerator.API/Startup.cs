@@ -84,13 +84,13 @@ namespace FakeSurveyGenerator.API
                 c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
                     Description = "OAuth2 Authentication",
-                    OpenIdConnectUrl = new Uri($"{_configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}/.well-known/openid-configuration"),
+                    OpenIdConnectUrl = new Uri($"{_configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL")}/.well-known/openid-configuration"),
                     Type = SecuritySchemeType.OAuth2,
                     Flows = new OpenApiOAuthFlows
                     {
                         Implicit = new OpenApiOAuthFlow
                         {
-                            AuthorizationUrl = new Uri($"{_configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}/connect/authorize"),
+                            AuthorizationUrl = new Uri($"{_configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL")}/connect/authorize"),
                             Scopes = new Dictionary<string, string> { { "openid", "Standard OpenID Scope" }, { "profile", "Standard OpenID Scope" }, { "fake-survey-generator-api", "Grants access to the Fake Survey Generator API" } }
                         }
                     }
@@ -115,13 +115,13 @@ namespace FakeSurveyGenerator.API
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
+                    options.Authority = _configuration.GetValue<string>("IDENTITY_PROVIDER_BACKCHANNEL_URL");
                     options.RequireHttpsMetadata = false;
                     options.Audience = "fake-survey-generator-api";
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidIssuers = new List<string> {_configuration.GetValue<string>("IDENTITY_PROVIDER_URL") }
+                        ValidIssuers = new List<string> {_configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL") }
                     };
                 });
         }

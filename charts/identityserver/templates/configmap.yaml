@@ -6,3 +6,14 @@ metadata:
 {{ include "identityserver.labels" . | indent 4 }}
 data:
   ASPNETCORE_ENVIRONMENT: Development
+  FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL: {{ .Values.swaggerClientUrl }}
+  FAKE_SURVEY_GENERATOR_UI_CLIENT_URL: {{ .Values.uiClientUrl }}
+  REDIS_URL: {{ .Values.redisUrl }}
+  REDIS_PASSWORD: {{ .Values.redisPassword }}
+  REDIS_DEFAULT_DATABASE: "{{ .Values.redisDefaultDatabase }}"
+  {{- if .Values.azureRedisCacheEnabled }}
+  REDIS_SSL: "true"
+  {{- else }}
+  REDIS_SSL: "false"
+  {{- end }}
+  IS_CLUSTER_ENV: "true"

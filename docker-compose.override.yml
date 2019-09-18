@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   fakesurveygenerator.ui:
@@ -30,6 +30,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=44320
+      - IS_CLUSTER_ENV=false
     ports:
       - "33352:80"
       - "44320:443"

@@ -19,4 +19,5 @@ data:
   {{- else }}
   REDIS_SSL: "false"
   {{- end }}
-  IDENTITY_PROVIDER_URL: {{ .Values.identityProviderUrl }}
+  IDENTITY_PROVIDER_FRONTCHANNEL_URL: {{ .Values.identityProviderFrontChannelUrl }}
+  IDENTITY_PROVIDER_BACKCHANNEL_URL: {{ .Values.identityProviderBackChannelUrl }}
