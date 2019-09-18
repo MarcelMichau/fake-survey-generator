@@ -121,7 +121,11 @@ namespace FakeSurveyGenerator.API
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidIssuers = new List<string> {_configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL") }
+                        ValidIssuers = new List<string>
+                        {
+                            _configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL"),
+                            _configuration.GetValue<string>("IDENTITY_PROVIDER_BACKCHANNEL_URL")
+                        }
                     };
                 });
         }
