@@ -96,7 +96,7 @@ stages:
           environmentSuffix: integration
           ingressClusterIssuerName: letsencrypt-prod
           ingressHost: aks-integration.fakesurveygenerator.marcelmichau.dev
-          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          ingressTlsSecretName: marcelmichau-dev-identity-tls-secret
           replicaCount: 1
           targetNamespace: integration-env
         environment: 'aks-integration.integration-env'
