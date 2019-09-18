@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace MarcelMichau.IDP
@@ -66,6 +67,22 @@ namespace MarcelMichau.IDP
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Use((context, next) =>
+            {
+                var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
+
+                logger.LogInformation("------- Request Headers START ------");
+
+                foreach (var (key, value) in context.Request.Headers)
+                {
+                    logger.LogInformation($"Header Name: {key}, Header Value: {value}");
+                }
+
+                logger.LogInformation("------- Request Headers END ------");
+
+                return next();
+            });
+
             app.UseForwardedHeaders();
 
             app.UseAuthorization();
