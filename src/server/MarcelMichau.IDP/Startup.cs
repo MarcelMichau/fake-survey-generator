@@ -62,7 +62,9 @@ namespace MarcelMichau.IDP
             {
                 options.ForwardedHeaders =
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-                options.KnownProxies.Add(IPAddress.Parse("10.244.1.1"));
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+                //options.KnownProxies.Add(IPAddress.Parse("10.244.1.1"));
             });
         }
 
