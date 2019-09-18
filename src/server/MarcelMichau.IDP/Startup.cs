@@ -71,39 +71,39 @@ namespace MarcelMichau.IDP
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.Use((context, next) =>
-            {
-                var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
+            //app.Use((context, next) =>
+            //{
+            //    var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
 
-                logger.LogInformation("------- Request Headers START ------");
+            //    logger.LogInformation("------- Request Headers START ------");
 
-                foreach (var (key, value) in context.Request.Headers)
-                {
-                    logger.LogInformation($"Header Name: {key}, Header Value: {value}");
-                }
+            //    foreach (var (key, value) in context.Request.Headers)
+            //    {
+            //        logger.LogInformation($"Header Name: {key}, Header Value: {value}");
+            //    }
 
-                logger.LogInformation("------- Request Headers END ------");
+            //    logger.LogInformation("------- Request Headers END ------");
 
-                return next();
-            });
+            //    return next();
+            //});
 
             app.UseForwardedHeaders();
 
-            app.Use((context, next) =>
-            {
-                var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
+            //app.Use((context, next) =>
+            //{
+            //    var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
 
-                logger.LogInformation("------- Request Headers After UseForwardedHeaders START ------");
+            //    logger.LogInformation("------- Request Headers After UseForwardedHeaders START ------");
 
-                foreach (var (key, value) in context.Request.Headers)
-                {
-                    logger.LogInformation($"Header Name: {key}, Header Value: {value}");
-                }
+            //    foreach (var (key, value) in context.Request.Headers)
+            //    {
+            //        logger.LogInformation($"Header Name: {key}, Header Value: {value}");
+            //    }
 
-                logger.LogInformation("------- Request Headers After UseForwardedHeaders END ------");
+            //    logger.LogInformation("------- Request Headers After UseForwardedHeaders END ------");
 
-                return next();
-            });
+            //    return next();
+            //});
 
             app.UseAuthorization();
 
