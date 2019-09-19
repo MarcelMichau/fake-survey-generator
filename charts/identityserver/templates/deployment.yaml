@@ -30,7 +30,7 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ include "identityserver.fullname" . }}
+                name: {{ include "identityserver.fullname" . }}-env-configmap
           livenessProbe:
             httpGet:
               path: /
@@ -41,6 +41,10 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: key-material
+        configMap:
+          name: {{ include "identityserver.fullname" . }}-key-material-configmap
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

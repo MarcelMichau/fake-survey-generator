@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
+﻿using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +6,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
 namespace MarcelMichau.IDP
@@ -45,7 +39,7 @@ namespace MarcelMichau.IDP
             }
             else
             {
-                throw new Exception("Key material not configured.");
+                builder.AddSigningCredential(Certificates.Certificates.Get());
             }
 
             services.AddControllersWithViews();
@@ -67,7 +61,7 @@ namespace MarcelMichau.IDP
                 options.ForwardedHeaders =
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 
-                foreach (var network in GetNetworks(NetworkInterfaceType.Ethernet))
+                foreach (var network in Utilities.GetNetworks(NetworkInterfaceType.Ethernet))
                 {
                     options.KnownNetworks.Add(network);
                 }
@@ -77,39 +71,7 @@ namespace MarcelMichau.IDP
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.Use((context, next) =>
-            //{
-            //    var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
-
-            //    logger.LogInformation("------- Request Headers START ------");
-
-            //    foreach (var (key, value) in context.Request.Headers)
-            //    {
-            //        logger.LogInformation($"Header Name: {key}, Header Value: {value}");
-            //    }
-
-            //    logger.LogInformation("------- Request Headers END ------");
-
-            //    return next();
-            //});
-
             app.UseForwardedHeaders();
-
-            //app.Use((context, next) =>
-            //{
-            //    var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
-
-            //    logger.LogInformation("------- Request Headers After UseForwardedHeaders START ------");
-
-            //    foreach (var (key, value) in context.Request.Headers)
-            //    {
-            //        logger.LogInformation($"Header Name: {key}, Header Value: {value}");
-            //    }
-
-            //    logger.LogInformation("------- Request Headers After UseForwardedHeaders END ------");
-
-            //    return next();
-            //});
 
             app.UseAuthorization();
 
@@ -125,53 +87,6 @@ namespace MarcelMichau.IDP
             app.UseRouting();
 
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
-        }
-
-        private static IEnumerable<IPNetwork> GetNetworks(NetworkInterfaceType type)
-        {
-
-            foreach (var item in NetworkInterface.GetAllNetworkInterfaces()
-                .Where(n => n.NetworkInterfaceType == type && n.OperationalStatus == OperationalStatus.Up)  // get all operational networks of a given type
-                .Select(n => n.GetIPProperties())   // get the IPs
-                .Where(n => n.GatewayAddresses.Any())) // where the IPs have a gateway defined
-            {
-                var ipInfo = item.UnicastAddresses.FirstOrDefault(i => i.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork); // get the first cluster-facing IP address
-                if (ipInfo == null) { continue; }
-
-                // convert the mask to bits
-                var maskBytes = ipInfo.IPv4Mask.GetAddressBytes();
-                if (!BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(maskBytes);
-                }
-                var maskBits = new BitArray(maskBytes);
-
-                // count the number of "true" bits to get the CIDR mask
-                var cidrMask = maskBits.Cast<bool>().Count(b => b);
-
-                // convert my application's ip address to bits
-                var ipBytes = ipInfo.Address.GetAddressBytes();
-                if (!BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(maskBytes);
-                }
-                var ipBits = new BitArray(ipBytes);
-
-                // and the bits with the mask to get the start of the range
-                var maskedBits = ipBits.And(maskBits);
-
-                // Convert the masked IP back into an IP address
-                var maskedIpBytes = new byte[4];
-                maskedBits.CopyTo(maskedIpBytes, 0);
-                if (!BitConverter.IsLittleEndian)
-                {
-                    Array.Reverse(maskedIpBytes);
-                }
-                var rangeStartIp = new IPAddress(maskedIpBytes);
-
-                // return the start IP and CIDR mask
-                yield return new IPNetwork(rangeStartIp, cidrMask);
-            }
         }
     }
 }
