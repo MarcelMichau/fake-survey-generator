@@ -33,7 +33,8 @@ spec:
                 name: {{ include "identityserver.fullname" . }}-env-configmap
           volumeMounts:
             - name: key-material
-              mountPath: /app/certs
+              mountPath: /app/certs/identitykeymaterial.pfx
+              subPath: identitykeymaterial.pfx
               readOnly: true
           livenessProbe:
             httpGet:
