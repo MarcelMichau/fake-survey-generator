@@ -34,6 +34,7 @@ spec:
           volumeMounts:
             - name: key-material
               mountPath: /app/certs
+              readOnly: true
           livenessProbe:
             httpGet:
               path: /

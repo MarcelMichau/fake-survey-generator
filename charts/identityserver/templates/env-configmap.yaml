@@ -5,6 +5,7 @@ metadata:
   labels:
 {{ include "identityserver.labels" . | indent 4 }}
 data:
+  ASPNETCORE_ENVIRONMENT: Development
   FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL: {{ .Values.swaggerClientUrl }}
   FAKE_SURVEY_GENERATOR_UI_CLIENT_URL: {{ .Values.uiClientUrl }}
   REDIS_URL: {{ .Values.redisUrl }}
