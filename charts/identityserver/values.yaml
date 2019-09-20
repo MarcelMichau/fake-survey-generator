@@ -2,12 +2,32 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+azureDatabaseEnabled: false
+
+applicationDbDatabaseServer: sql-server
+applicationDbDatabase: AspNetIdentity
+applicationDbUser: SA
+applicationDbPassword: <YourStrong!Passw0rd>
+
+configurationDbDatabaseServer: sql-server
+configurationDbDatabase: IdentityServerConfiguration
+configurationDbUser: SA
+configurationDbPassword: <YourStrong!Passw0rd>
+
+persistedGrantDbDatabaseServer: sql-server
+persistedGrantDbDatabase: IdentityServerPersistedGrant
+persistedGrantDbUser: SA
+persistedGrantDbPassword: <YourStrong!Passw0rd>
+
 swaggerClientUrl: https://k8s.local/swagger
 uiClientUrl: https://k8s.local/
+
 azureRedisCacheEnabled: false
 redisUrl: redis
 redisPassword: testing
 redisDefaultDatabase: 0
+
+useCertificateSigningMaterial: true
 
 replicaCount: 1
 

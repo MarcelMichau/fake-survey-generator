@@ -17,7 +17,8 @@ services:
       - REDIS_SSL=false
       - REDIS_URL=redis
       - REDIS_DEFAULT_DATABASE=0
-      - IDENTITY_PROVIDER_URL=https://localhost:44320
+      - IDENTITY_PROVIDER_FRONTCHANNEL_URL=https://localhost:44320
+      - IDENTITY_PROVIDER_BACKCHANNEL_URL=http://marcelmichau.idp
     ports:
       - "6523:80"
       - "44367:443"
@@ -30,8 +31,12 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=44320
+      - ConnectionStrings__ApplicationDbContext=Server=sqlserver;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__ConfigurationDbContext=Server=sqlserver;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__PersistedGrantDbContext=Server=sqlserver;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - IS_CLUSTER_ENV=false
-      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3000/
+      - USE_CERTIFICATE_SIGNING_MATERIAL=true
+      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3001/
       - FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL=https://localhost:44367/swagger
     ports:
       - "33352:80"
@@ -40,6 +45,10 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ./src/server/MarcelMichau.IDP/Certificates/identitykeymaterial.pfx:/app/certs/identitykeymaterial.pfx:ro
+
+  sqlserver:
+    ports:
+      - "1433:1433"
 
   redis:
     ports:

@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
 const determineAuthBaseUrl = () => {
+	if (window.location.hostname.includes('localhost'))
+		return `${window.location.protocol}//localhost:44320`;
+
 	if (window.location.hostname.includes('local'))
-	   return `${window.location.protocol}//identity.k8s.local`;
+		return `${window.location.protocol}//identity.k8s.local`;
 
 	if (window.location.hostname.includes('integration'))
-	   return `${window.location.protocol}//aks-integration.identity.marcelmichau.dev`;
+		return `${window.location.protocol}//aks-integration.identity.marcelmichau.dev`;
 
 	if (window.location.hostname.includes('test'))
-	   return `${window.location.protocol}//aks-test.identity.marcelmichau.dev`;
+		return `${window.location.protocol}//aks-test.identity.marcelmichau.dev`;
 
 	return `${window.location.protocol}//aks.identity.marcelmichau.dev`;
-}
+};
 
 const AUTH_BASE_URL = determineAuthBaseUrl();
 
