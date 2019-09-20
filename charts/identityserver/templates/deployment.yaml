@@ -31,6 +31,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "identityserver.fullname" . }}-env-configmap
+          volumeMounts:
+            - name: key-material
+              mountPath: /app/certs
           livenessProbe:
             httpGet:
               path: /
