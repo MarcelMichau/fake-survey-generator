@@ -21,7 +21,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		azure-pipelines.yml = azure-pipelines.yml
+		build\fake-survey-generator-api\azure-pipelines.yml = build\fake-survey-generator-api\azure-pipelines.yml
+		build\fake-survey-generator-ui\azure-pipelines.yml = build\fake-survey-generator-ui\azure-pipelines.yml
+		build\identityserver\azure-pipelines.yml = build\identityserver\azure-pipelines.yml
+		build\infrastructure\redis\azure-pipelines.yml = build\infrastructure\redis\azure-pipelines.yml
+		build\infrastructure\sql-server\azure-pipelines.yml = build\infrastructure\sql-server\azure-pipelines.yml
 		global.json = global.json
 		README.md = README.md
 	EndProjectSection

@@ -173,9 +173,9 @@ namespace FakeSurveyGenerator.API
                 {
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });
-            });
 
-            app.UseHealthChecksUI();
+                endpoints.MapHealthChecksUI();
+            });
 
             app.UseSwagger();
 
