@@ -8,6 +8,7 @@ trigger:
   paths:
     include:
     - src/server/MarcelMichau.IDP/*
+    - src/server/MarcelMichau.IDP.EF.Design/*
     - charts/identityserver/*
     - build/identityserver/*
 
@@ -47,15 +48,37 @@ stages:
           displayName: 'Install EF Core Global Tool'
 
         - script: |
-            dotnet ef migrations script -o DbMigrationScript.sql -i
-          workingDirectory: src/server/MarcelMichau.IDP
-          displayName: 'Create Database Migration Script'
+            dotnet ef migrations script -o ConfigurationDbMigrationScript.sql -i --context ConfigurationDbContext
+          workingDirectory: src/server/MarcelMichau.IDP.EF.Design
+          displayName: 'Create Configuration Database Migration Script'
+
+        - script: |
+            dotnet ef migrations script -o PersistedGrantDbMigrationScript.sql -i --context PersistedGrantDbContext
+          workingDirectory: src/server/MarcelMichau.IDP.EF.Design
+          displayName: 'Create Persisted Grant Database Migration Script'
+
+        - script: |
+            dotnet ef migrations script -o ApplicationDbMigrationScript.sql -i --context ApplicationDbContext
+          workingDirectory: src/server/MarcelMichau.IDP.EF.Design
+          displayName: 'Create Application Database Migration Script'
 
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: 'src/server/MarcelMichau.IDP/DbMigrationScript.sql'
-            artifact: 'DbMigrationScript'
-          displayName: 'Publish Database Migration Script'
+            targetPath: 'src/server/MarcelMichau.IDP.EF.Design/ConfigurationDbMigrationScript.sql'
+            artifact: 'ConfigurationDbMigrationScript'
+          displayName: 'Publish Configuration Database Migration Script'
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: 'src/server/MarcelMichau.IDP.EF.Design/PersistedGrantDbMigrationScript.sql'
+            artifact: 'PersistedGrantDbMigrationScript'
+          displayName: 'Publish Persisted Grant Database Migration Script'
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: 'src/server/MarcelMichau.IDP.EF.Design/ApplicationDbMigrationScript.sql'
+            artifact: 'ApplicationDbMigrationScript'
+          displayName: 'Publish Application Database Migration Script'
 
   - stage: Publish
     displayName: 'Publish'
