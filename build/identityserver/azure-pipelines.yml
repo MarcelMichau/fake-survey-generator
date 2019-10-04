@@ -13,6 +13,7 @@ trigger:
 
 stages:
   - stage: Build
+    displayName: 'Build'
     jobs:
       - job: Build
         pool:
@@ -36,8 +37,23 @@ stages:
           # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
           displayName: 'Push Image to Docker Hub'
 
-  - stage: Publish_Stage
-    displayName: 'Publish Stage'
+        - script: |
+            dotnet tool install --global dotnet-ef --version 3.0.0
+          displayName: 'Install EF Core Global Tool'
+
+        - script: |
+            dotnet ef migrations script -o DbMigrationScript.sql -i
+          workingDirectory: src/server/MarcelMichau.IDP
+          displayName: 'Create Database Migration Script'
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: 'src/server/MarcelMichau.IDP/DbMigrationScript.sql'
+            artifact: 'DbMigrationScript'
+          displayName: 'Publish Database Migration Script'
+
+  - stage: Publish
+    displayName: 'Publish'
     variables:
       versionTag: $(build.buildNumber)
     jobs:
@@ -85,8 +101,8 @@ stages:
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
 
-  - stage: Deployment_Stage
-    displayName: 'Deployment Stage'
+  - stage: Deployment
+    displayName: 'Deployment'
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy IdentityServer

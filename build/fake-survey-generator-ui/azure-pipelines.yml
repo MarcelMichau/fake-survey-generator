@@ -15,6 +15,7 @@ trigger:
 
 stages:
   - stage: Build
+    displayName: 'Build'
     jobs:
       - job: Build
         pool:
@@ -38,8 +39,8 @@ stages:
           # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
           displayName: 'Push Image to Docker Hub'
 
-  - stage: Publish_Stage
-    displayName: 'Publish Stage'
+  - stage: Publish
+    displayName: 'Publish'
     variables:
       versionTag: $(build.buildNumber)
     jobs:
@@ -87,8 +88,8 @@ stages:
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
 
-  - stage: Deployment_Stage
-    displayName: 'Deployment Stage'
+  - stage: Deployment
+    displayName: 'Deployment'
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator UI
