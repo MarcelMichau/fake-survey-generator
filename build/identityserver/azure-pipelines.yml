@@ -37,7 +37,12 @@ stages:
           # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
           displayName: 'Push Image to Docker Hub'
 
-        - script: |
+        - task: DotNetCoreInstaller@0
+          displayName: 'Install .NET Core 3.0'
+          inputs:
+            version: '3.0.100'
+
+        - script: |   
             dotnet tool install --global dotnet-ef --version 3.0.0
           displayName: 'Install EF Core Global Tool'
 
