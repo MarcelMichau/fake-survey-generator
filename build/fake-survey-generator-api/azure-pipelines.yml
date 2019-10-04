@@ -127,8 +127,8 @@ stages:
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
 
-  - stage: Deployment
-    displayName: 'Deployment'
+  - stage: Integration_Deployment
+    displayName: 'Integration Deployment'
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator API
@@ -186,4 +186,78 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(integrationEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(integrationEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(integrationEnvAzureDatabaseEnabled) --set databaseServer=$(integrationEnvDatabaseServer) --set azureRedisCacheEnabled=$(integrationEnvAzureRedisCacheEnabled) --set redisUrl=$(integrationEnvRedisServer) --set redisPassword=$(integrationEnvRedisPassword) --set redisDefaultDatabase=$(integrationEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(integrationEnvDatabaseName) --set user=$(integrationEnvDatabaseUser) --set password=$(integrationEnvDatabasePassword) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(integrationEnvReplicaCount)'
+                  tillerNamespace: '$(targetNamespace)'
+
+  - stage: Test_Deployment
+    displayName: 'Test Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          environmentSuffix: test
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          targetNamespace: test-env
+          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
+          databaseLogin: 'azure-pipelines-user-test'
+        environment: 'aks-test.test-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Test Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: SqlAzureDacpacDeployment@1
+                displayName: 'Execute SQL Migration Script'
+                inputs:
+                  azureSubscription: MyARMConnection
+                  ServerName: '$(testEnvDatabaseServer)'
+                  DatabaseName: '$(testEnvDatabaseName)'
+                  SqlUsername: '$(testEnvDatabaseLogin)'
+                  SqlPassword: '$(testEnvDatabasePassword)'
+                  deployType: SqlTask
+                  SqlFile: '$(System.DefaultWorkingDirectory)/MarcelMichau.fake-survey-generator/DbMigrationScript/DbMigrationScript.sql'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Test Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(testEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(testEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled) --set databaseServer=$(testEnvDatabaseServer) --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled) --set redisUrl=$(testEnvRedisServer) --set redisPassword=$(testEnvRedisPassword) --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(testEnvDatabaseName) --set user=$(testEnvDatabaseUser) --set password=$(testEnvDatabasePassword) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(testEnvReplicaCount)'
                   tillerNamespace: '$(targetNamespace)'
