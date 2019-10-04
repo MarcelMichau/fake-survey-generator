@@ -250,7 +250,7 @@ stages:
                   SqlUsername: '$(testEnvConfigurationDbDatabaseAdminLogin)'
                   SqlPassword: '$(testEnvConfigurationDbDatabaseAdminPassword)'
                   deployType: SqlTask
-                  SqlFile: '$(System.DefaultWorkingDirectory)/MarcelMichau.fake-survey-generator/ConfigurationDbMigrationScript/ConfigurationDbMigrationScript.sql'
+                  SqlFile: '$(Pipeline.Workspace)/ConfigurationDbMigrationScript/ConfigurationDbMigrationScript.sql'
 
               - task: SqlAzureDacpacDeployment@1
                 displayName: 'Execute Persisted Grant Database SQL Migration Script'
@@ -261,7 +261,7 @@ stages:
                   SqlUsername: '$(testEnvPersistedGrantDbDatabaseAdminLogin)'
                   SqlPassword: '$(testEnvPersistedGrantDbDatabaseAdminPassword)'
                   deployType: SqlTask
-                  SqlFile: '$(System.DefaultWorkingDirectory)/MarcelMichau.fake-survey-generator/PersistedGrantDbMigrationScript/PersistedGrantDbMigrationScript.sql'
+                  SqlFile: '$(Pipeline.Workspace)/PersistedGrantDbMigrationScript/PersistedGrantDbMigrationScript.sql'
 
               - task: SqlAzureDacpacDeployment@1
                 displayName: 'Execute Application Database SQL Migration Script'
@@ -272,7 +272,7 @@ stages:
                   SqlUsername: '$(testEnvApplicationDbDatabaseAdminLogin)'
                   SqlPassword: '$(testEnvApplicationDbDatabaseAdminPassword)'
                   deployType: SqlTask
-                  SqlFile: '$(System.DefaultWorkingDirectory)/MarcelMichau.fake-survey-generator/ApplicationDbMigrationScript/ApplicationDbMigrationScript.sql'
+                  SqlFile: '$(Pipeline.Workspace)/ApplicationDbMigrationScript/ApplicationDbMigrationScript.sql'
 
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
