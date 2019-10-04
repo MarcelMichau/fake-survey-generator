@@ -13,7 +13,6 @@ data:
   ConnectionStrings__ApplicationDbContext: Server={{ .Values.applicationDbDatabaseServer }};Database={{ .Values.applicationDbDatabase }};user id={{ .Values.applicationDbUser }};pwd={{ .Values.applicationDbPassword }};ConnectRetryCount=0
   ConnectionStrings__ConfigurationDbContext: Server={{ .Values.configurationDbDatabaseServer }};Database={{ .Values.configurationDbDatabase }};user id={{ .Values.configurationDbUser }};pwd={{ .Values.configurationDbPassword }};ConnectRetryCount=0
   ConnectionStrings__PersistedGrantDbContext: Server={{ .Values.persistedGrantDbDatabaseServer }};Database={{ .Values.persistedGrantDbDatabase }};user id={{ .Values.persistedGrantDbUser }};pwd={{ .Values.persistedGrantDbPassword }};ConnectRetryCount=0
-  ASPNETCORE_ENVIRONMENT: Development
   {{- end }}
   FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL: {{ .Values.swaggerClientUrl }}
   FAKE_SURVEY_GENERATOR_UI_CLIENT_URL: {{ .Values.uiClientUrl }}
@@ -25,5 +24,6 @@ data:
   {{- else }}
   REDIS_SSL: "false"
   {{- end }}
+  ASPNETCORE_ENVIRONMENT: {{ .Values.aspNetCoreEnvironment }}
   USE_CERTIFICATE_SIGNING_MATERIAL: "{{ .Values.useCertificateSigningMaterial }}"
   IS_CLUSTER_ENV: "true"
