@@ -131,12 +131,15 @@ namespace MarcelMichau.IDP
 
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
 
-            InitializeIdentityServerDatabase(app);
+            InitializeIdentityServerDatabase(app, env);
             InitializeIdentityDatabase(app, env);
         }
 
-        private void InitializeIdentityServerDatabase(IApplicationBuilder app)
+        private void InitializeIdentityServerDatabase(IApplicationBuilder app, IHostEnvironment env)
         {
+            if (!env.IsDevelopment()) // Only migrate database on startup when running in Development environment
+                return;
+
             using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
             serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 

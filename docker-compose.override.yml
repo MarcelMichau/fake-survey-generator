@@ -26,6 +26,16 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
+
+  fakesurveygenerator.worker:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SurveyContext=Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - REDIS_PASSWORD=testing
+      - REDIS_SSL=false
+      - REDIS_URL=redis
+      - REDIS_DEFAULT_DATABASE=2
+
   marcelmichau.idp:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -34,6 +44,10 @@ services:
       - ConnectionStrings__ApplicationDbContext=Server=sqlserver;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - ConnectionStrings__ConfigurationDbContext=Server=sqlserver;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - ConnectionStrings__PersistedGrantDbContext=Server=sqlserver;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - REDIS_PASSWORD=testing
+      - REDIS_SSL=false
+      - REDIS_URL=redis
+      - REDIS_DEFAULT_DATABASE=1
       - IS_CLUSTER_ENV=false
       - USE_CERTIFICATE_SIGNING_MATERIAL=true
       - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3001/

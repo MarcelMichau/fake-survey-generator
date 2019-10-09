@@ -32,7 +32,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarcelMichau.IDP", "src\server\MarcelMichau.IDP\MarcelMichau.IDP.csproj", "{F9FAF22E-9560-46A0-96FC-6F229151214B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarcelMichau.IDP.EF.Design", "src\server\MarcelMichau.IDP.EF.Design\MarcelMichau.IDP.EF.Design.csproj", "{20F10E8F-F155-4521-8924-F669A3CF2D34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarcelMichau.IDP.EF.Design", "src\server\MarcelMichau.IDP.EF.Design\MarcelMichau.IDP.EF.Design.csproj", "{20F10E8F-F155-4521-8924-F669A3CF2D34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Worker", "src\server\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj", "{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 		{20F10E8F-F155-4521-8924-F669A3CF2D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20F10E8F-F155-4521-8924-F669A3CF2D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20F10E8F-F155-4521-8924-F669A3CF2D34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
