@@ -30,7 +30,7 @@ The domain is kept relatively simple such that it doesn't overwhelm the app with
 
 ## How is this thing built?
 
-There are two main components to FSG:
+There are two main areas in FSG:
 
 ### Server
 
@@ -78,8 +78,9 @@ The client side makes use of the following tools, libraries & frameworks:
 
 The application is built for Docker, Docker Compose & Kubernetes with Helm. For local development, Docker Compose is used when debugging the application with Visual Studio, and Skaffold is used to package the application into a Helm chart to deploy to a local Kubernetes cluster for running locally.
 
-The hosted version of the application is deployed to two environments:
+The hosted version of the application is deployed to three environments:
 
+- Integration - https://aks-integration.fakesurveygenerator.marcelmichau.dev
 - Test - https://aks-test.fakesurveygenerator.marcelmichau.dev
 - Production - https://aks.fakesurveygenerator.marcelmichau.dev
 
@@ -134,13 +135,13 @@ To deploy to a local Kubernetes cluster:
 
 1. Create an entry in your `hosts` file as follows:
 
-   `127.0.0.1 kube.local`
+   `127.0.0.1 k8s.local`
 
 2. In a Terminal/Command Prompt/PowerShell window in the project root, run:
 
    `skaffold run`
 
-3. In a browser, navigate to http://kube.local to open up the Fake Survey Generator UI
+3. In a browser, navigate to http://k8s.local to open up the Fake Survey Generator UI
 
 ## How do I contribute?
 
