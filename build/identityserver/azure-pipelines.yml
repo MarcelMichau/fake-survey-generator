@@ -287,3 +287,99 @@ stages:
                   arguments: '--version $(build.buildNumber) --set aspNetCoreEnvironment=$(testEnvAspNetCoreEnvironment) --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled) --set applicationDbDatabaseServer=$(testEnvApplicationDbDatabaseServer) --set applicationDbDatabase=$(testEnvApplicationDbDatabase) --set applicationDbUser=$(testEnvApplicationDbUser) --set applicationDbPassword=$(testEnvApplicationDbPassword) --set configurationDbDatabaseServer=$(testEnvConfigurationDbDatabaseServer) --set configurationDbDatabase=$(testEnvConfigurationDbDatabase) --set configurationDbUser=$(testEnvConfigurationDbUser) --set configurationDbPassword=$(testEnvConfigurationDbPassword) --set persistedGrantDbDatabaseServer=$(testEnvPersistedGrantDbDatabaseServer) --set persistedGrantDbDatabase=$(testEnvPersistedGrantDbDatabase) --set persistedGrantDbUser=$(testEnvPersistedGrantDbUser) --set persistedGrantDbPassword=$(testEnvPersistedGrantDbPassword) --set uiClientUrl=$(testEnvUiClientUrl) --set swaggerClientUrl=$(testEnvSwaggerClientUrl) --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled) --set redisUrl=$(testEnvRedisServer) --set redisPassword=$(testEnvRedisPassword) --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
                   tillerNamespace: '$(targetNamespace)'
                   force: true
+
+  - stage: Production_Deployment
+    displayName: 'Production Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy IdentityServer
+        pool:
+          vmImage: 'windows-2019'
+        variables:
+          environmentSuffix: prod
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks.identity.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-identity-tls-secret
+          replicaCount: 1
+          targetNamespace: prod-env
+        environment: 'aks-prod.prod-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Production Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: SqlAzureDacpacDeployment@1
+                displayName: 'Execute Configuration Database SQL Migration Script'
+                inputs:
+                  azureSubscription: MyARMConnection
+                  ServerName: '$(prodEnvConfigurationDbDatabaseMigrationServer)'
+                  DatabaseName: '$(prodEnvConfigurationDbDatabase)'
+                  SqlUsername: '$(prodEnvConfigurationDbDatabaseAdminLogin)'
+                  SqlPassword: '$(prodEnvConfigurationDbDatabaseAdminPassword)'
+                  deployType: SqlTask
+                  SqlFile: '$(Pipeline.Workspace)/ConfigurationDbMigrationScript/ConfigurationDbMigrationScript.sql'
+
+              - task: SqlAzureDacpacDeployment@1
+                displayName: 'Execute Persisted Grant Database SQL Migration Script'
+                inputs:
+                  azureSubscription: MyARMConnection
+                  ServerName: '$(prodEnvPersistedGrantDbDatabaseMigrationServer)'
+                  DatabaseName: '$(prodEnvPersistedGrantDbDatabase)'
+                  SqlUsername: '$(prodEnvPersistedGrantDbDatabaseAdminLogin)'
+                  SqlPassword: '$(prodEnvPersistedGrantDbDatabaseAdminPassword)'
+                  deployType: SqlTask
+                  SqlFile: '$(Pipeline.Workspace)/PersistedGrantDbMigrationScript/PersistedGrantDbMigrationScript.sql'
+
+              - task: SqlAzureDacpacDeployment@1
+                displayName: 'Execute Application Database SQL Migration Script'
+                inputs:
+                  azureSubscription: MyARMConnection
+                  ServerName: '$(prodEnvApplicationDbDatabaseMigrationServer)'
+                  DatabaseName: '$(prodEnvApplicationDbDatabase)'
+                  SqlUsername: '$(prodEnvApplicationDbDatabaseAdminLogin)'
+                  SqlPassword: '$(prodEnvApplicationDbDatabaseAdminPassword)'
+                  deployType: SqlTask
+                  SqlFile: '$(Pipeline.Workspace)/ApplicationDbMigrationScript/ApplicationDbMigrationScript.sql'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Production Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set aspNetCoreEnvironment=$(prodEnvAspNetCoreEnvironment) --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled) --set applicationDbDatabaseServer=$(prodEnvApplicationDbDatabaseServer) --set applicationDbDatabase=$(prodEnvApplicationDbDatabase) --set applicationDbUser=$(prodEnvApplicationDbUser) --set applicationDbPassword=$(prodEnvApplicationDbPassword) --set configurationDbDatabaseServer=$(prodEnvConfigurationDbDatabaseServer) --set configurationDbDatabase=$(prodEnvConfigurationDbDatabase) --set configurationDbUser=$(prodEnvConfigurationDbUser) --set configurationDbPassword=$(prodEnvConfigurationDbPassword) --set persistedGrantDbDatabaseServer=$(prodEnvPersistedGrantDbDatabaseServer) --set persistedGrantDbDatabase=$(prodEnvPersistedGrantDbDatabase) --set persistedGrantDbUser=$(prodEnvPersistedGrantDbUser) --set persistedGrantDbPassword=$(prodEnvPersistedGrantDbPassword) --set uiClientUrl=$(prodEnvUiClientUrl) --set swaggerClientUrl=$(prodEnvSwaggerClientUrl) --set azureRedisCacheEnabled=$(prodEnvAzureRedisCacheEnabled) --set redisUrl=$(prodEnvRedisServer) --set redisPassword=$(prodEnvRedisPassword) --set redisDefaultDatabase=$(prodEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  tillerNamespace: '$(targetNamespace)'
+                  force: true
