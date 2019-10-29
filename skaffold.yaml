@@ -12,16 +12,41 @@ build:
       context: .
       docker:
         dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
+    - image: marcelmichau/identityserver
+      context: .
+      docker:
+        dockerfile: src/server/MarcelMichau.IDP/Dockerfile
 deploy:
   helm:
     releases:
-      - name: fakesurveygenerator
-        chartPath: ./charts/fakesurveygenerator
+      - name: fake-survey-generator-ui
+        chartPath: ./charts/fake-survey-generator-ui
         namespace: default
         values:
-          ui.image: marcelmichau/fakesurveygeneratorui
-          api.image: marcelmichau/fakesurveygeneratorapi
-        valuesFiles:
-          - charts/fakesurveygenerator/values.yaml
+          image: marcelmichau/fakesurveygeneratorui
+        imageStrategy:
+          helm: {}
+      - name: fake-survey-generator-api
+        chartPath: ./charts/fake-survey-generator-api
+        namespace: default
+        values:
+          image: marcelmichau/fakesurveygeneratorapi
+        imageStrategy:
+          helm: {}
+      - name: identityserver
+        chartPath: ./charts/identityserver
+        namespace: default
+        values:
+          image: marcelmichau/identityserver
+        imageStrategy:
+          helm: {}
+      - name: sql-server
+        chartPath: ./charts/sql-server
+        namespace: default
+        imageStrategy:
+          helm: {}
+      - name: redis
+        chartPath: ./charts/redis
+        namespace: default
         imageStrategy:
           helm: {}

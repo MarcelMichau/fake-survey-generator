@@ -17,6 +17,20 @@ services:
     depends_on:
       - sqlserver
 
+  fakesurveygenerator.worker:
+    image: ${DOCKER_REGISTRY-}fakesurveygeneratorworker
+    build:
+      context: .
+      dockerfile: src/server/FakeSurveyGenerator.Worker/Dockerfile
+    depends_on:
+      - sqlserver
+
+  marcelmichau.idp:
+    image: ${DOCKER_REGISTRY-}marcelmichau-idp
+    build:
+      context: .
+      dockerfile: src/server/MarcelMichau.IDP/Dockerfile
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2017-latest
     environment:

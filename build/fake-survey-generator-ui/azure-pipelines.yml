@@ -1,0 +1,275 @@
+# Update this!!!
+
+trigger:
+  branches:
+    include:
+    - master
+    - feat/*
+    - fix/*
+    - chore/*
+  paths:
+    include:
+    - src/client/ui/*
+    - charts/fake-survey-generator-ui/*
+    - build/fake-survey-generator-ui/*
+
+stages:
+  - stage: Build
+    displayName: 'Build'
+    jobs:
+      - job: Build
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        variables:
+          buildConfiguration: 'Release'
+          imageName: fakesurveygeneratorui
+          versionTag: $(build.buildNumber)
+
+        steps:
+        - script: |
+            docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
+          displayName: 'Build Docker Image'
+
+        - script: |
+            echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
+            docker push $(dockerId)/$(imageName)
+          env:
+            DOCKER_PASSWORD: $(dockerPassword)
+          # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+          displayName: 'Push Image to Docker Hub'
+
+  - stage: Publish
+    displayName: 'Publish'
+    variables:
+      versionTag: $(build.buildNumber)
+    jobs:
+      - job: Publish_Chart
+        displayName: 'Publish Fake Survey Generator UI Chart'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+              - task: HelmInstaller@1
+                inputs:
+                  helmVersionToInstall: 'latest'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Install Helm'
+
+              - task: HelmDeploy@0
+                inputs:
+                  command: 'package'
+                  arguments: '--version $(versionTag)'
+                  chartPath: 'charts/$(projectName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Helm Package'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Push Helm Chart to Azure Container Registry'
+
+
+  - stage: Integration_Deployment
+    displayName: 'Integration Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator UI
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          environmentSuffix: integration
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks-integration.fakesurveygenerator.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          replicaCount: 2
+          targetNamespace: integration-env
+        environment: 'aks-integration.integration-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Integration Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Integration Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  tillerNamespace: '$(targetNamespace)'
+
+  - stage: Test_Deployment
+    displayName: 'Test Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator UI
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          environmentSuffix: test
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          replicaCount: 2
+          targetNamespace: test-env
+        environment: 'aks-test.test-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Test Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Test Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  tillerNamespace: '$(targetNamespace)'
+
+  - stage: Production_Deployment
+    displayName: 'Production Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator UI
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          environmentSuffix: prod
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks.fakesurveygenerator.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          replicaCount: 2
+          targetNamespace: prod-env
+        environment: 'aks-prod.prod-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Production Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Production Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  tillerNamespace: '$(targetNamespace)'

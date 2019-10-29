@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using AutoMapper;
 using FakeSurveyGenerator.API.Application.Queries;
@@ -11,11 +13,14 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 
@@ -32,6 +37,8 @@ namespace FakeSurveyGenerator.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthorization();
+
             services.AddControllers()
                 .AddNewtonsoftJson();
 
@@ -44,10 +51,10 @@ namespace FakeSurveyGenerator.API
             {
                 options.ConfigurationOptions = new ConfigurationOptions
                 {
-                    EndPoints = { Environment.GetEnvironmentVariable("REDIS_URL") },
-                    Password = Environment.GetEnvironmentVariable("REDIS_PASSWORD"),
-                    Ssl = Convert.ToBoolean(Environment.GetEnvironmentVariable("REDIS_SSL")),
-                    DefaultDatabase = Convert.ToInt16(Environment.GetEnvironmentVariable("REDIS_DEFAULT_DATABASE"))
+                    EndPoints = {_configuration.GetValue<string>("REDIS_URL")},
+                    Password = _configuration.GetValue<string>("REDIS_PASSWORD"),
+                    Ssl = _configuration.GetValue<bool>("REDIS_SSL"),
+                    DefaultDatabase = _configuration.GetValue<int>("REDIS_DEFAULT_DATABASE")
                 };
             });
 
@@ -75,21 +82,78 @@ namespace FakeSurveyGenerator.API
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = "OAuth2 Authentication",
+                    OpenIdConnectUrl = new Uri($"{_configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL")}/.well-known/openid-configuration"),
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        Implicit = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri($"{_configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL")}/connect/authorize"),
+                            Scopes = new Dictionary<string, string> { { "openid", "Standard OpenID Scope" }, { "profile", "Standard OpenID Scope" }, { "fake-survey-generator-api", "Grants access to the Fake Survey Generator API" } }
+                        }
+                    }
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference {Type = ReferenceType.SecurityScheme, Id = "oauth2"}
+                        },
+                        new List<string>{ "openid", "profile", "fake-survey-generator-api" }
+                    }
+                });
             });
 
             services.AddCustomHealthChecks(_configuration);
 
             SetupDi(services, connectionString);
+
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = _configuration.GetValue<string>("IDENTITY_PROVIDER_BACKCHANNEL_URL");
+                    options.RequireHttpsMetadata = false;
+                    options.Audience = "fake-survey-generator-api";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuers = new List<string>
+                        {
+                            _configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL"),
+                            _configuration.GetValue<string>("IDENTITY_PROVIDER_BACKCHANNEL_URL")
+                        }
+                    };
+                });
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+                foreach (var network in Utilities.GetNetworks(NetworkInterfaceType.Ethernet))
+                {
+                    options.KnownNetworks.Add(network);
+                }
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders();
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                IdentityModelEventSource.ShowPII = true;
             }
             else
             {
@@ -99,6 +163,9 @@ namespace FakeSurveyGenerator.API
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -106,13 +173,19 @@ namespace FakeSurveyGenerator.API
                 {
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });
-            });
 
-            app.UseHealthChecksUI();
+                endpoints.MapHealthChecksUI();
+            });
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1"); });
+            app.UseSwaggerUI(c =>
+            {
+                c.EnableDeepLinking();
+                c.InjectJavascript("/swagger/idTokenOverride.js");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1");
+                c.OAuthClientId("fake-survey-generator-api-swagger");
+            });
 
             UpdateDatabase(app, env);
         }

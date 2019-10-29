@@ -6,15 +6,17 @@
 This is an app. That generates surveys. Fake ones. For fun. That is all.
 </p>
 
-<p align="center">
-<a href="https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/MarcelMichau.fake-survey-generator?branchName=master">
-    <img src="https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/MarcelMichau.fake-survey-generator?branchName=master" alt="Azure DevOps Build Status" />
-  </a>
-</p>
+| Component                 | Build Status   |
+|---------------------------|----------------|
+| Fake Survey Generator API | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Fake%20Survey%20Generator%20API?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=5&branchName=master) |
+| Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Fake%20Survey%20Generator%20UI?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=6&branchName=master) |
+| IdentityServer            | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/IdentityServer?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=7&branchName=master) |
+| SQL Server                | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/SQL%20Server?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=9&branchName=master) |
+| Redis                     | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Redis?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=8&branchName=master) |
 
 ## What is this?
 
-This is an application of moderate complexity, used as a playground for experimentation. Simply put: This is where I mess around with code.
+This is an application of moderate complexity, used as a playground for experimentation. Simply put: This is where I mess around with code.  It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 
 ## Why is this here?
 
@@ -30,31 +32,37 @@ The domain is kept relatively simple such that it doesn't overwhelm the app with
 
 ## How is this thing built?
 
-There are two main components to FSG:
+FSG consists of two parts:
 
 ### Server
 
 The server side consists of the following main components:
 
-- Web API
-- Domain Project
-- Infrastructure Project
-- Domain Unit Tests Project
-- API Integration Tests Project
-- EF Design Project (used purely for EF Core design-time tooling)
+- Fake Survey Generator API
+  - Domain Project
+  - Infrastructure Project
+  - Domain Unit Tests Project
+  - API Integration Tests Project
+  - EF Design Project (used purely for EF Core design-time tooling)
+- Identity Provider API
 
 The server side makes use of the following tools, libraries & frameworks:
 
-- .NET Core 3.0
-- ASP.NET Core 3.0 Web API
-- Entity Framework Core 3.0 with Code-First Migrations
-- Dapper
-- Redis
-- Swagger
-- AutoMapper
-- MediatR
-- AspNetCore.Diagnostics.HealthChecks
-- Docker
+- Fake Survey Generator API
+  - .NET Core 3.0
+  - ASP.NET Core 3.0 Web API
+  - Entity Framework Core 3.0 with Code-First Migrations
+  - Dapper
+  - Redis
+  - Swagger
+  - AutoMapper
+  - MediatR
+  - AspNetCore.Diagnostics.HealthChecks
+  - Docker
+- Identity Provider API
+  - .NET Core 3.0
+  - ASP.NET Core 3.0 MVC
+  - IdentityServer
 
 ### Client
 
@@ -72,8 +80,9 @@ The client side makes use of the following tools, libraries & frameworks:
 
 The application is built for Docker, Docker Compose & Kubernetes with Helm. For local development, Docker Compose is used when debugging the application with Visual Studio, and Skaffold is used to package the application into a Helm chart to deploy to a local Kubernetes cluster for running locally.
 
-The hosted version of the application is deployed to two environments:
+The hosted version of the application is deployed to three environments:
 
+- Integration - https://aks-integration.fakesurveygenerator.marcelmichau.dev
 - Test - https://aks-test.fakesurveygenerator.marcelmichau.dev
 - Production - https://aks.fakesurveygenerator.marcelmichau.dev
 
@@ -91,9 +100,40 @@ The hosted version utilizes the following:
 - Docker Hub
 - Azure DevOps Services (for CI/CD)
 
+## Authentication
+The application makes use of OpenID Connect for authentication which is implemented by IdentityServer.  The Identity Provider has a user database with a couple of test users with the following credentials:
+
+- User 1
+  - Username: **alice**
+  - Password: **Pass123$**
+  
+- User 2
+  - Username: **bob**
+  - Password: **Pass123$**
+  
+There is no interface to register users - the authentication mechanism serves as an example of how to implement user authentication using OpenID Connect in a .NET microservice architecture.
+
 ## How do I run this thing?
 
 In order to run FSG on your local machine, you will need the following prerequisites:
+
+To run on local Kubernetes:
+
+- Docker Desktop with Kubernetes enabled (Ensure that at least 2048 MB of Memory is allocated to Docker Engine)
+- NGINX Ingress installed on the Kubernetes cluster
+- Skaffold
+
+To deploy to a local Kubernetes cluster:
+
+1. Create an entry in your `hosts` file as follows:
+
+   `127.0.0.1 k8s.local`
+
+2. In a Terminal/Command Prompt/PowerShell window in the project root, run:
+
+   `skaffold run`
+
+3. In a browser, navigate to http://k8s.local to open up the Fake Survey Generator UI
 
 To run with Docker Compose:
 
@@ -117,24 +157,6 @@ or
 3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
 
 4. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
-
-To run on local Kubernetes:
-
-- Docker Desktop with Kubernetes enabled (Ensure that at least 2048 MB of Memory is allocated to Docker Engine)
-- NGINX Ingress installed on the Kubernetes cluster
-- Skaffold
-
-To deploy to a local Kubernetes cluster:
-
-1. Create an entry in your `hosts` file as follows:
-
-   `127.0.0.1 kube.local`
-
-2. In a Terminal/Command Prompt/PowerShell window in the project root, run:
-
-   `skaffold run`
-
-3. In a browser, navigate to http://kube.local to open up the Fake Survey Generator UI
 
 ## How do I contribute?
 

@@ -1,0 +1,339 @@
+trigger:
+  branches:
+    include:
+    - master
+    - feat/*
+    - fix/*
+    - chore/*
+  paths:
+    include:
+    - src/server/FakeSurveyGenerator.API/*
+    - src/server/FakeSurveyGenerator.API.Tests.Integration/*
+    - src/server/FakeSurveyGenerator.Domain/*
+    - src/server/FakeSurveyGenerator.Domain.Tests/*
+    - src/server/FakeSurveyGenerator.EF.Design/*
+    - src/server/FakeSurveyGenerator.Infrastructure/*
+    - charts/fake-survey-generator-api/*
+    - build/fake-survey-generator-api/*
+
+stages:
+  - stage: Build
+    displayName: 'Build'
+    jobs:
+      - job: Build
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        variables:
+          buildConfiguration: 'Release'
+          imageName: fakesurveygeneratorapi
+          versionTag: $(build.buildNumber)
+
+        steps:
+        - task: DotNetCoreInstaller@0
+          displayName: 'Install .NET Core 3.0'
+          inputs:
+            version: '3.0.100'
+
+        - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
+          displayName: 'Build Solution'
+
+        - script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
+          displayName: 'Run Unit Tests'
+
+        - script: dotnet test src/server/FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
+          displayName: 'Run Integration Tests'
+
+        - task: PublishTestResults@2
+          condition: succeededOrFailed()
+          inputs:
+            testRunner: VSTest
+            testResultsFiles: '**/*.trx'
+          displayName: 'Publish Test Results'
+
+        - script: |
+            dotnet tool install --global dotnet-ef --version 3.0.0
+          displayName: 'Install EF Core Global Tool'
+
+        - script: |
+            dotnet ef migrations script -o DbMigrationScript.sql -i
+          workingDirectory: src/server/FakeSurveyGenerator.EF.Design
+          displayName: 'Create Database Migration Script'
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: 'src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql'
+            artifact: 'DbMigrationScript'
+          displayName: 'Publish Database Migration Script'
+
+        - script: |
+            docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
+          displayName: 'Build Docker Image'
+
+        - script: |
+            echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
+            docker push $(dockerId)/$(imageName)
+          env:
+            DOCKER_PASSWORD: $(dockerPassword)
+          # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+          displayName: 'Push Image to Docker Hub'
+
+  - stage: Publish
+    displayName: 'Publish'
+    variables:
+      versionTag: $(build.buildNumber)
+    jobs:
+      - job: Publish_Chart
+        displayName: 'Publish Fake Survey Generator API Chart'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+              - task: HelmInstaller@1
+                inputs:
+                  helmVersionToInstall: 'latest'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Install Helm'
+
+              - task: HelmDeploy@0
+                inputs:
+                  command: 'package'
+                  arguments: '--version $(versionTag)'
+                  chartPath: 'charts/$(projectName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Helm Package'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Push Helm Chart to Azure Container Registry'
+
+
+  - stage: Integration_Deployment
+    displayName: 'Integration Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          environmentSuffix: integration
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks-integration.fakesurveygenerator.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          targetNamespace: integration-env
+        environment: 'aks-integration.integration-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Integration Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Integration Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(integrationEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(integrationEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(integrationEnvAzureDatabaseEnabled) --set databaseServer=$(integrationEnvDatabaseServer) --set azureRedisCacheEnabled=$(integrationEnvAzureRedisCacheEnabled) --set redisUrl=$(integrationEnvRedisServer) --set redisPassword=$(integrationEnvRedisPassword) --set redisDefaultDatabase=$(integrationEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(integrationEnvDatabase) --set user=$(integrationEnvDatabaseUser) --set password=$(integrationEnvDatabasePassword) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(integrationEnvReplicaCount)'
+                  tillerNamespace: '$(targetNamespace)'
+
+  - stage: Test_Deployment
+    displayName: 'Test Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        pool:
+          vmImage: 'windows-2019'
+        variables:
+          environmentSuffix: test
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          targetNamespace: test-env
+          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
+          databaseLogin: 'azure-pipelines-user-test'
+        environment: 'aks-test.test-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Test Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: SqlAzureDacpacDeployment@1
+                displayName: 'Execute SQL Migration Script'
+                inputs:
+                  azureSubscription: MyARMConnection
+                  ServerName: '$(testEnvDatabaseMigrationServer)'
+                  DatabaseName: '$(testEnvDatabase)'
+                  SqlUsername: '$(testEnvDatabaseAdminLogin)'
+                  SqlPassword: '$(testEnvDatabaseAdminPassword)'
+                  deployType: SqlTask
+                  SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Test Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(testEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(testEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled) --set databaseServer=$(testEnvDatabaseServer) --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled) --set redisUrl=$(testEnvRedisServer) --set redisPassword=$(testEnvRedisPassword) --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(testEnvDatabase) --set user=$(testEnvDatabaseUser) --set password=$(testEnvDatabasePassword) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(testEnvReplicaCount)'
+                  tillerNamespace: '$(targetNamespace)'
+
+  - stage: Production_Deployment
+    displayName: 'Production Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        pool:
+          vmImage: 'windows-2019'
+        variables:
+          environmentSuffix: prod
+          ingressClusterIssuerName: letsencrypt-prod
+          ingressHost: aks.fakesurveygenerator.marcelmichau.dev
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          targetNamespace: prod-env
+          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
+          databaseLogin: 'azure-pipelines-user-prod'
+        environment: 'aks-prod.prod-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
+
+              - task: HelmInstaller@1
+                displayName: 'Install Helm 2.14.0'
+
+              - task: HelmDeploy@0
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Production Environment'
+                  command: 'init'
+                  arguments: '--service-account tiller'
+                  tillerNamespace: '$(targetNamespace)'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
+
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'MyARMConnection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: SqlAzureDacpacDeployment@1
+                displayName: 'Execute SQL Migration Script'
+                inputs:
+                  azureSubscription: MyARMConnection
+                  ServerName: '$(prodEnvDatabaseMigrationServer)'
+                  DatabaseName: '$(prodEnvDatabase)'
+                  SqlUsername: '$(prodEnvDatabaseAdminLogin)'
+                  SqlPassword: '$(prodEnvDatabaseAdminPassword)'
+                  deployType: SqlTask
+                  SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceConnection: 'AKS Production Environment'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(prodEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(prodEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled) --set databaseServer=$(prodEnvDatabaseServer) --set azureRedisCacheEnabled=$(prodEnvAzureRedisCacheEnabled) --set redisUrl=$(prodEnvRedisServer) --set redisPassword=$(prodEnvRedisPassword) --set redisDefaultDatabase=$(prodEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(prodEnvDatabase) --set user=$(prodEnvDatabaseUser) --set password=$(prodEnvDatabasePassword) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(prodEnvReplicaCount)'
+                  tillerNamespace: '$(targetNamespace)'
+
+  

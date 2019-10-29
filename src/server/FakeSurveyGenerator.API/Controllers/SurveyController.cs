@@ -6,10 +6,12 @@ using FakeSurveyGenerator.API.Application.Commands;
 using FakeSurveyGenerator.API.Application.Models;
 using FakeSurveyGenerator.API.Application.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FakeSurveyGenerator.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SurveyController : ControllerBase
