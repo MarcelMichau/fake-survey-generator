@@ -175,6 +175,12 @@ stages:
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
+              - task: Bash@3
+                inputs:
+                  targetType: 'inline'
+                  script: 'helm repo update'
+                displayName: 'Update Helm Repo'
+
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
                 inputs:
@@ -249,6 +255,12 @@ stages:
                   deployType: SqlTask
                   SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
 
+              - task: Bash@3
+                inputs:
+                  targetType: 'inline'
+                  script: 'helm repo update'
+                displayName: 'Update Helm Repo'
+
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
                 inputs:
@@ -322,6 +334,12 @@ stages:
                   SqlPassword: '$(prodEnvDatabaseAdminPassword)'
                   deployType: SqlTask
                   SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
+
+              - task: Bash@3
+                inputs:
+                  targetType: 'inline'
+                  script: 'helm repo update'
+                displayName: 'Update Helm Repo'
 
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
