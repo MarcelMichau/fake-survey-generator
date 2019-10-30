@@ -152,7 +152,9 @@ stages:
                 displayName: 'Install Kubectl latest'
 
               - task: HelmInstaller@1
-                displayName: 'Install Helm 2.14.0'
+                inputs:
+                  helmVersionToInstall: '2.14.3'
+                displayName: 'Install Helm'
 
               - task: HelmDeploy@0
                 inputs:
@@ -215,7 +217,9 @@ stages:
                 displayName: 'Install Kubectl latest'
 
               - task: HelmInstaller@1
-                displayName: 'Install Helm 2.14.0'
+                inputs:
+                  helmVersionToInstall: '2.14.3'
+                displayName: 'Install Helm'
 
               - task: HelmDeploy@0
                 inputs:
@@ -311,7 +315,9 @@ stages:
                 displayName: 'Install Kubectl latest'
 
               - task: HelmInstaller@1
-                displayName: 'Install Helm 2.14.0'
+                inputs:
+                  helmVersionToInstall: '2.14.3'
+                displayName: 'Install Helm'
 
               - task: HelmDeploy@0
                 inputs:
