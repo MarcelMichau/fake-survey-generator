@@ -159,7 +159,7 @@ stages:
                   connectionType: 'Kubernetes Service Connection'
                   kubernetesServiceConnection: 'AKS Integration Environment'
                   command: 'init'
-                  arguments: '--service-account tiller'
+                  arguments: '--force-upgrade --service-account tiller'
                   tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
@@ -222,7 +222,7 @@ stages:
                   connectionType: 'Kubernetes Service Connection'
                   kubernetesServiceConnection: 'AKS Test Environment'
                   command: 'init'
-                  arguments: '--service-account tiller'
+                  arguments: '--force-upgrade --service-account tiller'
                   tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
@@ -318,7 +318,7 @@ stages:
                   connectionType: 'Kubernetes Service Connection'
                   kubernetesServiceConnection: 'AKS Production Environment'
                   command: 'init'
-                  arguments: '--service-account tiller'
+                  arguments: '--force-upgrade --service-account tiller'
                   tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
