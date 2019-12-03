@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class InMemoryDatabaseWebApplicationFactory<TStartup>
+    public class IntegrationTestWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         //Just a different implementation of the below method

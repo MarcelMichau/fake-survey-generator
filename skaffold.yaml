@@ -1,8 +1,6 @@
-apiVersion: skaffold/v1beta13
+apiVersion: skaffold/v1
 kind: Config
 build:
-  tagPolicy:
-    sha256: {}
   artifacts:
     - image: marcelmichau/fakesurveygeneratorui
       context: .
@@ -16,28 +14,30 @@ build:
       context: .
       docker:
         dockerfile: src/server/MarcelMichau.IDP/Dockerfile
+  tagPolicy:
+    sha256: {}
 deploy:
   helm:
     releases:
       - name: fake-survey-generator-ui
         chartPath: ./charts/fake-survey-generator-ui
-        namespace: default
         values:
           image: marcelmichau/fakesurveygeneratorui
+        namespace: default
         imageStrategy:
           helm: {}
       - name: fake-survey-generator-api
         chartPath: ./charts/fake-survey-generator-api
-        namespace: default
         values:
           image: marcelmichau/fakesurveygeneratorapi
+        namespace: default
         imageStrategy:
           helm: {}
       - name: identityserver
         chartPath: ./charts/identityserver
-        namespace: default
         values:
           image: marcelmichau/identityserver
+        namespace: default
         imageStrategy:
           helm: {}
       - name: sql-server

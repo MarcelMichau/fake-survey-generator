@@ -1,24 +1,26 @@
-version: "3.4"
+version: "3.7"
 
 services:
-  fakesurveygenerator.ui:
+  fake-survey-generator-ui:
     ports:
       - "3000:80"
     volumes:
       - ./src/client/ui/nginx.conf:/etc/nginx/nginx.conf:ro
 
-  fakesurveygenerator.api:
+  fakesurveygeneratorapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=44367
-      - ConnectionStrings__SurveyContext=Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - HealthChecksUI__HealthChecks__0__Name=httpBasic
+      - HealthChecksUI__HealthChecks__0__Uri=http://fakesurveygeneratorapi/health/ready
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
       - REDIS_URL=redis
       - REDIS_DEFAULT_DATABASE=0
       - IDENTITY_PROVIDER_FRONTCHANNEL_URL=https://localhost:44320
-      - IDENTITY_PROVIDER_BACKCHANNEL_URL=http://marcelmichau.idp
+      - IDENTITY_PROVIDER_BACKCHANNEL_URL=http://marcel-michau-idp
     ports:
       - "6523:80"
       - "44367:443"
@@ -26,24 +28,14 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-
-  fakesurveygenerator.worker:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__SurveyContext=Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - REDIS_PASSWORD=testing
-      - REDIS_SSL=false
-      - REDIS_URL=redis
-      - REDIS_DEFAULT_DATABASE=2
-
-  marcelmichau.idp:
+  marcel-michau-idp:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=44320
-      - ConnectionStrings__ApplicationDbContext=Server=sqlserver;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - ConnectionStrings__ConfigurationDbContext=Server=sqlserver;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - ConnectionStrings__PersistedGrantDbContext=Server=sqlserver;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__ApplicationDbContext=Server=sql-server;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__ConfigurationDbContext=Server=sql-server;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__PersistedGrantDbContext=Server=sql-server;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
       - REDIS_URL=redis
@@ -60,7 +52,7 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ./src/server/MarcelMichau.IDP/Certificates/identitykeymaterial.pfx:/app/certs/identitykeymaterial.pfx:ro
 
-  sqlserver:
+  sql-server:
     ports:
       - "1433:1433"
 

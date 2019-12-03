@@ -6,25 +6,36 @@ using System.Text;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.API.Application.Commands;
 using FakeSurveyGenerator.API.Application.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class SurveyControllerTests : IClassFixture<InMemoryDatabaseWebApplicationFactory<Startup>>
+    public class SurveyControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
     {
-        private readonly InMemoryDatabaseWebApplicationFactory<Startup> _factory;
+        private readonly IntegrationTestWebApplicationFactory<Startup> _factory;
 
-        public SurveyControllerTests(InMemoryDatabaseWebApplicationFactory<Startup> factory)
+        public SurveyControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
         {
             _factory = factory;
         }
 
-        [Fact(Skip = "Until Integration Tests work with Auth")]
-        public async Task Post_Test()
+        [Fact]
+        public async Task Authenticated_Call_To_Post_Survey_Should_Create_Survey()
         {
-            var client = _factory.CreateClient();
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddAuthentication("Test")
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                            "Test", options => { });
+                });
+            }).CreateClient();
 
             var createSurveyCommand = new CreateSurveyCommand("How awesome is this?", 350, "Individuals",
                 new List<SurveyOptionDto>
@@ -53,11 +64,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Unauthenticated_Call_Should_Return_Unauthorized_Response()
+        public async Task Unauthenticated_Call_To_Post_Survey_Should_Return_Unauthorized_Response()
         {
             var client = _factory.CreateClient();
 
-            var createSurveyCommand = new CreateSurveyCommand("How unauthorized is this?", 350, "Unauthorized users",
+            var createSurveyCommand = new CreateSurveyCommand("How unauthorized is this?", 400, "Unauthorized users",
                 new List<SurveyOptionDto>
                 {
                     new SurveyOptionDto

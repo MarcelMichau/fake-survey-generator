@@ -1,0 +1,62 @@
+version: "3.7"
+
+services:
+  fake-survey-generator-ui-test:
+    ports:
+      - "3000:80"
+    volumes:
+      - ./src/client/ui/nginx.tests.conf:/etc/nginx/nginx.conf:ro
+
+  fake-survey-generator-api-unit-test:
+    entrypoint:
+      - dotnet
+      - test
+      - --logger
+      - trx;LogFileName=/tests/fake-survey-generator-api-unit-test-results.xml
+
+  fake-survey-generator-api-integration-test:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__SurveyContext=Server=sql-server-test;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - REDIS_PASSWORD=testing
+      - REDIS_SSL=false
+      - REDIS_URL=redis-test
+      - REDIS_DEFAULT_DATABASE=0
+      - IDENTITY_PROVIDER_FRONTCHANNEL_URL=https://localhost:44320
+      - IDENTITY_PROVIDER_BACKCHANNEL_URL=http://marcel-michau-idp-test
+    ports:
+      - "6523:80"
+    entrypoint:
+      - dotnet
+      - test
+      - --logger
+      - trx;LogFileName=/tests/fake-survey-generator-api-integration-test-results.xml
+
+  marcel-michau-idp-test:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__ApplicationDbContext=Server=sql-server-test;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__ConfigurationDbContext=Server=sql-server-test;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__PersistedGrantDbContext=Server=sql-server-test;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - REDIS_PASSWORD=testing
+      - REDIS_SSL=false
+      - REDIS_URL=redis-test
+      - REDIS_DEFAULT_DATABASE=1
+      - IS_CLUSTER_ENV=false
+      - USE_CERTIFICATE_SIGNING_MATERIAL=true
+      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3001/
+      - FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL=https://localhost:44367/swagger
+    ports:
+      - "33352:80"
+    volumes:
+      - ./src/server/MarcelMichau.IDP/Certificates/identitykeymaterial.pfx:/app/certs/identitykeymaterial.pfx:ro
+
+  sql-server-test:
+    ports:
+      - "1433:1433"
+
+  redis-test:
+    ports:
+      - "6379:6379"

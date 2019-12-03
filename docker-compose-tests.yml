@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  fake-survey-generator-ui-test:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-ui-test:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/client/ui/Dockerfile
+    depends_on:
+      - fake-survey-generator-api-integration-test
+
+  fake-survey-generator-api-unit-test:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-api-unit-test:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
+      target: unittest
+    volumes:
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  fake-survey-generator-api-integration-test:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-api-integration-test:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
+      target: integrationtest
+    depends_on:
+      - sql-server-test
+      - redis-test
+    volumes:
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  marcel-michau-idp-test:
+    image: ${DOCKER_REGISTRY-}marcel-michau-idp-test:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/server/MarcelMichau.IDP/Dockerfile
+    depends_on:
+      - sql-server-test
+
+  sql-server-test:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=<YourStrong!Passw0rd>
+
+  redis-test:
+    image: redis

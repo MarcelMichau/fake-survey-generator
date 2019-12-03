@@ -23,7 +23,7 @@ namespace FakeSurveyGenerator.Worker
 
                     services.AddDbContext<SurveyContext>
                     (options => options.UseSqlServer(connectionString,
-                        b => b.MigrationsAssembly("FakeSurveyGenerator.Infrastructure")));
+                        b => b.MigrationsAssembly(typeof(SurveyContext).Namespace)));
 
                     services.AddScoped<ISurveyRepository, SurveyRepository>();
 

@@ -1,41 +1,41 @@
-version: '3.4'
+version: "3.7"
 
 services:
-  fakesurveygenerator.ui:
-    image: ${DOCKER_REGISTRY-}fakesurveygeneratorui
+  fake-survey-generator-ui:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-ui:${TAG:-latest}
     build:
       context: .
       dockerfile: src/client/ui/Dockerfile
     depends_on:
-      - fakesurveygenerator.api
+      - fakesurveygeneratorapi
 
-  fakesurveygenerator.api:
-    image: ${DOCKER_REGISTRY-}fakesurveygeneratorapi
+  fake-survey-generator-api:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-api:${TAG:-latest}
     build:
       context: .
       dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
     depends_on:
-      - sqlserver
+      - sql-server
 
-  fakesurveygenerator.worker:
-    image: ${DOCKER_REGISTRY-}fakesurveygeneratorworker
+  fake-survey-generator-worker:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-worker:${TAG:-latest}
     build:
       context: .
       dockerfile: src/server/FakeSurveyGenerator.Worker/Dockerfile
     depends_on:
       - sqlserver
 
-  marcelmichau.idp:
-    image: ${DOCKER_REGISTRY-}marcelmichau-idp
+  marcel-michau-idp:
+    image: ${DOCKER_REGISTRY-}marcel-michau-idp:${TAG:-latest}
     build:
       context: .
       dockerfile: src/server/MarcelMichau.IDP/Dockerfile
 
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2017-latest
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2017-CU17-ubuntu
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
-  
+
   redis:
     image: redis

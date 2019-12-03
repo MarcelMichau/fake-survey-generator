@@ -33,11 +33,11 @@ spec:
                 name: {{ include "fake-survey-generator-api.fullname" . }}
           livenessProbe:
             httpGet:
-              path: /health
+              path: /health/live
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /health/ready
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
