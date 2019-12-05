@@ -49,16 +49,16 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
                 inputs:
                   command: 'package'
-                  arguments: '--version $(versionTag)'
                   chartPath: 'charts/$(projectName)'
-                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                  chartVersion: '$(versionTag)'
+                  save: false
                 displayName: 'Helm Package'
 
               - task: AzureCLI@1
@@ -110,16 +110,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Integration Environment'
-                  command: 'init'
-                  arguments: '--service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -148,7 +140,6 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
 
   - stage: Test_Deployment
     displayName: 'Test Deployment'
@@ -174,7 +165,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
@@ -238,7 +229,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
