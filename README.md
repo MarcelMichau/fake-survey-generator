@@ -6,17 +6,17 @@
 This is an app. That generates surveys. Fake ones. For fun. That is all.
 </p>
 
-| Component                 | Build Status   |
-|---------------------------|----------------|
+| Component                 | Build Status                                                                                                                                                                                                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Fake Survey Generator API | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Fake%20Survey%20Generator%20API?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=5&branchName=master) |
-| Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Fake%20Survey%20Generator%20UI?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=6&branchName=master) |
-| IdentityServer            | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/IdentityServer?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=7&branchName=master) |
-| SQL Server                | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/SQL%20Server?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=9&branchName=master) |
-| Redis                     | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Redis?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=8&branchName=master) |
+| Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Fake%20Survey%20Generator%20UI?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=6&branchName=master)  |
+| IdentityServer            | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/IdentityServer?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=7&branchName=master)                  |
+| SQL Server                | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/SQL%20Server?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=9&branchName=master)                    |
+| Redis                     | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Redis?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=8&branchName=master)                           |
 
 ## What is this?
 
-This is an application of moderate complexity, used as a playground for experimentation. Simply put: This is where I mess around with code.  It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
+This is an application of moderate complexity, used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 
 ## Why is this here?
 
@@ -49,9 +49,9 @@ The server side consists of the following main components:
 The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API
-  - .NET Core 3.0
-  - ASP.NET Core 3.0 Web API
-  - Entity Framework Core 3.0 with Code-First Migrations
+  - .NET Core 3.1
+  - ASP.NET Core 3.1 Web API
+  - Entity Framework Core 3.1 with Code-First Migrations
   - Dapper
   - Redis
   - Swagger
@@ -60,8 +60,8 @@ The server side makes use of the following tools, libraries & frameworks:
   - AspNetCore.Diagnostics.HealthChecks
   - Docker
 - Identity Provider API
-  - .NET Core 3.0
-  - ASP.NET Core 3.0 MVC
+  - .NET Core 3.1
+  - ASP.NET Core 3.1 MVC
   - IdentityServer
 
 ### Client
@@ -89,7 +89,8 @@ The hosted version of the application is deployed to three environments:
 The following endpoints are accessible:
 
 - [/swagger](https://aks.fakesurveygenerator.marcelmichau.dev/swagger/index.html) - The Swagger documentation page for the API
-- [/health](https://aks.fakesurveygenerator.marcelmichau.dev/health) - Health Checks endpoint used by Kubernetes liveness probe
+- [/health/live](https://aks.fakesurveygenerator.marcelmichau.dev/health/live) - Health Checks endpoint used by Kubernetes liveness probe
+- [/health/ready](https://aks.fakesurveygenerator.marcelmichau.dev/health/ready) - Health Checks endpoint used by Kubernetes readiness probe
 
 The hosted version utilizes the following:
 
@@ -101,16 +102,19 @@ The hosted version utilizes the following:
 - Azure DevOps Services (for CI/CD)
 
 ## Authentication
-The application makes use of OpenID Connect for authentication which is implemented by IdentityServer.  The Identity Provider has a user database with a couple of test users with the following credentials:
+
+The application makes use of OpenID Connect for authentication which is implemented by IdentityServer. The Identity Provider has a user database with a couple of test users with the following credentials:
 
 - User 1
+
   - Username: **alice**
-  - Password: **Pass123$**
-  
+  - Password: **Pass123\$**
+
 - User 2
+
   - Username: **bob**
-  - Password: **Pass123$**
-  
+  - Password: **Pass123\$**
+
 There is no interface to register users - the authentication mechanism serves as an example of how to implement user authentication using OpenID Connect in a .NET microservice architecture.
 
 ## How do I run this thing?

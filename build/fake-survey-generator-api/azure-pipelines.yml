@@ -90,16 +90,16 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
                 inputs:
                   command: 'package'
-                  arguments: '--version $(versionTag)'
                   chartPath: 'charts/$(projectName)'
-                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                  chartVersion: '$(versionTag)'
+                  save: false
                 displayName: 'Helm Package'
 
               - task: AzureCLI@1
@@ -150,16 +150,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Integration Environment'
-                  command: 'init'
-                  arguments: '--force-upgrade --service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -194,7 +186,6 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(integrationEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(integrationEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(integrationEnvAzureDatabaseEnabled) --set databaseServer=$(integrationEnvDatabaseServer) --set azureRedisCacheEnabled=$(integrationEnvAzureRedisCacheEnabled) --set redisUrl=$(integrationEnvRedisServer) --set redisPassword=$(integrationEnvRedisPassword) --set redisDefaultDatabase=$(integrationEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(integrationEnvDatabase) --set user=$(integrationEnvDatabaseUser) --set password=$(integrationEnvDatabasePassword) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(integrationEnvReplicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
 
   - stage: Test_Deployment
     displayName: 'Test Deployment'
@@ -221,16 +212,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Test Environment'
-                  command: 'init'
-                  arguments: '--force-upgrade --service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -276,7 +259,6 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(testEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(testEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled) --set databaseServer=$(testEnvDatabaseServer) --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled) --set redisUrl=$(testEnvRedisServer) --set redisPassword=$(testEnvRedisPassword) --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(testEnvDatabase) --set user=$(testEnvDatabaseUser) --set password=$(testEnvDatabasePassword) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(testEnvReplicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
 
   - stage: Production_Deployment
     displayName: 'Production Deployment'
@@ -303,16 +285,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Production Environment'
-                  command: 'init'
-                  arguments: '--force-upgrade --service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -358,6 +332,5 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set identityProviderFrontChannelUrl=$(prodEnvIdentityProviderFrontChannelUrl) --set identityProviderBackChannelUrl=$(prodEnvIdentityProviderBackChannelUrl) --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled) --set databaseServer=$(prodEnvDatabaseServer) --set azureRedisCacheEnabled=$(prodEnvAzureRedisCacheEnabled) --set redisUrl=$(prodEnvRedisServer) --set redisPassword=$(prodEnvRedisPassword) --set redisDefaultDatabase=$(prodEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(prodEnvDatabase) --set user=$(prodEnvDatabaseUser) --set password=$(prodEnvDatabasePassword) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(prodEnvReplicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
 
   

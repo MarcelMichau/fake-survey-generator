@@ -92,16 +92,16 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
                 inputs:
                   command: 'package'
-                  arguments: '--version $(versionTag)'
                   chartPath: 'charts/$(projectName)'
-                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                  chartVersion: '$(versionTag)'
+                  save: false
                 displayName: 'Helm Package'
 
               - task: AzureCLI@1
@@ -153,16 +153,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Integration Environment'
-                  command: 'init'
-                  arguments: '--force-upgrade --service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -191,8 +183,6 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set aspNetCoreEnvironment=$(integrationEnvAspNetCoreEnvironment) --set azureDatabaseEnabled=$(integrationEnvAzureDatabaseEnabled) --set applicationDbDatabaseServer=$(integrationEnvApplicationDbDatabaseServer) --set applicationDbDatabase=$(integrationEnvApplicationDbDatabase) --set applicationDbUser=$(integrationEnvApplicationDbUser) --set applicationDbPassword=$(integrationEnvApplicationDbPassword) --set configurationDbDatabaseServer=$(integrationEnvConfigurationDbDatabaseServer) --set configurationDbDatabase=$(integrationEnvConfigurationDbDatabase) --set configurationDbUser=$(integrationEnvConfigurationDbUser) --set configurationDbPassword=$(integrationEnvConfigurationDbPassword) --set persistedGrantDbDatabaseServer=$(integrationEnvPersistedGrantDbDatabaseServer) --set persistedGrantDbDatabase=$(integrationEnvPersistedGrantDbDatabase) --set persistedGrantDbUser=$(integrationEnvPersistedGrantDbUser) --set persistedGrantDbPassword=$(integrationEnvPersistedGrantDbPassword) --set uiClientUrl=$(integrationEnvUiClientUrl) --set swaggerClientUrl=$(integrationEnvSwaggerClientUrl) --set azureRedisCacheEnabled=$(integrationEnvAzureRedisCacheEnabled) --set redisUrl=$(integrationEnvRedisServer) --set redisPassword=$(integrationEnvRedisPassword) --set redisDefaultDatabase=$(integrationEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
-                  force: true
 
   - stage: Test_Deployment
     displayName: 'Test Deployment'
@@ -218,16 +208,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Test Environment'
-                  command: 'init'
-                  arguments: '--force-upgrade --service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -289,8 +271,6 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set aspNetCoreEnvironment=$(testEnvAspNetCoreEnvironment) --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled) --set applicationDbDatabaseServer=$(testEnvApplicationDbDatabaseServer) --set applicationDbDatabase=$(testEnvApplicationDbDatabase) --set applicationDbUser=$(testEnvApplicationDbUser) --set applicationDbPassword=$(testEnvApplicationDbPassword) --set configurationDbDatabaseServer=$(testEnvConfigurationDbDatabaseServer) --set configurationDbDatabase=$(testEnvConfigurationDbDatabase) --set configurationDbUser=$(testEnvConfigurationDbUser) --set configurationDbPassword=$(testEnvConfigurationDbPassword) --set persistedGrantDbDatabaseServer=$(testEnvPersistedGrantDbDatabaseServer) --set persistedGrantDbDatabase=$(testEnvPersistedGrantDbDatabase) --set persistedGrantDbUser=$(testEnvPersistedGrantDbUser) --set persistedGrantDbPassword=$(testEnvPersistedGrantDbPassword) --set uiClientUrl=$(testEnvUiClientUrl) --set swaggerClientUrl=$(testEnvSwaggerClientUrl) --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled) --set redisUrl=$(testEnvRedisServer) --set redisPassword=$(testEnvRedisPassword) --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
-                  force: true
 
   - stage: Production_Deployment
     displayName: 'Production Deployment'
@@ -316,16 +296,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Production Environment'
-                  command: 'init'
-                  arguments: '--force-upgrade --service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -387,5 +359,3 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set aspNetCoreEnvironment=$(prodEnvAspNetCoreEnvironment) --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled) --set applicationDbDatabaseServer=$(prodEnvApplicationDbDatabaseServer) --set applicationDbDatabase=$(prodEnvApplicationDbDatabase) --set applicationDbUser=$(prodEnvApplicationDbUser) --set applicationDbPassword=$(prodEnvApplicationDbPassword) --set configurationDbDatabaseServer=$(prodEnvConfigurationDbDatabaseServer) --set configurationDbDatabase=$(prodEnvConfigurationDbDatabase) --set configurationDbUser=$(prodEnvConfigurationDbUser) --set configurationDbPassword=$(prodEnvConfigurationDbPassword) --set persistedGrantDbDatabaseServer=$(prodEnvPersistedGrantDbDatabaseServer) --set persistedGrantDbDatabase=$(prodEnvPersistedGrantDbDatabase) --set persistedGrantDbUser=$(prodEnvPersistedGrantDbUser) --set persistedGrantDbPassword=$(prodEnvPersistedGrantDbPassword) --set uiClientUrl=$(prodEnvUiClientUrl) --set swaggerClientUrl=$(prodEnvSwaggerClientUrl) --set azureRedisCacheEnabled=$(prodEnvAzureRedisCacheEnabled) --set redisUrl=$(prodEnvRedisServer) --set redisPassword=$(prodEnvRedisPassword) --set redisDefaultDatabase=$(prodEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
-                  force: true

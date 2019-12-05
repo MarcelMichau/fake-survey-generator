@@ -168,14 +168,6 @@ stages:
                   helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
 
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Test Environment'
-                  command: 'init'
-                  arguments: '--service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
-
               - task: AzureCLI@1
                 inputs:
                   azureSubscription: 'MyARMConnection'
@@ -203,7 +195,6 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
-                  tillerNamespace: '$(targetNamespace)'
 
   - stage: Production_Deployment
     displayName: 'Production Deployment'
@@ -232,14 +223,6 @@ stages:
                   helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
 
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Production Environment'
-                  command: 'init'
-                  arguments: '--service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
-
               - task: AzureCLI@1
                 inputs:
                   azureSubscription: 'MyARMConnection'
@@ -267,4 +250,3 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
-                  tillerNamespace: '$(targetNamespace)'

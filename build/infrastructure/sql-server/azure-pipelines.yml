@@ -23,16 +23,16 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
                 inputs:
                   command: 'package'
-                  arguments: '--version $(versionTag)'
-                  chartPath: 'charts/sql-server'
-                # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+                  chartPath: 'charts/$(projectName)'
+                  chartVersion: '$(versionTag)'
+                  save: false
                 displayName: 'Helm Package'
 
               - task: AzureCLI@1
@@ -80,16 +80,8 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.15.2'
+                  helmVersionToInstall: '3.0.0'
                 displayName: 'Install Helm'
-
-              - task: HelmDeploy@0
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Integration Environment'
-                  command: 'init'
-                  arguments: '--service-account tiller'
-                  tillerNamespace: '$(targetNamespace)'
 
               - task: AzureCLI@1
                 inputs:
@@ -118,4 +110,3 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: '--version $(build.buildNumber)'
-                  tillerNamespace: '$(targetNamespace)'
