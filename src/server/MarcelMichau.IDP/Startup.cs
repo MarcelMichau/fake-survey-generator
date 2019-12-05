@@ -116,8 +116,6 @@ namespace MarcelMichau.IDP
         {
             app.UseForwardedHeaders();
 
-            app.UseAuthorization();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -128,6 +126,8 @@ namespace MarcelMichau.IDP
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
 
