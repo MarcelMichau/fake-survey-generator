@@ -49,7 +49,7 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '2.14.3'
+                  helmVersionToInstall: '2.15.2'
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Install Helm'
 
