@@ -1,5 +1,3 @@
-# Update this!!!
-
 trigger:
   branches:
     include:
@@ -51,7 +49,7 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: 'latest'
+                  helmVersionToInstall: '2.14.3'
                 # condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Install Helm'
 

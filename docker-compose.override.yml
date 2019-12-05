@@ -7,7 +7,7 @@ services:
     volumes:
       - ./src/client/ui/nginx.conf:/etc/nginx/nginx.conf:ro
 
-  fakesurveygeneratorapi:
+  fake-survey-generator-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80

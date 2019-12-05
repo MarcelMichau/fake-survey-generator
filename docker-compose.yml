@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: src/client/ui/Dockerfile
     depends_on:
-      - fakesurveygeneratorapi
+      - fake-survey-generator-api
 
   fake-survey-generator-api:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-api:${TAG:-latest}
@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: src/server/FakeSurveyGenerator.Worker/Dockerfile
     depends_on:
-      - sqlserver
+      - sql-server
 
   marcel-michau-idp:
     image: ${DOCKER_REGISTRY-}marcel-michau-idp:${TAG:-latest}
