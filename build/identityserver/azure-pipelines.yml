@@ -27,7 +27,7 @@ stages:
 
         steps:
         - script: |
-            docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/server/MarcelMichau.IDP/Dockerfile .
+            docker build --cache-from $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/server/MarcelMichau.IDP/Dockerfile .
           displayName: 'Build Docker Image'
 
         - script: |
