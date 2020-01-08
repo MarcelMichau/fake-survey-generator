@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   repository: mcr.microsoft.com/mssql/server
-  tag: 2017-CU14-ubuntu
+  tag: 2019-CU1-ubuntu-16.04
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
