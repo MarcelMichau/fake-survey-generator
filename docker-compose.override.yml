@@ -28,6 +28,10 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
+  fake-survey-generator-worker:
+    environment:
+      - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+
   marcel-michau-idp:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

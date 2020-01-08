@@ -45,6 +45,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             Environment.SetEnvironmentVariable("REDIS_URL", "Test");
             Environment.SetEnvironmentVariable("REDIS_PASSWORD", "Test");
             Environment.SetEnvironmentVariable("REDIS_SSL", "false");
+            Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_BACKCHANNEL_URL", "http://test.com");
 
             builder.ConfigureServices(services =>
             {

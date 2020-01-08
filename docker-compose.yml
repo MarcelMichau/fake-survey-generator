@@ -1,14 +1,6 @@
 version: "3.7"
 
 services:
-  fake-survey-generator-ui:
-    image: ${DOCKER_REGISTRY-}fake-survey-generator-ui:${TAG:-latest}
-    build:
-      context: .
-      dockerfile: src/client/ui/Dockerfile
-    depends_on:
-      - fake-survey-generator-api
-
   fake-survey-generator-api:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-api:${TAG:-latest}
     build:
@@ -24,6 +16,7 @@ services:
       dockerfile: src/server/FakeSurveyGenerator.Worker/Dockerfile
     depends_on:
       - sql-server
+      - fake-survey-generator-api
 
   marcel-michau-idp:
     image: ${DOCKER_REGISTRY-}marcel-michau-idp:${TAG:-latest}
@@ -32,7 +25,7 @@ services:
       dockerfile: src/server/MarcelMichau.IDP/Dockerfile
 
   sql-server:
-    image: mcr.microsoft.com/mssql/server:2017-CU17-ubuntu
+    image: mcr.microsoft.com/mssql/server:2019-CU1-ubuntu-16.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
