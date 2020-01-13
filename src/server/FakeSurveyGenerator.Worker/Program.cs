@@ -1,3 +1,4 @@
+using FakeSurveyGenerator.Application;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Repositories;
@@ -25,6 +26,8 @@ namespace FakeSurveyGenerator.Worker
                     (options => options.UseSqlServer(connectionString,
                         b => b.MigrationsAssembly(typeof(SurveyContext).Namespace)));
 
+                    services.AddInfrastructure(hostContext.Configuration);
+                    services.AddApplication();
                     services.AddScoped<ISurveyRepository, SurveyRepository>();
 
                     services.AddHostedService<Worker>();

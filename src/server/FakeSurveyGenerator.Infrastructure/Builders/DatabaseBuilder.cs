@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Application.Common.Interfaces;
+﻿using System;
+using FakeSurveyGenerator.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,12 @@ namespace FakeSurveyGenerator.Infrastructure.Builders
 
             services.AddDbContext<SurveyContext>
             (options => options.UseSqlServer(connectionString,
-                b => b.MigrationsAssembly(typeof(SurveyContext).Namespace)));
+                sqlServerOptions =>
+                {
+                    sqlServerOptions.MigrationsAssembly(typeof(SurveyContext).Namespace);
+                    sqlServerOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30),
+                        null);
+                }));
 
             return services;
         }

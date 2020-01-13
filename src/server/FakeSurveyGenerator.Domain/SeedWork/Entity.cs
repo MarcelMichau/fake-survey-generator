@@ -6,20 +6,25 @@ namespace FakeSurveyGenerator.Domain.SeedWork
     public abstract class Entity
     {
         private int? _requestedHashCode;
-
         public virtual int Id { get; protected set; }
 
-        public List<INotification> DomainEvents { get; private set; }
+        private List<INotification> _domainEvents;
+        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
 
         public void AddDomainEvent(INotification eventItem)
         {
-            DomainEvents ??= new List<INotification>();
-            DomainEvents.Add(eventItem);
+            _domainEvents ??= new List<INotification>();
+            _domainEvents.Add(eventItem);
         }
 
         public void RemoveDomainEvent(INotification eventItem)
         {
-            DomainEvents?.Remove(eventItem);
+            _domainEvents?.Remove(eventItem);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents?.Clear();
         }
 
         public bool IsTransient()
@@ -54,7 +59,6 @@ namespace FakeSurveyGenerator.Domain.SeedWork
             return _requestedHashCode.Value;
 
         }
-
         public static bool operator ==(Entity left, Entity right)
         {
             return left?.Equals(right) ?? Equals(right, null);

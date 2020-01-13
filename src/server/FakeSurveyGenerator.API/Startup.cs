@@ -11,10 +11,12 @@ namespace FakeSurveyGenerator.API
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _configuration = configuration;
+            _environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -25,7 +27,7 @@ namespace FakeSurveyGenerator.API
                 .AddNewtonsoftJson()
                 .AddValidationConfiguration();
 
-            services.AddHealthChecksConfiguration(_configuration);
+            services.AddHealthChecksConfiguration(_configuration, _environment);
             services.AddSwaggerConfiguration(_configuration);
             services.AddApplicationServicesConfiguration(_configuration);
             services.AddAuthenticationConfiguration(_configuration);
@@ -60,7 +62,7 @@ namespace FakeSurveyGenerator.API
             {
                 endpoints.MapControllers();
 
-                endpoints.UseHealthChecksConfiguration();
+                endpoints.UseHealthChecksConfiguration(env);
             });
 
             app.UseSwaggerConfiguration();

@@ -7,7 +7,6 @@ using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.SeedWork;
-using MediatR;
 using Moq;
 using Xunit;
 
@@ -52,11 +51,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
                 }
             };
 
-            var mockMediator = new Mock<IMediator>();
-
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(_testSurveyRepository, _testMapper, mockMediator.Object);
+            var sut = new CreateSurveyCommandHandler(_testSurveyRepository, _testMapper);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -64,8 +61,6 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
             Assert.Equal(numberOfRespondents, result.NumberOfRespondents);
             Assert.Equal(respondentType, result.RespondentType);
             Assert.True(result.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
-
-            mockMediator.Verify(m => m.Publish(It.IsAny<SurveyCreated>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

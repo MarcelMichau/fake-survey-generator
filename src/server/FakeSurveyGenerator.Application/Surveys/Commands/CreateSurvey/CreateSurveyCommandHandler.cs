@@ -13,13 +13,11 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
     {
         private readonly ISurveyRepository _surveyRepository;
         private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
 
-        public CreateSurveyCommandHandler(ISurveyRepository surveyRepository, IMapper mapper, IMediator mediator)
+        public CreateSurveyCommandHandler(ISurveyRepository surveyRepository, IMapper mapper)
         {
             _surveyRepository = surveyRepository;
             _mapper = mapper;
-            _mediator = mediator;
         }
 
         public async Task<SurveyModel> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
@@ -45,9 +43,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 
             _surveyRepository.Add(result);
 
-            await _surveyRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-
-            await _mediator.Publish(new SurveyCreated(result.Id), cancellationToken);
+            await _surveyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             return _mapper.Map<SurveyModel>(result);
         }

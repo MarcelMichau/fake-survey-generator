@@ -2,17 +2,19 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.API.Builders
 {
     public static class HealthChecksBuilder
     {
         public static IServiceCollection AddHealthChecksConfiguration(this IServiceCollection services,
-            IConfiguration configuration)
+            IConfiguration configuration, IWebHostEnvironment environment)
         {
             var healthChecksBuilder = services.AddHealthChecks();
 
@@ -36,12 +38,14 @@ namespace FakeSurveyGenerator.API.Builders
                 tags: new[] { "fake-survey-generator-db", "ready" },
                 failureStatus: HealthStatus.Unhealthy);
 
-            services.AddHealthChecksUI();
+            if (!environment.IsDevelopment())
+                services.AddHealthChecksUI();
 
             return services;
         }
 
-        public static IEndpointConventionBuilder UseHealthChecksConfiguration(this IEndpointRouteBuilder endpoints)
+        public static IEndpointRouteBuilder UseHealthChecksConfiguration(this IEndpointRouteBuilder endpoints,
+            IWebHostEnvironment environment)
         {
             endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
             {
@@ -54,7 +58,10 @@ namespace FakeSurveyGenerator.API.Builders
                 Predicate = _ => false
             });
 
-            return endpoints.MapHealthChecksUI();
+            if (!environment.IsDevelopment())
+                endpoints.MapHealthChecksUI();
+
+            return endpoints;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeSurveyGenerator.Domain.Events;
 using FakeSurveyGenerator.Domain.Exceptions;
 using FakeSurveyGenerator.Domain.SeedWork;
 using FakeSurveyGenerator.Domain.Services;
@@ -25,6 +26,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             NumberOfRespondents = numberOfRespondents;
             CreatedOn = DateTime.UtcNow;
             _options = new List<SurveyOption>();
+
+            AddSurveyCreatedEvent();
         }
 
         public string Topic { get; }
@@ -61,6 +64,12 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             strategy.DistributeVotes(this);
 
             return this;
+        }
+
+        private void AddSurveyCreatedEvent()
+        {
+            var surveyCreatedEvent = new SurveyCreatedDomainEvent(this);
+            AddDomainEvent(surveyCreatedEvent);
         }
     }
 }
