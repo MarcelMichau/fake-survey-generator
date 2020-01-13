@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.Infrastructure.Builders
 {
     public static class CacheBuilder
     {

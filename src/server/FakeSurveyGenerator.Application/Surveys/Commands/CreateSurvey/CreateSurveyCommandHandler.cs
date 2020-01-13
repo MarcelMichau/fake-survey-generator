@@ -1,23 +1,25 @@
 ﻿using System.Linq;
-using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using FakeSurveyGenerator.API.Application.Models;
+using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Services;
+using MediatR;
 
-namespace FakeSurveyGenerator.API.Application.Commands
+namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
     public class CreateSurveyCommandHandler : IRequestHandler<CreateSurveyCommand, SurveyModel>
     {
         private readonly ISurveyRepository _surveyRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public CreateSurveyCommandHandler(ISurveyRepository surveyRepository, IMapper mapper)
+        public CreateSurveyCommandHandler(ISurveyRepository surveyRepository, IMapper mapper, IMediator mediator)
         {
             _surveyRepository = surveyRepository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<SurveyModel> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
@@ -44,6 +46,8 @@ namespace FakeSurveyGenerator.API.Application.Commands
             _surveyRepository.Add(result);
 
             await _surveyRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+            await _mediator.Publish(new SurveyCreated(result.Id), cancellationToken);
 
             return _mapper.Map<SurveyModel>(result);
         }

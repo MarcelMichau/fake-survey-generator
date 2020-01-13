@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using FakeSurveyGenerator.API.Application.Models;
+using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Surveys.Models;
+using MediatR;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace FakeSurveyGenerator.API.Application.Queries
+namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
-    public class SurveyQueries : ISurveyQueries
+    public class GetSurveyDetailQueryHandler : IRequestHandler<GetSurveyDetailQuery, SurveyModel>
     {
         private readonly string _connectionString;
         private readonly IDistributedCache _cache;
 
-        public SurveyQueries(string connectionString, IDistributedCache cache)
+        public GetSurveyDetailQueryHandler(IConnectionString connectionString, IDistributedCache cache)
         {
             _cache = cache;
-            _connectionString = !string.IsNullOrWhiteSpace(connectionString) ? connectionString : throw new ArgumentNullException(nameof(connectionString));
+            _connectionString = !string.IsNullOrWhiteSpace(connectionString.Value) ? connectionString.Value : throw new ArgumentNullException(nameof(connectionString));
         }
 
-        public async Task<SurveyModel> GetSurveyAsync(int id)
+        public async Task<SurveyModel> Handle(GetSurveyDetailQuery request, CancellationToken cancellationToken)
         {
-            var cachedValue = await _cache.GetStringAsync(id.ToString());
+            var cachedValue = await _cache.GetStringAsync(request.Id.ToString(), cancellationToken);
 
             if (!string.IsNullOrWhiteSpace(cachedValue))
                 return System.Text.Json.JsonSerializer.Deserialize<SurveyModel>(cachedValue);
@@ -46,7 +49,7 @@ namespace FakeSurveyGenerator.API.Application.Queries
                     survey.Options = new List<SurveyOptionModel>();
                 survey.Options.Add(so);
                 return survey;
-            }, new { id });
+            }, new { request.Id });
 
             var result = lookup.Values;
 
@@ -55,10 +58,10 @@ namespace FakeSurveyGenerator.API.Application.Queries
 
             var surveyResult = result.First();
 
-            await _cache.SetStringAsync(id.ToString(), System.Text.Json.JsonSerializer.Serialize(surveyResult), new DistributedCacheEntryOptions
+            await _cache.SetStringAsync(request.Id.ToString(), System.Text.Json.JsonSerializer.Serialize(surveyResult), new DistributedCacheEntryOptions
             {
                 SlidingExpiration = new TimeSpan(1, 0, 0)
-            });
+            }, cancellationToken);
 
             return surveyResult;
         }

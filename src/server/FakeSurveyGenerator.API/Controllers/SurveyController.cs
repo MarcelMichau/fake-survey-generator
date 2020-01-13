@@ -2,28 +2,17 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.API.Application.Commands;
-using FakeSurveyGenerator.API.Application.Models;
-using FakeSurveyGenerator.API.Application.Queries;
-using MediatR;
+using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
+using FakeSurveyGenerator.Application.Surveys.Models;
+using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FakeSurveyGenerator.API.Controllers
 {
     [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class SurveyController : ControllerBase
+    public class SurveyController : ApiController
     {
-        private readonly IMediator _mediator;
-        private readonly ISurveyQueries _surveyQueries;
-
-        public SurveyController(IMediator mediator, ISurveyQueries surveyQueries)
-        {
-            _mediator = mediator;
-            _surveyQueries = surveyQueries;
-        }
 
         /// <summary>
         /// Retrieves a specific survey.
@@ -39,7 +28,7 @@ namespace FakeSurveyGenerator.API.Controllers
         {
             try
             {
-                var result = await _surveyQueries.GetSurveyAsync(id);
+                var result = await Mediator.Send(new GetSurveyDetailQuery(id));
 
                 return Ok(result);
             }
@@ -58,7 +47,7 @@ namespace FakeSurveyGenerator.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.Created)]
         public async Task<ActionResult<SurveyModel>> CreateSurvey([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(command, cancellationToken);
+            var result = await Mediator.Send(command, cancellationToken);
 
             return CreatedAtRoute(nameof(GetSurvey), new { id = result.Id }, result);
         }

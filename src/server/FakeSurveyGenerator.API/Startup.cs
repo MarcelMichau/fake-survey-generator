@@ -22,13 +22,10 @@ namespace FakeSurveyGenerator.API
             services.AddAuthorization();
 
             services.AddControllers()
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson()
+                .AddValidationConfiguration();
 
-            services.AddAutoMapperConfiguration();
-            services.AddMediatRConfiguration();
             services.AddHealthChecksConfiguration(_configuration);
-            services.AddCacheConfiguration(_configuration);
-            services.AddDatabaseConfiguration(_configuration);
             services.AddSwaggerConfiguration(_configuration);
             services.AddApplicationServicesConfiguration(_configuration);
             services.AddAuthenticationConfiguration(_configuration);

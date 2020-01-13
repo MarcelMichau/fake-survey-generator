@@ -34,7 +34,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarcelMichau.IDP", "src\ser
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarcelMichau.IDP.EF.Design", "src\server\MarcelMichau.IDP.EF.Design\MarcelMichau.IDP.EF.Design.csproj", "{20F10E8F-F155-4521-8924-F669A3CF2D34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Worker", "src\server\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj", "{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Worker", "src\server\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj", "{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Application", "src\server\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj", "{87784ADE-CB11-47DA-AA11-675AB96DE059}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Application.Tests", "src\server\FakeSurveyGenerator.Application.Tests\FakeSurveyGenerator.Application.Tests.csproj", "{EC88BDF7-47DD-42F7-8039-A52638375902}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +86,14 @@ Global
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC88BDF7-47DD-42F7-8039-A52638375902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC88BDF7-47DD-42F7-8039-A52638375902}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC88BDF7-47DD-42F7-8039-A52638375902}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC88BDF7-47DD-42F7-8039-A52638375902}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

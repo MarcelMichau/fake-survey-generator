@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using FakeSurveyGenerator.API.Application.Models;
+using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
-namespace FakeSurveyGenerator.API
+namespace FakeSurveyGenerator.Application.Common.Mappings
 {
     public class MappingProfile : Profile
     {

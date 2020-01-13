@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using FakeSurveyGenerator.API.Application.Models;
+using FakeSurveyGenerator.Application.Surveys.Models;
 using MediatR;
 
-namespace FakeSurveyGenerator.API.Application.Commands
+namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
     [DataContract]
     public class CreateSurveyCommand : IRequest<SurveyModel>

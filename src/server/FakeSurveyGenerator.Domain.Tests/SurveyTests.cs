@@ -21,7 +21,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             Assert.Equal(topic, survey.Topic);
             Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
             Assert.Equal(respondentType, survey.RespondentType);
-            Assert.True(survey.CreatedOn < DateTime.Now, "The createdOn date was not in the past");
+            Assert.True(survey.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
         }
 
         [Fact]
