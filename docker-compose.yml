@@ -1,6 +1,14 @@
 version: "3.7"
 
 services:
+  fake-survey-generator-ui:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-ui:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/client/ui/Dockerfile
+    depends_on:
+      - fake-survey-generator-api
+
   fake-survey-generator-api:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-api:${TAG:-latest}
     build:
