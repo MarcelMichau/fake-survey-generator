@@ -40,8 +40,10 @@ The server side consists of the following main components:
 
 - Fake Survey Generator API
   - Domain Project
-  - Infrastructure Project
   - Domain Unit Tests Project
+  - Infrastructure Project
+  - Application Project
+  - Application Tests Project
   - API Integration Tests Project
   - EF Design Project (used purely for EF Core design-time tooling)
 - Identity Provider API
@@ -57,6 +59,7 @@ The server side makes use of the following tools, libraries & frameworks:
   - Swagger
   - AutoMapper
   - MediatR
+  - FluentValidation
   - AspNetCore.Diagnostics.HealthChecks
   - Docker
 - Identity Provider API
