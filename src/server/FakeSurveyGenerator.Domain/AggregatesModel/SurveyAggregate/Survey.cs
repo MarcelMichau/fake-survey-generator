@@ -71,5 +71,10 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             var surveyCreatedEvent = new SurveyCreatedDomainEvent(this);
             AddDomainEvent(surveyCreatedEvent);
         }
+
+        public override string ToString()
+        {
+            return System.Text.Json.JsonSerializer.Serialize(this);
+        }
     }
 }

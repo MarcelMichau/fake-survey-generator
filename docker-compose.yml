@@ -16,6 +16,9 @@ services:
       dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
     depends_on:
       - sql-server
+    deploy:
+      restart_policy:
+        condition: any
 
   fake-survey-generator-worker:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-worker:${TAG:-latest}
@@ -25,12 +28,20 @@ services:
     depends_on:
       - sql-server
       - fake-survey-generator-api
+    deploy:
+      restart_policy:
+        condition: any
 
   marcel-michau-idp:
     image: ${DOCKER_REGISTRY-}marcel-michau-idp:${TAG:-latest}
     build:
       context: .
       dockerfile: src/server/MarcelMichau.IDP/Dockerfile
+    depends_on:
+      - sql-server
+    deploy:
+      restart_policy:
+        condition: any
 
   sql-server:
     image: mcr.microsoft.com/mssql/server:2019-CU1-ubuntu-16.04

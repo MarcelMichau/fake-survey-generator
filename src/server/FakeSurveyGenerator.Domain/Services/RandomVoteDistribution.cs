@@ -7,6 +7,9 @@ namespace FakeSurveyGenerator.Domain.Services
     {
         public void DistributeVotes(Survey survey)
         {
+            if (survey == null)
+                throw new ArgumentException(nameof(survey));
+
             var random = new Random();
 
             for (var i = 0; i < survey.NumberOfRespondents; i++)

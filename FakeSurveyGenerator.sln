@@ -19,6 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrast
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6465B709-BA6F-4AE9-B22C-C8E28CCA9AC6}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		build\fake-survey-generator-api\azure-pipelines.yml = build\fake-survey-generator-api\azure-pipelines.yml
@@ -36,9 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarcelMichau.IDP.EF.Design"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Worker", "src\server\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj", "{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Application", "src\server\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj", "{87784ADE-CB11-47DA-AA11-675AB96DE059}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application", "src\server\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj", "{87784ADE-CB11-47DA-AA11-675AB96DE059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Application.Tests", "src\server\FakeSurveyGenerator.Application.Tests\FakeSurveyGenerator.Application.Tests.csproj", "{EC88BDF7-47DD-42F7-8039-A52638375902}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application.Tests", "src\server\FakeSurveyGenerator.Application.Tests\FakeSurveyGenerator.Application.Tests.csproj", "{EC88BDF7-47DD-42F7-8039-A52638375902}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

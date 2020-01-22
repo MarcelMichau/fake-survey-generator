@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+﻿using System;
+using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using MediatR;
 
 namespace FakeSurveyGenerator.Domain.Events
@@ -9,7 +10,7 @@ namespace FakeSurveyGenerator.Domain.Events
 
         public SurveyCreatedDomainEvent(Survey survey)
         {
-            Survey = survey;
+            Survey = survey ?? throw new ArgumentNullException(nameof(survey));
         }
     }
 }

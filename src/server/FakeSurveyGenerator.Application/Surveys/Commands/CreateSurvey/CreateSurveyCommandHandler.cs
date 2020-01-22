@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -16,8 +17,8 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 
         public CreateSurveyCommandHandler(ISurveyRepository surveyRepository, IMapper mapper)
         {
-            _surveyRepository = surveyRepository;
-            _mapper = mapper;
+            _surveyRepository = surveyRepository ?? throw new ArgumentNullException(nameof(surveyRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<SurveyModel> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)

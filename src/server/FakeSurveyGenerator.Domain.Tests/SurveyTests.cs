@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+using FakeSurveyGenerator.Domain.Events;
 using FakeSurveyGenerator.Domain.Exceptions;
 using FakeSurveyGenerator.Domain.Services;
 using Xunit;
@@ -12,9 +13,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Be_Able_To_Create_Survey()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -27,9 +28,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Not_Be_Able_To_Create_Survey_With_No_Topic()
         {
-            var topic = "";
-            var numberOfRespondents = 1;
-            var respondentType = "Developers";
+            const string topic = "";
+            const int numberOfRespondents = 1;
+            const string respondentType = "Developers";
 
             Assert.Throws<SurveyDomainException>(() => new Survey(topic, numberOfRespondents, respondentType));
         }
@@ -37,9 +38,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Not_Be_Able_To_Create_Survey_With_No_Respondents()
         {
-            var topic = "To be, or not to be?";
-            var numberOfRespondents = 0;
-            var respondentType = "Writers";
+            const string topic = "To be, or not to be?";
+            const int numberOfRespondents = 0;
+            const string respondentType = "Writers";
 
             Assert.Throws<SurveyDomainException>(() => new Survey(topic, numberOfRespondents, respondentType));
         }
@@ -47,9 +48,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Not_Be_Able_To_Create_Survey_With_No_Respondent_Type()
         {
-            var topic = "To be, or not to be?";
-            var numberOfRespondents = 1;
-            var respondentType = "";
+            const string topic = "To be, or not to be?";
+            const int numberOfRespondents = 1;
+            const string respondentType = "";
 
             Assert.Throws<SurveyDomainException>(() => new Survey(topic, numberOfRespondents, respondentType));
         }
@@ -57,9 +58,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Be_Able_To_Add_Options_To_Survey()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -74,9 +75,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Not_Be_Able_To_Add_Empty_Options_To_Survey()
         {
-            var topic = "To be, or not to be?";
-            var numberOfRespondents = 2;
-            var respondentType = "Writers";
+            const string topic = "To be, or not to be?";
+            const int numberOfRespondents = 2;
+            const string respondentType = "Writers";
 
             Assert.Throws<SurveyDomainException>(() =>
             {
@@ -89,9 +90,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Not_Be_Able_To_Calculate_Results_Of_Survey_With_No_Options()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1000;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1000;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -103,9 +104,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_Random_Outcome()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1000;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1000;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -123,9 +124,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_One_Sided_Outcome()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1000;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1000;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -142,9 +143,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Be_Able_To_Calculate_Results_Of_Survey_With_Fixed_Outcome()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1000;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1000;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -162,9 +163,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Not_Be_Able_To_Add_Preferred_Number_Of_Votes_Greater_Than_Respondents()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1000;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1000;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -179,9 +180,9 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void Should_Not_Be_Able_To_Add_Preferred_Number_Of_Votes_If_Total_Exceeds_Respondents()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1000;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1000;
+            const string respondentType = "Developers";
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
@@ -191,6 +192,24 @@ namespace FakeSurveyGenerator.Domain.Tests
             {
                 survey.AddSurveyOption("Spaces", 501);
             });
+        }
+
+        [Fact]
+        public void Creating_Survey_Should_Add_SurveyCreated_Event_To_DomainEvents()
+        {
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1;
+            const string respondentType = "Developers";
+
+            var survey = new Survey(topic, numberOfRespondents, respondentType);
+
+            survey.AddSurveyOption("Tabs");
+            survey.AddSurveyOption("Spaces");
+
+
+            var surveyCreatedEvent = survey.DomainEvents.First() as SurveyCreatedDomainEvent;
+
+            Assert.True(surveyCreatedEvent?.Survey == survey);
         }
     }
 }

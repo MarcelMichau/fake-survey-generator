@@ -14,10 +14,16 @@ namespace FakeSurveyGenerator.Infrastructure
         private readonly IMediator _mediator;
 
         public SurveyContext(DbContextOptions options) : base(options)
-        {   }
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+        }
 
         public SurveyContext(DbContextOptions options, IMediator mediator) : base(options)
         {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 

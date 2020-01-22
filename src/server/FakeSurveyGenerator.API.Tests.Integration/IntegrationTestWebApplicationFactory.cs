@@ -4,67 +4,60 @@ using FakeSurveyGenerator.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
     public class IntegrationTestWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
-        //Just a different implementation of the below method
-
-        //protected override IHost CreateHost(IHostBuilder builder)
-        //{
-        //    Environment.SetEnvironmentVariable("ConnectionStrings__SurveyContext", "Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0");
-
-        //    builder.ConfigureServices(services =>
-        //    {
-        //        // Workaround because of https://github.com/aspnet/AspNetCore/issues/12360
-        //        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SurveyContext>));
-        //        if (descriptor != null)
-        //        {
-        //            services.Remove(descriptor);
-        //        }
-
-        //        services.AddEntityFrameworkInMemoryDatabase();
-
-        //        services.AddDbContext<SurveyContext>(options =>
-        //        {
-        //            options.UseInMemoryDatabase("InMemoryDbForTesting");
-        //            options.UseInternalServiceProvider(services.BuildServiceProvider());
-        //        });
-        //    });
-
-        //    return base.CreateHost(builder);
-        //}
-
-
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             Environment.SetEnvironmentVariable("ConnectionStrings__SurveyContext", "Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0");
-            Environment.SetEnvironmentVariable("REDIS_URL", "Test");
-            Environment.SetEnvironmentVariable("REDIS_PASSWORD", "Test");
+            Environment.SetEnvironmentVariable("REDIS_URL", "127.0.0.1");
+            Environment.SetEnvironmentVariable("REDIS_PASSWORD", "testing");
             Environment.SetEnvironmentVariable("REDIS_SSL", "false");
             Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_BACKCHANNEL_URL", "http://test.com");
             Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_FRONTCHANNEL_URL", "http://localhost");
 
             builder.ConfigureServices(services =>
             {
-
-                // Workaround because of https://github.com/aspnet/AspNetCore/issues/12360:
                 var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SurveyContext>));
                 if (descriptor != null)
                 {
                     services.Remove(descriptor);
                 }
 
-                services.AddEntityFrameworkInMemoryDatabase();
-
                 services.AddDbContext<SurveyContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
-                    options.UseInternalServiceProvider(services.BuildServiceProvider());
                 });
+
+                var serviceProvider = services.BuildServiceProvider();
+
+                using var scope = serviceProvider.CreateScope();
+
+                var scopedServices = scope.ServiceProvider;
+                var context = scopedServices.GetRequiredService<SurveyContext>();
+                var logger = scopedServices
+                    .GetRequiredService<ILogger<IntegrationTestWebApplicationFactory<TStartup>>>();
+
+                var cache = scopedServices.GetService<IDistributedCache>();
+
+                cache.Remove("FakeSurveyGenerator");
+
+                context.Database.EnsureCreated();
+
+                try
+                {
+                    DatabaseSeed.SeedSampleData(context);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred seeding the database with test surveys. Error: {Message}", ex.Message);
+                }
             });
         }
     }

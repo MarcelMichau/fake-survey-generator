@@ -1,70 +1,70 @@
 {
-	"iisSettings": {
-		"windowsAuthentication": false,
-		"anonymousAuthentication": true,
-		"iisExpress": {
-			"applicationUrl": "http://localhost:6523",
-			"sslPort": 44367
-		}
-	},
-	"$schema": "http://json.schemastore.org/launchsettings.json",
-	"profiles": {
-		"IIS Express": {
-			"commandName": "IISExpress",
-			"launchBrowser": true,
-			"launchUrl": "",
-			"environmentVariables": {
-				"ASPNETCORE_ENVIRONMENT": "Development",
-				"ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
-				"HealthChecksUI__HealthChecks__0__Name": "httpBasic",
-				"HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",
-				"REDIS_PASSWORD": "testing",
-				"REDIS_SSL": "false",
-				"REDIS_URL": "redis",
-				"REDIS_DEFAULT_DATABASE": "0",
-				"IDENTITY_PROVIDER_FRONTCHANNEL_URL": "https://localhost:44320",
-				"IDENTITY_PROVIDER_BACKCHANNEL_URL": "https://localhost:44320"
-			}
-		},
-		"FakeSurveyGenerator.API": {
-			"commandName": "Project",
-			"launchBrowser": true,
-			"launchUrl": "",
-			"environmentVariables": {
-				"ASPNETCORE_ENVIRONMENT": "Development",
-				"ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
-				"HealthChecksUI__HealthChecks__0__Name": "httpBasic",
-				"HealthChecksUI__HealthChecks__0__Uri": "https://localhost:5001/health/ready",
-				"REDIS_PASSWORD": "testing",
-				"REDIS_SSL": "false",
-				"REDIS_URL": "redis",
-				"REDIS_DEFAULT_DATABASE": "0",
-				"IDENTITY_PROVIDER_FRONTCHANNEL_URL": "https://localhost:44320",
-				"IDENTITY_PROVIDER_BACKCHANNEL_URL": "https://localhost:44320"
-			},
-			"applicationUrl": "https://localhost:5001;http://localhost:5000"
-		},
-		"Docker": {
-			"commandName": "Docker",
-			"launchBrowser": true,
-			"launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-			"environmentVariables": {
-				"ASPNETCORE_URLS": "https://+:443;http://+:80",
-				"ASPNETCORE_HTTPS_PORT": "44300",
-				"ASPNETCORE_ENVIRONMENT": "Development",
-				"ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
-				"HealthChecksUI__HealthChecks__0__Name": "httpBasic",
-				"HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",
-				"REDIS_PASSWORD": "testing",
-				"REDIS_SSL": "false",
-				"REDIS_URL": "redis",
-				"REDIS_DEFAULT_DATABASE": "0",
-				"IDENTITY_PROVIDER_FRONTCHANNEL_URL": "https://localhost:44320",
-				"IDENTITY_PROVIDER_BACKCHANNEL_URL": "https://localhost:44320"
-			},
-			"httpPort": 10000,
-			"useSSL": true,
-			"sslPort": 44300
-		}
-	}
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:6523",
+      "sslPort": 44367
+    }
+  },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
+        "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
+        "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",
+        "REDIS_PASSWORD": "testing",
+        "REDIS_SSL": "false",
+        "REDIS_URL": "redis",
+        "REDIS_DEFAULT_DATABASE": "0",
+        "IDENTITY_PROVIDER_FRONTCHANNEL_URL": "https://localhost:44320",
+        "IDENTITY_PROVIDER_BACKCHANNEL_URL": "https://localhost:44320"
+      }
+    },
+    "FakeSurveyGenerator.API": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
+        "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
+        "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:5001/health/ready",
+        "REDIS_PASSWORD": "testing",
+        "REDIS_SSL": "false",
+        "REDIS_URL": "redis",
+        "REDIS_DEFAULT_DATABASE": "0",
+        "IDENTITY_PROVIDER_FRONTCHANNEL_URL": "https://localhost:44320",
+        "IDENTITY_PROVIDER_BACKCHANNEL_URL": "https://localhost:44320"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "DOTNET_URLS": "https://+:443;http://+:80",
+        "DOTNET_HTTPS_PORT": "44300",
+        "DOTNET_ENVIRONMENT": "Development",
+        "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
+        "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
+        "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",
+        "REDIS_PASSWORD": "testing",
+        "REDIS_SSL": "false",
+        "REDIS_URL": "redis",
+        "REDIS_DEFAULT_DATABASE": "0",
+        "IDENTITY_PROVIDER_FRONTCHANNEL_URL": "https://localhost:44320",
+        "IDENTITY_PROVIDER_BACKCHANNEL_URL": "https://localhost:44320"
+      },
+      "httpPort": 10000,
+      "useSSL": true,
+      "sslPort": 44300
+    }
+  }
 }

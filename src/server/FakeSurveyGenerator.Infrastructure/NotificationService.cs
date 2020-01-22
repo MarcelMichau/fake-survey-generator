@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Notifications.Models;
@@ -12,7 +13,7 @@ namespace FakeSurveyGenerator.Infrastructure
 
         public NotificationService(ILogger<NotificationService> logger)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task SendAsync(MessageDto message)
