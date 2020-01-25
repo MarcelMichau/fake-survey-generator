@@ -16,8 +16,8 @@ services:
 
   fake-survey-generator-api-integration-test:
     environment:
-      - DOTNET_ENVIRONMENT=Development
-      - DOTNET_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__SurveyContext=Server=sql-server-test;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
@@ -35,8 +35,8 @@ services:
 
   marcel-michau-idp-test:
     environment:
-      - DOTNET_ENVIRONMENT=Development
-      - DOTNET_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__ApplicationDbContext=Server=sql-server-test;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - ConnectionStrings__ConfigurationDbContext=Server=sql-server-test;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - ConnectionStrings__PersistedGrantDbContext=Server=sql-server-test;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0

@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "launchUrl": "",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
         "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
         "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",
@@ -31,7 +31,7 @@
       "launchBrowser": true,
       "launchUrl": "",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
         "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
         "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:5001/health/ready",
@@ -49,9 +49,9 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "DOTNET_URLS": "https://+:443;http://+:80",
-        "DOTNET_HTTPS_PORT": "44300",
-        "DOTNET_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "44300",
+        "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
         "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
         "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",

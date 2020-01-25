@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.101-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.101-buster AS build
 WORKDIR /src
 COPY src/server/MarcelMichau.IDP/MarcelMichau.IDP.csproj MarcelMichau.IDP/
 RUN dotnet restore MarcelMichau.IDP/MarcelMichau.IDP.csproj

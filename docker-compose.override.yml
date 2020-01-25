@@ -9,9 +9,9 @@ services:
 
   fake-survey-generator-api:
     environment:
-      - DOTNET_ENVIRONMENT=Development
-      - DOTNET_URLS=https://+:443;http://+:80
-      - DOTNET_HTTPS_PORT=44367
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44367
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - HealthChecksUI__HealthChecks__0__Name=httpBasic
       - HealthChecksUI__HealthChecks__0__Uri=http://fakesurveygeneratorapi/health/ready
@@ -34,9 +34,9 @@ services:
 
   marcel-michau-idp:
     environment:
-      - DOTNET_ENVIRONMENT=Development
-      - DOTNET_URLS=https://+:443;http://+:80
-      - DOTNET_HTTPS_PORT=44320
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44320
       - ConnectionStrings__ApplicationDbContext=Server=sql-server;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - ConnectionStrings__ConfigurationDbContext=Server=sql-server;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - ConnectionStrings__PersistedGrantDbContext=Server=sql-server;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
@@ -54,7 +54,7 @@ services:
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ./src/server/MarcelMichau.IDP/Certificates/identitykeymaterial.pfx:/app/certs/identitykeymaterial.pfx:ro
+      - ./certs/identitykeymaterial.pfx:/app/certs/identitykeymaterial.pfx:ro
 
   sql-server:
     ports:

@@ -24,6 +24,6 @@ data:
   {{- else }}
   REDIS_SSL: "false"
   {{- end }}
-  DOTNET_ENVIRONMENT: {{ .Values.aspNetCoreEnvironment }}
+  ASPNETCORE_ENVIRONMENT: {{ .Values.aspNetCoreEnvironment }}
   USE_CERTIFICATE_SIGNING_MATERIAL: "{{ .Values.useCertificateSigningMaterial }}"
   IS_CLUSTER_ENV: "true"

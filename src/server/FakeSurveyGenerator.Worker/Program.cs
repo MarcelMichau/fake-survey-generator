@@ -1,3 +1,4 @@
+using System;
 using FakeSurveyGenerator.Application;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
@@ -24,7 +25,12 @@ namespace FakeSurveyGenerator.Worker
 
                     services.AddDbContext<SurveyContext>
                     (options => options.UseSqlServer(connectionString,
-                        b => b.MigrationsAssembly(typeof(SurveyContext).Namespace)));
+                        sqlServerOptions =>
+                        {
+                            sqlServerOptions.MigrationsAssembly(typeof(SurveyContext).Namespace);
+                            sqlServerOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30),
+                                null);
+                        }));
 
                     services.AddInfrastructure(hostContext.Configuration);
                     services.AddApplication();

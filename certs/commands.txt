@@ -1,8 +1,8 @@
-openssl req -x509 -out k8s.local.crt -keyout k8s.local.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=k8s.local' -extensions EXT -config <( printf "[dn]\nCN=k8s.local\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:k8s.local\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+openssl req -x509 -out k8s.local.crt -keyout k8s.local.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=k8s.local' -extensions EXT -config <( printf "[dn]\nCN=k8s.local\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:k8s.local\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth") -days 3650
 
-openssl req -x509 -out identity.k8s.local.crt -keyout identity.k8s.local.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=identity.k8s.local' -extensions EXT -config <( printf "[dn]\nCN=identity.k8s.local\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:identity.k8s.local\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+openssl req -x509 -out identity.k8s.local.crt -keyout identity.k8s.local.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=identity.k8s.local' -extensions EXT -config <( printf "[dn]\nCN=identity.k8s.local\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:identity.k8s.local\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth") -days 3650
 
-openssl req -x509 -out identitykeymaterial.crt -keyout identitykeymaterial.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=identitykeymaterial' -extensions EXT -config <( printf "[dn]\nCN=identitykeymaterial\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:identitykeymaterial\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+openssl req -x509 -out identitykeymaterial.crt -keyout identitykeymaterial.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=identitykeymaterial' -extensions EXT -config <( printf "[dn]\nCN=identitykeymaterial\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:identitykeymaterial\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth") -days 3650
 
 To create .pfx from previous key + crt:
 openssl pkcs12 -export -in identitykeymaterial.crt -inkey identitykeymaterial.key -out identitykeymaterial.pfx -passout pass:
