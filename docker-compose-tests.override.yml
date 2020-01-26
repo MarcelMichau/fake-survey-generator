@@ -46,7 +46,7 @@ services:
       - REDIS_DEFAULT_DATABASE=1
       - IS_CLUSTER_ENV=false
       - USE_CERTIFICATE_SIGNING_MATERIAL=true
-      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3001/
+      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3000/
       - FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL=https://localhost:44367/swagger
     ports:
       - "33352:80"

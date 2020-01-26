@@ -3,9 +3,11 @@ version: "3.7"
 services:
   fake-survey-generator-ui:
     ports:
-      - "3000:80"
+      - "3000:443"
     volumes:
       - ./src/client/ui/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs/localhost-key.pem:/certs/localhost-key.pem:ro
+      - ./certs/localhost.pem:/certs/localhost.pem:ro
 
   fake-survey-generator-api:
     environment:
@@ -46,7 +48,7 @@ services:
       - REDIS_DEFAULT_DATABASE=1
       - IS_CLUSTER_ENV=false
       - USE_CERTIFICATE_SIGNING_MATERIAL=true
-      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3001/
+      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3000/
       - FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL=https://localhost:44367/swagger
     ports:
       - "33352:80"

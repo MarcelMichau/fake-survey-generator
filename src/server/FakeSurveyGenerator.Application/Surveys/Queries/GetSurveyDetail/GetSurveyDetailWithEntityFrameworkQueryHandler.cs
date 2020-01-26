@@ -20,7 +20,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
         {
             _surveyRepository = surveyRepository ?? throw new ArgumentNullException(nameof(surveyRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _cache = cache ?? throw new ArgumentNullException(nameof(_cache));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public async Task<SurveyModel> Handle(GetSurveyDetailQuery request, CancellationToken cancellationToken)

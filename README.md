@@ -124,6 +124,34 @@ There is no interface to register users - the authentication mechanism serves as
 
 In order to run FSG on your local machine, you will need the following prerequisites:
 
+To run with Docker Compose:
+
+- Docker Desktop
+- [mkcert](https://github.com/FiloSottile/mkcert) - To generate SSL certificates for local development
+- Visual Studio (optional)
+
+To run with Docker Compose:
+
+1. After installing mkcert, run: `mkcert localhost` in the `certs` directory to create the localhost development certificates. If successful, the following will be printed:
+
+   `The certificate is at "./localhost.pem" and the key at "./localhost-key.pem"`
+
+2. In a Terminal/Command Prompt/PowerShell window in the project root, run:
+
+   `docker-compose up`
+
+3. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
+
+or
+
+1. Open `FakeSurveyGenerator.sln` in Visual Studio:
+
+2. Make sure that the `docker-compose` project is selected as the startup project
+
+3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
+
+4. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
+
 To run on local Kubernetes:
 
 - Docker Desktop with Kubernetes enabled (Ensure that at least 2048 MB of Memory is allocated to Docker Engine)
@@ -141,29 +169,6 @@ To deploy to a local Kubernetes cluster:
    `skaffold run`
 
 3. In a browser, navigate to http://k8s.local to open up the Fake Survey Generator UI
-
-To run with Docker Compose:
-
-- Docker Desktop
-- Visual Studio (optional)
-
-To run with Docker Compose:
-
-1. In a Terminal/Command Prompt/PowerShell window in the project root, run:
-
-   `docker-compose up`
-
-2. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
-
-or
-
-1. Open `FakeSurveyGenerator.sln` in Visual Studio:
-
-2. Make sure that the `docker-compose` project is selected as the startup project
-
-3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
-
-4. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
 
 ## How do I contribute?
 
