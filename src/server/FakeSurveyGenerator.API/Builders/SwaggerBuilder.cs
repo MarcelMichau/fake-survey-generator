@@ -14,9 +14,9 @@ namespace FakeSurveyGenerator.API.Builders
         public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Fake Survey Generator API",
                     Version = "v1",
@@ -31,11 +31,11 @@ namespace FakeSurveyGenerator.API.Builders
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                options.IncludeXmlComments(xmlPath);
 
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
-                    Description = "OAuth2 Authentication",
+                    Description = "OpenID Connect Authentication",
                     OpenIdConnectUrl = new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_FRONTCHANNEL_URL")}/.well-known/openid-configuration"),
                     Type = SecuritySchemeType.OAuth2,
                     Flows = new OpenApiOAuthFlows
@@ -48,7 +48,7 @@ namespace FakeSurveyGenerator.API.Builders
                     }
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -67,12 +67,13 @@ namespace FakeSurveyGenerator.API.Builders
         {
             app.UseSwagger();
 
-            return app.UseSwaggerUI(c =>
+            return app.UseSwaggerUI(options =>
             {
-                c.EnableDeepLinking();
-                c.InjectJavascript("/swagger/idTokenOverride.js");
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1");
-                c.OAuthClientId("fake-survey-generator-api-swagger");
+                options.DocumentTitle = "Fake Survey Generator - Swagger";
+                options.EnableDeepLinking();
+                options.InjectJavascript("/swagger/idTokenOverride.js");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Fake Survey Generator API V1");
+                options.OAuthClientId("fake-survey-generator-api-swagger");
             });
         }
     }
