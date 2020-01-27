@@ -140,7 +140,7 @@ To run with Docker Compose:
 
    `docker-compose up`
 
-3. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
+3. In a browser, navigate to https://localhost:3000 to open up the Fake Survey Generator UI
 
 or
 
@@ -150,7 +150,7 @@ or
 
 3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
 
-4. In a browser, navigate to http://localhost:3000 to open up the Fake Survey Generator UI
+4. In a browser, navigate to https://localhost:3000 to open up the Fake Survey Generator UI
 
 To run on local Kubernetes:
 
@@ -168,7 +168,7 @@ To deploy to a local Kubernetes cluster:
 
    `skaffold run`
 
-3. In a browser, navigate to http://k8s.local to open up the Fake Survey Generator UI
+3. In a browser, navigate to https://k8s.local to open up the Fake Survey Generator UI
 
 ## How do I contribute?
 
