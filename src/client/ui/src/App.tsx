@@ -54,7 +54,11 @@ const GetSurvey: React.FC<GetSurveyProps> = ({
                             type="text"
                             value={surveyId}
                             onChange={e =>
-                                onUpdateSurveyId(Number(e.target.value))
+                                onUpdateSurveyId(
+                                    Number.isNaN(Number(e.target.value))
+                                        ? 0
+                                        : Number(e.target.value)
+                                )
                             }
                         />
                     </div>
@@ -197,10 +201,14 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                     <div>
                         <input
                             style={{ margin: "1em auto", color: "black" }}
-                            type="number"
+                            type="text"
                             value={numberOfRespondents}
                             onChange={e =>
-                                setNumberOfRespondents(Number(e.target.value))
+                                setNumberOfRespondents(
+                                    Number.isNaN(Number(e.target.value))
+                                        ? 0
+                                        : Number(e.target.value)
+                                )
                             }
                         />
                     </div>
