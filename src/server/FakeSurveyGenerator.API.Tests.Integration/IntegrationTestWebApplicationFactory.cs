@@ -16,9 +16,6 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             Environment.SetEnvironmentVariable("ConnectionStrings__SurveyContext", "Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0");
-            //Environment.SetEnvironmentVariable("REDIS_URL", "127.0.0.1");
-            //Environment.SetEnvironmentVariable("REDIS_PASSWORD", "testing");
-            //Environment.SetEnvironmentVariable("REDIS_SSL", "false");
             Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_BACKCHANNEL_URL", "http://test.com");
             Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_FRONTCHANNEL_URL", "http://localhost");
 
@@ -63,19 +60,15 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         private static void RemoveDefaultDbContextFromServiceCollection(IServiceCollection services)
         {
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SurveyContext>));
-            if (descriptor != null)
-            {
-                services.Remove(descriptor);
-            }
+            if (descriptor == null) return;
+            services.Remove(descriptor);
         }
 
         private static void RemoveDefaultDistributedCacheFromServiceCollection(IServiceCollection services)
         {
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDistributedCache));
-            if (descriptor != null)
-            {
-                services.Remove(descriptor);
-            }
+            if (descriptor == null) return;
+            services.Remove(descriptor);
         }
     }
 }

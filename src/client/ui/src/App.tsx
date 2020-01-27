@@ -56,7 +56,7 @@ const GetSurvey: React.FC<GetSurveyProps> = ({
                             onChange={e =>
                                 onUpdateSurveyId(
                                     Number.isNaN(Number(e.target.value))
-                                        ? 0
+                                        ? surveyId
                                         : Number(e.target.value)
                                 )
                             }
@@ -206,7 +206,7 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                             onChange={e =>
                                 setNumberOfRespondents(
                                     Number.isNaN(Number(e.target.value))
-                                        ? 0
+                                        ? numberOfRespondents
                                         : Number(e.target.value)
                                 )
                             }
