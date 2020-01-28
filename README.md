@@ -16,7 +16,34 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 
 ## What is this?
 
-This is an application of moderate complexity, used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
+This is an application of moderate complexity (not just a to-do app), used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates some elements from the [https://github.com/JasonGT/CleanArchitecture](https://github.com/JasonGT/CleanArchitecture) template by [JasonGT](https://github.com/JasonGT). 
+
+It is built using Clean Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix.  It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
+
+It also includes some examples that typical real-world applications deal with:
+
+  - Unit & Integration tests for a CQRS/DDD project
+  - Running Unit & Integration tests with Docker Compose
+  - Using an in-memory database for testing
+  - Implementing health checks for an ASP.NET Core Web API
+  - Adding Swagger to an ASP.NET Core Web API
+  - Implementing OpenID Connect using IdentityServer
+  - Adding OpenID Connect to Swagger UI
+  - Securing an ASP.NET Core Web API using Bearer token authentication
+  - Adding security headers to API responses
+  - Using Hosted Services in ASP.NET Core Web API
+  - Using a distributed Redis cache
+  - Creating trusted SSL certificates for HTTPS in development
+  - Configuring SQL Server retry policies
+  - Implementing Forwarded Headers for hosting ASP.NET Core Web API behind a load balancer
+  - Validation of domain objects using FluentValidation
+  - Deploying Entity Framework Core Code-First Migrations to Azure SQL Server using Azure Pipelines
+  - Run a microservice application using Docker Compose
+  - Deploying a microservice application to Kubernetes using Helm charts
+  - Local Kubernetes development using Skaffold
+  - Using Azure Pipelines to Build & Deploy a microservice application to Azure Kubernetes Service
+  
+Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
 
 ## Why is this here?
 
@@ -46,6 +73,7 @@ The server side consists of the following main components:
   - Application Tests Project
   - API Integration Tests Project
   - EF Design Project (used purely for EF Core design-time tooling)
+- Fake Survey Generator Worker
 - Identity Provider API
 
 The server side makes use of the following tools, libraries & frameworks:
@@ -62,6 +90,9 @@ The server side makes use of the following tools, libraries & frameworks:
   - FluentValidation
   - AspNetCore.Diagnostics.HealthChecks
   - Docker
+- Fake Survey Generator Worker
+  - .NET Core 3.1
+  - ASP.NET Core 3.1 Worker Service
 - Identity Provider API
   - .NET Core 3.1
   - ASP.NET Core 3.1 MVC
