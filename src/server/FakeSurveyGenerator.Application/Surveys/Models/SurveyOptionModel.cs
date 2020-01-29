@@ -1,6 +1,9 @@
-﻿namespace FakeSurveyGenerator.Application.Surveys.Models
+﻿using FakeSurveyGenerator.Application.Common.Mappings;
+using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+
+namespace FakeSurveyGenerator.Application.Surveys.Models
 {
-    public class SurveyOptionModel
+    public class SurveyOptionModel : IMapFrom<SurveyOption>
     {
         public int Id { get; set; }
         public string OptionText { get; set; }

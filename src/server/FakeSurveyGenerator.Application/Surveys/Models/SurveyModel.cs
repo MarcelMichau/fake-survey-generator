@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using FakeSurveyGenerator.Application.Common.Mappings;
+using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Application.Surveys.Models
 {
-    public class SurveyModel
+    public class SurveyModel : IMapFrom<Survey>
     {
         public int Id { get; set; }
         public string Topic { get; set; }
