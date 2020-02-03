@@ -13,7 +13,6 @@ namespace FakeSurveyGenerator.Infrastructure
 
             services.AddDatabaseConfiguration(configuration);
             services.AddCacheConfiguration(configuration);
-            services.AddRepositoryConfiguration();
 
             return services;
         }

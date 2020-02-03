@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 
 namespace FakeSurveyGenerator.Application.Tests
 {
@@ -9,11 +12,13 @@ namespace FakeSurveyGenerator.Application.Tests
     {
         public static SurveyContext Create()
         {
+            var mockMediator = new Mock<IMediator>();
+
             var options = new DbContextOptionsBuilder<SurveyContext>()
-                .UseInMemoryDatabase("InMemoryDbForTesting")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new SurveyContext(options);
+            var context = new SurveyContext(options, mockMediator.Object);
 
             context.Database.EnsureCreated();
 

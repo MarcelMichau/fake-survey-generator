@@ -24,6 +24,8 @@ namespace FakeSurveyGenerator.Infrastructure.Builders
                         null);
                 }));
 
+            services.AddScoped<ISurveyContext>(provider => provider.GetService<SurveyContext>());
+
             return services;
         }
     }

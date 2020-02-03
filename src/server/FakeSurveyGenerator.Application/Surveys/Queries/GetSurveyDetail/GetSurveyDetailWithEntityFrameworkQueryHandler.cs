@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Surveys.Models;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
     public class GetSurveyDetailWithEntityFrameworkQueryHandler : IRequestHandler<GetSurveyDetailQuery, SurveyModel>
     {
-        private readonly ISurveyRepository _surveyRepository;
+        private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
         private readonly IDistributedCache _cache;
 
-        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyRepository surveyRepository, IMapper mapper, IDistributedCache cache)
+        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyContext surveyContext, IMapper mapper, IDistributedCache cache)
         {
-            _surveyRepository = surveyRepository ?? throw new ArgumentNullException(nameof(surveyRepository));
+            _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
@@ -32,7 +34,11 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
             if (!string.IsNullOrWhiteSpace(cachedValue))
                 return System.Text.Json.JsonSerializer.Deserialize<SurveyModel>(cachedValue);
 
-            var survey = await _surveyRepository.GetAsync(request.Id);
+            var survey = await _surveyContext.Surveys
+                .Include(s => s.Options)
+                .ProjectTo<SurveyModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
+                
 
             if (survey == null)
                 throw new KeyNotFoundException();
@@ -42,7 +48,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
                 SlidingExpiration = new TimeSpan(1, 0, 0)
             }, cancellationToken);
 
-            return _mapper.Map<SurveyModel>(survey);
+            return survey;
         }
     }
 }

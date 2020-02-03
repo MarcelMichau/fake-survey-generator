@@ -3,21 +3,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.Services;
 using MediatR;
 
 namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
     public class CreateSurveyCommandHandler : IRequestHandler<CreateSurveyCommand, SurveyModel>
     {
-        private readonly ISurveyRepository _surveyRepository;
+        private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
 
-        public CreateSurveyCommandHandler(ISurveyRepository surveyRepository, IMapper mapper)
+        public CreateSurveyCommandHandler(ISurveyContext surveyContext, IMapper mapper)
         {
-            _surveyRepository = surveyRepository ?? throw new ArgumentNullException(nameof(surveyRepository));
+            _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -25,26 +25,13 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
         {
             var survey = new Survey(request.SurveyTopic, request.NumberOfRespondents, request.RespondentType);
 
-            foreach (var option in request.SurveyOptions)
-            {
-                if (option.PreferredNumberOfVotes.HasValue)
-                    survey.AddSurveyOption(option.OptionText, option.PreferredNumberOfVotes.Value);
-                else
-                    survey.AddSurveyOption(option.OptionText);
-            }
+            survey.AddSurveyOptions(request.SurveyOptions.Select(option => new SurveyOption(option.OptionText, option.PreferredNumberOfVotes)));
 
-            IVoteDistribution voteDistribution;
+            var result = survey.CalculateOutcome();
 
-            if (request.SurveyOptions.Any(option => option.PreferredNumberOfVotes > 0))
-                voteDistribution = new FixedVoteDistribution();
-            else
-                voteDistribution = new RandomVoteDistribution();
+            _surveyContext.Surveys.Add(result);
 
-            var result = survey.CalculateOutcome(voteDistribution);
-
-            _surveyRepository.Add(result);
-
-            await _surveyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            await _surveyContext.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<SurveyModel>(result);
         }

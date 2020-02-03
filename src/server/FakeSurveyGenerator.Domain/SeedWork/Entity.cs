@@ -8,8 +8,8 @@ namespace FakeSurveyGenerator.Domain.SeedWork
         private int? _requestedHashCode;
         public virtual int Id { get; protected set; }
 
-        private List<INotification> _domainEvents;
-        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
+        private List<INotification> _domainEvents = new List<INotification>();
+        public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
 
         public void AddDomainEvent(INotification eventItem)
         {

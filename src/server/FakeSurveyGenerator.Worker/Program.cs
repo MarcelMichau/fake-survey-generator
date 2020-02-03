@@ -1,8 +1,6 @@
 using System;
 using FakeSurveyGenerator.Application;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
-using FakeSurveyGenerator.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +32,6 @@ namespace FakeSurveyGenerator.Worker
 
                     services.AddInfrastructure(hostContext.Configuration);
                     services.AddApplication();
-                    services.AddScoped<ISurveyRepository, SurveyRepository>();
 
                     services.AddHostedService<Worker>();
                 });

@@ -1,37 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.SeedWork;
-using Moq;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 {
-    public class CreateSurveyCommandTests
+    public class CreateSurveyCommandTests : CommandTestBase
     {
-        private readonly IMapper _testMapper;
-        private readonly ISurveyRepository _testSurveyRepository;
-
-        public CreateSurveyCommandTests()
-        {
-            var configurationProvider = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
-
-            _testMapper = configurationProvider.CreateMapper();
-            var mockRepository = new Mock<ISurveyRepository>();
-
-            mockRepository.SetupGet(r => r.UnitOfWork).Returns(new Mock<IUnitOfWork>().Object);
-
-            _testSurveyRepository = mockRepository.Object;
-        }
-
         [Fact]
         public async Task Handle_GivenValidRequest_ShouldRaiseSurveyCreatedNotification()
         {
@@ -53,7 +31,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(_testSurveyRepository, _testMapper);
+            var sut = new CreateSurveyCommandHandler(Context, Mapper);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -61,6 +39,41 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
             Assert.Equal(numberOfRespondents, result.NumberOfRespondents);
             Assert.Equal(respondentType, result.RespondentType);
             Assert.True(result.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
+        }
+
+        [Fact]
+        public async Task Handle_GivenValidPreferredNumberOfVotesRequest_ShouldHaveCorrectVoteDistribution()
+        {
+            var topic = "Tabs or spaces?";
+            var numberOfRespondents = 500;
+            var respondentType = "Developers";
+
+            var options = new List<SurveyOptionDto>
+            {
+                new SurveyOptionDto
+                {
+                    OptionText = "Tabs",
+                    PreferredNumberOfVotes = 100
+                },
+                new SurveyOptionDto
+                {
+                    OptionText = "Spaces",
+                    PreferredNumberOfVotes = 400
+                }
+            };
+
+            var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
+
+            var sut = new CreateSurveyCommandHandler(Context, Mapper);
+
+            var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
+
+            Assert.Equal(topic, result.Topic);
+            Assert.Equal(numberOfRespondents, result.NumberOfRespondents);
+            Assert.Equal(respondentType, result.RespondentType);
+            Assert.True(result.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
+            Assert.Equal(100, result.Options.First().NumberOfVotes);
+            Assert.Equal(400, result.Options.Last().NumberOfVotes);
         }
     }
 }

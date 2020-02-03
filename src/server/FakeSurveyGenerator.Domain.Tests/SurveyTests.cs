@@ -3,7 +3,6 @@ using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Events;
 using FakeSurveyGenerator.Domain.Exceptions;
-using FakeSurveyGenerator.Domain.Services;
 using Xunit;
 
 namespace FakeSurveyGenerator.Domain.Tests
@@ -96,9 +95,7 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             var survey = new Survey(topic, numberOfRespondents, respondentType);
 
-            var voteDistributionStrategy = new RandomVoteDistribution();
-
-            Assert.Throws<SurveyDomainException>(() => survey.CalculateOutcome(voteDistributionStrategy));
+            Assert.Throws<SurveyDomainException>(() => survey.CalculateOutcome());
         }
 
         [Fact]
@@ -113,9 +110,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             survey.AddSurveyOption("Tabs");
             survey.AddSurveyOption("Spaces");
 
-            var voteDistributionStrategy = new RandomVoteDistribution();
-
-            var result = survey.CalculateOutcome(voteDistributionStrategy);
+            var result = survey.CalculateOutcome();
 
             Assert.Equal(numberOfRespondents, result.Options.Sum(option => option.NumberOfVotes));
             Assert.True(result.Options.All(option => option.NumberOfVotes > 0));
@@ -133,9 +128,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             survey.AddSurveyOption("Tabs");
             survey.AddSurveyOption("Spaces");
 
-            var voteDistributionStrategy = new OneSidedVoteDistribution();
-
-            var result = survey.CalculateOutcome(voteDistributionStrategy);
+            var result = survey.CalculateOneSidedOutcome();
 
             Assert.Equal(numberOfRespondents, result.Options.Max(option => option.NumberOfVotes));
         }
@@ -152,9 +145,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             survey.AddSurveyOption("Tabs", 600);
             survey.AddSurveyOption("Spaces", 400);
 
-            var voteDistribution = new FixedVoteDistribution();
-
-            var result = survey.CalculateOutcome(voteDistribution);
+            var result = survey.CalculateOutcome();
 
             Assert.Equal(600, result.Options.First().NumberOfVotes);
             Assert.Equal(400, result.Options.Last().NumberOfVotes);

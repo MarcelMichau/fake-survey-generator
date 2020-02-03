@@ -27,6 +27,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             CreatedOn = DateTime.UtcNow;
             _options = new List<SurveyOption>();
 
+            _selectedVoteDistribution = new RandomVoteDistribution();
+
             AddSurveyCreatedEvent();
         }
 
@@ -38,6 +40,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
         private readonly List<SurveyOption> _options;
 
         public IReadOnlyList<SurveyOption> Options => _options;
+
+        private IVoteDistribution _selectedVoteDistribution;
 
         public void AddSurveyOption(string optionText)
         {
@@ -56,20 +60,52 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             _options.Add(newOption);
         }
 
-        public Survey CalculateOutcome(IVoteDistribution strategy)
+        public void AddSurveyOptions(IEnumerable<SurveyOption> options)
+        {
+            foreach (var surveyOption in options)
+            {
+                AddSurveyOption(surveyOption.OptionText, surveyOption.PreferredNumberOfVotes);
+            }
+        }
+
+        public Survey CalculateOutcome()
+        {
+            CheckForZeroOptions();
+            DetermineVoteDistributionStrategy();
+
+            _selectedVoteDistribution.DistributeVotes(this);
+
+            return this;
+        }
+
+        public Survey CalculateOneSidedOutcome()
+        {
+            CheckForZeroOptions();
+            _selectedVoteDistribution = new OneSidedVoteDistribution();
+
+            _selectedVoteDistribution.DistributeVotes(this);
+
+            return this;
+        }
+
+        private void CheckForZeroOptions()
         {
             if (!_options.Any())
                 throw new SurveyDomainException("Cannot calculate a survey with no options");
-
-            strategy.DistributeVotes(this);
-
-            return this;
         }
 
         private void AddSurveyCreatedEvent()
         {
             var surveyCreatedEvent = new SurveyCreatedDomainEvent(this);
             AddDomainEvent(surveyCreatedEvent);
+        }
+
+        private void DetermineVoteDistributionStrategy()
+        {
+            if (_options.Any(option => option.PreferredNumberOfVotes > 0))
+                _selectedVoteDistribution = new FixedVoteDistribution();
+            else
+                _selectedVoteDistribution = new RandomVoteDistribution();
         }
 
         public override string ToString()

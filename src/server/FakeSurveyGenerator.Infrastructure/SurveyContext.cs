@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.SeedWork;
 using FakeSurveyGenerator.Infrastructure.EntityConfigurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Infrastructure
 {
-    public class SurveyContext : DbContext, IUnitOfWork
+    public class SurveyContext : DbContext, ISurveyContext
     {
         private readonly IMediator _mediator;
 
@@ -38,13 +38,11 @@ namespace FakeSurveyGenerator.Infrastructure
             modelBuilder.ApplyConfiguration(new SurveyOptionEntityTypeConfiguration());
         }
 
-        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             await _mediator.DispatchDomainEventsAsync(this);
 
-            await base.SaveChangesAsync(cancellationToken);
-
-            return true;
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
