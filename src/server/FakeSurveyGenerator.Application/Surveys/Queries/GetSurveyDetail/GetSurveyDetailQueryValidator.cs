@@ -2,9 +2,9 @@
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
-    public class GetSurveyDetailCommandValidator : AbstractValidator<GetSurveyDetailQuery>
+    public class GetSurveyDetailQueryValidator : AbstractValidator<GetSurveyDetailQuery>
     {
-        public GetSurveyDetailCommandValidator()
+        public GetSurveyDetailQueryValidator()
         {
             RuleFor(request => request.Id).GreaterThan(0);
         }

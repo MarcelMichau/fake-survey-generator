@@ -45,6 +45,7 @@ namespace FakeSurveyGenerator.API.Controllers
         /// <response code="201">Returns the newly created survey</response>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<SurveyModel>> CreateSurvey([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(command, cancellationToken);
