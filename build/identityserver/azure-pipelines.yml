@@ -37,10 +37,11 @@ stages:
             DOCKER_PASSWORD: $(dockerPassword)
           displayName: 'Push Image to Docker Hub'
 
-        - task: DotNetCoreInstaller@0
-          displayName: 'Install .NET Core 3.1'
+        - task: UseDotNet@2
+          displayName: 'Install .NET Core SDK'
           inputs:
-            version: '3.1.300'
+            packageType: 'sdk'
+            useGlobalJson: true
 
         - script: |   
             dotnet tool install --global dotnet-ef --version 3.0.0

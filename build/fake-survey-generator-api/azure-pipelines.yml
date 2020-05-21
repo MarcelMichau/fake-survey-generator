@@ -30,10 +30,11 @@ stages:
           versionTag: $(build.buildNumber)
 
         steps:
-        - task: DotNetCoreInstaller@0
-          displayName: 'Install .NET Core 3.1'
+        - task: UseDotNet@2
+          displayName: 'Install .NET Core SDK'
           inputs:
-            version: '3.1.300'
+            packageType: 'sdk'
+            useGlobalJson: true
 
         - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
           displayName: 'Build Solution'
