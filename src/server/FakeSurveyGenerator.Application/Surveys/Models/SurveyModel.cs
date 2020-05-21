@@ -13,5 +13,10 @@ namespace FakeSurveyGenerator.Application.Surveys.Models
         public int NumberOfRespondents { get; set; }
         public DateTime CreatedOn { get; set; }
         public List<SurveyOptionModel> Options { get; set; }
+
+        public override string ToString()
+        {
+            return System.Text.Json.JsonSerializer.Serialize(this);
+        }
     }
 }

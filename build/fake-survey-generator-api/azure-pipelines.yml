@@ -33,7 +33,7 @@ stages:
         - task: DotNetCoreInstaller@0
           displayName: 'Install .NET Core 3.1'
           inputs:
-            version: '3.1.100'
+            version: '3.1.300'
 
         - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
           displayName: 'Build Solution'
@@ -52,7 +52,7 @@ stages:
           displayName: 'Publish Test Results'
 
         - script: |
-            dotnet tool install --global dotnet-ef --version 3.1.0
+            dotnet tool install --global dotnet-ef --version 3.1.4
           displayName: 'Install EF Core Global Tool'
 
         - script: |
@@ -89,7 +89,7 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.0.0'
+                  helmVersionToInstall: '3.2.1'
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
@@ -145,7 +145,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.0.0'
+                  helmVersionToInstall: '3.2.1'
                 displayName: 'Install Helm'
 
               - task: AzureCLI@1
@@ -205,7 +205,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.0.0'
+                  helmVersionToInstall: '3.2.1'
                 displayName: 'Install Helm'
 
               - task: AzureCLI@1
@@ -278,7 +278,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.0.0'
+                  helmVersionToInstall: '3.2.1'
                 displayName: 'Install Helm'
 
               - task: AzureCLI@1

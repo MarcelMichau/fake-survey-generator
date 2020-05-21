@@ -35,10 +35,10 @@ services:
       - sql-server
 
   sql-server:
-    image: mcr.microsoft.com/mssql/server:2019-CU1-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-16.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
 
   redis:
-    image: redis
+    image: redis:6.0.3-alpine

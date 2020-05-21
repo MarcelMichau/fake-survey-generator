@@ -38,8 +38,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
                 .Include(s => s.Options)
                 .ProjectTo<SurveyModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
-                
-
+            
             if (survey == null)
                 throw new KeyNotFoundException();
 

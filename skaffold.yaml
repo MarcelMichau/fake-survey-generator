@@ -1,52 +1,52 @@
-apiVersion: skaffold/v1
+apiVersion: skaffold/v2beta3
 kind: Config
 build:
   artifacts:
-    - image: marcelmichau/fakesurveygeneratorui
-      context: .
-      docker:
-        dockerfile: src/client/ui/Dockerfile
-    - image: marcelmichau/fakesurveygeneratorapi
-      context: .
-      docker:
-        dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
-    - image: marcelmichau/identityserver
-      context: .
-      docker:
-        dockerfile: src/server/MarcelMichau.IDP/Dockerfile
+  - image: marcelmichau/fakesurveygeneratorui
+    context: .
+    docker:
+      dockerfile: src/client/ui/Dockerfile
+  - image: marcelmichau/fakesurveygeneratorapi
+    context: .
+    docker:
+      dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
+  - image: marcelmichau/identityserver
+    context: .
+    docker:
+      dockerfile: src/server/MarcelMichau.IDP/Dockerfile
   tagPolicy:
     sha256: {}
 deploy:
   helm:
     releases:
-      - name: fake-survey-generator-ui
-        chartPath: ./charts/fake-survey-generator-ui
-        values:
-          image: marcelmichau/fakesurveygeneratorui
-        namespace: default
-        imageStrategy:
-          helm: {}
-      - name: fake-survey-generator-api
-        chartPath: ./charts/fake-survey-generator-api
-        values:
-          image: marcelmichau/fakesurveygeneratorapi
-        namespace: default
-        imageStrategy:
-          helm: {}
-      - name: identityserver
-        chartPath: ./charts/identityserver
-        values:
-          image: marcelmichau/identityserver
-        namespace: default
-        imageStrategy:
-          helm: {}
-      - name: sql-server
-        chartPath: ./charts/sql-server
-        namespace: default
-        imageStrategy:
-          helm: {}
-      - name: redis
-        chartPath: ./charts/redis
-        namespace: default
-        imageStrategy:
-          helm: {}
+    - name: fake-survey-generator-ui
+      chartPath: ./charts/fake-survey-generator-ui
+      values:
+        image: marcelmichau/fakesurveygeneratorui
+      namespace: default
+      imageStrategy:
+        helm: {}
+    - name: fake-survey-generator-api
+      chartPath: ./charts/fake-survey-generator-api
+      values:
+        image: marcelmichau/fakesurveygeneratorapi
+      namespace: default
+      imageStrategy:
+        helm: {}
+    - name: identityserver
+      chartPath: ./charts/identityserver
+      values:
+        image: marcelmichau/identityserver
+      namespace: default
+      imageStrategy:
+        helm: {}
+    - name: sql-server
+      chartPath: ./charts/sql-server
+      namespace: default
+      imageStrategy:
+        helm: {}
+    - name: redis
+      chartPath: ./charts/redis
+      namespace: default
+      imageStrategy:
+        helm: {}
