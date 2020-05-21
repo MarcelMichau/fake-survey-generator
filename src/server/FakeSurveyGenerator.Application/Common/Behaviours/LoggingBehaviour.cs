@@ -5,11 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Application.Common.Behaviours
 {
-    public class RequestLogger<TRequest> : IRequestPreProcessor<TRequest>
+    public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest>
     {
         private readonly ILogger _logger;
 
-        public RequestLogger(ILogger<TRequest> logger)
+        public LoggingBehaviour(ILogger<TRequest> logger)
         {
             _logger = logger;
         }

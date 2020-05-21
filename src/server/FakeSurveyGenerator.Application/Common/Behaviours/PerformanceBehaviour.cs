@@ -6,19 +6,20 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Application.Common.Behaviours
 {
-    public class RequestPerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly Stopwatch _timer;
         private readonly ILogger<TRequest> _logger;
 
-        public RequestPerformanceBehaviour(ILogger<TRequest> logger)
+        public PerformanceBehaviour(ILogger<TRequest> logger)
         {
             _timer = new Stopwatch();
 
             _logger = logger;
         }
 
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+            RequestHandlerDelegate<TResponse> next)
         {
             _timer.Start();
 
@@ -30,7 +31,8 @@ namespace FakeSurveyGenerator.Application.Common.Behaviours
 
             var name = typeof(TRequest).Name;
 
-            _logger.LogWarning("Fake Survey Generator Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
+            _logger.LogWarning(
+                "Fake Survey Generator Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
                 name, _timer.ElapsedMilliseconds, request);
 
             return response;
