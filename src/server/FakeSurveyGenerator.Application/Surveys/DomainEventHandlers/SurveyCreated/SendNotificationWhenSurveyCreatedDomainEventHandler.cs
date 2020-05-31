@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Notifications.Models;
-using FakeSurveyGenerator.Domain.Events;
+using FakeSurveyGenerator.Domain.DomainEvents;
 using MediatR;
 
 namespace FakeSurveyGenerator.Application.Surveys.DomainEventHandlers.SurveyCreated

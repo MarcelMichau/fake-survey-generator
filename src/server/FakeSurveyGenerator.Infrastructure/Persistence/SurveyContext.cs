@@ -7,7 +7,7 @@ using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace FakeSurveyGenerator.Infrastructure
+namespace FakeSurveyGenerator.Infrastructure.Persistence
 {
     public class SurveyContext : DbContext, ISurveyContext
     {

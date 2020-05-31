@@ -2,7 +2,7 @@
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using MediatR;
 
-namespace FakeSurveyGenerator.Domain.Events
+namespace FakeSurveyGenerator.Domain.DomainEvents
 {
     public class SurveyCreatedDomainEvent : INotification
     {

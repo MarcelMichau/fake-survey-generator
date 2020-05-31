@@ -1,5 +1,6 @@
 ﻿using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Infrastructure.Builders;
+using FakeSurveyGenerator.Infrastructure.Notifications;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

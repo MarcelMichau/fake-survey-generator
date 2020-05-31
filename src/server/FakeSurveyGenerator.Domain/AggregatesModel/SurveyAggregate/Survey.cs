@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FakeSurveyGenerator.Domain.Events;
+using FakeSurveyGenerator.Domain.DomainEvents;
 using FakeSurveyGenerator.Domain.Exceptions;
 using FakeSurveyGenerator.Domain.SeedWork;
 using FakeSurveyGenerator.Domain.Services;

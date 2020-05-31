@@ -5,7 +5,7 @@ using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Notifications.Models;
 using Microsoft.Extensions.Logging;
 
-namespace FakeSurveyGenerator.Infrastructure
+namespace FakeSurveyGenerator.Infrastructure.Notifications
 {
     public class NotificationService : INotificationService
     {

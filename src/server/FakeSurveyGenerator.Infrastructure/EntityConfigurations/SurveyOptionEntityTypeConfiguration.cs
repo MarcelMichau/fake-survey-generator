@@ -1,4 +1,5 @@
 ﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using MediatR;
 
 namespace FakeSurveyGenerator.Infrastructure
@@ -11,13 +12,14 @@ namespace FakeSurveyGenerator.Infrastructure
         {
             var domainEntities = ctx.ChangeTracker
                 .Entries<Entity>()
-                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
+                .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any())
+                .ToList();
 
             var domainEvents = domainEntities
                 .SelectMany(x => x.Entity.DomainEvents)
                 .ToList();
 
-            domainEntities.ToList()
+            domainEntities
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
 
             foreach (var domainEvent in domainEvents)

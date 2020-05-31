@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 
             var result = survey.CalculateOutcome();
 
-            _surveyContext.Surveys.Add(result);
+            await _surveyContext.Surveys.AddAsync(result, cancellationToken);
 
             await _surveyContext.SaveChangesAsync(cancellationToken);
 

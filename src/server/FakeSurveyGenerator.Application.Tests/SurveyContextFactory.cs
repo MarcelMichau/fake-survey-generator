@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Moq;

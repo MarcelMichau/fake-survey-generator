@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
 
@@ -20,6 +19,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
     {
         private readonly HttpClient _authenticatedClient;
         private readonly HttpClient _unauthenticatedClient;
+
+        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
         public SurveyControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
         {
@@ -52,13 +56,13 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     }
                 });
 
-            var response = await _authenticatedClient.PostAsync("/api/survey", new StringContent(JsonConvert.SerializeObject(createSurveyCommand), Encoding.UTF8, MediaTypeNames.Application.Json));
+            var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand, Options);
 
             response.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStreamAsync();
 
-            var surveyResult = JsonConvert.DeserializeObject<SurveyModel>(content);
+            var surveyResult = await JsonSerializer.DeserializeAsync<SurveyModel>(content, Options);
 
             Assert.Equal(350, surveyResult.Options.Sum(option => option.NumberOfVotes));
             Assert.Equal("How awesome is this?", surveyResult.Topic);
@@ -81,7 +85,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     }
                 });
 
-            var response = await _unauthenticatedClient.PostAsync("/api/survey", new StringContent(JsonConvert.SerializeObject(createSurveyCommand), Encoding.UTF8, MediaTypeNames.Application.Json));
+            var response = await _unauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
             Assert.Equal(StatusCodes.Status401Unauthorized, (int)response.StatusCode);
         }
@@ -98,7 +102,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     }
                 });
 
-            var response = await _authenticatedClient.PostAsync("/api/survey", new StringContent(JsonConvert.SerializeObject(createSurveyCommand), Encoding.UTF8, MediaTypeNames.Application.Json));
+            var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
             var statusCode = (int) response.StatusCode;
 
@@ -116,15 +120,13 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             const string expectedOptionText = "Test Option 1";
 
-            var response = await _authenticatedClient.GetStringAsync($"api/survey/{surveyId}");
+            var survey = await _authenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{surveyId}");
 
-            var surveyResult = JsonConvert.DeserializeObject<SurveyModel>(response);
-
-            surveyResult.Id.ShouldBe(surveyId);
-            surveyResult.Topic.ShouldBe(expectedSurveyTopic);
-            surveyResult.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
-            surveyResult.RespondentType.ShouldBe(expectedRespondentType);
-            surveyResult.Options.First().OptionText.ShouldBe(expectedOptionText);
+            survey.Id.ShouldBe(surveyId);
+            survey.Topic.ShouldBe(expectedSurveyTopic);
+            survey.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
+            survey.RespondentType.ShouldBe(expectedRespondentType);
+            survey.Options.First().OptionText.ShouldBe(expectedOptionText);
         }
     }
 }

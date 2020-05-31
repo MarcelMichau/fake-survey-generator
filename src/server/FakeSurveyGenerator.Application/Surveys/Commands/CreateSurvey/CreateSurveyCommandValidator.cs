@@ -8,12 +8,14 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
         public CreateSurveyCommandValidator()
         {
             RuleFor(command => command.SurveyTopic)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .MaximumLength(250)
                 .WithMessage("{PropertyName} should have a maximum length of {MaxLength}")
                 .NotEmpty()
                 .WithMessage("{PropertyName} should not be empty");
 
             RuleFor(command => command.RespondentType)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .MaximumLength(250)
                 .WithMessage("{PropertyName} should have a maximum length of {MaxLength}")
                 .NotEmpty()
@@ -37,6 +39,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
         public SurveyOptionValidator()
         {
             RuleFor(command => command.OptionText)
+                .Cascade(CascadeMode.StopOnFirstFailure)
                 .MaximumLength(250)
                 .WithMessage("{PropertyName} should have a maximum length of {MaxLength}")
                 .NotEmpty()

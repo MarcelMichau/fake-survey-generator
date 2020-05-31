@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FakeSurveyGenerator.Infrastructure;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

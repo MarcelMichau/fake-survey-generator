@@ -2,6 +2,7 @@
 using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Infrastructure;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Xunit;

@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.HttpOverrides;
 
-namespace FakeSurveyGenerator.API
+namespace FakeSurveyGenerator.API.Networking
 {
     public class Utilities
     {

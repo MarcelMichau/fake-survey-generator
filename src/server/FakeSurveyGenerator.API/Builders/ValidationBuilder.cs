@@ -8,7 +8,11 @@ namespace FakeSurveyGenerator.API.Builders
     {
         public static IMvcBuilder AddValidationConfiguration(this IMvcBuilder builder)
         {
-            builder.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<IConnectionString>());
+            builder.AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssemblyContaining<IConnectionString>();
+                fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+            });
 
             return builder;
         }

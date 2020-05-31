@@ -1,7 +1,7 @@
 ﻿using System;
 using FakeSurveyGenerator.Application.Common.Interfaces;
 
-namespace FakeSurveyGenerator.Infrastructure
+namespace FakeSurveyGenerator.Infrastructure.Persistence
 {
     public class ConnectionString : IConnectionString
     {

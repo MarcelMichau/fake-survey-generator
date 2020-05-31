@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.Events;
+using FakeSurveyGenerator.Domain.DomainEvents;
 using FakeSurveyGenerator.Domain.Exceptions;
 using Xunit;
 

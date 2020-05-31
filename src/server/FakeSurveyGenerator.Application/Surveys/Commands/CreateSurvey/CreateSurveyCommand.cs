@@ -1,24 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using MediatR;
 
 namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
-    [DataContract]
+    // Ideally, commands should be immutable & not have public setters on properties, but System.Text.Json
+    // cannot set these properties when serializing the command, so a compromise had to be made. :(
     public class CreateSurveyCommand : IRequest<SurveyModel>
     {
-        [DataMember]
-        public string SurveyTopic { get; private set; }
+        public string SurveyTopic { get; set; }
 
-        [DataMember]
-        public int NumberOfRespondents { get; private set; }
+        public int NumberOfRespondents { get; set; }
 
-        [DataMember]
-        public string RespondentType { get; private set; }
+        public string RespondentType { get; set; }
 
-        [DataMember]
-        public IEnumerable<SurveyOptionDto> SurveyOptions { get; private set; }
+        public IEnumerable<SurveyOptionDto> SurveyOptions { get; set; }
 
         public CreateSurveyCommand()
         {

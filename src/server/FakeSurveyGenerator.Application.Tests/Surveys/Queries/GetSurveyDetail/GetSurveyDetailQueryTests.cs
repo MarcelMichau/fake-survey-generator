@@ -5,6 +5,7 @@ using AutoMapper;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using FakeSurveyGenerator.Infrastructure;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.Extensions.Caching.Distributed;
 using Shouldly;
 using Xunit;

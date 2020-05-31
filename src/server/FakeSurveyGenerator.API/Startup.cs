@@ -24,7 +24,7 @@ namespace FakeSurveyGenerator.API
             services.AddAuthorization();
 
             services.AddControllers()
-                .AddNewtonsoftJson()
+                .AddJsonConfiguration()
                 .AddValidationConfiguration();
 
             services.AddHealthChecksConfiguration(_configuration, _environment);
