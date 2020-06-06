@@ -1,9 +1,11 @@
-﻿using FakeSurveyGenerator.Application.Surveys.Models;
+﻿using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Common.Errors;
+using FakeSurveyGenerator.Application.Surveys.Models;
 using MediatR;
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
-    public class GetSurveyDetailQuery : IRequest<SurveyModel>
+    public sealed class GetSurveyDetailQuery : IRequest<Result<SurveyModel, Error>>
     {
         public int Id { get; set; }
 

@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Dapper;
-using FakeSurveyGenerator.Application.Common.Interfaces;
-using FakeSurveyGenerator.Application.Surveys.Models;
-using MediatR;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Caching.Distributed;
-
-namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
+﻿namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
-    //public class GetSurveyDetailWithDapperQueryHandler : IRequestHandler<GetSurveyDetailQuery, SurveyModel>
+    //public sealed class GetSurveyDetailWithDapperQueryHandler : IRequestHandler<GetSurveyDetailQuery, SurveyModel>
     //{
     //    private readonly string _connectionString;
     //    private readonly IDistributedCache _cache;

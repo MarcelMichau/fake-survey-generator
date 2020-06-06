@@ -1,7 +1,6 @@
 ﻿using System;
 using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
-using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.Extensions.Caching.Distributed;
 using Moq;
@@ -11,6 +10,12 @@ namespace FakeSurveyGenerator.Application.Tests
 {
     public sealed class QueryTestFixture : IDisposable
     {
+        public SurveyContext Context { get; }
+
+        public IMapper Mapper { get; }
+
+        public IDistributedCache Cache { get; }
+
         public QueryTestFixture()
         {
             Context = SurveyContextFactory.Create();
@@ -26,11 +31,6 @@ namespace FakeSurveyGenerator.Application.Tests
 
             Cache = new Mock<IDistributedCache>().Object;
         }
-        public SurveyContext Context { get; }
-
-        public IMapper Mapper { get; }
-
-        public IDistributedCache Cache { get; }
 
         public void Dispose()
         {

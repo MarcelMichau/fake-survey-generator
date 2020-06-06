@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Application.Surveys.Models
 {
-    public class SurveyModel : IMapFrom<Survey>
+    public sealed class SurveyModel : IMapFrom<Survey>
     {
         public int Id { get; set; }
         public string Topic { get; set; }
@@ -17,6 +18,13 @@ namespace FakeSurveyGenerator.Application.Surveys.Models
         public override string ToString()
         {
             return System.Text.Json.JsonSerializer.Serialize(this);
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Survey, SurveyModel>()
+                .ForMember(dest => dest.Topic, opts => opts.MapFrom(src => src.Topic.Value))
+                .ForMember(dest => dest.RespondentType, opts => opts.MapFrom(src => src.RespondentType.Value));
         }
     }
 }

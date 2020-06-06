@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Domain.Services
 {
-    public interface IVoteDistribution
+    internal interface IVoteDistribution
     {
         void DistributeVotes(Survey survey);
     }

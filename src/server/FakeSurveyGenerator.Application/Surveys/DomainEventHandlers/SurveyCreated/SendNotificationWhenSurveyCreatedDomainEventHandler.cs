@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FakeSurveyGenerator.Application.Surveys.DomainEventHandlers.SurveyCreated
 {
-    public class SendNotificationWhenSurveyCreatedDomainEventHandler : INotificationHandler<SurveyCreatedDomainEvent>
+    public sealed class SendNotificationWhenSurveyCreatedDomainEventHandler : INotificationHandler<SurveyCreatedDomainEvent>
     {
         private readonly INotificationService _notification;
 

@@ -1,40 +1,41 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using FakeSurveyGenerator.Application.Common.Exceptions;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FakeSurveyGenerator.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class SurveyController : ApiController
     {
-
         /// <summary>
         /// Retrieves a specific survey.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Primary key of the Survey</param>
+        /// <param name="cancellationToken">Automatically set by ASP.NET Core</param>
         /// <returns>The requested SurveyModel</returns>
         /// <response code="200">Returns the requested survey</response> 
         /// <response code="404">If the requested survey is not found</response> 
         [HttpGet("{id}", Name = nameof(GetSurvey))]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<SurveyModel>> GetSurvey(int id)
+        public async Task<ActionResult<SurveyModel>> GetSurvey(int id, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await Mediator.Send(new GetSurveyDetailQuery(id));
+                var result = await Mediator.Send(new GetSurveyDetailQuery(id), cancellationToken);
 
                 return Ok(result);
             }
-            catch (KeyNotFoundException)
+            catch (NotFoundException e)
             {
-                return NotFound();
+                return Problem(e.Message, statusCode: StatusCodes.Status404NotFound);
             }
         }
 
