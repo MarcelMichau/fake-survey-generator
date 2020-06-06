@@ -6,7 +6,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
     // Ideally, commands should be immutable & not have public setters on properties, but System.Text.Json
     // cannot set these properties when serializing the command, so a compromise had to be made. :(
-    public class CreateSurveyCommand : IRequest<SurveyModel>
+    public sealed class CreateSurveyCommand : IRequest<SurveyModel>
     {
         public string SurveyTopic { get; set; }
 
@@ -30,7 +30,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
         }
     }
 
-    public class SurveyOptionDto
+    public sealed class SurveyOptionDto
     {
         public string OptionText { get; set; }
         public int PreferredNumberOfVotes { get; set; }

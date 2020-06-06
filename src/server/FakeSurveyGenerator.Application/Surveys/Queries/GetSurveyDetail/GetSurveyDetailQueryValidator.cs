@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
-    public class GetSurveyDetailQueryValidator : AbstractValidator<GetSurveyDetailQuery>
+    public sealed class GetSurveyDetailQueryValidator : AbstractValidator<GetSurveyDetailQuery>
     {
         public GetSurveyDetailQueryValidator()
         {

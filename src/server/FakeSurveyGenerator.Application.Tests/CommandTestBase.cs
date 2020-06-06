@@ -1,15 +1,14 @@
 ﻿using System;
 using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
-using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 
 namespace FakeSurveyGenerator.Application.Tests
 {
     public class CommandTestBase : IDisposable
     {
-        public SurveyContext Context;
-        public IMapper Mapper;
+        public SurveyContext Context { get; }
+        public IMapper Mapper { get; }
 
         public CommandTestBase()
         {

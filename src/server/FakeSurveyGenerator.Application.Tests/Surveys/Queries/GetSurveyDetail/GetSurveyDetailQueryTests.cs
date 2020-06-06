@@ -2,9 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Common.Errors;
+using FakeSurveyGenerator.Application.Common.Exceptions;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
-using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.Extensions.Caching.Distributed;
 using Shouldly;
@@ -37,7 +39,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.ShouldBeOfType<SurveyModel>();
+            result.ShouldBeOfType<Result<SurveyModel, Error>>();
         }
 
         [Fact]
@@ -51,7 +53,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Id.ShouldBe(id);
+            result.Value.Id.ShouldBe(id);
         }
 
         [Fact]
@@ -66,7 +68,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Topic.ShouldBe(expectedTopicText);
+            result.Value.Topic.ShouldBe(expectedTopicText);
         }
 
         [Fact]
@@ -81,7 +83,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
+            result.Value.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
         }
 
         [Fact]
@@ -96,7 +98,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.RespondentType.ShouldBe(expectedTopicText);
+            result.Value.RespondentType.ShouldBe(expectedTopicText);
         }
 
         [Fact]
@@ -108,7 +110,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
 
-            await Should.ThrowAsync<KeyNotFoundException>(async () =>
+            await Should.ThrowAsync<NotFoundException>(async () =>
             {
                 await handler.Handle(query, CancellationToken.None);
             });

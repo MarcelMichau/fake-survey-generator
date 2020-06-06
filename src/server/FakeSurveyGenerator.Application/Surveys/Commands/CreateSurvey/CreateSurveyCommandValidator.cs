@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
-    public class CreateSurveyCommandValidator : AbstractValidator<CreateSurveyCommand>
+    public sealed class CreateSurveyCommandValidator : AbstractValidator<CreateSurveyCommand>
     {
         public CreateSurveyCommandValidator()
         {
@@ -34,7 +34,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
         }
     }
 
-    public class SurveyOptionValidator : AbstractValidator<SurveyOptionDto>
+    public sealed class SurveyOptionValidator : AbstractValidator<SurveyOptionDto>
     {
         public SurveyOptionValidator()
         {

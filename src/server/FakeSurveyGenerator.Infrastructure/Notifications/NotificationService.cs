@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Infrastructure.Notifications
 {
-    public class NotificationService : INotificationService
+    public sealed class NotificationService : INotificationService
     {
         private readonly ILogger<NotificationService> _logger;
 
