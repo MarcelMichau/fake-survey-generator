@@ -13,12 +13,10 @@ namespace FakeSurveyGenerator.API
     public sealed class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _environment;
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
-            _environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -29,7 +27,7 @@ namespace FakeSurveyGenerator.API
                 .AddJsonConfiguration()
                 .AddValidationConfiguration();
 
-            services.AddHealthChecksConfiguration(_configuration, _environment);
+            services.AddHealthChecksConfiguration(_configuration);
             services.AddSwaggerConfiguration(_configuration);
             services.AddApplicationServicesConfiguration(_configuration);
             services.AddAuthenticationConfiguration(_configuration);
@@ -57,7 +55,7 @@ namespace FakeSurveyGenerator.API
 
             app.UseSerilogRequestLogging();
 
-            app.UseApiResponseAndExceptionWrapper();
+            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { IsApiOnly = false} );
 
             app.UseRouting();
 

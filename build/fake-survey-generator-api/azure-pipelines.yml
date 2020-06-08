@@ -5,6 +5,7 @@ trigger:
     - feat/*
     - fix/*
     - chore/*
+    - refactor/*
   paths:
     include:
     - src/server/FakeSurveyGenerator.API/*
@@ -46,7 +47,6 @@ stages:
           displayName: 'Run Integration Tests'
 
         - task: PublishTestResults@2
-          condition: succeededOrFailed()
           inputs:
             testRunner: VSTest
             testResultsFiles: '**/*.trx'
@@ -214,7 +214,6 @@ stages:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az configure --defaults acr=$(registryName)'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Set Azure Container Registry Default in Azure CLI'
 
               - task: AzureCLI@1
@@ -222,7 +221,6 @@ stages:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az acr helm repo add'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
               - task: SqlAzureDacpacDeployment@1
@@ -287,7 +285,6 @@ stages:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az configure --defaults acr=$(registryName)'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Set Azure Container Registry Default in Azure CLI'
 
               - task: AzureCLI@1
@@ -295,7 +292,6 @@ stages:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az acr helm repo add'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
                 displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
               - task: SqlAzureDacpacDeployment@1
