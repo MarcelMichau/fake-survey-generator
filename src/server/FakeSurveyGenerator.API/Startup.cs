@@ -55,7 +55,7 @@ namespace FakeSurveyGenerator.API
 
             app.UseSerilogRequestLogging();
 
-            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { IsApiOnly = false} );
+            app.UseApiResponseAndExceptionWrapper();
 
             app.UseRouting();
 
