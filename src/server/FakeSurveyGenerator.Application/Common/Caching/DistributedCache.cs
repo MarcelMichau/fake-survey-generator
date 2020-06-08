@@ -33,24 +33,48 @@ namespace FakeSurveyGenerator.Application.Common.Caching
 
         public async Task<T> GetAsync(string key, CancellationToken cancellationToken)
         {
-            var cachedResult = await _distributedCache.GetAsync(CacheKey(key), cancellationToken);
+            try
+            {
+                var cachedResult = await _distributedCache.GetAsync(CacheKey(key), cancellationToken);
 
-            return cachedResult == null ? default : await DeserialiseCacheResult(cachedResult, cancellationToken);
+                return cachedResult == null ? default : await DeserialiseCacheResult(cachedResult, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while trying to Get a value from the cache");
+                return default;
+            }
         }
 
         public async Task SetAsync(string key, T item, int minutesToCache, CancellationToken cancellationToken)
         {
-            var cacheEntryOptions = new DistributedCacheEntryOptions
-                {AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutesToCache)};
+            try
+            {
+                var cacheEntryOptions = new DistributedCacheEntryOptions
+                { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(minutesToCache) };
 
-            var serialisedItemToCache = SerialiseForCaching(item);
+                var serialisedItemToCache = SerialiseForCaching(item);
 
-            await _distributedCache.SetStringAsync(CacheKey(key), serialisedItemToCache, cacheEntryOptions,
-                cancellationToken);
+                await _distributedCache.SetStringAsync(CacheKey(key), serialisedItemToCache, cacheEntryOptions,
+                    cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while trying to Set a value in the cache");
+            }
         }
 
-        public async Task RemoveAsync(string key, CancellationToken cancellationToken) =>
-            await _distributedCache.RemoveAsync(CacheKey(key), cancellationToken);
+        public async Task RemoveAsync(string key, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _distributedCache.RemoveAsync(CacheKey(key), cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while trying to Remove a value from the cache");
+            }
+        }
 
         private string CacheKey(string key) => $"{_cacheKeyPrefix}{key}";
 
@@ -62,9 +86,9 @@ namespace FakeSurveyGenerator.Application.Common.Caching
 
                 return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError(ex, "Failed to deserialise from cached value");
+                _logger.LogError(e, "Failed to deserialise from cached value");
                 return default;
             }
         }
@@ -77,9 +101,9 @@ namespace FakeSurveyGenerator.Application.Common.Caching
             {
                 return JsonSerializer.Serialize(item);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError(ex, "Failed to serialise type '{Type}' for caching", typeof(T).FullName);
+                _logger.LogError(e, "Failed to serialise type '{Type}' for caching", typeof(T).FullName);
                 throw;
             }
         }
