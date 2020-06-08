@@ -23,11 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Mappings\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj" />
     <ProjectReference Include="..\FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj" />
   </ItemGroup>
