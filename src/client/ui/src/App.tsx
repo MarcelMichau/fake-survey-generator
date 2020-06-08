@@ -1,46 +1,12 @@
 import React, { useState } from "react";
 import Auth from "./Auth";
+import * as Types from "./types";
 
-type SurveyModel = {
-    id: number;
-    topic: string;
-    respondentType: string;
-    numberOfRespondents: number;
-    createdOn: Date;
-    options: SurveyOptionModel[];
-};
-
-type SurveyOptionModel = {
-    id: number;
-    optionText: string;
-    numberOfVotes: number;
-    preferredNumberOfVotes: number;
-};
-
-type GetSurveyProps = {
-    surveyId: number;
-    onUpdateSurveyId: (surveyId: number) => void;
-    onFetch: () => Promise<void>;
-    surveyDetail: SurveyModel;
-};
-
-type CreateSurveyCommand = {
-    surveyTopic: string;
-    numberOfRespondents: number;
-    respondentType: string;
-    surveyOptions: SurveyOptionDto[];
-};
-
-type SurveyOptionDto = {
-    optionText: string;
-    preferredNumberOfVotes: number;
-};
-
-const GetSurvey: React.FC<GetSurveyProps> = ({
+const GetSurvey: React.FC<Types.GetSurveyProps> = ({
     surveyId,
     onUpdateSurveyId,
     onFetch,
-    surveyDetail
+    surveyDetail,
 }) => {
     return (
         <div>
@@ -53,7 +19,7 @@ const GetSurvey: React.FC<GetSurveyProps> = ({
                             style={{ margin: "1em auto", color: "black" }}
                             type="text"
                             value={surveyId}
-                            onChange={e =>
+                            onChange={(e) =>
                                 onUpdateSurveyId(
                                     Number.isNaN(Number(e.target.value))
                                         ? surveyId
@@ -77,7 +43,7 @@ const GetSurvey: React.FC<GetSurveyProps> = ({
                     style={{
                         border: "2px solid white",
                         margin: "1em",
-                        padding: "1em"
+                        padding: "1em",
                     }}
                 >
                     <h3>
@@ -101,7 +67,7 @@ const GetSurvey: React.FC<GetSurveyProps> = ({
                                     {index === 0 ? (
                                         <strong
                                             style={{
-                                                color: "rgb(28, 184, 65)"
+                                                color: "rgb(28, 184, 65)",
                                             }}
                                         >
                                             {option.optionText} -{" "}
@@ -123,27 +89,27 @@ const GetSurvey: React.FC<GetSurveyProps> = ({
 };
 
 type CreateSurveyProps = {
-    onCreateSurvey: (command: CreateSurveyCommand) => Promise<void>;
+    onCreateSurvey: (command: Types.CreateSurveyCommand) => Promise<void>;
 };
 
 const CreateSurvey: React.FC<CreateSurveyProps> = ({
-    onCreateSurvey
+    onCreateSurvey,
 }): React.ReactElement => {
     const [respondentType, setRespondentType] = useState("");
     const [topic, setTopic] = useState("");
     const [numberOfRespondents, setNumberOfRespondents] = useState(0);
     const [options, setOptions] = useState([
-        { id: 1, optionText: "" }
-    ] as SurveyOptionModel[]);
+        { id: 1, optionText: "" },
+    ] as Types.SurveyOptionModel[]);
 
     const updateOption = (optionId: number, optionText: string) => {
         setOptions(
-            options.map(option => {
+            options.map((option) => {
                 if (option.id !== optionId) return option;
 
                 return {
                     ...option,
-                    optionText
+                    optionText,
                 };
             })
         );
@@ -151,16 +117,16 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        const surveyCommand: CreateSurveyCommand = {
+        const surveyCommand: Types.CreateSurveyCommand = {
             surveyTopic: topic,
             numberOfRespondents,
             respondentType,
             surveyOptions: options.map(
-                option =>
+                (option) =>
                     ({
-                        optionText: option.optionText
-                    } as SurveyOptionDto)
-            )
+                        optionText: option.optionText,
+                    } as Types.SurveyOptionDto)
+            ),
         };
 
         onCreateSurvey(surveyCommand);
@@ -168,31 +134,31 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
         setRespondentType("");
         setTopic("");
         setNumberOfRespondents(0);
-        setOptions([{ id: 1, optionText: "" }] as SurveyOptionModel[]);
+        setOptions([{ id: 1, optionText: "" }] as Types.SurveyOptionModel[]);
     };
 
     return (
         <div>
             <form onSubmit={onSubmit} className="pure-form">
                 <label>
-                    Target Audience
+                    Target Audience (Respondent Type)
                     <div>
                         <input
                             style={{ margin: "1em auto", color: "black" }}
                             type="text"
                             value={respondentType}
-                            onChange={e => setRespondentType(e.target.value)}
+                            onChange={(e) => setRespondentType(e.target.value)}
                         />
                     </div>
                 </label>
                 <label>
-                    Question
+                    Question (Survey Topic)
                     <div>
                         <input
                             style={{ margin: "1em auto", color: "black" }}
                             type="text"
                             value={topic}
-                            onChange={e => setTopic(e.target.value)}
+                            onChange={(e) => setTopic(e.target.value)}
                         />
                     </div>
                 </label>
@@ -203,7 +169,7 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                             style={{ margin: "1em auto", color: "black" }}
                             type="text"
                             value={numberOfRespondents}
-                            onChange={e =>
+                            onChange={(e) =>
                                 setNumberOfRespondents(
                                     Number.isNaN(Number(e.target.value))
                                         ? numberOfRespondents
@@ -216,7 +182,7 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
 
                 <span>Options</span>
 
-                {options.map(option => (
+                {options.map((option) => (
                     <div key={option.id}>
                         <label>
                             #{option.id}
@@ -224,11 +190,11 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                                 <input
                                     style={{
                                         margin: "1em auto",
-                                        color: "black"
+                                        color: "black",
                                     }}
                                     type="text"
                                     value={option.optionText}
-                                    onChange={e =>
+                                    onChange={(e) =>
                                         updateOption(option.id, e.target.value)
                                     }
                                 />
@@ -242,15 +208,15 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                         style={{
                             margin: "1em",
                             background: "rgb(28, 184, 65)",
-                            color: "white"
+                            color: "white",
                         }}
                         className="pure-button"
                         type="button"
                         onClick={() =>
                             setOptions([
                                 ...options,
-                                { id: options.length + 1, optionText: "" }
-                            ] as SurveyOptionModel[])
+                                { id: options.length + 1, optionText: "" },
+                            ] as Types.SurveyOptionModel[])
                         }
                     >
                         + Add Option
@@ -270,16 +236,17 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
 
 const App: React.FC = () => {
     const [surveyId, setSurveyId] = useState(0);
-    const [surveyDetail, setSurveyDetail] = useState({} as SurveyModel);
+    const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
     const [errorMessage, setErrorMessage] = useState("");
+    const [validationErrors, setValidationErrors] = useState([] as string[]);
 
     const fetchSurvey = async (surveyId: number) => {
         const token = localStorage.getItem("authorizationData");
 
         const response = await fetch(`/api/survey/${surveyId}`, {
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         });
 
         if (response.status === 401) {
@@ -287,21 +254,28 @@ const App: React.FC = () => {
             return;
         }
 
-        const data: SurveyModel = await response.json();
+        const data: Types.Response = await response.json();
 
-        setSurveyDetail(data);
+        if (data.isError) {
+            setErrorMessage(data.responseException.exceptionMessage.detail);
+            return;
+        }
+
+        const survey = data.result;
+
+        setSurveyDetail(survey);
     };
 
-    const createSurvey = async (surveyCommand: CreateSurveyCommand) => {
+    const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
         const token = localStorage.getItem("authorizationData");
 
         const response = await fetch(`/api/survey`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(surveyCommand)
+            body: JSON.stringify(surveyCommand),
         });
 
         if (response.status === 401) {
@@ -311,10 +285,32 @@ const App: React.FC = () => {
             return;
         }
 
-        const data: SurveyModel = await response.json();
+        const data: Types.Response = await response.json();
 
-        setSurveyId(data.id);
-        setSurveyDetail(data);
+        if (data.isError) {
+            setErrorMessage(data.responseException.exceptionMessage.title);
+
+            if (data.responseException.exceptionMessage.errors) {
+                setValidationErrors(
+                    Object.values(
+                        data.responseException.exceptionMessage.errors
+                    ).flat()
+                );
+            }
+
+            return;
+        }
+
+        const survey = data.result;
+
+        setSurveyId(survey.id);
+        setSurveyDetail(survey);
+        setErrorMessage("");
+        setValidationErrors([]);
+    };
+
+    const errorStyle = {
+        color: "red",
     };
 
     return (
@@ -325,13 +321,7 @@ const App: React.FC = () => {
             <div style={{ textAlign: "center" }}>
                 <h1>Fake Survey Generator</h1>
                 {errorMessage !== "" && (
-                    <p
-                        style={{
-                            color: "red"
-                        }}
-                    >
-                        {errorMessage}
-                    </p>
+                    <p style={errorStyle}>{errorMessage}</p>
                 )}
                 <h2>Get Survey</h2>
                 <GetSurvey
@@ -343,6 +333,11 @@ const App: React.FC = () => {
                 <div style={{ margin: "2em" }}>---- ¯\_(ツ)_/¯ ----</div>
                 <h2>Create Survey</h2>
                 <CreateSurvey onCreateSurvey={createSurvey} />
+                <div style={errorStyle}>
+                    {validationErrors.map((error, index) => (
+                        <p key={index}>{error}</p>
+                    ))}
+                </div>
             </div>
         </div>
     );
