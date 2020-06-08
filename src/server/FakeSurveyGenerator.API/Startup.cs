@@ -66,7 +66,7 @@ namespace FakeSurveyGenerator.API
             {
                 endpoints.MapControllers();
 
-                endpoints.UseHealthChecksConfiguration(env);
+                endpoints.UseHealthChecksConfiguration();
             });
 
             app.UseSwaggerConfiguration();
