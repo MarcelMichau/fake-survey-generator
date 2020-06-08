@@ -2,8 +2,6 @@
 using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using Microsoft.Extensions.Caching.Distributed;
-using Moq;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests
@@ -14,7 +12,6 @@ namespace FakeSurveyGenerator.Application.Tests
 
         public IMapper Mapper { get; }
 
-        public IDistributedCache Cache { get; }
 
         public QueryTestFixture()
         {
@@ -28,8 +25,6 @@ namespace FakeSurveyGenerator.Application.Tests
             });
 
             Mapper = configurationProvider.CreateMapper();
-
-            Cache = new Mock<IDistributedCache>().Object;
         }
 
         public void Dispose()

@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Common.Caching;
 using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
@@ -19,9 +18,9 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
     {
         private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache _cache;
+        private readonly IDistributedCache<SurveyModel> _cache;
 
-        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyContext surveyContext, IMapper mapper, IDistributedCache cache)
+        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyContext surveyContext, IMapper mapper, IDistributedCache<SurveyModel> cache)
         {
             _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -30,12 +29,12 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 
         public async Task<Result<SurveyModel, Error>> Handle(GetSurveyDetailQuery request, CancellationToken cancellationToken)
         {
-            var cacheKey = $"FakeSurveyGenerator:Survey:{request.Id}";
+            var cacheKey = $"{request.Id}";
 
-            var cachedValue = await _cache.GetAsync(cacheKey, cancellationToken);
+            var (isCached, cachedSurvey) = await _cache.TryGetValueAsync(cacheKey, cancellationToken);
 
-            if (cachedValue != null && cachedValue.Length > 0)
-                return Result.Success<SurveyModel, Error>(JsonSerializer.Deserialize<SurveyModel>(cachedValue));
+            if (isCached)
+                return Result.Success<SurveyModel, Error>(cachedSurvey);
 
             var survey = await _surveyContext.Surveys
                 .Include(s => s.Options)
@@ -45,10 +44,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
             if (survey == null)
                 return Result.Failure<SurveyModel, Error>(Errors.General.NotFound(nameof(Survey), request.Id));
 
-            await _cache.SetStringAsync(cacheKey, survey.ToString(), new DistributedCacheEntryOptions
-            {
-                SlidingExpiration = new TimeSpan(1, 0, 0)
-            }, cancellationToken);
+            await _cache.SetAsync(cacheKey, survey, 60, cancellationToken);
 
             return Result.Success<SurveyModel, Error>(survey);
         }

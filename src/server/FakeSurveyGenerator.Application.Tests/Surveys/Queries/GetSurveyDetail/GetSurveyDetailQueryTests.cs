@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Common.Caching;
 using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using Microsoft.Extensions.Caching.Distributed;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -17,13 +18,13 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
     {
         private readonly SurveyContext _surveyContext;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache _cache;
+        private readonly IDistributedCache<SurveyModel> _cache;
 
         public GetSurveyDetailQueryTests(QueryTestFixture fixture)
         {
             _surveyContext = fixture.Context;
             _mapper = fixture.Mapper;
-            _cache = fixture.Cache;
+            _cache = new Mock<IDistributedCache<SurveyModel>>().Object;
         }
 
         [Fact]

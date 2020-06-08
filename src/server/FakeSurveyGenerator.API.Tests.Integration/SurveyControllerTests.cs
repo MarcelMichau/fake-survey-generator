@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AutoWrapper.Server;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -35,7 +36,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                             "Test", options => { });
                 });
-            }).CreateClient();
+            }).CreateDefaultClient(new UnwrappingResponseHandler());
 
             _unauthenticatedClient = factory.CreateClient();
         }
@@ -60,13 +61,13 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             response.EnsureSuccessStatusCode();
 
-            var content = await response.Content.ReadAsStreamAsync();
+            await using var content = await response.Content.ReadAsStreamAsync();
 
-            var surveyResult = await JsonSerializer.DeserializeAsync<SurveyModel>(content, Options);
+            var survey = await JsonSerializer.DeserializeAsync<SurveyModel>(content, Options);
 
-            Assert.Equal(350, surveyResult.Options.Sum(option => option.NumberOfVotes));
-            Assert.Equal("How awesome is this?", surveyResult.Topic);
-            Assert.True(surveyResult.Options.All(option => option.NumberOfVotes > 0));
+            Assert.Equal(350, survey.Options.Sum(option => option.NumberOfVotes));
+            Assert.Equal("How awesome is this?", survey.Topic);
+            Assert.True(survey.Options.All(option => option.NumberOfVotes > 0));
         }
 
         [Fact]
@@ -77,7 +78,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                 {
                     new SurveyOptionDto
                     {
-                        OptionText = "Very unauthorized"
+                        OptionText = "Very Unauthorized"
                     },
                     new SurveyOptionDto
                     {
@@ -85,7 +86,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     }
                 });
 
-            var response = await _unauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+            using var response = await _unauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
             Assert.Equal(StatusCodes.Status401Unauthorized, (int)response.StatusCode);
         }
@@ -102,7 +103,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     }
                 });
 
-            var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+            using var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
             var statusCode = (int) response.StatusCode;
 

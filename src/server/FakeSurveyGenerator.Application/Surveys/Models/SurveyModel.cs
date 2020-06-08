@@ -15,11 +15,6 @@ namespace FakeSurveyGenerator.Application.Surveys.Models
         public DateTime CreatedOn { get; set; }
         public List<SurveyOptionModel> Options { get; set; }
 
-        public override string ToString()
-        {
-            return System.Text.Json.JsonSerializer.Serialize(this);
-        }
-
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Survey, SurveyModel>()
