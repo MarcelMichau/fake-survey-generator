@@ -52,7 +52,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.Id.ShouldBe(id);
+            var survey = result.Value;
+
+            survey.Id.ShouldBe(id);
         }
 
         [Fact]
@@ -67,7 +69,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.Topic.ShouldBe(expectedTopicText);
+            var survey = result.Value;
+
+            survey.Topic.ShouldBe(expectedTopicText);
         }
 
         [Fact]
@@ -82,7 +86,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
+            var survey = result.Value;
+
+            survey.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
         }
 
         [Fact]
@@ -97,7 +103,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.RespondentType.ShouldBe(expectedTopicText);
+            var survey = result.Value;
+
+            survey.RespondentType.ShouldBe(expectedTopicText);
         }
 
         [Fact]
