@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.API.Controllers
 {
-    public class StatsController : ApiController
+    public sealed class StatsController : ApiController
     {
         /// <summary>
         /// Returns a 200 OK Result. Used for testing network latency and as a sanity check

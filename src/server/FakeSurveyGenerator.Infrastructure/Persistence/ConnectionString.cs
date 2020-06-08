@@ -3,7 +3,7 @@ using FakeSurveyGenerator.Application.Common.Interfaces;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence
 {
-    public class ConnectionString : IConnectionString
+    public sealed class ConnectionString : IConnectionString
     {
         public string Value { get; }
 

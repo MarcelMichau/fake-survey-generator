@@ -8,7 +8,7 @@ using ValidationException = FakeSurveyGenerator.Application.Common.Exceptions.Va
 
 namespace FakeSurveyGenerator.Application.Common.Behaviours
 {
-    public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;

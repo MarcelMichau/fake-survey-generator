@@ -1,14 +1,16 @@
-﻿using FakeSurveyGenerator.API.Builders;
+﻿using AutoWrapper;
+using FakeSurveyGenerator.API.Builders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
+using Serilog;
 
 namespace FakeSurveyGenerator.API
 {
-    public class Startup
+    public sealed class Startup
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _environment;
@@ -52,6 +54,10 @@ namespace FakeSurveyGenerator.API
             {
                 app.UseHsts();
             }
+
+            app.UseSerilogRequestLogging();
+
+            app.UseApiResponseAndExceptionWrapper();
 
             app.UseRouting();
 

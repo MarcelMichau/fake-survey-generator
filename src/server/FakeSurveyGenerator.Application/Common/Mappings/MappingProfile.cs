@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace FakeSurveyGenerator.Application.Common.Mappings
 {
-    public class MappingProfile : Profile
+    public sealed class MappingProfile : Profile
     {
         public MappingProfile()
         {

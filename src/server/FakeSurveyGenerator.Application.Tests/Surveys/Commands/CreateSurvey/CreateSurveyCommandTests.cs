@@ -35,10 +35,12 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
-            Assert.Equal(topic, result.Topic);
-            Assert.Equal(numberOfRespondents, result.NumberOfRespondents);
-            Assert.Equal(respondentType, result.RespondentType);
-            Assert.True(result.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
+            var survey = result.Value;
+
+            Assert.Equal(topic, survey.Topic);
+            Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
+            Assert.Equal(respondentType, survey.RespondentType);
+            Assert.True(survey.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
         }
 
         [Fact]
@@ -68,12 +70,14 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
-            Assert.Equal(topic, result.Topic);
-            Assert.Equal(numberOfRespondents, result.NumberOfRespondents);
-            Assert.Equal(respondentType, result.RespondentType);
-            Assert.True(result.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
-            Assert.Equal(100, result.Options.First().NumberOfVotes);
-            Assert.Equal(400, result.Options.Last().NumberOfVotes);
+            var survey = result.Value;
+
+            Assert.Equal(topic, survey.Topic);
+            Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
+            Assert.Equal(respondentType, survey.RespondentType);
+            Assert.True(survey.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
+            Assert.Equal(100, survey.Options.First().NumberOfVotes);
+            Assert.Equal(400, survey.Options.Last().NumberOfVotes);
         }
     }
 }

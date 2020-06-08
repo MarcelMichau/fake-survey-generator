@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Builders
 {
-    public static class ForwardedHeadersBuilder
+    internal static class ForwardedHeadersBuilder
     {
         public static IServiceCollection AddForwardedHeadersConfiguration(this IServiceCollection services)
         {

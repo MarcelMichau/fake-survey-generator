@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.API.HostedServices
 {
-    public class DatabaseCreationHostedService : IHostedService
+    internal sealed class DatabaseCreationHostedService : IHostedService
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IHostEnvironment _hostEnvironment;
@@ -33,7 +32,7 @@ namespace FakeSurveyGenerator.API.HostedServices
 
             var scope = _serviceProvider.CreateScope();
 
-            await using var context = scope.ServiceProvider.GetService<SurveyContext>();
+            await using var context = scope.ServiceProvider.GetRequiredService<SurveyContext>();
 
             if (context.Database.IsSqlServer()) // Do not migrate database when running integration tests with in-memory database
             {

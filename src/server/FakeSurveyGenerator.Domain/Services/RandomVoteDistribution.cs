@@ -3,12 +3,12 @@ using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Domain.Services
 {
-    public class RandomVoteDistribution : IVoteDistribution
+    internal sealed class RandomVoteDistribution : IVoteDistribution
     {
         public void DistributeVotes(Survey survey)
         {
-            if (survey == null)
-                throw new ArgumentException(nameof(survey));
+            if (survey is null)
+                throw new ArgumentNullException(nameof(survey));
 
             var random = new Random();
 

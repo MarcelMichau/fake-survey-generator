@@ -20,7 +20,7 @@ This is an application of moderate complexity (not just a to-do app), used as a 
 
 It is built using Clean Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
 
-It also includes some examples that typical real-world applications deal with:
+It also includes some examples that typical real-world applications might need to deal with:
 
 - Unit & Integration tests for a CQRS/DDD project
 - Running Unit & Integration tests with Docker Compose
@@ -31,6 +31,7 @@ It also includes some examples that typical real-world applications deal with:
 - Adding OpenID Connect to Swagger UI
 - Securing an ASP.NET Core Web API using Bearer token authentication
 - Adding security headers to API responses
+- Using AutoWrapper to return consistent API response models
 - Using Hosted Services in ASP.NET Core Web API
 - Using a distributed Redis cache
 - Creating trusted SSL certificates for HTTPS in development
@@ -90,6 +91,8 @@ The server side makes use of the following tools, libraries & frameworks:
   - FluentValidation
   - AspNetCore.Diagnostics.HealthChecks
   - Docker
+  - Serilog
+  - AutoWrapper
 - Fake Survey Generator Worker
   - .NET Core 3.1
   - ASP.NET Core 3.1 Worker Service

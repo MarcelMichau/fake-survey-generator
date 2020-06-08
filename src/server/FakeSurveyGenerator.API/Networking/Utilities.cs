@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 namespace FakeSurveyGenerator.API.Networking
 {
-    public class Utilities
+    internal sealed class Utilities
     {
         //Courtesy of this legend: https://stackoverflow.com/a/53219111/5186798
-        public static IEnumerable<IPNetwork> GetNetworks(NetworkInterfaceType type)
+        internal static IEnumerable<IPNetwork> GetNetworks(NetworkInterfaceType type)
         {
             foreach (var item in NetworkInterface.GetAllNetworkInterfaces()
                 .Where(n => n.NetworkInterfaceType == type && n.OperationalStatus == OperationalStatus.Up)  // get all operational networks of a given type

@@ -1,16 +1,16 @@
-﻿using FakeSurveyGenerator.Application.Common.Interfaces;
+﻿using FakeSurveyGenerator.Application;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Builders
 {
-    public static class ValidationBuilder
+    internal static class ValidationBuilder
     {
         public static IMvcBuilder AddValidationConfiguration(this IMvcBuilder builder)
         {
             builder.AddFluentValidation(fv =>
             {
-                fv.RegisterValidatorsFromAssemblyContaining<IConnectionString>();
+                fv.RegisterValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
                 fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
             });
 

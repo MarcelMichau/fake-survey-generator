@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Builders
 {
-    public static class ApplicationServicesBuilder
+    internal static class ApplicationServicesBuilder
     {
         public static IServiceCollection AddApplicationServicesConfiguration(this IServiceCollection services,
             IConfiguration configuration)

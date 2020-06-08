@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -32,16 +31,16 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                 });
 
-                var serviceProvider = services.BuildServiceProvider();
+                var rootServiceProvider = services.BuildServiceProvider();
 
-                using var scope = serviceProvider.CreateScope();
+                using var scope = rootServiceProvider.CreateScope();
 
-                var scopedServices = scope.ServiceProvider;
-                var context = scopedServices.GetRequiredService<SurveyContext>();
-                var logger = scopedServices
+                var scopedServiceProvider = scope.ServiceProvider;
+                var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
+                var logger = scopedServiceProvider
                     .GetRequiredService<ILogger<IntegrationTestWebApplicationFactory<TStartup>>>();
 
-                var cache = scopedServices.GetService<IDistributedCache>();
+                var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
 
                 cache.Remove("FakeSurveyGenerator");
 

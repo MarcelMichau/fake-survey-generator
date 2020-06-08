@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Common.Caching;
+using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
-using FakeSurveyGenerator.Infrastructure;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using Microsoft.Extensions.Caching.Distributed;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -17,13 +18,13 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
     {
         private readonly SurveyContext _surveyContext;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache _cache;
+        private readonly IDistributedCache<SurveyModel> _cache;
 
         public GetSurveyDetailQueryTests(QueryTestFixture fixture)
         {
             _surveyContext = fixture.Context;
             _mapper = fixture.Mapper;
-            _cache = fixture.Cache;
+            _cache = new Mock<IDistributedCache<SurveyModel>>().Object;
         }
 
         [Fact]
@@ -37,7 +38,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.ShouldBeOfType<SurveyModel>();
+            result.ShouldBeOfType<Result<SurveyModel, Error>>();
         }
 
         [Fact]
@@ -51,7 +52,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Id.ShouldBe(id);
+            var survey = result.Value;
+
+            survey.Id.ShouldBe(id);
         }
 
         [Fact]
@@ -66,7 +69,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Topic.ShouldBe(expectedTopicText);
+            var survey = result.Value;
+
+            survey.Topic.ShouldBe(expectedTopicText);
         }
 
         [Fact]
@@ -81,7 +86,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
+            var survey = result.Value;
+
+            survey.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
         }
 
         [Fact]
@@ -96,11 +103,13 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.RespondentType.ShouldBe(expectedTopicText);
+            var survey = result.Value;
+
+            survey.RespondentType.ShouldBe(expectedTopicText);
         }
 
         [Fact]
-        public async Task Handle_Throws_Exception_When_Survey_Id_Does_Not_Exist()
+        public async Task Handle_Returns_Error_When_Survey_Id_Does_Not_Exist()
         {
             const int id = 100;
 
@@ -108,10 +117,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
 
-            await Should.ThrowAsync<KeyNotFoundException>(async () =>
-            {
-                await handler.Handle(query, CancellationToken.None);
-            });
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Error.ShouldBe(Errors.General.NotFound());
         }
     }
 }

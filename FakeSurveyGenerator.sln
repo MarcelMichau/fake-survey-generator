@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.EF.Design", "src\server\FakeSurveyGenerator.EF.Design\FakeSurveyGenerator.EF.Design.csproj", "{99EA5DC3-56B7-4473-8574-B304461B4B76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrastructure", "src\server\FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj", "{C6D87595-DDB3-40DB-BC66-4B86E11988BA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6465B709-BA6F-4AE9-B22C-C8E28CCA9AC6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -40,6 +38,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application", "src\server\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj", "{87784ADE-CB11-47DA-AA11-675AB96DE059}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application.Tests", "src\server\FakeSurveyGenerator.Application.Tests\FakeSurveyGenerator.Application.Tests.csproj", "{EC88BDF7-47DD-42F7-8039-A52638375902}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrastructure", "src\server\FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj", "{C1C21608-5D92-48A4-9553-6D96D2CE8723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +71,6 @@ Global
 		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6D87595-DDB3-40DB-BC66-4B86E11988BA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9FAF22E-9560-46A0-96FC-6F229151214B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9FAF22E-9560-46A0-96FC-6F229151214B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9FAF22E-9560-46A0-96FC-6F229151214B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,6 +91,10 @@ Global
 		{EC88BDF7-47DD-42F7-8039-A52638375902}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC88BDF7-47DD-42F7-8039-A52638375902}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC88BDF7-47DD-42F7-8039-A52638375902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
