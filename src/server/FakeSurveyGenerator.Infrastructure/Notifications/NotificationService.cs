@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Infrastructure.Notifications
 {
-    public sealed class NotificationService : INotificationService
+    internal sealed class NotificationService : INotificationService
     {
         private readonly ILogger<NotificationService> _logger;
 
@@ -18,10 +18,7 @@ namespace FakeSurveyGenerator.Infrastructure.Notifications
 
         public Task SendAsync(MessageDto message)
         {
-            _logger.LogInformation(@$"Simulating sending a notification somewhere... Message: {JsonSerializer.Serialize(message, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            })}");
+            _logger.LogInformation("Simulating sending a notification somewhere... Message: {@message}", message);
             
             return Task.CompletedTask;
         }

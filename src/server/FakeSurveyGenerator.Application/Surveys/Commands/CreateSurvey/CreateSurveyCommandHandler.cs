@@ -3,15 +3,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Common;
+using FakeSurveyGenerator.Domain.Exceptions;
 using MediatR;
 
 namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
-    public sealed class CreateSurveyCommandHandler : IRequestHandler<CreateSurveyCommand, SurveyModel>
+    public sealed class CreateSurveyCommandHandler : IRequestHandler<CreateSurveyCommand, Result<SurveyModel, Error>>
     {
         private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
@@ -22,19 +25,26 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<SurveyModel> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
+        public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
         {
-            var survey = new Survey(NonEmptyString.Create(request.SurveyTopic), request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
+            try
+            {
+                var survey = new Survey(NonEmptyString.Create(request.SurveyTopic), request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
 
-            survey.AddSurveyOptions(request.SurveyOptions.Select(option => new SurveyOption(NonEmptyString.Create(option.OptionText), option.PreferredNumberOfVotes)));
+                survey.AddSurveyOptions(request.SurveyOptions.Select(option => new SurveyOption(NonEmptyString.Create(option.OptionText), option.PreferredNumberOfVotes)));
 
-            survey.CalculateOutcome();
+                survey.CalculateOutcome();
 
-            await _surveyContext.Surveys.AddAsync(survey, cancellationToken);
+                await _surveyContext.Surveys.AddAsync(survey, cancellationToken);
 
-            await _surveyContext.SaveChangesAsync(cancellationToken);
+                await _surveyContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<SurveyModel>(survey);
+                return Result.Success<SurveyModel, Error>(_mapper.Map<SurveyModel>(survey));
+            }
+            catch (SurveyDomainException e)
+            {
+                return Result.Failure<SurveyModel, Error>(new Error("survey.domain.exception", e.Message));
+            }
         }
     }
 }

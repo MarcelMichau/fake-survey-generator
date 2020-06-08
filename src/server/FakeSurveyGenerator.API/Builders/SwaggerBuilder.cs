@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 
 namespace FakeSurveyGenerator.API.Builders
 {
-    public static class SwaggerBuilder
+    internal static class SwaggerBuilder
     {
         public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services,
             IConfiguration configuration)

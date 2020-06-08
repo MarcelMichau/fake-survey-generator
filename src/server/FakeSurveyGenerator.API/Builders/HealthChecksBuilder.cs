@@ -1,4 +1,5 @@
 ﻿using System;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.API.Builders
 {
-    public static class HealthChecksBuilder
+    internal static class HealthChecksBuilder
     {
         public static IServiceCollection AddHealthChecksConfiguration(this IServiceCollection services,
             IConfiguration configuration, IWebHostEnvironment environment)
@@ -20,14 +21,14 @@ namespace FakeSurveyGenerator.API.Builders
 
             healthChecksBuilder
                 .AddSqlServer(
-                    configuration["ConnectionStrings:SurveyContext"],
+                    configuration.GetConnectionString(nameof(SurveyContext)),
                     name: "FakeSurveyGeneratorDB-check",
                     tags: new[] { "fake-survey-generator-db", "ready" },
                     failureStatus: HealthStatus.Unhealthy);
 
             healthChecksBuilder
                 .AddRedis(
-                    $"{Environment.GetEnvironmentVariable("REDIS_URL")},ssl={Environment.GetEnvironmentVariable("REDIS_SSL")},password={Environment.GetEnvironmentVariable("REDIS_PASSWORD")},defaultDatabase={Environment.GetEnvironmentVariable("REDIS_DEFAULT_DATABASE")}",
+                    $"{configuration.GetValue<string>("REDIS_URL")},ssl={configuration.GetValue<string>("REDIS_SSL")},password={configuration.GetValue<string>("REDIS_PASSWORD")},defaultDatabase={configuration.GetValue<string>("REDIS_DEFAULT_DATABASE")}",
                     "RedisCache-check",
                     tags: new[] { "redis-cache", "ready" },
                     failureStatus: HealthStatus.Degraded);

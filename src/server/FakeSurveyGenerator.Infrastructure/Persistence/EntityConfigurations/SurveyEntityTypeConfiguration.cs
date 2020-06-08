@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 {
-    internal class SurveyEntityTypeConfiguration : IEntityTypeConfiguration<Survey>
+    internal sealed class SurveyEntityTypeConfiguration : IEntityTypeConfiguration<Survey>
     {
         public void Configure(EntityTypeBuilder<Survey> surveyConfiguration)
         {

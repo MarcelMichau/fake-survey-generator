@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Builders
 {
-    public static class JsonBuilder
+    internal static class JsonBuilder
     {
         public static IMvcBuilder AddJsonConfiguration(this IMvcBuilder builder)
         {

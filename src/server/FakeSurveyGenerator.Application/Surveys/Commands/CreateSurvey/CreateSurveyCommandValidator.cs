@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
@@ -10,24 +9,18 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
             RuleFor(command => command.SurveyTopic)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MaximumLength(250)
-                .WithMessage("{PropertyName} should have a maximum length of {MaxLength}")
-                .NotEmpty()
-                .WithMessage("{PropertyName} should not be empty");
+                .NotEmpty();
 
             RuleFor(command => command.RespondentType)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MaximumLength(250)
-                .WithMessage("{PropertyName} should have a maximum length of {MaxLength}")
-                .NotEmpty()
-                .WithMessage("{PropertyName} should not be empty");
+                .NotEmpty();
 
             RuleFor(command => command.NumberOfRespondents)
-                .GreaterThan(0)
-                .WithMessage("{PropertyName} should be greater than {ComparisonValue}");
+                .GreaterThan(0);
 
             RuleFor(command => command.SurveyOptions)
-                .Must(collection => collection != null && collection.Any())
-                .WithMessage("{PropertyName} should have at least one item");
+                .NotEmpty();
 
             RuleForEach(command => command.SurveyOptions)
                 .SetValidator(new SurveyOptionValidator());
@@ -41,9 +34,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
             RuleFor(command => command.OptionText)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .MaximumLength(250)
-                .WithMessage("{PropertyName} should have a maximum length of {MaxLength}")
-                .NotEmpty()
-                .WithMessage("{PropertyName} should not be empty");
+                .NotEmpty();
         }
     }
 }

@@ -4,7 +4,7 @@ using StackExchange.Redis;
 
 namespace FakeSurveyGenerator.Infrastructure.Builders
 {
-    public static class CacheBuilder
+    internal static class CacheBuilder
     {
         public static IServiceCollection AddCacheConfiguration(this IServiceCollection services,
             IConfiguration configuration)

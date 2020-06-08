@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FakeSurveyGenerator.API.Builders
 {
-    public static class AuthenticationBuilder
+    internal static class AuthenticationBuilder
     {
         public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services,
             IConfiguration configuration)
