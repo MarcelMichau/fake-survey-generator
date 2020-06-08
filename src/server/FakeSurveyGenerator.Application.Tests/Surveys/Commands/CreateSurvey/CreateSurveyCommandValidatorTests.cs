@@ -100,6 +100,19 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         }
 
         [Fact]
+        public void IsValid_ShouldBeFalse_WhenSurveyOptionsIsNull()
+        {
+            var command = new CreateSurveyCommand("Test", 1, "Test", null);
+
+            var validator = new CreateSurveyCommandValidator();
+
+            var result = validator.Validate(command);
+
+            result.IsValid.ShouldBe(false);
+            result.Errors.ShouldContain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyOptions));
+        }
+
+        [Fact]
         public void IsValid_ShouldBeFalse_WhenSurveyOptionTextIsEmpty()
         {
             var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>

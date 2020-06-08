@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using MediatR;
 
@@ -6,7 +8,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
     // Ideally, commands should be immutable & not have public setters on properties, but System.Text.Json
     // cannot set these properties when serializing the command, so a compromise had to be made. :(
-    public sealed class CreateSurveyCommand : IRequest<SurveyModel>
+    public sealed class CreateSurveyCommand : IRequest<Result<SurveyModel, Error>>
     {
         public string SurveyTopic { get; set; }
 

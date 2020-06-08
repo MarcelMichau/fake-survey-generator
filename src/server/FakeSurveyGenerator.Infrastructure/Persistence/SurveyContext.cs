@@ -9,9 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence
 {
-    public class SurveyContext : DbContext, ISurveyContext
+    public sealed class SurveyContext : DbContext, ISurveyContext
     {
         private readonly IMediator _mediator;
+
+        public const string DefaultSchema = "Survey";
+
+        public DbSet<Survey> Surveys { get; set; }
+        public DbSet<SurveyOption> SurveyOptions { get; set; }
 
         public SurveyContext(DbContextOptions options) : base(options)
         {
@@ -26,11 +31,6 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
 
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-
-        public const string DefaultSchema = "Survey";
-
-        public DbSet<Survey> Surveys { get; set; }
-        public DbSet<SurveyOption> SurveyOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +6,6 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Errors;
-using FakeSurveyGenerator.Application.Common.Exceptions;
 using FakeSurveyGenerator.Application.Common.Interfaces;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
@@ -36,7 +34,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 
             var cachedValue = await _cache.GetAsync(cacheKey, cancellationToken);
 
-            if (cachedValue.Length > 0)
+            if (cachedValue != null && cachedValue.Length > 0)
                 return Result.Success<SurveyModel, Error>(JsonSerializer.Deserialize<SurveyModel>(cachedValue));
 
             var survey = await _surveyContext.Surveys
@@ -46,7 +44,6 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 
             if (survey == null)
                 return Result.Failure<SurveyModel, Error>(Errors.General.NotFound(nameof(Survey), request.Id));
-                //throw new NotFoundException();
 
             await _cache.SetStringAsync(cacheKey, survey.ToString(), new DistributedCacheEntryOptions
             {

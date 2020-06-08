@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Errors;
-using FakeSurveyGenerator.Application.Common.Exceptions;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using FakeSurveyGenerator.Infrastructure.Persistence;
@@ -102,7 +100,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
         }
 
         [Fact]
-        public async Task Handle_Throws_Exception_When_Survey_Id_Does_Not_Exist()
+        public async Task Handle_Returns_Error_When_Survey_Id_Does_Not_Exist()
         {
             const int id = 100;
 
@@ -110,10 +108,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
 
-            await Should.ThrowAsync<NotFoundException>(async () =>
-            {
-                await handler.Handle(query, CancellationToken.None);
-            });
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Error.ShouldBe(Errors.General.NotFound());
         }
     }
 }

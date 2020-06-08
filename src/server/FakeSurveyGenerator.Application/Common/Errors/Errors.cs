@@ -4,8 +4,11 @@
     {
         public static class General
         {
-            public static Error NotFound(string entityName, int id) =>
-                new Error("record.not.found", $"'{entityName}' not found for Id '{id}'");
+            public static Error NotFound(string entityName = "Record", long? id = null)
+            {
+                var forId = id == null ? "" : $" for Id '{id}'";
+                return new Error("record.not.found", $"{entityName} not found{forId}");
+            }
         }
     }
 }

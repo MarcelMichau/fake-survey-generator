@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 namespace FakeSurveyGenerator.API.Networking
 {
-    internal class Utilities
+    internal sealed class Utilities
     {
         //Courtesy of this legend: https://stackoverflow.com/a/53219111/5186798
         internal static IEnumerable<IPNetwork> GetNetworks(NetworkInterfaceType type)

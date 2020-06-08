@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.Infrastructure.Builders
 {
-    public static class DatabaseBuilder
+    internal static class DatabaseBuilder
     {
         public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services,
             IConfiguration configuration)
@@ -19,11 +19,9 @@ namespace FakeSurveyGenerator.Infrastructure.Builders
             services.AddDbContext<SurveyContext>
             (options => options.UseSqlServer(connectionString,
                 sqlServerOptions =>
-                {
-                    sqlServerOptions.MigrationsAssembly(typeof(SurveyContext).Namespace);
                     sqlServerOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30),
-                        null);
-                }));
+                        null)
+            ));
 
             services.AddScoped<ISurveyContext>(provider => provider.GetService<SurveyContext>());
 
