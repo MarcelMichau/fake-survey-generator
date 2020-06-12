@@ -4,6 +4,11 @@
     {
         public static class General
         {
+            public static Error UserAlreadyRegistered(string userId)
+            {
+                return new Error("user.already.registered", $"User with UserId: {userId} has already been registered");
+            }
+
             public static Error NotFound(string entityName = "Record", long? id = null)
             {
                 var forId = id == null ? "" : $" for Id '{id}'";

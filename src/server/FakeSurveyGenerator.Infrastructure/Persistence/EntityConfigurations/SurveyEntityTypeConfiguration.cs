@@ -7,52 +7,52 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 {
     internal sealed class SurveyEntityTypeConfiguration : IEntityTypeConfiguration<Survey>
     {
-        public void Configure(EntityTypeBuilder<Survey> surveyConfiguration)
+        public void Configure(EntityTypeBuilder<Survey> builder)
         {
             const string tableName = "Survey";
             var sequenceName = $"{tableName}Seq";
             var foreignKeyName = $"{tableName}Id";
 
-            surveyConfiguration
+            builder
                 .ToTable(tableName, SurveyContext.DefaultSchema);
 
-            surveyConfiguration
+            builder
                 .HasKey(s => s.Id);
 
-            surveyConfiguration
+            builder
                 .Property(s => s.Id)
                 .UseHiLo(sequenceName, SurveyContext.DefaultSchema);
 
-            surveyConfiguration
+            builder
                 .Ignore(s => s.DomainEvents);
 
-            surveyConfiguration
+            builder
                 .Property(s => s.Topic)
                 .HasMaxLength(250)
                 .IsRequired()
                 .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
 
-            surveyConfiguration
+            builder
                 .Property(s => s.RespondentType)
                 .HasMaxLength(250)
                 .IsRequired()
                 .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
 
-            surveyConfiguration
+            builder
                 .Property(s => s.NumberOfRespondents)
                 .IsRequired();
 
-            surveyConfiguration
+            builder
                 .Property(s => s.CreatedOn)
                 .IsRequired();
 
-            surveyConfiguration
+            builder
                 .HasMany(s => s.Options)
                 .WithOne()
                 .HasForeignKey(foreignKeyName)
                 .IsRequired();
 
-            var navigation = surveyConfiguration.Metadata.FindNavigation(nameof(Survey.Options));
+            var navigation = builder.Metadata.FindNavigation(nameof(Survey.Options));
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }

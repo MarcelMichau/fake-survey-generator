@@ -1,4 +1,4 @@
-﻿namespace FakeSurveyGenerator.Application.Common.Interfaces
+﻿namespace FakeSurveyGenerator.Application.Common.Persistence
 {
     public interface IConnectionString
     {

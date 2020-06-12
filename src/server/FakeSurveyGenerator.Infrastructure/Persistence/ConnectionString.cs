@@ -1,5 +1,5 @@
 ﻿using System;
-using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Common.Persistence;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence
 {

@@ -1,5 +1,6 @@
 ﻿using AutoWrapper;
 using FakeSurveyGenerator.API.Builders;
+using FakeSurveyGenerator.API.Builders.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,7 @@ namespace FakeSurveyGenerator.API
             services.AddApplicationServicesConfiguration(_configuration);
             services.AddAuthenticationConfiguration(_configuration);
             services.AddForwardedHeadersConfiguration();
+            services.AddUserConfiguration();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

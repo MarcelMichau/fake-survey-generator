@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Errors;
-using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Common.Identity;
+using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Domain.Exceptions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 {
@@ -18,18 +20,22 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
     {
         private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
+        private readonly IUser _user;
 
-        public CreateSurveyCommandHandler(ISurveyContext surveyContext, IMapper mapper)
+        public CreateSurveyCommandHandler(ISurveyContext surveyContext, IMapper mapper, IUser user)
         {
             _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _user = user;
         }
 
         public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var survey = new Survey(NonEmptyString.Create(request.SurveyTopic), request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
+                var surveyOwner = await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == _user.Id, cancellationToken);
+
+                var survey = new Survey(surveyOwner, NonEmptyString.Create(request.SurveyTopic), request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
 
                 survey.AddSurveyOptions(request.SurveyOptions.Select(option => new SurveyOption(NonEmptyString.Create(option.OptionText), option.PreferredNumberOfVotes)));
 

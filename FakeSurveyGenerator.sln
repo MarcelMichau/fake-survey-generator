@@ -29,10 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarcelMichau.IDP", "src\server\MarcelMichau.IDP\MarcelMichau.IDP.csproj", "{F9FAF22E-9560-46A0-96FC-6F229151214B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarcelMichau.IDP.EF.Design", "src\server\MarcelMichau.IDP.EF.Design\MarcelMichau.IDP.EF.Design.csproj", "{20F10E8F-F155-4521-8924-F669A3CF2D34}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Worker", "src\server\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj", "{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application", "src\server\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj", "{87784ADE-CB11-47DA-AA11-675AB96DE059}"
@@ -40,6 +36,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application.Tests", "src\server\FakeSurveyGenerator.Application.Tests\FakeSurveyGenerator.Application.Tests.csproj", "{EC88BDF7-47DD-42F7-8039-A52638375902}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrastructure", "src\server\FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj", "{C1C21608-5D92-48A4-9553-6D96D2CE8723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Data", "src\server\FakeSurveyGenerator.Data\FakeSurveyGenerator.Data.csproj", "{0F52FF53-408E-4B34-A737-632B7CB70936}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,14 +69,6 @@ Global
 		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99EA5DC3-56B7-4473-8574-B304461B4B76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9FAF22E-9560-46A0-96FC-6F229151214B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9FAF22E-9560-46A0-96FC-6F229151214B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9FAF22E-9560-46A0-96FC-6F229151214B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9FAF22E-9560-46A0-96FC-6F229151214B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{20F10E8F-F155-4521-8924-F669A3CF2D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{20F10E8F-F155-4521-8924-F669A3CF2D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{20F10E8F-F155-4521-8924-F669A3CF2D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{20F10E8F-F155-4521-8924-F669A3CF2D34}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,6 +85,10 @@ Global
 		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F52FF53-408E-4B34-A737-632B7CB70936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F52FF53-408E-4B34-A737-632B7CB70936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F52FF53-408E-4B34-A737-632B7CB70936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F52FF53-408E-4B34-A737-632B7CB70936}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

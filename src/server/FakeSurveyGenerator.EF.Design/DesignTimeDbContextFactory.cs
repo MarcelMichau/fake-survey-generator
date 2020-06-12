@@ -9,7 +9,7 @@ namespace FakeSurveyGenerator.EF.Design
         public SurveyContext CreateDbContext(string[] args)
         {
             const string connectionString =
-                "Server=localhost;Database=ef-core-design;Trusted_Connection=True;MultipleActiveResultSets=true";
+                "Server=localhost;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>";
 
             var builder = new DbContextOptionsBuilder<SurveyContext>();
             builder.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(SurveyContext).Assembly.FullName));

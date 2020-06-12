@@ -26,5 +26,10 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             return Task.FromResult(result);
         }
+
+        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

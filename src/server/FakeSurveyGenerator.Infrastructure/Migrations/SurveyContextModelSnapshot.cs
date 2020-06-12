@@ -4,6 +4,7 @@ using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FakeSurveyGenerator.Infrastructure.Migrations
 {
@@ -14,10 +15,11 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("Relational:Sequence:Survey.SurveyOptionSeq", "'SurveyOptionSeq', 'Survey', '1', '10', '', '', 'Int64', 'False'")
                 .HasAnnotation("Relational:Sequence:Survey.SurveySeq", "'SurveySeq', 'Survey', '1', '10', '', '', 'Int64', 'False'")
+                .HasAnnotation("Relational:Sequence:Survey.UserSeq", "'UserSeq', 'Survey', '1', '10', '', '', 'Int64', 'False'")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate.Survey", b =>
@@ -35,6 +37,9 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                     b.Property<int>("NumberOfRespondents")
                         .HasColumnType("int");
 
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("RespondentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)")
@@ -46,6 +51,8 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                         .HasMaxLength(250);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Survey","Survey");
                 });
@@ -79,6 +86,44 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                     b.HasIndex("SurveyId");
 
                     b.ToTable("SurveyOption","Survey");
+                });
+
+            modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:HiLoSequenceName", "UserSeq")
+                        .HasAnnotation("SqlServer:HiLoSequenceSchema", "Survey")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.SequenceHiLo);
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(250)")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(250)")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("ExternalUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(250)")
+                        .HasMaxLength(250);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User","Survey");
+                });
+
+            modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate.Survey", b =>
+                {
+                    b.HasOne("FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate.User", "Owner")
+                        .WithMany("OwnedSurveys")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate.SurveyOption", b =>

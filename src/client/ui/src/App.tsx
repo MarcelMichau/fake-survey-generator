@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth0 } from "./react-auth0-spa";
 import Auth from "./Auth";
 import * as Types from "./types";
 
@@ -239,9 +240,10 @@ const App: React.FC = () => {
     const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
     const [errorMessage, setErrorMessage] = useState("");
     const [validationErrors, setValidationErrors] = useState([] as string[]);
+    const { getTokenSilently } = useAuth0();
 
     const fetchSurvey = async (surveyId: number) => {
-        const token = localStorage.getItem("authorizationData");
+        const token = await getTokenSilently();
 
         const response = await fetch(`/api/survey/${surveyId}`, {
             headers: {
@@ -267,7 +269,7 @@ const App: React.FC = () => {
     };
 
     const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
-        const token = localStorage.getItem("authorizationData");
+        const token = await getTokenSilently();
 
         const response = await fetch(`/api/survey`, {
             method: "POST",

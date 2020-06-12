@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using FakeSurveyGenerator.API.Identity;
+using FakeSurveyGenerator.Application.Common.Identity;
+using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -16,8 +19,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             Environment.SetEnvironmentVariable("ConnectionStrings__SurveyContext", "Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0");
-            Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_BACKCHANNEL_URL", "http://test.com");
-            Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_FRONTCHANNEL_URL", "http://localhost");
+            Environment.SetEnvironmentVariable("IDENTITY_PROVIDER_URL", "https://test.com");
 
             builder.ConfigureServices(services =>
             {
@@ -30,6 +32,8 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                 });
+
+                services.AddScoped<IUser>(provider => new ApiUser("test-id", "Test User", "test.user@test.com"));
 
                 var rootServiceProvider = services.BuildServiceProvider();
 

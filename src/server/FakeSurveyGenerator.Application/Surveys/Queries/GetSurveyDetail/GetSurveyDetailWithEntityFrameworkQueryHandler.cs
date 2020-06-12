@@ -6,7 +6,7 @@ using AutoMapper.QueryableExtensions;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Caching;
 using FakeSurveyGenerator.Application.Common.Errors;
-using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using MediatR;
@@ -38,6 +38,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 
             var survey = await _surveyContext.Surveys
                 .Include(s => s.Options)
+                .Include(s => s.Owner)
                 .ProjectTo<SurveyModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
 

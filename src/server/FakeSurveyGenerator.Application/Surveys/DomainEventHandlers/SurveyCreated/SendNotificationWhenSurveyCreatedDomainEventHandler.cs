@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Common.Notifications;
 using FakeSurveyGenerator.Application.Notifications.Models;
 using FakeSurveyGenerator.Domain.DomainEvents;
 using MediatR;

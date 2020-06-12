@@ -2,8 +2,9 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
 
         public const string DefaultSchema = "Survey";
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Survey> Surveys { get; set; }
         public DbSet<SurveyOption> SurveyOptions { get; set; }
 

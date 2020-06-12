@@ -3,7 +3,7 @@ version: "3.7"
 services:
   fake-survey-generator-ui:
     ports:
-      - "3000:443"
+      - "30000:443"
     volumes:
       - ./src/client/ui/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs/localhost-key.pem:/certs/localhost-key.pem:ro
@@ -21,8 +21,7 @@ services:
       - REDIS_SSL=false
       - REDIS_URL=redis
       - REDIS_DEFAULT_DATABASE=0
-      - IDENTITY_PROVIDER_FRONTCHANNEL_URL=https://localhost:44320
-      - IDENTITY_PROVIDER_BACKCHANNEL_URL=http://marcel-michau-idp
+      - IDENTITY_PROVIDER_URL=https://marcelmichau.eu.auth0.com/
     ports:
       - "6523:80"
       - "44367:443"
@@ -33,30 +32,6 @@ services:
   fake-survey-generator-worker:
     environment:
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-
-  marcel-michau-idp:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_HTTPS_PORT=44320
-      - ConnectionStrings__ApplicationDbContext=Server=sql-server;Database=AspNetIdentity;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - ConnectionStrings__ConfigurationDbContext=Server=sql-server;Database=IdentityServerConfiguration;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - ConnectionStrings__PersistedGrantDbContext=Server=sql-server;Database=IdentityServerPersistedGrant;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - REDIS_PASSWORD=testing
-      - REDIS_SSL=false
-      - REDIS_URL=redis
-      - REDIS_DEFAULT_DATABASE=1
-      - IS_CLUSTER_ENV=false
-      - USE_CERTIFICATE_SIGNING_MATERIAL=true
-      - FAKE_SURVEY_GENERATOR_UI_CLIENT_URL=https://localhost:3000/
-      - FAKE_SURVEY_GENERATOR_SWAGGER_CLIENT_URL=https://localhost:44367/swagger
-    ports:
-      - "33352:80"
-      - "44320:443"
-    volumes:
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ./certs/identitykeymaterial.pfx:/app/certs/identitykeymaterial.pfx:ro
 
   sql-server:
     ports:

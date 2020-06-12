@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Common.Notifications;
 using FakeSurveyGenerator.Application.Notifications.Models;
 using Microsoft.Extensions.Logging;
 

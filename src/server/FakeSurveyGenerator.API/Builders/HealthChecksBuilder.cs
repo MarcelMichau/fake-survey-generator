@@ -32,7 +32,7 @@ namespace FakeSurveyGenerator.API.Builders
                     failureStatus: HealthStatus.Degraded);
 
             healthChecksBuilder.AddUrlGroup(
-                new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_BACKCHANNEL_URL")}/.well-known/openid-configuration"), 
+                new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}/.well-known/openid-configuration"),
                 "IdentityServer-check",
                 tags: new[] { "fake-survey-generator-db", "ready" },
                 failureStatus: HealthStatus.Unhealthy);
