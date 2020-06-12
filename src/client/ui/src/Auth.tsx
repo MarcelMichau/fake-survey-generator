@@ -39,7 +39,7 @@ const Auth = () => {
                     type="button"
                     onClick={() => loginWithRedirect({})}
                 >
-                    Log in
+                    Log in / Register
                 </button>
             )}
 

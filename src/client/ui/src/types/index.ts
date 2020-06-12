@@ -11,11 +11,32 @@ export type ResponseException = {
     exceptionMessage: ExceptionMessage;
 };
 
-export type Response = {
+export type SurveyResponse = {
     message: string;
     result: SurveyModel;
     isError: boolean;
     responseException: ResponseException;
+};
+
+export type UserResponse = {
+    message: string;
+    result: UserModel;
+    isError: boolean;
+    responseException: ResponseException;
+};
+
+export type IsUserRegisteredResponse = {
+    message: string;
+    result: boolean;
+    isError: boolean;
+    responseException: ResponseException;
+};
+
+export type UserModel = {
+    id: number;
+    displayName: string;
+    emailAddress: string;
+    externalUserId: string;
 };
 
 export type SurveyModel = {

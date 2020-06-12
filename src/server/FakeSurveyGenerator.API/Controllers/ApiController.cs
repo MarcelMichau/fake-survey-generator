@@ -15,6 +15,11 @@ namespace FakeSurveyGenerator.API.Controllers
 
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
 
+        protected IActionResult FromResult<T>(Result<T> result)
+        {
+            return Ok(result.Value);
+        }
+
         protected IActionResult FromResult<T>(Result<T, Error> result)
         {
             return result.IsSuccess
