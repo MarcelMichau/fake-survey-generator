@@ -35,7 +35,7 @@ namespace FakeSurveyGenerator.API.Controllers
         /// <returns>Boolean result</returns>
         /// <response code="200">Boolean result indicating registered status</response> 
         [HttpGet("isRegistered")]
-        public async Task<IActionResult> IsUserRegistered(string userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> IsRegistered(string userId, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(new IsUserRegisteredQuery(userId), cancellationToken);
 
@@ -43,7 +43,7 @@ namespace FakeSurveyGenerator.API.Controllers
         }
 
         /// <summary>
-        /// Registers a new User.
+        /// Registers a new User, using the information from the access token.
         /// </summary>
         /// <returns>A newly registered UserModel</returns>
         /// <response code="201">Returns the newly registered User</response>

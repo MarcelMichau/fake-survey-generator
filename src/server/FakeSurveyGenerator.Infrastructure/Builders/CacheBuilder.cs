@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FakeSurveyGenerator.Application.Common.Caching;
+using FakeSurveyGenerator.Infrastructure.Caching;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using StackExchange.Redis;
 
 namespace FakeSurveyGenerator.Infrastructure.Builders
@@ -9,6 +12,9 @@ namespace FakeSurveyGenerator.Infrastructure.Builders
         public static IServiceCollection AddCacheConfiguration(this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.TryAddSingleton(typeof(ICache<>), typeof(Cache<>));
+            services.TryAddSingleton<ICacheFactory, CacheFactory>();
+
             services.AddStackExchangeRedisCache(options =>
             {
                 options.ConfigurationOptions = new ConfigurationOptions

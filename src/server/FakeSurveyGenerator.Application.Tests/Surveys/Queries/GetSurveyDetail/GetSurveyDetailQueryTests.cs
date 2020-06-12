@@ -18,13 +18,13 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
     {
         private readonly SurveyContext _surveyContext;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache<SurveyModel> _cache;
+        private readonly ICache<SurveyModel> _cache;
 
         public GetSurveyDetailQueryTests(QueryTestFixture fixture)
         {
             _surveyContext = fixture.Context;
             _mapper = fixture.Mapper;
-            _cache = new Mock<IDistributedCache<SurveyModel>>().Object;
+            _cache = new Mock<ICache<SurveyModel>>().Object;
         }
 
         [Fact]

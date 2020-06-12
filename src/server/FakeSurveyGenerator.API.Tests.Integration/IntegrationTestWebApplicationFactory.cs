@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using FakeSurveyGenerator.API.Identity;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
@@ -33,7 +32,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                 });
 
-                services.AddScoped<IUser>(provider => new ApiUser("test-id", "Test User", "test.user@test.com"));
+                services.AddScoped<IUser>(provider => new IntegrationTestUser());
 
                 var rootServiceProvider = services.BuildServiceProvider();
 

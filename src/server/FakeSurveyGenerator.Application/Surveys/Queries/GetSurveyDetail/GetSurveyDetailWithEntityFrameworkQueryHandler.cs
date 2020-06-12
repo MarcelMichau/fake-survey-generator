@@ -18,9 +18,9 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
     {
         private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache<SurveyModel> _cache;
+        private readonly ICache<SurveyModel> _cache;
 
-        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyContext surveyContext, IMapper mapper, IDistributedCache<SurveyModel> cache)
+        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyContext surveyContext, IMapper mapper, ICache<SurveyModel> cache)
         {
             _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

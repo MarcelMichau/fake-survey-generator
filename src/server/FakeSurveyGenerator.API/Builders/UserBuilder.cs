@@ -1,6 +1,6 @@
 ﻿using System;
-using FakeSurveyGenerator.API.Identity;
 using FakeSurveyGenerator.Application.Common.Identity;
+using FakeSurveyGenerator.Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +15,7 @@ namespace FakeSurveyGenerator.API.Builders
                 var httpContext = sp.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
                 if (!httpContext.User.Identity.IsAuthenticated)
-                    return new UnauthenticatedUser();
+                    return new UnauthorizedUser();
 
                 var userService = sp.GetRequiredService<IUserService>();
 

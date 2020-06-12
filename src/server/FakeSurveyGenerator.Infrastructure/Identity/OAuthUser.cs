@@ -4,11 +4,13 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
 {
     internal class OAuthUser : IUser
     {
-        public string Id { get; }
-        public string DisplayName { get; }
-        public string EmailAddress { get; }
+        public string Id { get; set; }
+        public string DisplayName { get; set; }
+        public string EmailAddress { get; set; }
 
-        public OAuthUser(string id, string displayName, string emailAddress)
+        public OAuthUser() { } // Used for System.Text.Json deserialization
+
+        public OAuthUser(string id, string displayName, string emailAddress) : this()
         {
             Id = id;
             DisplayName = displayName;

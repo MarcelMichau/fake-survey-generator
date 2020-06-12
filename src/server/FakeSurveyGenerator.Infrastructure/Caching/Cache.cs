@@ -3,20 +3,21 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using FakeSurveyGenerator.Application.Common.Caching;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
-namespace FakeSurveyGenerator.Application.Common.Caching
+namespace FakeSurveyGenerator.Infrastructure.Caching
 {
-    public sealed class DistributedCache<T> : IDistributedCache<T>
+    public sealed class Cache<T> : ICache<T>
     {
         private readonly IDistributedCache _distributedCache;
-        private readonly ILogger<DistributedCache<T>> _logger;
+        private readonly ILogger<Cache<T>> _logger;
 
         private static string ApplicationName => "FakeSurveyGenerator";
         private readonly string _cacheKeyPrefix;
 
-        public DistributedCache(IDistributedCache distributedCache, ILogger<DistributedCache<T>> logger)
+        public Cache(IDistributedCache distributedCache, ILogger<Cache<T>> logger)
         {
             _distributedCache = distributedCache;
             _logger = logger;

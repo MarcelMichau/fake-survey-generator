@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace FakeSurveyGenerator.Application.Common.Caching
 {
-    public interface IDistributedCache<T>
+    public interface ICache<T>
     {
         Task<T> GetAsync(string key, CancellationToken cancellationToken);
         Task RemoveAsync(string key, CancellationToken cancellationToken);
