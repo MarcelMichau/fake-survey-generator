@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Infrastructure.Identity
 {
-    internal class OAuthUser : IUser
+    internal sealed class OAuthUser : IUser
     {
         public string Id { get; set; }
         public string DisplayName { get; set; }

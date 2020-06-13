@@ -31,7 +31,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(Context, Mapper, User);
+            var sut = new CreateSurveyCommandHandler(Context, Mapper, UserService);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -66,7 +66,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(Context, Mapper, User);
+            var sut = new CreateSurveyCommandHandler(Context, Mapper, UserService);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 

@@ -10,12 +10,12 @@ namespace FakeSurveyGenerator.Application.Common.Behaviours
     public sealed class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest>
     {
         private readonly ILogger _logger;
-        private readonly IUser _user;
+        private readonly IUserService _userService;
 
-        public LoggingBehaviour(ILogger<TRequest> logger, IUser user)
+        public LoggingBehaviour(ILogger<TRequest> logger, IUserService userService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _user = user ?? throw new ArgumentNullException(nameof(user));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public Task Process(TRequest request, CancellationToken cancellationToken)
@@ -23,23 +23,9 @@ namespace FakeSurveyGenerator.Application.Common.Behaviours
             var name = typeof(TRequest).Name;
 
             _logger.LogInformation("Fake Survey Generator Request: {Name} {@Request} {@CurrentUserIdentity}",
-                name, request, new CurrentUserIdentity(_user.Id, _user.DisplayName, _user.EmailAddress));
+                name, request, _userService.GetUserIdentity());
 
             return Task.CompletedTask;
-        }
-
-        internal class CurrentUserIdentity
-        {
-            public string Id { get; }
-            public string DisplayName { get; }
-            public string EmailAddress { get; }
-
-            public CurrentUserIdentity(string id, string displayName, string emailAddress)
-            {
-                Id = id;
-                DisplayName = displayName;
-                EmailAddress = emailAddress;
-            }
         }
     }
 }

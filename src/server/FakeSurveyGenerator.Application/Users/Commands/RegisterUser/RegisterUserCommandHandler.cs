@@ -16,13 +16,13 @@ namespace FakeSurveyGenerator.Application.Users.Commands.RegisterUser
 {
     public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Result<UserModel, Error>>
     {
-        private readonly IUser _user;
+        private readonly IUserService _userService;
         private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
 
-        public RegisterUserCommandHandler(IUser user, ISurveyContext surveyContext, IMapper mapper)
+        public RegisterUserCommandHandler(IUserService userService, ISurveyContext surveyContext, IMapper mapper)
         {
-            _user = user ?? throw new ArgumentNullException(nameof(user));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -30,10 +30,13 @@ namespace FakeSurveyGenerator.Application.Users.Commands.RegisterUser
         public async Task<Result<UserModel, Error>> Handle(RegisterUserCommand request,
             CancellationToken cancellationToken)
         {
-            if (await _surveyContext.Users.AnyAsync(user => user.ExternalUserId == _user.Id, cancellationToken))
-                return Result.Failure<UserModel, Error>(Errors.General.UserAlreadyRegistered(_user.Id));
+            var userInfo = await _userService.GetUserInfo(cancellationToken);
 
-            var newUser = new User(NonEmptyString.Create(_user.DisplayName), NonEmptyString.Create(_user.EmailAddress), NonEmptyString.Create(_user.Id));
+            if (await _surveyContext.Users.AnyAsync(user => user.ExternalUserId == userInfo.Id, cancellationToken))
+                return Result.Failure<UserModel, Error>(Errors.General.UserAlreadyRegistered(userInfo.Id));
+
+            var newUser = new User(NonEmptyString.Create(userInfo.DisplayName),
+                NonEmptyString.Create(userInfo.EmailAddress), NonEmptyString.Create(userInfo.Id));
 
             await _surveyContext.Users.AddAsync(newUser, cancellationToken);
 

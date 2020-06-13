@@ -8,6 +8,7 @@ using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Caching;
 using FakeSurveyGenerator.Application.Common.Identity;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
@@ -21,21 +22,29 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
         private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
         private readonly ICache<OAuthUser> _cache;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public OAuthUserInfoService(HttpClient client, ILogger<OAuthUserInfoService> logger,
-            IConfiguration configuration, ICache<OAuthUser> cache)
+            IConfiguration configuration, ICache<OAuthUser> cache, IHttpContextAccessor httpContextAccessor)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
-        public async Task<IUser> GetUserInfo(string accessToken, CancellationToken cancellationToken)
+        public string GetUserIdentity(CancellationToken cancellationToken)
         {
-            var jwtToken = new JwtSecurityToken(accessToken);
+            var accessToken = GetToken();
+            return new JwtSecurityToken(accessToken).Subject;
+        }
 
-            var cacheKey = $"{jwtToken.Subject}";
+        public async Task<IUser> GetUserInfo(CancellationToken cancellationToken)
+        {
+            var accessToken = GetToken();
+
+            var cacheKey = $"{new JwtSecurityToken(accessToken).Subject}";
 
             var (isCached, cachedUserInfo) = await _cache.TryGetValueAsync(cacheKey, cancellationToken);
 
@@ -56,6 +65,13 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
             await _cache.SetAsync(cacheKey, userInfo, 60, cancellationToken);
 
             return userInfo;
+        }
+
+        private string GetToken()
+        {
+            var accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString().Substring(7);
+
+            return accessToken;
         }
 
         private async Task<Result<UserInfoResponse>> GetUserInfoFromIdentityProvider(string accessToken,

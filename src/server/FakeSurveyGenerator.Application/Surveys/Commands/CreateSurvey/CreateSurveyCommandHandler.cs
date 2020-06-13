@@ -20,20 +20,22 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
     {
         private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
-        private readonly IUser _user;
+        private readonly IUserService _userService;
 
-        public CreateSurveyCommandHandler(ISurveyContext surveyContext, IMapper mapper, IUser user)
+        public CreateSurveyCommandHandler(ISurveyContext surveyContext, IMapper mapper, IUserService userService)
         {
             _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _user = user;
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var surveyOwner = await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == _user.Id, cancellationToken);
+                var userInfo = await _userService.GetUserInfo(cancellationToken);
+
+                var surveyOwner = await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id, cancellationToken);
 
                 var survey = new Survey(surveyOwner, NonEmptyString.Create(request.SurveyTopic), request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
 

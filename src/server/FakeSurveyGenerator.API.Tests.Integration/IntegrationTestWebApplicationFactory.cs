@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
@@ -32,7 +34,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                 });
 
-                services.AddScoped<IUser>(provider => new IntegrationTestUser());
+                var mockUserService = new Mock<IUserService>();
+                mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(new IntegrationTestUser());
+
+                services.AddScoped(sp => mockUserService.Object);
 
                 var rootServiceProvider = services.BuildServiceProvider();
 
