@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 {
-    internal sealed class SurveyOptionEntityTypeConfiguration : IEntityTypeConfiguration<SurveyOption>
+    internal sealed class SurveyOptionEntityTypeConfiguration : AuditableEntityTypeConfiguration<SurveyOption>
     {
-        public void Configure(EntityTypeBuilder<SurveyOption> builder)
+        public override void Configure(EntityTypeBuilder<SurveyOption> builder)
         {
             const string tableName = "SurveyOption";
             var sequenceName = $"{tableName}Seq";
@@ -37,6 +37,8 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 
             builder
                 .Property(o => o.PreferredNumberOfVotes);
+
+            base.Configure(builder);
         }
     }
 }

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 {
-    internal sealed class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
+    internal sealed class UserEntityTypeConfiguration : AuditableEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public override void Configure(EntityTypeBuilder<User> builder)
         {
             const string tableName = "User";
             var sequenceName = $"{tableName}Seq";
@@ -47,6 +47,8 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
                 .HasMany(u => u.OwnedSurveys)
                 .WithOne(s => s.Owner)
                 .IsRequired();
+
+            base.Configure(builder);
         }
     }
 }

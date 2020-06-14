@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -68,6 +69,8 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             Assert.Equal(350, survey.Options.Sum(option => option.NumberOfVotes));
             Assert.Equal("How awesome is this?", survey.Topic);
             Assert.True(survey.Options.All(option => option.NumberOfVotes > 0));
+            Assert.False(survey.CreatedOn == DateTimeOffset.MinValue);
+            Assert.Equal("test-id", survey.CreatedBy);
         }
 
         [Fact]

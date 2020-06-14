@@ -38,10 +38,10 @@ namespace FakeSurveyGenerator.Infrastructure.Caching
             {
                 var cachedResult = await _distributedCache.GetAsync(CacheKey(key), cancellationToken);
 
-                if (cachedResult == null)
-                    _logger.LogWarning("Cache miss for cache key: {CacheKey}", CacheKey(key));
-                else
-                    _logger.LogInformation("Cache hit for cache key: {CacheKey}", CacheKey(key));
+                _logger.LogInformation(
+                    cachedResult == null
+                        ? "Cache miss for cache key: {CacheKey}"
+                        : "Cache hit for cache key: {CacheKey}", CacheKey(key));
 
                 return cachedResult == null ? default : await DeserialiseCacheResult(cachedResult, cancellationToken);
             }

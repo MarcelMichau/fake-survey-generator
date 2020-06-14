@@ -2,17 +2,16 @@
 using System.Net;
 using System.Net.Http;
 using FakeSurveyGenerator.Application.Common.Identity;
-using FakeSurveyGenerator.Infrastructure.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 
-namespace FakeSurveyGenerator.Infrastructure.Builders
+namespace FakeSurveyGenerator.Infrastructure.Identity
 {
-    internal static class HttpClientBuilder
+    internal static class IdentityProviderConfigurationExtensions
     {
-        public static IServiceCollection AddHttpClientConfiguration(this IServiceCollection services)
+        public static IServiceCollection AddOAuthConfiguration(this IServiceCollection services)
         {
             var commonResilience = Policy.WrapAsync(GetTimeoutPolicy(), GetRetryPolicy(), GetCircuitBreakerPolicy());
             

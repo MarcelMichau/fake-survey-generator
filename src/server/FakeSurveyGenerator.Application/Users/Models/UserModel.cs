@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using FakeSurveyGenerator.Application.Common.Auditing;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 
 namespace FakeSurveyGenerator.Application.Users.Models
 {
-    public sealed class UserModel : IMapFrom<User>
+    public sealed class UserModel : AuditableModel, IMapFrom<User>
     {
         public int Id { get; set; }
         public string DisplayName { get; set; }

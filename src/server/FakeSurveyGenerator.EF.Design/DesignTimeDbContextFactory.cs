@@ -1,6 +1,9 @@
-﻿using FakeSurveyGenerator.Infrastructure.Persistence;
+﻿using FakeSurveyGenerator.Application.Common.Identity;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 
 namespace FakeSurveyGenerator.EF.Design
 {
@@ -13,7 +16,7 @@ namespace FakeSurveyGenerator.EF.Design
 
             var builder = new DbContextOptionsBuilder<SurveyContext>();
             builder.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(SurveyContext).Assembly.FullName));
-            return new SurveyContext(builder.Options);
+            return new SurveyContext(builder.Options, new Mock<IUserService>().Object, new NullLogger<SurveyContext>());
         }
     }
 }

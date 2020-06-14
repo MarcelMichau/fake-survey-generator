@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
@@ -10,13 +9,12 @@ using FakeSurveyGenerator.Domain.Services;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
-    public class Survey : Entity, IAggregateRoot
+    public class Survey : AuditableEntity, IAggregateRoot
     {
         public User Owner { get; }
         public NonEmptyString Topic { get; }
         public NonEmptyString RespondentType { get; }
         public int NumberOfRespondents { get; }
-        public DateTime CreatedOn { get; }
 
         private readonly List<SurveyOption> _options = new List<SurveyOption>();
         public IReadOnlyList<SurveyOption> Options => _options.ToList();
@@ -34,7 +32,6 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             Topic = topic;
             RespondentType = respondentType;
             NumberOfRespondents = numberOfRespondents;
-            CreatedOn = DateTime.UtcNow;
 
             _selectedVoteDistribution = new RandomVoteDistribution();
 

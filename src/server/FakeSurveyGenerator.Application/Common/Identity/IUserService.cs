@@ -5,7 +5,7 @@ namespace FakeSurveyGenerator.Application.Common.Identity
 {
     public interface IUserService
     {
-        string GetUserIdentity(CancellationToken cancellationToken = default);
+        string GetUserIdentity();
         Task<IUser> GetUserInfo(CancellationToken cancellationToken = default);
     }
 }

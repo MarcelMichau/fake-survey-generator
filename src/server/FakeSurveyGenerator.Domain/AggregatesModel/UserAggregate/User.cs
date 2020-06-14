@@ -6,7 +6,7 @@ using FakeSurveyGenerator.Domain.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate
 {
-    public class User: Entity, IAggregateRoot
+    public class User: AuditableEntity, IAggregateRoot
     {
         public NonEmptyString DisplayName { get; }
         public NonEmptyString EmailAddress { get; }

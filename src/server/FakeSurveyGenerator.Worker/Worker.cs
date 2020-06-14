@@ -11,13 +11,13 @@ namespace FakeSurveyGenerator.Worker
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
         {
-            _logger = logger;
-            _serviceScopeFactory = serviceScopeFactory;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -25,16 +25,16 @@ namespace FakeSurveyGenerator.Worker
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await CreateSurvey(stoppingToken);
-                await Task.Delay(5000, stoppingToken);
+                await GetTotalSurveys(stoppingToken);
+                await Task.Delay(10000, stoppingToken);
             }
         }
 
-        private async Task CreateSurvey(CancellationToken stoppingToken)
+        private async Task GetTotalSurveys(CancellationToken stoppingToken)
         {
             using var scope = _serviceScopeFactory.CreateScope();
 
-            var surveyContext = scope.ServiceProvider.GetService<SurveyContext>();
+            var surveyContext = scope.ServiceProvider.GetRequiredService<SurveyContext>();
 
             var surveyCount = await surveyContext.Surveys.CountAsync(stoppingToken);
 

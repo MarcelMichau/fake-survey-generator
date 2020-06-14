@@ -33,7 +33,7 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
             _tokenProviderService = tokenProviderService ?? throw new ArgumentNullException(nameof(tokenProviderService));
         }
 
-        public string GetUserIdentity(CancellationToken cancellationToken)
+        public string GetUserIdentity()
         {
             var accessToken = _tokenProviderService.GetToken();
 

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 {
-    internal sealed class SurveyEntityTypeConfiguration : IEntityTypeConfiguration<Survey>
+    internal sealed class SurveyEntityTypeConfiguration : AuditableEntityTypeConfiguration<Survey>
     {
-        public void Configure(EntityTypeBuilder<Survey> builder)
+        public override void Configure(EntityTypeBuilder<Survey> builder)
         {
             const string tableName = "Survey";
             var sequenceName = $"{tableName}Seq";
@@ -43,10 +43,6 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
                 .IsRequired();
 
             builder
-                .Property(s => s.CreatedOn)
-                .IsRequired();
-
-            builder
                 .HasMany(s => s.Options)
                 .WithOne()
                 .HasForeignKey(foreignKeyName)
@@ -54,6 +50,8 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 
             var navigation = builder.Metadata.FindNavigation(nameof(Survey.Options));
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+
+            base.Configure(builder);
         }
     }
 }
