@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/core/runtime:3.1.5-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/runtime:5.0.0-preview.5-buster-slim AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.301-buster AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0.100-preview.5-buster-slim AS build
 WORKDIR /src
 COPY ["src/server/FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj", "src/server/FakeSurveyGenerator.Worker/"]
 RUN dotnet restore "src/server/FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj"
