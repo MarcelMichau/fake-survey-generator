@@ -4,7 +4,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class StatsControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
+    public sealed class StatsControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
 

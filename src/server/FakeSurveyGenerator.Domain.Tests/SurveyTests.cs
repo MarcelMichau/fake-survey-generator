@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Domain.Tests
 {
-    public class SurveyTests
+    public sealed class SurveyTests
     {
         [Fact]
         public void Should_Be_Able_To_Create_Survey()

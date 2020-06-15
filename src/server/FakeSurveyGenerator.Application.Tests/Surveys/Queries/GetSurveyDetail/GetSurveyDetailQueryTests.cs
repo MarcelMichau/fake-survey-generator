@@ -14,7 +14,7 @@ using Xunit;
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 {
     [Collection("QueryTests")]
-    public class GetSurveyDetailQueryTests
+    public sealed class GetSurveyDetailQueryTests
     {
         private readonly SurveyContext _surveyContext;
         private readonly IMapper _mapper;

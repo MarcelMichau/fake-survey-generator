@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public sealed class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)

@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 {
-    public class CreateSurveyCommandTests : CommandTestBase
+    public sealed class CreateSurveyCommandTests : CommandTestBase
     {
         [Fact]
         public async Task Handle_GivenValidRequest_ShouldRaiseSurveyCreatedNotification()

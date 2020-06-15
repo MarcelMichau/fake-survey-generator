@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FakeSurveyGenerator.API.Controllers
 {
     [Authorize]
-    public class UserController : ApiController
+    public sealed class UserController : ApiController
     {
         /// <summary>
         /// Retrieves a specific User.

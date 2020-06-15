@@ -17,7 +17,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class SurveyControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
+    public sealed class SurveyControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _authenticatedClient;
         private readonly HttpClient _unauthenticatedClient;
@@ -74,7 +74,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Unauthenticated_Call_To_Post_Survey_Should_Return_Unauthorized_Response()
+        public async Task Unauthenticated_Call_To_PostSurvey_Should_Return_Unauthorized_Response()
         {
             var createSurveyCommand = new CreateSurveyCommand("How unauthorized is this?", 400, "Unauthorized users",
                 new List<SurveyOptionDto>
@@ -95,7 +95,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Given_Invalid_CreateSurveyCommand_Post_Survey_Should_Return_Bad_Request()
+        public async Task Given_Invalid_CreateSurveyCommand_PostSurvey_Should_Return_Bad_Request()
         {
             var createSurveyCommand = new CreateSurveyCommand("", 0, "",
                 new List<SurveyOptionDto>
@@ -114,7 +114,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Get_Survey_Should_Return_Survey()
+        public async Task GetSurvey_Should_Return_Survey()
         {
             const int surveyId = 1;
 

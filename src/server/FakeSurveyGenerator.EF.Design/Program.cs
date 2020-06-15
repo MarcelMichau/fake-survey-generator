@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.EF.Design
 {
-    internal class Program
+    internal sealed class Program
     {
         private static void Main()
         {

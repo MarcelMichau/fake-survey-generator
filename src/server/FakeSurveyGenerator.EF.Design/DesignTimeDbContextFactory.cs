@@ -7,7 +7,7 @@ using Moq;
 
 namespace FakeSurveyGenerator.EF.Design
 {
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SurveyContext>
+    internal sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SurveyContext>
     {
         public SurveyContext CreateDbContext(string[] args)
         {

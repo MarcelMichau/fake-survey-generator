@@ -14,7 +14,7 @@ using Moq;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class IntegrationTestWebApplicationFactory<TStartup>
+    public sealed class IntegrationTestWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -73,9 +73,9 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new IntegrationTestUser());
+                .ReturnsAsync(new TestUser());
             mockUserService.Setup(service => service.GetUserIdentity())
-                .Returns(new IntegrationTestUser().Id);
+                .Returns(new TestUser().Id);
 
             services.AddScoped(sp => mockUserService.Object);
         }

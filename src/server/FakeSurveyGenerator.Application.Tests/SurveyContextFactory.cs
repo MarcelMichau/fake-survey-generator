@@ -18,7 +18,7 @@ namespace FakeSurveyGenerator.Application.Tests
 
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UnitTestUser());
+                .ReturnsAsync(new TestUser());
 
             var options = new DbContextOptionsBuilder<SurveyContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())

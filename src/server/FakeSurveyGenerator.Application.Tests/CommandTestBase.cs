@@ -3,6 +3,7 @@ using System.Threading;
 using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Mappings;
+using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Moq;
 
@@ -26,7 +27,7 @@ namespace FakeSurveyGenerator.Application.Tests
 
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new UnitTestUser());
+                .ReturnsAsync(new TestUser());
 
             UserService = mockUserService.Object;
 
