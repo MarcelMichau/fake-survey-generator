@@ -131,7 +131,7 @@ stages:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator API
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'windows-2019'
         variables:
           environmentSuffix: test
           ingressClusterIssuerName: letsencrypt-prod
@@ -202,7 +202,7 @@ stages:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator API
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'windows-2019'
         variables:
           environmentSuffix: prod
           ingressClusterIssuerName: letsencrypt-prod

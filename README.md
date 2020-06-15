@@ -28,15 +28,16 @@ It also includes some examples that typical real-world applications might need t
 - Adding Swagger to an ASP.NET Core Web API
 - Adding OpenID Connect for Authentication
 - Adding OpenID Connect to Swagger UI
-- Securing an ASP.NET Core Web API using Bearer token authentication
+- Securing an ASP.NET Core Web API using JWT Bearer authentication
 - Adding security headers to API responses
 - Using AutoWrapper to return consistent API response models
 - Using Hosted Services in ASP.NET Core Web API
 - Using a distributed Redis cache
 - Creating trusted SSL certificates for HTTPS in development
 - Configuring SQL Server retry policies
+- Using Polly to make resilient HTTP requests
 - Implementing Forwarded Headers for hosting ASP.NET Core Web API behind a load balancer
-- Validation of domain objects using FluentValidation
+- Validation of commands using FluentValidation
 - Deploying Entity Framework Core Code-First Migrations to Azure SQL Server using Azure Pipelines
 - Run a microservice application using Docker Compose
 - Deploying a microservice application to Kubernetes using Helm charts
@@ -73,6 +74,7 @@ The server side consists of the following main components:
   - Application Tests Project
   - API Integration Tests Project
   - EF Design Project (used purely for EF Core design-time tooling)
+  - Data Project (helpers for test data used across test projects)
 - Fake Survey Generator Worker
 
 The server side makes use of the following tools, libraries & frameworks:
@@ -87,6 +89,7 @@ The server side makes use of the following tools, libraries & frameworks:
   - AutoMapper
   - MediatR
   - FluentValidation
+  - Polly
   - AspNetCore.Diagnostics.HealthChecks
   - Docker
   - Serilog
@@ -104,6 +107,8 @@ The client side consists of the following main components:
 The client side makes use of the following tools, libraries & frameworks:
 
 - React
+- TypeScript
+- auth0.js
 - NGINX
 - Docker
 
