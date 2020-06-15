@@ -80,9 +80,9 @@ The server side consists of the following main components:
 The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API
-  - .NET Core 3.1
-  - ASP.NET Core 3.1 Web API
-  - Entity Framework Core 3.1 with Code-First Migrations
+  - .NET 5.0
+  - ASP.NET Core 5.0 Web API
+  - Entity Framework Core 5.0 with Code-First Migrations
   - Dapper
   - Redis
   - Swagger
@@ -95,8 +95,8 @@ The server side makes use of the following tools, libraries & frameworks:
   - Serilog
   - AutoWrapper
 - Fake Survey Generator Worker
-  - .NET Core 3.1
-  - ASP.NET Core 3.1 Worker Service
+  - .NET 5.0
+  - ASP.NET Core 5.0 Worker Service
 
 ### Client
 
