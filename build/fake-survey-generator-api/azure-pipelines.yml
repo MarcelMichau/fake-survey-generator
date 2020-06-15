@@ -41,7 +41,10 @@ stages:
           displayName: 'Build Solution'
 
         - script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
-          displayName: 'Run Unit Tests'
+          displayName: 'Run Domain Tests'
+
+        - script: dotnet test src/server/FakeSurveyGenerator.Application.Tests/FakeSurveyGenerator.Application.Tests.csproj --logger trx
+          displayName: 'Run Application Tests'
 
         - script: dotnet test src/server/FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
           displayName: 'Run Integration Tests'
