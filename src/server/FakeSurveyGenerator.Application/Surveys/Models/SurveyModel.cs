@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Auditing;
 using FakeSurveyGenerator.Application.Common.Mappings;

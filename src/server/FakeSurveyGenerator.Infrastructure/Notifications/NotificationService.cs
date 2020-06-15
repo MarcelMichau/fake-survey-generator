@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Common.Notifications;
 using FakeSurveyGenerator.Application.Notifications.Models;
@@ -16,10 +16,10 @@ namespace FakeSurveyGenerator.Infrastructure.Notifications
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task SendAsync(MessageDto message)
+        public Task SendMessage(MessageDto message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Simulating sending a notification somewhere... Message: {@message}", message);
-            
+
             return Task.CompletedTask;
         }
     }

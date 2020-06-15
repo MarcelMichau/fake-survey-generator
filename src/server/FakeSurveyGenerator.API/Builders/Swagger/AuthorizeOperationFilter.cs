@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,8 +22,6 @@ namespace FakeSurveyGenerator.API.Builders.Swagger
             }
 
             if (!(authAttributes ?? Enumerable.Empty<AuthorizeAttribute>()).Any()) return;
-
-            //operation.Security = new List<OpenApiSecurityRequirement>();
 
             var oauth2SecurityScheme = new OpenApiSecurityScheme
             {

@@ -29,17 +29,22 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
-        public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request, CancellationToken cancellationToken)
+        public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request,
+            CancellationToken cancellationToken)
         {
             try
             {
                 var userInfo = await _userService.GetUserInfo(cancellationToken);
 
-                var surveyOwner = await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id, cancellationToken);
+                var surveyOwner =
+                    await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
+                        cancellationToken);
 
-                var survey = new Survey(surveyOwner, NonEmptyString.Create(request.SurveyTopic), request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
+                var survey = new Survey(surveyOwner, NonEmptyString.Create(request.SurveyTopic),
+                    request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
 
-                survey.AddSurveyOptions(request.SurveyOptions.Select(option => new SurveyOption(NonEmptyString.Create(option.OptionText), option.PreferredNumberOfVotes)));
+                survey.AddSurveyOptions(request.SurveyOptions.Select(option =>
+                    new SurveyOption(NonEmptyString.Create(option.OptionText), option.PreferredNumberOfVotes)));
 
                 survey.CalculateOutcome();
 

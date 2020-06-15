@@ -9,22 +9,22 @@ namespace FakeSurveyGenerator.Application.Surveys.DomainEventHandlers.SurveyCrea
 {
     public sealed class SendNotificationWhenSurveyCreatedDomainEventHandler : INotificationHandler<SurveyCreatedDomainEvent>
     {
-        private readonly INotificationService _notification;
+        private readonly INotificationService _notificationService;
 
-        public SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notification)
+        public SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
         {
-            _notification = notification;
+            _notificationService = notificationService;
         }
 
         public async Task Handle(SurveyCreatedDomainEvent notification, CancellationToken cancellationToken)
         {
-            await _notification.SendAsync(new MessageDto
+            await _notificationService.SendMessage(new MessageDto
             {
                 Body = $"Survey with ID: {notification.Survey.Id} created",
                 From = "System",
                 Subject = "New Survey Created",
                 To = "Whom It May Concern"
-            });
+            }, cancellationToken);
         }
     }
 }
