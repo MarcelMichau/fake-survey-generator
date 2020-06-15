@@ -26,14 +26,6 @@ services:
       - sql-server
       - fake-survey-generator-api
 
-  marcel-michau-idp:
-    image: ${DOCKER_REGISTRY-}marcel-michau-idp:${TAG:-latest}
-    build:
-      context: .
-      dockerfile: src/server/MarcelMichau.IDP/Dockerfile
-    depends_on:
-      - sql-server
-
   sql-server:
     image: mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-16.04
     environment:

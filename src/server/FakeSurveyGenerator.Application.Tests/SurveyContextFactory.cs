@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.Common;
+using System.Threading;
+using FakeSurveyGenerator.Application.Common.Identity;
+using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace FakeSurveyGenerator.Application.Tests
@@ -15,11 +16,15 @@ namespace FakeSurveyGenerator.Application.Tests
         {
             var mockMediator = new Mock<IMediator>();
 
+            var mockUserService = new Mock<IUserService>();
+            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TestUser());
+
             var options = new DbContextOptionsBuilder<SurveyContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new SurveyContext(options, mockMediator.Object);
+            var context = new SurveyContext(options, mockMediator.Object, mockUserService.Object, new NullLogger<SurveyContext>());
 
             context.Database.EnsureCreated();
 
@@ -28,22 +33,7 @@ namespace FakeSurveyGenerator.Application.Tests
 
         public static void SeedSampleData(SurveyContext context)
         {
-            var survey1 = new Survey(NonEmptyString.Create("Test Topic 1"), 10, NonEmptyString.Create("Testers"));
-            var survey2 = new Survey(NonEmptyString.Create("Test Topic 2"), 20, NonEmptyString.Create("More Testers"));
-            var survey3 = new Survey(NonEmptyString.Create("Test Topic 3"), 30, NonEmptyString.Create("Even More Testers"));
-
-            survey1.AddSurveyOption(NonEmptyString.Create("Test Option 1"));
-
-            survey2.AddSurveyOption(NonEmptyString.Create("Test Option 2"));
-            survey2.AddSurveyOption(NonEmptyString.Create("Test Option 3"));
-
-            survey3.AddSurveyOption(NonEmptyString.Create("Test Option 4"));
-            survey3.AddSurveyOption(NonEmptyString.Create("Test Option 5"));
-            survey3.AddSurveyOption(NonEmptyString.Create("Test Option 6"));
-
-            context.Surveys.AddRange(new List<Survey> { survey1, survey2, survey3 });
-
-            context.SaveChanges();
+            DatabaseSeed.SeedSampleData(context);
         }
 
         public static void Destroy(SurveyContext context)

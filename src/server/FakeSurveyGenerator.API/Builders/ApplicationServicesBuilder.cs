@@ -11,7 +11,7 @@ namespace FakeSurveyGenerator.API.Builders
         public static IServiceCollection AddApplicationServicesConfiguration(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddInfrastructure(configuration);
+            services.AddInfrastructureForApi(configuration);
             services.AddApplication();
 
             services.AddHostedService<DatabaseCreationHostedService>();

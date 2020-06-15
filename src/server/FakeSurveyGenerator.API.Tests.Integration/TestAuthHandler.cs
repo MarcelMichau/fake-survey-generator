@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public sealed class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
@@ -25,6 +25,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             var result = AuthenticateResult.Success(ticket);
 
             return Task.FromResult(result);
+        }
+
+        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
+        {
+            return Task.CompletedTask;
         }
     }
 }

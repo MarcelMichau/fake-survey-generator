@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Domain.DomainEvents;
 using FakeSurveyGenerator.Domain.Exceptions;
@@ -9,27 +9,29 @@ using FakeSurveyGenerator.Domain.Services;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
-    public class Survey : Entity, IAggregateRoot
+    public class Survey : AuditableEntity, IAggregateRoot
     {
+        public User Owner { get; }
         public NonEmptyString Topic { get; }
         public NonEmptyString RespondentType { get; }
         public int NumberOfRespondents { get; }
-        public DateTime CreatedOn { get; }
 
         private readonly List<SurveyOption> _options = new List<SurveyOption>();
         public IReadOnlyList<SurveyOption> Options => _options.ToList();
 
         private IVoteDistribution _selectedVoteDistribution;
 
-        public Survey(NonEmptyString topic, int numberOfRespondents, NonEmptyString respondentType)
+        private Survey() { } // Necessary for Entity Framework Core
+
+        public Survey(User owner, NonEmptyString topic, int numberOfRespondents, NonEmptyString respondentType)
         {
             if (numberOfRespondents < 1)
                 throw new SurveyDomainException("Survey should have at least one respondent");
 
+            Owner = owner;
             Topic = topic;
             RespondentType = respondentType;
             NumberOfRespondents = numberOfRespondents;
-            CreatedOn = DateTime.UtcNow;
 
             _selectedVoteDistribution = new RandomVoteDistribution();
 
@@ -80,7 +82,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
         private void CheckForZeroOptions()
         {
             if (!_options.Any())
-                throw new SurveyDomainException("Cannot calculate a survey with no options");
+                throw new SurveyDomainException("Cannot calculate the outcome of a Survey with no Options");
         }
 
         private void AddSurveyCreatedEvent()

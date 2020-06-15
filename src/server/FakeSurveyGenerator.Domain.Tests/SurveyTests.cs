@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Domain.Tests
 {
-    public class SurveyTests
+    public sealed class SurveyTests
     {
         [Fact]
         public void Should_Be_Able_To_Create_Survey()
@@ -17,12 +17,11 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             Assert.Equal(topic, survey.Topic);
             Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
             Assert.Equal(respondentType, survey.RespondentType);
-            Assert.True(survey.CreatedOn < DateTime.UtcNow, "The CreatedOn date was not in the past");
         }
 
         [Fact]
@@ -32,7 +31,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1;
             const string respondentType = "Developers";
 
-            Assert.ThrowsAny<Exception>(() => new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType)));
+            Assert.ThrowsAny<Exception>(() => new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType)));
         }
 
         [Fact]
@@ -42,7 +41,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 0;
             const string respondentType = "Writers";
 
-            Assert.Throws<SurveyDomainException>(() => new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType)));
+            Assert.Throws<SurveyDomainException>(() => new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType)));
         }
 
         [Fact]
@@ -52,7 +51,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1;
             const string respondentType = "";
 
-            Assert.ThrowsAny<Exception>(() => new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType)));
+            Assert.ThrowsAny<Exception>(() => new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType)));
         }
 
         [Fact]
@@ -62,7 +61,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
             survey.AddSurveyOption(NonEmptyString.Create("Spaces"));
@@ -81,7 +80,7 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             Assert.ThrowsAny<Exception>(() =>
             {
-                var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+                var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
                 survey.AddSurveyOption(NonEmptyString.Create(""));
             });
@@ -94,7 +93,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1000;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             Assert.Throws<SurveyDomainException>(() => survey.CalculateOutcome());
         }
@@ -106,7 +105,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1000;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
             survey.AddSurveyOption(NonEmptyString.Create("Spaces"));
@@ -124,7 +123,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1000;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
             survey.AddSurveyOption(NonEmptyString.Create("Spaces"));
@@ -141,7 +140,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1000;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             survey.AddSurveyOption(NonEmptyString.Create("Tabs"), 600);
             survey.AddSurveyOption(NonEmptyString.Create("Spaces"), 400);
@@ -159,7 +158,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1000;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             survey.AddSurveyOption(NonEmptyString.Create("Tabs"), 1);
 
@@ -176,7 +175,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1000;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             survey.AddSurveyOption(NonEmptyString.Create("Tabs"), 500);
 
@@ -193,7 +192,7 @@ namespace FakeSurveyGenerator.Domain.Tests
             const int numberOfRespondents = 1;
             const string respondentType = "Developers";
 
-            var survey = new Survey(NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
+            var survey = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents, NonEmptyString.Create(respondentType));
 
             survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
             survey.AddSurveyOption(NonEmptyString.Create("Spaces"));

@@ -12,13 +12,13 @@ namespace FakeSurveyGenerator.API.Controllers
     public sealed class SurveyController : ApiController
     {
         /// <summary>
-        /// Retrieves a specific survey.
+        /// Retrieves a specific Survey.
         /// </summary>
         /// <param name="id">Primary key of the Survey</param>
         /// <param name="cancellationToken">Automatically set by ASP.NET Core</param>
         /// <returns>The requested SurveyModel</returns>
-        /// <response code="200">Returns the requested survey</response> 
-        /// <response code="404">If the requested survey is not found</response> 
+        /// <response code="200">Returns the requested SurveyModel</response> 
+        /// <response code="404">If the requested Survey is not found</response> 
         [HttpGet("{id}", Name = nameof(GetSurvey))]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -30,10 +30,10 @@ namespace FakeSurveyGenerator.API.Controllers
         }
 
         /// <summary>
-        /// Creates a new survey.
+        /// Creates a new Survey.
         /// </summary>
         /// <returns>A newly created SurveyModel</returns>
-        /// <response code="201">Returns the newly created survey</response>
+        /// <response code="201">Returns the newly created SurveyModel</response>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]

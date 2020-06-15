@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Notifications.Models;
 
-namespace FakeSurveyGenerator.Application.Common.Interfaces
+namespace FakeSurveyGenerator.Application.Common.Notifications
 {
     public interface INotificationService
     {

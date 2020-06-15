@@ -15,15 +15,25 @@ namespace FakeSurveyGenerator.API.Controllers
 
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
 
+        protected IActionResult FromResult<T>(Result<T> result)
+        {
+            return Ok(result.Value);
+        }
+
         protected IActionResult FromResult<T>(Result<T, Error> result)
         {
-            if (result.IsSuccess)
-                return Ok(result.Value);
+            return result.IsSuccess
+                ? Ok(result.Value)
+                : BuildProblemDetails(result,
+                    Equals(result.Error, Errors.General.NotFound())
+                        ? StatusCodes.Status404NotFound
+                        : StatusCodes.Status400BadRequest);
+        }
 
-            if (Equals(result.Error, Errors.General.NotFound()))
-                return Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}", statusCode: StatusCodes.Status404NotFound);
-
-            return Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}", statusCode: StatusCodes.Status400BadRequest);
+        private IActionResult BuildProblemDetails<T>(Result<T, Error> result, int statusCode)
+        {
+            return Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
+                statusCode: statusCode);
         }
     }
 }

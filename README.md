@@ -10,7 +10,6 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Fake Survey Generator API | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Fake%20Survey%20Generator%20API?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=5&branchName=master) |
 | Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Fake%20Survey%20Generator%20UI?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=6&branchName=master)  |
-| IdentityServer            | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/IdentityServer?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=7&branchName=master)                  |
 | SQL Server                | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/SQL%20Server?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=9&branchName=master)                    |
 | Redis                     | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Redis?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=8&branchName=master)                           |
 
@@ -27,17 +26,18 @@ It also includes some examples that typical real-world applications might need t
 - Using an in-memory database for testing
 - Implementing health checks for an ASP.NET Core Web API
 - Adding Swagger to an ASP.NET Core Web API
-- Implementing OpenID Connect using IdentityServer
+- Adding OpenID Connect for Authentication
 - Adding OpenID Connect to Swagger UI
-- Securing an ASP.NET Core Web API using Bearer token authentication
+- Securing an ASP.NET Core Web API using JWT Bearer authentication
 - Adding security headers to API responses
 - Using AutoWrapper to return consistent API response models
 - Using Hosted Services in ASP.NET Core Web API
 - Using a distributed Redis cache
 - Creating trusted SSL certificates for HTTPS in development
 - Configuring SQL Server retry policies
+- Using Polly to make resilient HTTP requests
 - Implementing Forwarded Headers for hosting ASP.NET Core Web API behind a load balancer
-- Validation of domain objects using FluentValidation
+- Validation of commands using FluentValidation
 - Deploying Entity Framework Core Code-First Migrations to Azure SQL Server using Azure Pipelines
 - Run a microservice application using Docker Compose
 - Deploying a microservice application to Kubernetes using Helm charts
@@ -74,8 +74,8 @@ The server side consists of the following main components:
   - Application Tests Project
   - API Integration Tests Project
   - EF Design Project (used purely for EF Core design-time tooling)
+  - Data Project (helpers for test data used across test projects)
 - Fake Survey Generator Worker
-- Identity Provider API
 
 The server side makes use of the following tools, libraries & frameworks:
 
@@ -89,6 +89,7 @@ The server side makes use of the following tools, libraries & frameworks:
   - AutoMapper
   - MediatR
   - FluentValidation
+  - Polly
   - AspNetCore.Diagnostics.HealthChecks
   - Docker
   - Serilog
@@ -96,10 +97,6 @@ The server side makes use of the following tools, libraries & frameworks:
 - Fake Survey Generator Worker
   - .NET Core 3.1
   - ASP.NET Core 3.1 Worker Service
-- Identity Provider API
-  - .NET Core 3.1
-  - ASP.NET Core 3.1 MVC
-  - IdentityServer
 
 ### Client
 
@@ -110,6 +107,8 @@ The client side consists of the following main components:
 The client side makes use of the following tools, libraries & frameworks:
 
 - React
+- TypeScript
+- auth0.js
 - NGINX
 - Docker
 
@@ -139,19 +138,11 @@ The hosted version utilizes the following:
 
 ## Authentication
 
-The application makes use of OpenID Connect for authentication which is implemented by IdentityServer. The Identity Provider has a user database with a couple of test users with the following credentials:
+The application makes use of OpenID Connect for authentication which is implemented by Auth0. Currently supported connections are:
 
-- User 1
+- Google
 
-  - Username: **alice**
-  - Password: **Pass123\$**
-
-- User 2
-
-  - Username: **bob**
-  - Password: **Pass123\$**
-
-There is no interface to register users - the authentication mechanism serves as an example of how to implement user authentication using OpenID Connect in a .NET microservice architecture.
+Initially, this project used IdentityServer for authentication, but I didn't feel like maintaining the separate IdentityServer project as well as the Fake Survey Generator, so I switched it out for Auth0 because authn/authz is hard and I prefer to delegate that responsibility to the people who know how to do it properly. :)
 
 ## How do I run this thing?
 

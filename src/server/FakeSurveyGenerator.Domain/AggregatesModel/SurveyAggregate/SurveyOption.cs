@@ -3,7 +3,7 @@ using FakeSurveyGenerator.Domain.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
-    public class SurveyOption : Entity
+    public class SurveyOption : AuditableEntity
     {
         public NonEmptyString OptionText { get; }
         public int NumberOfVotes { get; private set; }

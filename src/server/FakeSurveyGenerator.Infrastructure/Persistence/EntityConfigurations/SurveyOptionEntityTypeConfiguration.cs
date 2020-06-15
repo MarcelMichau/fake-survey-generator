@@ -5,38 +5,40 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 {
-    internal sealed class SurveyOptionEntityTypeConfiguration : IEntityTypeConfiguration<SurveyOption>
+    internal sealed class SurveyOptionEntityTypeConfiguration : AuditableEntityTypeConfiguration<SurveyOption>
     {
-        public void Configure(EntityTypeBuilder<SurveyOption> surveyOptionConfiguration)
+        public override void Configure(EntityTypeBuilder<SurveyOption> builder)
         {
             const string tableName = "SurveyOption";
             var sequenceName = $"{tableName}Seq";
 
-            surveyOptionConfiguration
+            builder
                 .ToTable(tableName, SurveyContext.DefaultSchema);
 
-            surveyOptionConfiguration
+            builder
                 .HasKey(o => o.Id);
 
-            surveyOptionConfiguration
+            builder
                 .Property(o => o.Id)
                 .UseHiLo(sequenceName, SurveyContext.DefaultSchema);
 
-            surveyOptionConfiguration
+            builder
                 .Ignore(b => b.DomainEvents);
 
-            surveyOptionConfiguration
+            builder
                 .Property(o => o.OptionText)
                 .HasMaxLength(250)
                 .IsRequired()
-                .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));;
+                .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
 
-            surveyOptionConfiguration
+            builder
                 .Property(o => o.NumberOfVotes)
                 .IsRequired();
 
-            surveyOptionConfiguration
+            builder
                 .Property(o => o.PreferredNumberOfVotes);
+
+            base.Configure(builder);
         }
     }
 }

@@ -6,7 +6,7 @@ using AutoMapper.QueryableExtensions;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Caching;
 using FakeSurveyGenerator.Application.Common.Errors;
-using FakeSurveyGenerator.Application.Common.Interfaces;
+using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using MediatR;
@@ -18,9 +18,9 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
     {
         private readonly ISurveyContext _surveyContext;
         private readonly IMapper _mapper;
-        private readonly IDistributedCache<SurveyModel> _cache;
+        private readonly ICache<SurveyModel> _cache;
 
-        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyContext surveyContext, IMapper mapper, IDistributedCache<SurveyModel> cache)
+        public GetSurveyDetailWithEntityFrameworkQueryHandler(ISurveyContext surveyContext, IMapper mapper, ICache<SurveyModel> cache)
         {
             _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -38,6 +38,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 
             var survey = await _surveyContext.Surveys
                 .Include(s => s.Options)
+                .Include(s => s.Owner)
                 .ProjectTo<SurveyModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
 

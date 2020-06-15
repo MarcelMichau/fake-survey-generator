@@ -30,14 +30,6 @@ services:
     volumes:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
-  marcel-michau-idp-test:
-    image: ${DOCKER_REGISTRY-}marcel-michau-idp-test:${TAG:-latest}
-    build:
-      context: .
-      dockerfile: src/server/MarcelMichau.IDP/Dockerfile
-    depends_on:
-      - sql-server-test
-
   sql-server-test:
     image: mcr.microsoft.com/mssql/server:2019-CU1-ubuntu-16.04
     environment:

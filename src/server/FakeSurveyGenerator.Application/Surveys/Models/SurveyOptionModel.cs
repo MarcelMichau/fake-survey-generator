@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using FakeSurveyGenerator.Application.Common.Auditing;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Application.Surveys.Models
 {
-    public sealed class SurveyOptionModel : IMapFrom<SurveyOption>
+    public sealed class SurveyOptionModel : AuditableModel, IMapFrom<SurveyOption>
     {
         public int Id { get; set; }
         public string OptionText { get; set; }

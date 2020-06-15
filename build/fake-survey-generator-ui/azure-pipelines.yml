@@ -49,7 +49,7 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.1'
+                  helmVersionToInstall: '3.2.3'
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
@@ -81,60 +81,6 @@ stages:
                   inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
-
-  # - stage: Integration_Deployment
-  #   displayName: 'Integration Deployment'
-  #   jobs:
-  #     - deployment: Deployment_Job
-  #       displayName: Deploy Fake Survey Generator UI
-  #       pool:
-  #         vmImage: 'ubuntu-latest'
-  #       variables:
-  #         environmentSuffix: integration
-  #         ingressClusterIssuerName: letsencrypt-prod
-  #         ingressHost: aks-integration.fakesurveygenerator.marcelmichau.dev
-  #         ingressTlsSecretName: marcelmichau-dev-tls-secret
-  #         replicaCount: 2
-  #         targetNamespace: integration-env
-  #       environment: 'aks-integration.integration-env'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #             - task: KubectlInstaller@0
-  #               displayName: 'Install Kubectl latest'
-
-  #             - task: HelmInstaller@1
-  #               inputs:
-  #                 helmVersionToInstall: '3.2.1'
-  #               displayName: 'Install Helm'
-
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az configure --defaults acr=$(registryName)'
-  #               displayName: 'Set Azure Container Registry Default in Azure CLI'
-
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm repo add'
-  #               displayName: 'Add Azure Container Registry Repo to Azure CLI'
-
-  #             - task: HelmDeploy@0
-  #               displayName: 'helm upgrade'
-  #               inputs:
-  #                 connectionType: 'Kubernetes Service Connection'
-  #                 kubernetesServiceConnection: 'AKS Integration Environment'
-  #                 namespace: '$(targetNamespace)'
-  #                 command: 'upgrade'
-  #                 chartType: 'Name'
-  #                 chartName: '$(registryName)/$(projectName)'
-  #                 releaseName: '$(projectName)-$(environmentSuffix)'
-  #                 arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(integrationEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
-
   - stage: Test_Deployment
     displayName: 'Test Deployment'
     jobs:
@@ -159,7 +105,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.1'
+                  helmVersionToInstall: '3.2.3'
                 displayName: 'Install Helm'
 
               - task: AzureCLI@1
@@ -212,7 +158,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.1'
+                  helmVersionToInstall: '3.2.3'
                 displayName: 'Install Helm'
 
               - task: AzureCLI@1

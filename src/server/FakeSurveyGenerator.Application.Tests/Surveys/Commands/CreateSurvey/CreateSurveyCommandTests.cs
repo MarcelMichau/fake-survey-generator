@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 {
-    public class CreateSurveyCommandTests : CommandTestBase
+    public sealed class CreateSurveyCommandTests : CommandTestBase
     {
         [Fact]
         public async Task Handle_GivenValidRequest_ShouldRaiseSurveyCreatedNotification()
@@ -31,7 +31,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(Context, Mapper);
+            var sut = new CreateSurveyCommandHandler(Context, Mapper, UserService);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -40,7 +40,6 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
             Assert.Equal(topic, survey.Topic);
             Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
             Assert.Equal(respondentType, survey.RespondentType);
-            Assert.True(survey.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
         }
 
         [Fact]
@@ -66,7 +65,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(Context, Mapper);
+            var sut = new CreateSurveyCommandHandler(Context, Mapper, UserService);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -75,7 +74,6 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
             Assert.Equal(topic, survey.Topic);
             Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
             Assert.Equal(respondentType, survey.RespondentType);
-            Assert.True(survey.CreatedOn < DateTime.UtcNow, "The createdOn date was not in the past");
             Assert.Equal(100, survey.Options.First().NumberOfVotes);
             Assert.Equal(400, survey.Options.Last().NumberOfVotes);
         }

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 {
-    public class CreateSurveyCommandValidatorTests
+    public sealed class CreateSurveyCommandValidatorTests
     {
         [Fact]
         public void IsValid_ShouldBeTrue_WhenValidValuesAreSpecified()

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Domain.SeedWork;
 using FakeSurveyGenerator.Infrastructure.Persistence;
@@ -8,7 +9,7 @@ namespace FakeSurveyGenerator.Infrastructure
 {
     internal static class MediatorExtension
     {
-        public static async Task DispatchDomainEventsAsync(this IMediator mediator, SurveyContext ctx)
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, SurveyContext ctx, CancellationToken cancellationToken)
         {
             var domainEntities = ctx.ChangeTracker
                 .Entries<Entity>()
@@ -23,7 +24,7 @@ namespace FakeSurveyGenerator.Infrastructure
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
 
             foreach (var domainEvent in domainEvents)
-                await mediator.Publish(domainEvent);
+                await mediator.Publish(domainEvent, cancellationToken);
         }
     }
 }
