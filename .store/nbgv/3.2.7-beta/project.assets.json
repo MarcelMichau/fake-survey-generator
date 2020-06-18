@@ -1,0 +1,182 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "nbgv/3.2.7-beta": {
+        "type": "package"
+      }
+    },
+    ".NETCoreApp,Version=v5.0/any": {
+      "nbgv/3.2.7-beta": {
+        "type": "package",
+        "tools": {
+          "tools/netcoreapp2.1/any/DotnetToolSettings.xml": {},
+          "tools/netcoreapp2.1/any/LibGit2Sharp.dll": {},
+          "tools/netcoreapp2.1/any/Microsoft.Build.Framework.dll": {},
+          "tools/netcoreapp2.1/any/Microsoft.Build.dll": {},
+          "tools/netcoreapp2.1/any/Microsoft.DotNet.PlatformAbstractions.dll": {},
+          "tools/netcoreapp2.1/any/NerdBank.GitVersioning.dll": {},
+          "tools/netcoreapp2.1/any/NerdBank.GitVersioning.pdb": {},
+          "tools/netcoreapp2.1/any/NerdBank.GitVersioning.xml": {},
+          "tools/netcoreapp2.1/any/Newtonsoft.Json.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Common.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Configuration.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Frameworks.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.PackageManagement.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Packaging.Core.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Packaging.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Protocol.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Resolver.dll": {},
+          "tools/netcoreapp2.1/any/NuGet.Versioning.dll": {},
+          "tools/netcoreapp2.1/any/System.CommandLine.dll": {},
+          "tools/netcoreapp2.1/any/Validation.dll": {},
+          "tools/netcoreapp2.1/any/nbgv.deps.json": {},
+          "tools/netcoreapp2.1/any/nbgv.dll": {},
+          "tools/netcoreapp2.1/any/nbgv.pdb": {},
+          "tools/netcoreapp2.1/any/nbgv.runtimeconfig.json": {},
+          "tools/netcoreapp2.1/any/runtimes/alpine-x64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/alpine.3.9-x64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/debian-arm64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/debian.9-x64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/fedora-x64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/linux-x64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/osx/native/libgit2-106a5f2.dylib": {},
+          "tools/netcoreapp2.1/any/runtimes/rhel-x64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/ubuntu.16.04-arm64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/ubuntu.18.04-x64/native/libgit2-106a5f2.so": {},
+          "tools/netcoreapp2.1/any/runtimes/unix/lib/netstandard1.3/System.Security.Cryptography.ProtectedData.dll": {},
+          "tools/netcoreapp2.1/any/runtimes/unix/lib/netstandard1.3/System.Text.Encoding.CodePages.dll": {},
+          "tools/netcoreapp2.1/any/runtimes/win-x64/native/git2-106a5f2.dll": {},
+          "tools/netcoreapp2.1/any/runtimes/win-x64/native/git2-106a5f2.pdb": {},
+          "tools/netcoreapp2.1/any/runtimes/win-x86/native/git2-106a5f2.dll": {},
+          "tools/netcoreapp2.1/any/runtimes/win-x86/native/git2-106a5f2.pdb": {},
+          "tools/netcoreapp2.1/any/runtimes/win/lib/netstandard1.3/System.Security.Cryptography.ProtectedData.dll": {},
+          "tools/netcoreapp2.1/any/runtimes/win/lib/netstandard1.3/System.Text.Encoding.CodePages.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "nbgv/3.2.7-beta": {
+      "sha512": "QNG+MtFk6xe63hF8UuLAXyJo9t/pAbQKXuu2OcbjxsSrDZYXD0H78BKS4kvye8GeGQAwRmDto9auuraIzO9viA==",
+      "type": "package",
+      "path": "nbgv/3.2.7-beta",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "nbgv.3.2.7-beta.nupkg.sha512",
+        "nbgv.nuspec",
+        "tools/netcoreapp2.1/any/DotnetToolSettings.xml",
+        "tools/netcoreapp2.1/any/LibGit2Sharp.dll",
+        "tools/netcoreapp2.1/any/Microsoft.Build.Framework.dll",
+        "tools/netcoreapp2.1/any/Microsoft.Build.dll",
+        "tools/netcoreapp2.1/any/Microsoft.DotNet.PlatformAbstractions.dll",
+        "tools/netcoreapp2.1/any/NerdBank.GitVersioning.dll",
+        "tools/netcoreapp2.1/any/NerdBank.GitVersioning.pdb",
+        "tools/netcoreapp2.1/any/NerdBank.GitVersioning.xml",
+        "tools/netcoreapp2.1/any/Newtonsoft.Json.dll",
+        "tools/netcoreapp2.1/any/NuGet.Common.dll",
+        "tools/netcoreapp2.1/any/NuGet.Configuration.dll",
+        "tools/netcoreapp2.1/any/NuGet.Frameworks.dll",
+        "tools/netcoreapp2.1/any/NuGet.PackageManagement.dll",
+        "tools/netcoreapp2.1/any/NuGet.Packaging.Core.dll",
+        "tools/netcoreapp2.1/any/NuGet.Packaging.dll",
+        "tools/netcoreapp2.1/any/NuGet.Protocol.dll",
+        "tools/netcoreapp2.1/any/NuGet.Resolver.dll",
+        "tools/netcoreapp2.1/any/NuGet.Versioning.dll",
+        "tools/netcoreapp2.1/any/System.CommandLine.dll",
+        "tools/netcoreapp2.1/any/Validation.dll",
+        "tools/netcoreapp2.1/any/nbgv.deps.json",
+        "tools/netcoreapp2.1/any/nbgv.dll",
+        "tools/netcoreapp2.1/any/nbgv.pdb",
+        "tools/netcoreapp2.1/any/nbgv.runtimeconfig.json",
+        "tools/netcoreapp2.1/any/runtimes/alpine-x64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/alpine.3.9-x64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/debian-arm64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/debian.9-x64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/fedora-x64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/linux-x64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/osx/native/libgit2-106a5f2.dylib",
+        "tools/netcoreapp2.1/any/runtimes/rhel-x64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/ubuntu.16.04-arm64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/ubuntu.18.04-x64/native/libgit2-106a5f2.so",
+        "tools/netcoreapp2.1/any/runtimes/unix/lib/netstandard1.3/System.Security.Cryptography.ProtectedData.dll",
+        "tools/netcoreapp2.1/any/runtimes/unix/lib/netstandard1.3/System.Text.Encoding.CodePages.dll",
+        "tools/netcoreapp2.1/any/runtimes/win-x64/native/git2-106a5f2.dll",
+        "tools/netcoreapp2.1/any/runtimes/win-x64/native/git2-106a5f2.pdb",
+        "tools/netcoreapp2.1/any/runtimes/win-x86/native/git2-106a5f2.dll",
+        "tools/netcoreapp2.1/any/runtimes/win-x86/native/git2-106a5f2.pdb",
+        "tools/netcoreapp2.1/any/runtimes/win/lib/netstandard1.3/System.Security.Cryptography.ProtectedData.dll",
+        "tools/netcoreapp2.1/any/runtimes/win/lib/netstandard1.3/System.Text.Encoding.CodePages.dll"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETCoreApp,Version=v5.0": [
+      "nbgv >= 3.2.7-beta"
+    ]
+  },
+  "packageFolders": {
+    "I:\\Code\\GitHub\\fake-survey-generator\\.store\\.stage\\ofg30if3.2sw": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\Marcel\\AppData\\Local\\Temp\\xejtvt12.1qj\\restore.csproj",
+      "projectName": "restore",
+      "projectPath": "C:\\Users\\Marcel\\AppData\\Local\\Temp\\xejtvt12.1qj\\restore.csproj",
+      "packagesPath": "I:\\Code\\GitHub\\fake-survey-generator\\.store\\.stage\\ofg30if3.2sw",
+      "outputPath": "I:\\Code\\GitHub\\fake-survey-generator\\.store\\.stage\\ofg30if3.2sw\\",
+      "projectStyle": "DotnetToolReference",
+      "configFilePaths": [
+        "C:\\Users\\Marcel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net5.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net5.0": {
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net5.0": {
+        "dependencies": {
+          "nbgv": {
+            "target": "Package",
+            "version": "[3.2.7-beta, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100-preview.5.20279.10\\RuntimeIdentifierGraph.json"
+      }
+    },
+    "runtimes": {
+      "any": {
+        "#import": []
+      }
+    }
+  }
+}
