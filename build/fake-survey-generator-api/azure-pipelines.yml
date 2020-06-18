@@ -84,7 +84,7 @@ stages:
   - stage: Publish
     displayName: 'Publish'
     variables:
-      versionTag: $(GitBuildVersionSimple)
+      versionTag: '$(GitBuildVersionSimple)'
     jobs:
       - job: Publish_Chart
         displayName: 'Publish Fake Survey Generator API Chart'
