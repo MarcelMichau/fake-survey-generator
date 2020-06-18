@@ -110,7 +110,8 @@ stages:
                   packageType: 'sdk'
                   useGlobalJson: true
 
-              - script: | 
+              - script: |
+                  ls
                   nbgv.exe cloud -a
                 displayName: 'Get/Set Version using NBGV'
 
