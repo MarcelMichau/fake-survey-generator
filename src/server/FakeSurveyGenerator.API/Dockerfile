@@ -4,7 +4,9 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.100-preview.5-buster-slim AS build
-ADD ./.git /.git
+COPY ./.git /.git
+COPY ./.store /.store
+COPY Directory.Build.props /Directory.Build.props
 WORKDIR /src
 COPY src/server/FakeSurveyGenerator.API/FakeSurveyGenerator.API.csproj FakeSurveyGenerator.API/
 COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj FakeSurveyGenerator.Application/
