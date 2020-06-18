@@ -90,7 +90,7 @@ stages:
           vmImage: 'ubuntu-latest'
         steps:
               - script: | 
-                  SIMPLE_GIT_VERSION=$(echo nbgv get-version -v SimpleVersion)"
+                  SIMPLE_GIT_VERSION=$(echo nbgv get-version -v SimpleVersion)
                   echo "##vso[task.setvariable variable=versionTag]$SIMPLE_GIT_VERSION"
                 displayName: 'Get/Set Version using NBGV'
 
