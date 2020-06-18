@@ -84,7 +84,7 @@ stages:
   - stage: Publish
     displayName: 'Publish'
     variables:
-      versionTag: $(build.buildNumber)
+      versionTag: $(GitBuildVersion)
     jobs:
       - job: Publish_Chart
         displayName: 'Publish Fake Survey Generator API Chart'
@@ -195,7 +195,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(build.buildNumber)
+                    --version $(GitBuildVersion)
                     --set identityProviderUrl=$(testEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
                     --set databaseServer=$(testEnvDatabaseServer)
@@ -210,7 +210,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(build.buildNumber)
+                    --set image.tag=$(GitBuildVersion)
                     --set database=$(testEnvDatabase)
                     --set user=$(testEnvDatabaseUser)
                     --set password=$(testEnvDatabasePassword)
@@ -294,7 +294,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(build.buildNumber)
+                    --version $(GitBuildVersion)
                     --set identityProviderUrl=$(prodEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled)
                     --set databaseServer=$(prodEnvDatabaseServer)
@@ -309,7 +309,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(prodEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(prodEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(build.buildNumber)
+                    --set image.tag=$(GitBuildVersion)
                     --set database=$(prodEnvDatabase)
                     --set user=$(prodEnvDatabaseUser)
                     --set password=$(prodEnvDatabasePassword)
