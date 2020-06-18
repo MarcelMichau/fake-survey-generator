@@ -84,16 +84,13 @@ stages:
   - stage: Publish
     displayName: 'Publish'
     variables:
-      versionTag: $(GitBuildVersionSimple)
+      versionTag: $[nbgv get-version -v SimpleVersion]
     jobs:
       - job: Publish_Chart
         displayName: 'Publish Fake Survey Generator API Chart'
         pool:
           vmImage: 'ubuntu-latest'
         steps:
-              - script: echo "##vso[task.setvariable variable=versionTag]nbgv get-version -v SimpleVersion"
-                displayName: 'Get/Set Version using NBGV'
-
               - task: HelmInstaller@1
                 inputs:
                   helmVersionToInstall: '3.2.4'
