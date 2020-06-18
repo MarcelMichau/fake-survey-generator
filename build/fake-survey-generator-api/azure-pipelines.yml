@@ -28,7 +28,7 @@ stages:
         variables:
           buildConfiguration: 'Release'
           imageName: fakesurveygeneratorapi
-          versionTag: $(build.buildNumber)
+          versionTag: $(GitBuildVersion)
 
         steps:
         - task: UseDotNet@2
