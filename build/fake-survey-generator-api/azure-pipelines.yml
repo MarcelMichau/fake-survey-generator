@@ -2,6 +2,21 @@ trigger:
   branches:
     include:
     - master
+  paths:
+    include:
+    - src/server/FakeSurveyGenerator.API/*
+    - src/server/FakeSurveyGenerator.API.Tests.Integration/*
+    - src/server/FakeSurveyGenerator.Domain/*
+    - src/server/FakeSurveyGenerator.Domain.Tests/*
+    - src/server/FakeSurveyGenerator.EF.Design/*
+    - src/server/FakeSurveyGenerator.Infrastructure/*
+    - charts/fake-survey-generator-api/*
+    - build/fake-survey-generator-api/*
+
+pr:
+  branches:
+    include:
+    - master
     - feat/*
     - fix/*
     - chore/*
@@ -94,13 +109,6 @@ stages:
                 inputs:
                   packageType: 'sdk'
                   useGlobalJson: true
-
-              - task: DotNetCoreCLI@2  
-                inputs:
-                  command: custom
-                  custom: tool
-                  arguments: install --tool-path . nbgv --version 3.2.7-beta
-                displayName: Install NBGV tool
 
               - script: | 
                   SIMPLE_GIT_VERSION=$(nbgv get-version -v SimpleVersion)
