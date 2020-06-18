@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Domain.Exceptions
 {
-    public class SurveyDomainException : Exception
+    public sealed class SurveyDomainException : Exception
     {
         public SurveyDomainException()
         { }

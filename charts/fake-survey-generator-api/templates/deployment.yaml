@@ -31,16 +31,30 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "fake-survey-generator-api.fullname" . }}
+            {{- if .Values.azureKeyVaultEnabled }}
+            - secretRef:
+                name: azure-key-vault-secret
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /health/live
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /health/ready
               port: http
+            initialDelaySeconds: 30
+            periodSeconds: 60
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.azureKeyVaultEnabled }}
+          volumeMounts:
+          - name: azure-key-vault-secrets-store
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -52,4 +66,15 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if .Values.azureKeyVaultEnabled }}
+      volumes:
+        - name: azure-key-vault-secrets-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "azure-key-vault-secret-provider-class"
+            nodePublishSecretRef:
+              name: secrets-store-creds
     {{- end }}

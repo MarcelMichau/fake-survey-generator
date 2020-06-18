@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace FakeSurveyGenerator.API.Builders.Swagger
 {
-    public class AuthorizeOperationFilter : IOperationFilter
+    public sealed class AuthorizeOperationFilter : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {

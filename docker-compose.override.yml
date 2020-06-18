@@ -3,7 +3,7 @@ version: "3.7"
 services:
   fake-survey-generator-ui:
     ports:
-      - "30000:443"
+      - "3000:443"
     volumes:
       - ./src/client/ui/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certs/localhost-key.pem:/certs/localhost-key.pem:ro

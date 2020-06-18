@@ -33,6 +33,7 @@ namespace FakeSurveyGenerator.API
             services.AddApplicationServicesConfiguration(_configuration);
             services.AddAuthenticationConfiguration(_configuration);
             services.AddForwardedHeadersConfiguration();
+            services.AddApplicationInsightsConfiguration(_configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

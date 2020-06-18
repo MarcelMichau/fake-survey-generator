@@ -20,7 +20,8 @@ namespace FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered
         public async Task<Result<bool>> Handle(IsUserRegisteredQuery request, CancellationToken cancellationToken)
         {
             var isUserRegistered =
-                await _surveyContext.Users.AnyAsync(user => user.ExternalUserId == request.UserId, cancellationToken);
+                await _surveyContext.Users.AsNoTracking()
+                    .AnyAsync(user => user.ExternalUserId == request.UserId, cancellationToken);
 
             return Result.Success(isUserRegistered);
         }

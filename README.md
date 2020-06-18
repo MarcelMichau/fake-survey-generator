@@ -43,6 +43,8 @@ It also includes some examples that typical real-world applications might need t
 - Deploying a microservice application to Kubernetes using Helm charts
 - Local Kubernetes development using Skaffold
 - Using Azure Pipelines to Build & Deploy a microservice application to Azure Kubernetes Service
+- Using Azure Key Vault with Azure Kubernetes Service to protect sensitive application configuration
+- Configuring Azure Application Insights for logging & monitoring application logs
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
 
@@ -133,6 +135,8 @@ The hosted version utilizes the following:
 - Azure SQL Database
 - Azure Redis Cache
 - Azure Container Registry
+- Azure Key Vault
+- Azure Application Insights
 - Docker Hub
 - Azure DevOps Services (for CI/CD)
 

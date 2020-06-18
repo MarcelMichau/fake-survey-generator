@@ -4,11 +4,11 @@ using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public sealed class StatsControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
+    public sealed class AdminControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
     {
         private readonly HttpClient _client;
 
-        public StatsControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
+        public AdminControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
         {
             _client = factory.CreateClient();
         }
@@ -16,7 +16,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         [Fact]
         public async Task Get_Should_Return_Ok()
         {
-            var response = await _client.GetAsync("/api/stats/ping");
+            var response = await _client.GetAsync("/api/admin/ping");
             response.EnsureSuccessStatusCode();
         }
     }

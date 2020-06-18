@@ -27,13 +27,11 @@ namespace FakeSurveyGenerator.Application.Users.Queries.GetUser
         public async Task<Result<UserModel, Error>> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
             var user = await _surveyContext.Users
+                .AsNoTracking()
                 .ProjectTo<UserModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
 
-            if (user == null)
-                return Result.Failure<UserModel, Error>(Errors.General.NotFound(nameof(User), request.Id));
-
-            return Result.Success<UserModel, Error>(user);
+            return user == null ? Result.Failure<UserModel, Error>(Errors.General.NotFound(nameof(User), request.Id)) : Result.Success<UserModel, Error>(user);
         }
     }
 }

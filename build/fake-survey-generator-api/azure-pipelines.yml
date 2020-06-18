@@ -93,7 +93,7 @@ stages:
         steps:
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.3'
+                  helmVersionToInstall: '3.2.4'
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
@@ -150,7 +150,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.3'
+                  helmVersionToInstall: '3.2.4'
                 displayName: 'Install Helm'
 
               - task: AzureCLI@1
@@ -194,7 +194,35 @@ stages:
                   chartType: 'Name'
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
-                  arguments: '--version $(build.buildNumber) --set identityProviderUrl=$(testEnvIdentityProviderUrl) --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled) --set databaseServer=$(testEnvDatabaseServer) --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled) --set redisUrl=$(testEnvRedisServer) --set redisPassword=$(testEnvRedisPassword) --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(testEnvDatabase) --set user=$(testEnvDatabaseUser) --set password=$(testEnvDatabasePassword) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(testEnvReplicaCount)'
+                  arguments: >-
+                    --version $(build.buildNumber)
+                    --set identityProviderUrl=$(testEnvIdentityProviderUrl)
+                    --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
+                    --set databaseServer=$(testEnvDatabaseServer)
+                    --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled)
+                    --set redisUrl=$(testEnvRedisServer)
+                    --set redisPassword=$(testEnvRedisPassword)
+                    --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase)
+                    --set azureApplicationInsightsEnabled=$(testEnvAzureApplicationInsightsEnabled)
+                    --set azureKeyVaultEnabled=$(testEnvAzureKeyVaultEnabled)
+                    --set azureKeyVaultName=$(testEnvAzureKeyVaultName)
+                    --set azureKeyVaultResourceGroup=$(testEnvAzureKeyVaultResourceGroup)
+                    --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
+                    --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
+                    --set image.repository=$(imageRepository)
+                    --set image.tag=$(build.buildNumber)
+                    --set database=$(testEnvDatabase)
+                    --set user=$(testEnvDatabaseUser)
+                    --set password=$(testEnvDatabasePassword)
+                    --set ingress.hosts[0].host=$(testEnvIngressHost)
+                    --set ingress.hosts[0].paths[0]=/api
+                    --set ingress.hosts[0].paths[1]=/swagger
+                    --set ingress.hosts[0].paths[2]=/health
+                    --set ingress.tls[0].secretName=$(ingressTlsSecretName)
+                    --set ingress.tls[0].hosts={$(ingressHost)}
+                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName)
+                    --set replicaCount=$(testEnvReplicaCount)
+                  
 
   - stage: Production_Deployment
     displayName: 'Production Deployment'
@@ -221,7 +249,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.3'
+                  helmVersionToInstall: '3.2.4'
                 displayName: 'Install Helm'
 
               - task: AzureCLI@1
@@ -265,6 +293,34 @@ stages:
                   chartType: 'Name'
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
-                  arguments: '--version $(build.buildNumber) --set identityProviderUrl=$(prodEnvIdentityProviderUrl) --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled) --set databaseServer=$(prodEnvDatabaseServer) --set azureRedisCacheEnabled=$(prodEnvAzureRedisCacheEnabled) --set redisUrl=$(prodEnvRedisServer) --set redisPassword=$(prodEnvRedisPassword) --set redisDefaultDatabase=$(prodEnvRedisDefaultDatabase) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set database=$(prodEnvDatabase) --set user=$(prodEnvDatabaseUser) --set password=$(prodEnvDatabasePassword) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.hosts[0].paths[0]=/api --set ingress.hosts[0].paths[1]=/swagger --set ingress.hosts[0].paths[2]=/health --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(prodEnvReplicaCount)'
+                  arguments: >-
+                    --version $(build.buildNumber)
+                    --set identityProviderUrl=$(prodEnvIdentityProviderUrl)
+                    --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled)
+                    --set databaseServer=$(prodEnvDatabaseServer)
+                    --set azureRedisCacheEnabled=$(prodEnvAzureRedisCacheEnabled)
+                    --set redisUrl=$(prodEnvRedisServer)
+                    --set redisPassword=$(prodEnvRedisPassword)
+                    --set redisDefaultDatabase=$(prodEnvRedisDefaultDatabase)
+                    --set azureApplicationInsightsEnabled=$(prodEnvAzureApplicationInsightsEnabled)
+                    --set azureKeyVaultEnabled=$(prodEnvAzureKeyVaultEnabled)
+                    --set azureKeyVaultName=$(prodEnvAzureKeyVaultName)
+                    --set azureKeyVaultResourceGroup=$(prodEnvAzureKeyVaultResourceGroup)
+                    --set azureKeyVaultSubscriptionId=$(prodEnvAzureKeyVaultSubscriptionId)
+                    --set azureKeyVaultTenantId=$(prodEnvAzureKeyVaultTenantId)
+                    --set image.repository=$(imageRepository)
+                    --set image.tag=$(build.buildNumber)
+                    --set database=$(prodEnvDatabase)
+                    --set user=$(prodEnvDatabaseUser)
+                    --set password=$(prodEnvDatabasePassword)
+                    --set ingress.hosts[0].host=$(prodEnvIngressHost)
+                    --set ingress.hosts[0].paths[0]=/api
+                    --set ingress.hosts[0].paths[1]=/swagger
+                    --set ingress.hosts[0].paths[2]=/health
+                    --set ingress.tls[0].secretName=$(ingressTlsSecretName)
+                    --set ingress.tls[0].hosts={$(ingressHost)}
+                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName)
+                    --set replicaCount=$(prodEnvReplicaCount)
+                  
 
   

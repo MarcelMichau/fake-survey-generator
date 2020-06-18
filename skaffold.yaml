@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta3
+apiVersion: skaffold/v2beta4
 kind: Config
 build:
   artifacts:
@@ -17,15 +17,17 @@ deploy:
     releases:
       - name: fake-survey-generator-ui
         chartPath: ./charts/fake-survey-generator-ui
-        values:
+        artifactOverrides:
           image: marcelmichau/fakesurveygeneratorui
         namespace: default
         imageStrategy:
           helm: {}
       - name: fake-survey-generator-api
         chartPath: ./charts/fake-survey-generator-api
-        values:
+        artifactOverrides:
           image: marcelmichau/fakesurveygeneratorapi
+        valuesFiles:
+          - skaffold-overrides/fake-survey-generator-api/local-values.yaml
         namespace: default
         imageStrategy:
           helm: {}
