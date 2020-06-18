@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Worker
 {
-    public class Worker : BackgroundService
+    internal sealed class Worker : BackgroundService
     {
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;

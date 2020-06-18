@@ -345,9 +345,12 @@ healthchecksdb
 # Helm pre-built charts
 charts/**/*.tgz
 
-#Test results
+# Test results
 tests-results
 
-#mkcert local development certs
+# mkcert local development certs
 certs/localhost.pem
 certs/localhost-key.pem
+
+# Local Skaffold Overrides
+skaffold-overrides

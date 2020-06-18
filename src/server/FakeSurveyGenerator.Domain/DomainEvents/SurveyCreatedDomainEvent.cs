@@ -4,7 +4,7 @@ using MediatR;
 
 namespace FakeSurveyGenerator.Domain.DomainEvents
 {
-    public class SurveyCreatedDomainEvent : INotification
+    public sealed class SurveyCreatedDomainEvent : INotification
     {
         public Survey Survey { get; }
 

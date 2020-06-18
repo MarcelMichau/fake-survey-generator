@@ -9,7 +9,7 @@ using FakeSurveyGenerator.Domain.Services;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
-    public class Survey : AuditableEntity, IAggregateRoot
+    public sealed class Survey : AuditableEntity, IAggregateRoot
     {
         public User Owner { get; }
         public NonEmptyString Topic { get; }

@@ -1,5 +1,8 @@
 ﻿using System;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
@@ -11,9 +14,6 @@ namespace FakeSurveyGenerator.API
         internal static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .CreateLogger();
 
@@ -36,7 +36,21 @@ namespace FakeSurveyGenerator.API
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog() 
+                .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
+                {
+                    loggerConfiguration
+                        .MinimumLevel.Debug()
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                        .Enrich.FromLogContext()
+                        .WriteTo.Console();
+
+                    if (!string.IsNullOrWhiteSpace(hostBuilderContext.Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY")))
+                    {
+                        loggerConfiguration.WriteTo.ApplicationInsights(
+                            services.GetRequiredService<TelemetryConfiguration>(),
+                            TelemetryConverter.Traces);
+                    }
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

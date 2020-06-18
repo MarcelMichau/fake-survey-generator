@@ -44,6 +44,10 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
                 .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
 
             builder
+                .HasIndex(u => u.ExternalUserId)
+                .IsUnique();
+
+            builder
                 .HasMany(u => u.OwnedSurveys)
                 .WithOne(s => s.Owner)
                 .IsRequired();

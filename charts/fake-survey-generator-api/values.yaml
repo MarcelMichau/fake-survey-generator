@@ -11,7 +11,13 @@ azureRedisCacheEnabled: false
 redisUrl: redis
 redisPassword: testing
 redisDefaultDatabase: 0
-identityProviderUrl: https://identity.k8s.local
+identityProviderUrl: ""
+azureApplicationInsightsEnabled: false # This can only be enabled when azureKeyVaultEnabled is true, as the instrumentation key is stored in Key Vault
+azureKeyVaultEnabled: false
+azureKeyVaultName: ""
+azureKeyVaultResourceGroup: ""
+azureKeyVaultSubscriptionId: ""
+azureKeyVaultTenantId: ""
 
 replicaCount: 1
 
