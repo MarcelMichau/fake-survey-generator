@@ -28,7 +28,7 @@ stages:
         variables:
           buildConfiguration: 'Release'
           imageName: fakesurveygeneratorapi
-          versionTag: $(GitBuildVersion)
+          versionTag: $(GitBuildVersionSimple)
 
         steps:
         - task: UseDotNet@2
@@ -84,7 +84,7 @@ stages:
   - stage: Publish
     displayName: 'Publish'
     variables:
-      versionTag: $(GitBuildVersion)
+      versionTag: $(GitBuildVersionSimple)
     jobs:
       - job: Publish_Chart
         displayName: 'Publish Fake Survey Generator API Chart'
@@ -195,7 +195,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(GitBuildVersion)
+                    --version $(GitBuildVersionSimple)
                     --set identityProviderUrl=$(testEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
                     --set databaseServer=$(testEnvDatabaseServer)
@@ -210,7 +210,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(GitBuildVersion)
+                    --set image.tag=$(GitBuildVersionSimple)
                     --set database=$(testEnvDatabase)
                     --set user=$(testEnvDatabaseUser)
                     --set password=$(testEnvDatabasePassword)
@@ -294,7 +294,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(GitBuildVersion)
+                    --version $(GitBuildVersionSimple)
                     --set identityProviderUrl=$(prodEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled)
                     --set databaseServer=$(prodEnvDatabaseServer)
@@ -309,7 +309,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(prodEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(prodEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(GitBuildVersion)
+                    --set image.tag=$(GitBuildVersionSimple)
                     --set database=$(prodEnvDatabase)
                     --set user=$(prodEnvDatabaseUser)
                     --set password=$(prodEnvDatabasePassword)
