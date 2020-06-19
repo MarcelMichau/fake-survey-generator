@@ -173,7 +173,7 @@ stages:
         variables:
           azureSqlServer: 'marcel-michau-sql.database.windows.net'    
           databaseLogin: 'azure-pipelines-user-test'
-        environment: 'test.azure-sql'
+        environment: 'azure-sql-test'
         strategy:
           runOnce:
             deploy:
@@ -289,7 +289,7 @@ stages:
         variables:
           azureSqlServer: 'marcel-michau-sql.database.windows.net'    
           databaseLogin: 'azure-pipelines-user-prod'
-        environment: 'prod.azure-sql'
+        environment: 'azure-sql-prod'
         strategy:
           runOnce:
             deploy:
