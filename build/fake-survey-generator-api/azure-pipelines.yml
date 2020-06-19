@@ -111,6 +111,7 @@ stages:
                   useGlobalJson: true
 
               - script: |
+                  chmod +x nbgv
                   ./nbgv cloud -a
                 displayName: 'Get/Set Version using NBGV'
 
