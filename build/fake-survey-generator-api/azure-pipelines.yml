@@ -141,7 +141,7 @@ stages:
                 inputs:
                   command: 'package'
                   chartPath: 'charts/$(projectName)'
-                  chartVersion: $(GIT_VERSION)
+                  chartVersion: $(VersionTag)
                   save: false
                 displayName: 'Helm Package'
 
@@ -163,7 +163,7 @@ stages:
                 inputs:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(GIT_VERSION).tgz'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
   - stage: Test_Database_Deployment
@@ -370,7 +370,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(NBGV_SimpleVersion)
+                    --version $(VersionTag)
                     --set identityProviderUrl=$(prodEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled)
                     --set databaseServer=$(prodEnvDatabaseServer)
@@ -385,7 +385,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(prodEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(prodEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(NBGV_SimpleVersion)
+                    --set image.tag=$(VersionTag)
                     --set database=$(prodEnvDatabase)
                     --set user=$(prodEnvDatabaseUser)
                     --set password=$(prodEnvDatabasePassword)
