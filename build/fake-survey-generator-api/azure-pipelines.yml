@@ -111,8 +111,7 @@ stages:
                   useGlobalJson: true
 
               - script: |
-                  chmod +x ./nbgv.exe
-                  ./nbgv.exe cloud -a
+                  ./nbgv cloud -a
                 displayName: 'Get/Set Version using NBGV'
 
               - task: HelmInstaller@1
