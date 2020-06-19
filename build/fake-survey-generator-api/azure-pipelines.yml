@@ -117,6 +117,9 @@ stages:
                   arguments: install --tool-path . nbgv --version 3.2.7-beta
                 displayName: Install NBGV tool
 
+              - script: ./nbgv cloud -a
+                displayName: Set Version
+
               - task: HelmInstaller@1
                 inputs:
                   helmVersionToInstall: '3.2.4'
