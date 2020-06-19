@@ -154,6 +154,16 @@ stages:
                   inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(NBGV_SimpleVersion).tgz'
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
+              - script: |
+                  ./nbgv get-version -v SimpleVersion > version.txt
+                displayName: 'Create Version file'
+    
+              - task: PublishPipelineArtifact@1
+                inputs:
+                  targetPath: 'version.txt'
+                  artifact: 'VersionFile'
+                displayName: 'Publish Version File'
+
   - stage: Test_Deployment
     displayName: 'Test Deployment'
     jobs:
@@ -174,18 +184,9 @@ stages:
           runOnce:
             deploy:
               steps:
-              # - task: UseDotNet@2
-              #   displayName: 'Install .NET Core SDK'
-              #   inputs:
-              #     packageType: 'sdk'
-              #     useGlobalJson: true
-
-              # - task: DotNetCoreCLI@2  
-              #   inputs:
-              #     command: custom
-              #     custom: tool
-              #     arguments: install --tool-path . nbgv --version 3.2.7-beta
-              #   displayName: Install NBGV tool
+              - script: |
+                  VERSION_TAG=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                displayName: 'Set Version from Version File'
 
               - task: KubectlInstaller@0
                 displayName: 'Install Kubectl latest'
@@ -237,7 +238,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(NBGV_SimpleVersion)
+                    --version $(VERSION_TAG)
                     --set identityProviderUrl=$(testEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
                     --set databaseServer=$(testEnvDatabaseServer)
@@ -252,7 +253,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(NBGV_SimpleVersion)
+                    --set image.tag=$(VERSION_TAG)
                     --set database=$(testEnvDatabase)
                     --set user=$(testEnvDatabaseUser)
                     --set password=$(testEnvDatabasePassword)
