@@ -174,18 +174,18 @@ stages:
           runOnce:
             deploy:
               steps:
-              - task: UseDotNet@2
-                displayName: 'Install .NET Core SDK'
-                inputs:
-                  packageType: 'sdk'
-                  useGlobalJson: true
+              # - task: UseDotNet@2
+              #   displayName: 'Install .NET Core SDK'
+              #   inputs:
+              #     packageType: 'sdk'
+              #     useGlobalJson: true
 
-              - task: DotNetCoreCLI@2  
-                inputs:
-                  command: custom
-                  custom: tool
-                  arguments: install --tool-path . nbgv --version 3.2.7-beta
-                displayName: Install NBGV tool
+              # - task: DotNetCoreCLI@2  
+              #   inputs:
+              #     command: custom
+              #     custom: tool
+              #     arguments: install --tool-path . nbgv --version 3.2.7-beta
+              #   displayName: Install NBGV tool
 
               - task: KubectlInstaller@0
                 displayName: 'Install Kubectl latest'
