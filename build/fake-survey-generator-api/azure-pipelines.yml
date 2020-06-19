@@ -164,21 +164,45 @@ stages:
                   artifact: 'VersionFile'
                 displayName: 'Publish Version File'
 
-  - stage: Test_Deployment
-    displayName: 'Test Deployment'
+  - stage: Test_Database_Deployment
+    displayName: 'Test Database Deployment'
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator API
         pool:
           vmImage: 'windows-2019'
         variables:
+          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
+          databaseLogin: 'azure-pipelines-user-test'
+        environment: 'aks-test.test-env'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: SqlAzureDacpacDeployment@1
+                  displayName: 'Execute SQL Migration Script'
+                  inputs:
+                    azureSubscription: MyARMConnection
+                    ServerName: '$(testEnvDatabaseMigrationServer)'
+                    DatabaseName: '$(testEnvDatabase)'
+                    SqlUsername: '$(testEnvDatabaseAdminLogin)'
+                    SqlPassword: '$(testEnvDatabaseAdminPassword)'
+                    deployType: SqlTask
+                    SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'  
+
+  - stage: Test_Application_Deployment
+    displayName: 'Test Application Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
           environmentSuffix: test
           ingressClusterIssuerName: letsencrypt-prod
           ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           targetNamespace: test-env
-          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
-          databaseLogin: 'azure-pipelines-user-test'
         environment: 'aks-test.test-env'
         strategy:
           runOnce:
@@ -209,17 +233,6 @@ stages:
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az acr helm repo add'
                 displayName: 'Add Azure Container Registry Repo to Azure CLI'
-
-              - task: SqlAzureDacpacDeployment@1
-                displayName: 'Execute SQL Migration Script'
-                inputs:
-                  azureSubscription: MyARMConnection
-                  ServerName: '$(testEnvDatabaseMigrationServer)'
-                  DatabaseName: '$(testEnvDatabase)'
-                  SqlUsername: '$(testEnvDatabaseAdminLogin)'
-                  SqlPassword: '$(testEnvDatabaseAdminPassword)'
-                  deployType: SqlTask
-                  SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
 
               - task: Bash@3
                 inputs:
