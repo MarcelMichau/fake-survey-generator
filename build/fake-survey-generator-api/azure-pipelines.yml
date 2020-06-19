@@ -112,7 +112,7 @@ stages:
 
               - script: |
                   chmod +x nbgv
-                  ./nbgv cloud -a
+                  ./nbgv cloud
                 displayName: 'Get/Set Version using NBGV'
 
               - task: HelmInstaller@1
