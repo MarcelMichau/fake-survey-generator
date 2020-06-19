@@ -32,7 +32,6 @@ stages:
 
         variables:
           imageName: fakesurveygeneratorui
-          versionTag: $(GitBuildVersionSimple)
 
         steps:
         - task: UseDotNet@2
@@ -62,7 +61,7 @@ stages:
           displayName: 'Publish Version File'
 
         - script: |
-            docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
+            docker build -t $(dockerId)/$(imageName):$(NBGV_SimpleVersion) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
           displayName: 'Build Docker Image'
 
         - script: |
@@ -74,8 +73,6 @@ stages:
 
   - stage: Publish
     displayName: 'Publish'
-    variables:
-      versionTag: $(build.buildNumber)
     jobs:
       - job: Publish_Chart
         displayName: 'Publish Fake Survey Generator UI Chart'
