@@ -83,6 +83,8 @@ stages:
                 artifact: 'VersionFile'
 
               - script: |
+                  ls -a $(Pipeline.Workspace)
+                  ls -a $(Pipeline.Workspace)/VersionFile
                   GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
                   echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
                 displayName: 'Set Version from Version File'
