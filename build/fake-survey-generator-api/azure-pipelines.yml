@@ -124,11 +124,8 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
-              - task: DownloadPipelineArtifact@2
-                inputs:
-                  buildType: 'current'
-                  artifactName: 'VersionFile'
-                  targetPath: '$(Pipeline.Workspace)'
+              - download: 'current'
+                artifact: 'VersionFile'
 
               - script: |
                   GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
