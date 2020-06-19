@@ -52,6 +52,26 @@ stages:
             packageType: 'sdk'
             useGlobalJson: true
 
+        - task: DotNetCoreCLI@2  
+          inputs:
+            command: custom
+            custom: tool
+            arguments: install --tool-path . nbgv --version 3.2.7-beta
+          displayName: Install NBGV tool
+
+        - script: ./nbgv cloud -a
+          displayName: Set Version
+
+        - script: |
+            ./nbgv get-version -v SimpleVersion > version.txt
+          displayName: 'Create Version file'
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: 'version.txt'
+            artifact: 'VersionFile'
+          displayName: 'Publish Version File'
+
         - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
           displayName: 'Build Solution'
 
@@ -104,21 +124,10 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
-              - task: UseDotNet@2
-                displayName: 'Install .NET Core SDK'
-                inputs:
-                  packageType: 'sdk'
-                  useGlobalJson: true
-
-              - task: DotNetCoreCLI@2  
-                inputs:
-                  command: custom
-                  custom: tool
-                  arguments: install --tool-path . nbgv --version 3.2.7-beta
-                displayName: Install NBGV tool
-
-              - script: ./nbgv cloud -a
-                displayName: Set Version
+              - script: |
+                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                displayName: 'Set Version from Version File'
 
               - task: HelmInstaller@1
                 inputs:
@@ -129,7 +138,7 @@ stages:
                 inputs:
                   command: 'package'
                   chartPath: 'charts/$(projectName)'
-                  chartVersion: $(NBGV_SimpleVersion)
+                  chartVersion: $(GIT_VERSION)
                   save: false
                 displayName: 'Helm Package'
 
@@ -151,18 +160,8 @@ stages:
                 inputs:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(NBGV_SimpleVersion).tgz'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(GIT_VERSION).tgz'
                 displayName: 'Push Helm Chart to Azure Container Registry'
-
-              - script: |
-                  ./nbgv get-version -v SimpleVersion > version.txt
-                displayName: 'Create Version file'
-    
-              - task: PublishPipelineArtifact@1
-                inputs:
-                  targetPath: 'version.txt'
-                  artifact: 'VersionFile'
-                displayName: 'Publish Version File'
 
   - stage: Test_Database_Deployment
     displayName: 'Test Database Deployment'
@@ -174,7 +173,6 @@ stages:
         variables:
           azureSqlServer: 'marcel-michau-sql.database.windows.net'    
           databaseLogin: 'azure-pipelines-user-test'
-        environment: 'aks-test.test-env'
         strategy:
           runOnce:
             deploy:
@@ -279,28 +277,55 @@ stages:
                     --set ingress.tls[0].hosts={$(ingressHost)}
                     --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName)
                     --set replicaCount=$(testEnvReplicaCount)
-                  
-
-  - stage: Production_Deployment
-    displayName: 'Production Deployment'
+ 
+  - stage: Production_Database_Deployment
+    displayName: 'Production Database Deployment'
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator API
         pool:
           vmImage: 'windows-2019'
         variables:
+          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
+          databaseLogin: 'azure-pipelines-user-prod'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: SqlAzureDacpacDeployment@1
+                  displayName: 'Execute SQL Migration Script'
+                  inputs:
+                    azureSubscription: MyARMConnection
+                    ServerName: '$(prodEnvDatabaseMigrationServer)'
+                    DatabaseName: '$(prodEnvDatabase)'
+                    SqlUsername: '$(prodEnvDatabaseAdminLogin)'
+                    SqlPassword: '$(prodEnvDatabaseAdminPassword)'
+                    deployType: SqlTask
+                    SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'  
+
+  - stage: Production_Application_Deployment
+    displayName: 'Production Application Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
           environmentSuffix: prod
           ingressClusterIssuerName: letsencrypt-prod
           ingressHost: aks.fakesurveygenerator.marcelmichau.dev
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           targetNamespace: prod-env
-          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
-          databaseLogin: 'azure-pipelines-user-prod'
         environment: 'aks-prod.prod-env'
         strategy:
           runOnce:
             deploy:
               steps:
+              - script: |
+                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                displayName: 'Set Version from Version File'
+
               - task: KubectlInstaller@0
                 displayName: 'Install Kubectl latest'
 
@@ -322,17 +347,6 @@ stages:
                   scriptLocation: 'inlineScript'
                   inlineScript: 'az acr helm repo add'
                 displayName: 'Add Azure Container Registry Repo to Azure CLI'
-
-              - task: SqlAzureDacpacDeployment@1
-                displayName: 'Execute SQL Migration Script'
-                inputs:
-                  azureSubscription: MyARMConnection
-                  ServerName: '$(prodEnvDatabaseMigrationServer)'
-                  DatabaseName: '$(prodEnvDatabase)'
-                  SqlUsername: '$(prodEnvDatabaseAdminLogin)'
-                  SqlPassword: '$(prodEnvDatabaseAdminPassword)'
-                  deployType: SqlTask
-                  SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
 
               - task: Bash@3
                 inputs:
