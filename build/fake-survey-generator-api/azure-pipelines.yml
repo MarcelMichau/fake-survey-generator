@@ -126,7 +126,7 @@ stages:
                 inputs:
                   command: 'package'
                   chartPath: 'charts/$(projectName)'
-                  chartVersion: '$(./nbgv get-version -v SimpleVersion)'
+                  chartVersion: $(NBGV_SimpleVersion)
                   save: false
                 displayName: 'Helm Package'
 
@@ -148,7 +148,7 @@ stages:
                 inputs:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(./nbgv get-version -v SimpleVersion).tgz'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(NBGV_SimpleVersion).tgz'
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
   - stage: Test_Deployment
@@ -234,7 +234,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(./nbgv get-version -v SimpleVersion)
+                    --version $(NBGV_SimpleVersion)
                     --set identityProviderUrl=$(testEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
                     --set databaseServer=$(testEnvDatabaseServer)
@@ -249,7 +249,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(./nbgv get-version -v SimpleVersion)
+                    --set image.tag=$(NBGV_SimpleVersion)
                     --set database=$(testEnvDatabase)
                     --set user=$(testEnvDatabaseUser)
                     --set password=$(testEnvDatabasePassword)
@@ -333,7 +333,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
-                    --version $(GitBuildVersionSimple)
+                    --version $(NBGV_SimpleVersion)
                     --set identityProviderUrl=$(prodEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(prodEnvAzureDatabaseEnabled)
                     --set databaseServer=$(prodEnvDatabaseServer)
@@ -348,7 +348,7 @@ stages:
                     --set azureKeyVaultSubscriptionId=$(prodEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(prodEnvAzureKeyVaultTenantId)
                     --set image.repository=$(imageRepository)
-                    --set image.tag=$(GitBuildVersionSimple)
+                    --set image.tag=$(NBGV_SimpleVersion)
                     --set database=$(prodEnvDatabase)
                     --set user=$(prodEnvDatabaseUser)
                     --set password=$(prodEnvDatabasePassword)
