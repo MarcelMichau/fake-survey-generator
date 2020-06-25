@@ -43,7 +43,7 @@ stages:
         variables:
           buildConfiguration: 'Release'
           imageName: fakesurveygeneratorapi
-          versionTag: $(GitBuildVersionSimple)
+          versionTag: $(SemVer1)
 
         steps:
         - task: UseDotNet@2
@@ -64,7 +64,7 @@ stages:
           displayName: Set Version
 
         - script: |
-            ./nbgv get-version -v SimpleVersion > version.txt
+            ./nbgv get-version -v SemVer1 > version.txt
           workingDirectory: src/server
           displayName: 'Create Version file'
 
