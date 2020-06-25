@@ -43,7 +43,6 @@ stages:
         variables:
           buildConfiguration: 'Release'
           imageName: fakesurveygeneratorapi
-          versionTag: $(SemVer1)
 
         steps:
         - task: UseDotNet@2
@@ -108,7 +107,7 @@ stages:
           displayName: 'Publish Database Migration Script'
 
         - script: |
-            docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
+            docker build -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
           displayName: 'Build Docker Image'
 
         - script: |
