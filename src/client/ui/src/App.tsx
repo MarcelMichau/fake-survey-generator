@@ -3,6 +3,7 @@ import { useAuth0 } from "./react-auth0-spa";
 import Auth from "./Auth";
 import CreateSurvey from "./components/CreateSurvey";
 import GetSurvey from "./components/GetSurvey";
+import VersionInfo from "./components/VersionInfo";
 import * as Types from "./types";
 
 const App: React.FC = () => {
@@ -163,6 +164,7 @@ const App: React.FC = () => {
             </div>
             <div style={{ textAlign: "center" }}>
                 <h1>Fake Survey Generator</h1>
+                <VersionInfo></VersionInfo>
                 {errorMessage !== "" && (
                     <p style={errorStyle}>{errorMessage}</p>
                 )}

@@ -1,6 +1,6 @@
 {
   "name": "fake-survey-generator-ui",
-  "version": "3.0.0",
+  "version": "3.0.5",
   "private": true,
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.10.0",
@@ -16,9 +16,13 @@
     "react-scripts": "3.4.1",
     "typescript": "^3.9.5"
   },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "nerdbank-gitversioning": "^3.2.7-beta"
+  },
   "scripts": {
-    "start": "set HTTPS=true&&react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env HTTPS=true node start.mjs",
+    "build": "node build.mjs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

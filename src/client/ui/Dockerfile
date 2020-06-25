@@ -3,6 +3,7 @@ WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/yarn.lock ./
 RUN yarn
 COPY src/client/ui/. ./
+COPY ./.git /.git
 RUN chmod +x node_modules/.bin/react-scripts
 RUN yarn build
 
