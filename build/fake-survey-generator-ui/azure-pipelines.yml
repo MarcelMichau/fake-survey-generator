@@ -2,6 +2,16 @@ trigger:
   branches:
     include:
     - master
+  paths:
+    include:
+    - src/client/ui/*
+    - charts/fake-survey-generator-ui/*
+    - build/fake-survey-generator-ui/*
+
+pr:
+  branches:
+    include:
+    - master
     - feat/*
     - fix/*
     - chore/*
@@ -21,13 +31,39 @@ stages:
           vmImage: 'ubuntu-latest'
 
         variables:
-          buildConfiguration: 'Release'
           imageName: fakesurveygeneratorui
-          versionTag: $(build.buildNumber)
 
         steps:
+        - task: UseDotNet@2
+          displayName: 'Install .NET Core SDK'
+          inputs:
+            packageType: 'sdk'
+            useGlobalJson: true
+
+        - task: DotNetCoreCLI@2  
+          inputs:
+            command: custom
+            custom: tool
+            arguments: install --tool-path ./src/client/ui nbgv --version 3.2.7-beta
+          displayName: Install NBGV tool
+
+        - script: ./nbgv cloud -a
+          workingDirectory: src/client/ui
+          displayName: Set Version
+
         - script: |
-            docker build -t $(dockerId)/$(imageName):$(versionTag) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
+            ./nbgv get-version -v SimpleVersion > version.txt
+          workingDirectory: src/client/ui
+          displayName: 'Create Version file'
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: 'src/client/ui/version.txt'
+            artifact: 'VersionFile'
+          displayName: 'Publish Version File'
+
+        - script: |
+            docker build -t $(dockerId)/$(imageName):$(NBGV_SimpleVersion) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
           displayName: 'Build Docker Image'
 
         - script: |
@@ -39,14 +75,20 @@ stages:
 
   - stage: Publish
     displayName: 'Publish'
-    variables:
-      versionTag: $(build.buildNumber)
     jobs:
       - job: Publish_Chart
         displayName: 'Publish Fake Survey Generator UI Chart'
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+              - download: 'current'
+                artifact: 'VersionFile'
+
+              - script: |
+                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                displayName: 'Set Version from Version File'
+
               - task: HelmInstaller@1
                 inputs:
                   helmVersionToInstall: '3.2.4'
@@ -56,7 +98,7 @@ stages:
                 inputs:
                   command: 'package'
                   chartPath: 'charts/$(projectName)'
-                  chartVersion: '$(versionTag)'
+                  chartVersion: '$(VersionTag)'
                   save: false
                 displayName: 'Helm Package'
 
@@ -78,7 +120,7 @@ stages:
                 inputs:
                   azureSubscription: 'MyARMConnection'
                   scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
   - stage: Test_Deployment
@@ -100,6 +142,11 @@ stages:
           runOnce:
             deploy:
               steps:
+              - script: |
+                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                displayName: 'Set Version from Version File'
+
               - task: KubectlInstaller@0
                 displayName: 'Install Kubectl latest'
 
@@ -132,7 +179,16 @@ stages:
                   chartType: 'Name'
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
-                  arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(testEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  arguments: >-
+                    --version $(VersionTag) 
+                    --set image.repository=$(imageRepository) 
+                    --set image.tag=$(VersionTag) 
+                    --set ingress.hosts[0].host=$(testEnvIngressHost) 
+                    --set ingress.hosts[0].paths[0]=/ 
+                    --set ingress.tls[0].secretName=$(ingressTlsSecretName) 
+                    --set ingress.tls[0].hosts={$(ingressHost)} 
+                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) 
+                    --set replicaCount=$(replicaCount)
 
   - stage: Production_Deployment
     displayName: 'Production Deployment'
@@ -153,6 +209,11 @@ stages:
           runOnce:
             deploy:
               steps:
+              - script: |
+                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                displayName: 'Set Version from Version File'
+
               - task: KubectlInstaller@0
                 displayName: 'Install Kubectl latest'
 
@@ -185,4 +246,13 @@ stages:
                   chartType: 'Name'
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
-                  arguments: '--version $(build.buildNumber) --set image.repository=$(imageRepository) --set image.tag=$(build.buildNumber) --set ingress.hosts[0].host=$(prodEnvIngressHost) --set ingress.hosts[0].paths[0]=/ --set ingress.tls[0].secretName=$(ingressTlsSecretName) --set ingress.tls[0].hosts={$(ingressHost)} --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) --set replicaCount=$(replicaCount)'
+                  arguments: >-
+                    --version $(VersionTag) 
+                    --set image.repository=$(imageRepository) 
+                    --set image.tag=$(VersionTag) 
+                    --set ingress.hosts[0].host=$(prodEnvIngressHost) 
+                    --set ingress.hosts[0].paths[0]=/ 
+                    --set ingress.tls[0].secretName=$(ingressTlsSecretName) 
+                    --set ingress.tls[0].hosts={$(ingressHost)} 
+                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) 
+                    --set replicaCount=$(replicaCount)

@@ -19,7 +19,7 @@ namespace FakeSurveyGenerator.API.Builders.Swagger
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Fake Survey Generator API",
-                    Version = "v1",
+                    Version = ThisAssembly.AssemblyFileVersion,
                     Description = "This is an API. That generates surveys. Fake ones. For fun. That is all.",
                     License = new OpenApiLicense
                     {

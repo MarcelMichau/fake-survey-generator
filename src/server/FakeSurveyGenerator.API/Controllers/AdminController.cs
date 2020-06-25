@@ -13,6 +13,24 @@ namespace FakeSurveyGenerator.API.Controllers
         }
 
         /// <summary>
+        /// Returns API version information
+        /// </summary>
+        [HttpGet("version")]
+        public IActionResult Version()
+        {
+            return Ok(new
+            {
+                ThisAssembly.AssemblyVersion,
+                ThisAssembly.AssemblyFileVersion,
+                ThisAssembly.AssemblyInformationalVersion,
+                ThisAssembly.AssemblyName,
+                ThisAssembly.AssemblyTitle,
+                ThisAssembly.AssemblyConfiguration,
+                ThisAssembly.RootNamespace
+            });
+        }
+
+        /// <summary>
         /// Returns a 200 OK Result. Used for testing network latency and as a sanity check
         /// </summary>
         [HttpGet("ping")]
