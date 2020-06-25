@@ -39,12 +39,13 @@ It also includes some examples that typical real-world applications might need t
 - Implementing Forwarded Headers for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using FluentValidation
 - Deploying Entity Framework Core Code-First Migrations to Azure SQL Server using Azure Pipelines
-- Run a microservice application using Docker Compose
+- Running a microservice application using Docker Compose
 - Deploying a microservice application to Kubernetes using Helm charts
 - Local Kubernetes development using Skaffold
 - Using Azure Pipelines to Build & Deploy a microservice application to Azure Kubernetes Service
 - Using Azure Key Vault with Azure Kubernetes Service to protect sensitive application configuration
 - Configuring Azure Application Insights for telemetry
+- Automatic semantic versioning using Nerdbank.GitVersioning
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
 
