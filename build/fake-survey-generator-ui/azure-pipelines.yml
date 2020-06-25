@@ -52,7 +52,7 @@ stages:
           displayName: Set Version
 
         - script: |
-            ./nbgv get-version -v SimpleVersion > version.txt
+            ./nbgv get-version -v SemVer1 > version.txt
           workingDirectory: src/client/ui
           displayName: 'Create Version file'
 
@@ -63,7 +63,7 @@ stages:
           displayName: 'Publish Version File'
 
         - script: |
-            docker build -t $(dockerId)/$(imageName):$(NBGV_SimpleVersion) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
+            docker build -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
           displayName: 'Build Docker Image'
 
         - script: |
