@@ -1,13 +1,12 @@
 ﻿using System;
 using FakeSurveyGenerator.Application.Common.Persistence;
-using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.Infrastructure.Builders
+namespace FakeSurveyGenerator.Infrastructure.Persistence
 {
-    internal static class DatabaseBuilder
+    internal static class DatabaseServiceCollectionExtensions
     {
         public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services,
             IConfiguration configuration)

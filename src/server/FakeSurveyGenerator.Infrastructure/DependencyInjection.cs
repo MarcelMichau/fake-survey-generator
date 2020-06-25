@@ -1,8 +1,9 @@
 ﻿using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Notifications;
-using FakeSurveyGenerator.Infrastructure.Builders;
+using FakeSurveyGenerator.Infrastructure.Caching;
 using FakeSurveyGenerator.Infrastructure.Identity;
 using FakeSurveyGenerator.Infrastructure.Notifications;
+using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

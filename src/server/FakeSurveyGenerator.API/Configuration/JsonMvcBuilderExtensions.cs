@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.API.Configuration
 {
-    internal static class JsonBuilder
+    internal static class JsonMvcBuilderExtensions
     {
         public static IMvcBuilder AddJsonConfiguration(this IMvcBuilder builder)
         {

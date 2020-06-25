@@ -4,9 +4,9 @@ using FakeSurveyGenerator.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.API.Configuration
 {
-    internal static class ApplicationServicesBuilder
+    internal static class ApplicationServicesServiceCollectionExtensions
     {
         public static IServiceCollection AddApplicationServicesConfiguration(this IServiceCollection services,
             IConfiguration configuration)

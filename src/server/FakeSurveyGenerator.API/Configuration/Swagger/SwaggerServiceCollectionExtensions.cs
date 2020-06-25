@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace FakeSurveyGenerator.API.Builders.Swagger
+namespace FakeSurveyGenerator.API.Configuration.Swagger
 {
-    internal static class SwaggerBuilder
+    internal static class SwaggerServiceCollectionExtensions
     {
         public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services,
             IConfiguration configuration)

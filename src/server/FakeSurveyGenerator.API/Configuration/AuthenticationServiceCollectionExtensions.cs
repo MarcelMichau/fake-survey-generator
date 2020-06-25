@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.API.Configuration
 {
-    internal static class AuthenticationBuilder
+    internal static class AuthenticationServiceCollectionExtensions
     {
         public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services,
             IConfiguration configuration)
@@ -49,7 +49,7 @@ namespace FakeSurveyGenerator.API.Builders
             {
                 var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
-                if (!httpContext.User.Identity.IsAuthenticated)
+                if (httpContext.User.Identity != null && !httpContext.User.Identity.IsAuthenticated)
                     throw new InvalidOperationException("Cannot retrieve a token for an unauthorized user");
 
                 var accessToken = httpContext.Request.Headers[HeaderNames.Authorization].ToString().Substring(7);

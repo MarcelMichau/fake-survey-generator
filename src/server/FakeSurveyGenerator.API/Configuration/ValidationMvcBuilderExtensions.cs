@@ -2,9 +2,9 @@
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.API.Configuration
 {
-    internal static class ValidationBuilder
+    internal static class ValidationMvcBuilderExtensions
     {
         public static IMvcBuilder AddValidationConfiguration(this IMvcBuilder builder)
         {

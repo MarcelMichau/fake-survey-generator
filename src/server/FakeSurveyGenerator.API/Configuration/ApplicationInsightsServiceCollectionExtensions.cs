@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.API.Configuration
 {
-    internal static class ApplicationInsightsBuilder
+    internal static class ApplicationInsightsServiceCollectionExtensions
     {
         public static IServiceCollection AddApplicationInsightsConfiguration(this IServiceCollection services,
             IConfiguration configuration)

@@ -8,9 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.API.Configuration
 {
-    internal static class HealthChecksBuilder
+    internal static class HealthChecksConfigurationExtensions
     {
         public static IServiceCollection AddHealthChecksConfiguration(this IServiceCollection services,
             IConfiguration configuration)

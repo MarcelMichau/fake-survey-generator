@@ -1,6 +1,6 @@
 ﻿using AutoWrapper;
-using FakeSurveyGenerator.API.Builders;
-using FakeSurveyGenerator.API.Builders.Swagger;
+using FakeSurveyGenerator.API.Configuration;
+using FakeSurveyGenerator.API.Configuration.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

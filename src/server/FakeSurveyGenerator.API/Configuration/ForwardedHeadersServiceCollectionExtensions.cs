@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.API.Builders
+namespace FakeSurveyGenerator.API.Configuration
 {
-    internal static class ForwardedHeadersBuilder
+    internal static class ForwardedHeadersServiceCollectionExtensions
     {
         public static IServiceCollection AddForwardedHeadersConfiguration(this IServiceCollection services)
         {

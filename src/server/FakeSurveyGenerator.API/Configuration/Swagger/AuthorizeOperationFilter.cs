@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace FakeSurveyGenerator.API.Builders.Swagger
+namespace FakeSurveyGenerator.API.Configuration.Swagger
 {
     public sealed class AuthorizeOperationFilter : IOperationFilter
     {
