@@ -56,19 +56,21 @@ stages:
           inputs:
             command: custom
             custom: tool
-            arguments: install --tool-path . nbgv --version 3.2.7-beta
+            arguments: install --tool-path ./src/server nbgv --version 3.2.7-beta
           displayName: Install NBGV tool
 
         - script: ./nbgv cloud -a
+          workingDirectory: src/server
           displayName: Set Version
 
         - script: |
             ./nbgv get-version -v SimpleVersion > version.txt
+          workingDirectory: src/server
           displayName: 'Create Version file'
 
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: 'version.txt'
+            targetPath: 'src/server/version.txt'
             artifact: 'VersionFile'
           displayName: 'Publish Version File'
 
