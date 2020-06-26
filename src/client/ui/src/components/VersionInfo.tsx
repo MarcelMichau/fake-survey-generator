@@ -26,7 +26,7 @@ const VersionInfo = () => {
 
             {isLoading ? (
                 <div>
-                    <small>Loading API Version...</small>{" "}
+                    <small>Loading API Version...</small>
                 </div>
             ) : (
                 <div>
