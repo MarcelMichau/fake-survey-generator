@@ -11,6 +11,23 @@ export type ResponseException = {
     exceptionMessage: ExceptionMessage;
 };
 
+export type ApiVersionModel = {
+    assemblyVersion: string;
+    assemblyFileVersion: string;
+    assemblyInformationalVersion: string;
+    assemblyName: string;
+    assemblyTitle: string;
+    assemblyConfiguration: string;
+    rootNamespace: string;
+};
+
+export type ApiVersionResponse = {
+    message: string;
+    result: ApiVersionModel;
+    isError: boolean;
+    responseException: ResponseException;
+};
+
 export type SurveyResponse = {
     message: string;
     result: SurveyModel;
