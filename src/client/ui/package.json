@@ -17,12 +17,11 @@
     "typescript": "^3.9.5"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
-    "nerdbank-gitversioning": "^3.2.7-beta"
+    "cross-env": "^7.0.2"
   },
   "scripts": {
-    "start": "cross-env HTTPS=true node start.mjs",
-    "build": "node build.mjs",
+    "start": "cross-env HTTPS=true react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

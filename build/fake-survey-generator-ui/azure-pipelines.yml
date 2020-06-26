@@ -63,7 +63,7 @@ stages:
           displayName: 'Publish Version File'
 
         - script: |
-            docker build -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
+            docker build --build-arg REACT_APP_VERSION=$(NBGV_SemVer1) -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
           displayName: 'Build Docker Image'
 
         - script: |

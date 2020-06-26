@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: src/client/ui/Dockerfile
+      args:
+        REACT_APP_VERSION: latest
     depends_on:
       - fake-survey-generator-api
 
