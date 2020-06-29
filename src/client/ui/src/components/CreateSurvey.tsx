@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import * as Types from "../types";
+import Field from "./Field";
+import Button from "./Button";
 
 type CreateSurveyProps = {
     onCreateSurvey: (command: Types.CreateSurveyCommand) => Promise<void>;
@@ -51,97 +53,56 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
     };
 
     return (
-        <div>
-            <form onSubmit={onSubmit} className="pure-form">
-                <label>
-                    Target Audience (Respondent Type)
-                    <div>
-                        <input
-                            style={{ margin: "1em auto", color: "black" }}
-                            type="text"
-                            value={respondentType}
-                            onChange={(e) => setRespondentType(e.target.value)}
-                        />
-                    </div>
-                </label>
-                <label>
-                    Question (Survey Topic)
-                    <div>
-                        <input
-                            style={{ margin: "1em auto", color: "black" }}
-                            type="text"
-                            value={topic}
-                            onChange={(e) => setTopic(e.target.value)}
-                        />
-                    </div>
-                </label>
-                <label>
-                    Number of Respondents
-                    <div>
-                        <input
-                            style={{ margin: "1em auto", color: "black" }}
-                            type="text"
-                            value={numberOfRespondents}
-                            onChange={(e) =>
-                                setNumberOfRespondents(
-                                    Number.isNaN(Number(e.target.value))
-                                        ? numberOfRespondents
-                                        : Number(e.target.value)
-                                )
-                            }
-                        />
-                    </div>
-                </label>
-
-                <span>Options</span>
-
+        <div className="dark:bg-gray-800 rounded px-8 pt-6 pb-8 mb-4">
+            <h2 className="dark:text-teal-600 text-xl font-semibold tracking-tight mb-2">
+                Create Survey
+            </h2>
+            <form onSubmit={onSubmit}>
+                <Field
+                    label="Target Audience (Respondent Type)"
+                    value={respondentType}
+                    onChange={(value) => setRespondentType(value)}
+                />
+                <Field
+                    label="Question (Survey Topic)"
+                    value={topic}
+                    onChange={(value) => setTopic(value)}
+                />
+                <Field
+                    label="Number of Respondents"
+                    value={numberOfRespondents}
+                    onChange={(value) =>
+                        setNumberOfRespondents(
+                            Number.isNaN(Number(value))
+                                ? numberOfRespondents
+                                : Number(value)
+                        )
+                    }
+                />
+                <span className="block text-gray-500 text-sm">Options</span>
                 {options.map((option) => (
                     <div key={option.id}>
-                        <label>
-                            #{option.id}
-                            <div>
-                                <input
-                                    style={{
-                                        margin: "1em auto",
-                                        color: "black",
-                                    }}
-                                    type="text"
-                                    value={option.optionText}
-                                    onChange={(e) =>
-                                        updateOption(option.id, e.target.value)
-                                    }
-                                />
-                            </div>
-                        </label>
+                        <Field
+                            label={`#${option.id}`}
+                            value={option.optionText}
+                            onChange={(value) => updateOption(option.id, value)}
+                        />
                     </div>
                 ))}
-
-                <div>
-                    <button
-                        style={{
-                            margin: "1em",
-                            background: "rgb(28, 184, 65)",
-                            color: "white",
-                        }}
-                        className="pure-button"
-                        type="button"
+                <div className="my-2 float-right">
+                    <Button
+                        text="+ Add Option"
                         onClick={() =>
                             setOptions([
                                 ...options,
                                 { id: options.length + 1, optionText: "" },
                             ] as Types.SurveyOptionModel[])
                         }
-                    >
-                        + Add Option
-                    </button>
+                    />
                 </div>
-
-                <button
-                    className="pure-button pure-button-primary"
-                    type="submit"
-                >
-                    Create Survey
-                </button>
+                <div className="my-2">
+                    <Button type="submit" text="Create Survey" />
+                </div>
             </form>
         </div>
     );

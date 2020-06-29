@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:6523",
+      "applicationUrl": "http://localhost:5000",
       "sslPort": 44367
     }
   },
@@ -16,8 +16,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
-        "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
-        "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",
         "REDIS_PASSWORD": "testing",
         "REDIS_SSL": "false",
         "REDIS_URL": "redis",
@@ -32,8 +30,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
-        "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
-        "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:5001/health/ready",
         "REDIS_PASSWORD": "testing",
         "REDIS_SSL": "false",
         "REDIS_URL": "redis",
@@ -51,8 +47,6 @@
         "ASPNETCORE_HTTPS_PORT": "44300",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0",
-        "HealthChecksUI__HealthChecks__0__Name": "httpBasic",
-        "HealthChecksUI__HealthChecks__0__Uri": "https://localhost:44367/health/ready",
         "REDIS_PASSWORD": "testing",
         "REDIS_SSL": "false",
         "REDIS_URL": "redis",

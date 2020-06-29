@@ -1,7 +1,7 @@
 import React from "react";
-import { useAuth0 } from "./react-auth0-spa";
+import { useAuth0 } from "../react-auth0-spa";
 
-const Auth = () => {
+const AuthButton = () => {
     const {
         isAuthenticated,
         loginWithRedirect,
@@ -11,16 +11,11 @@ const Auth = () => {
     } = useAuth0();
 
     return (
-        <div>
+        <span>
             {loading && (
                 <button
-                    style={{
-                        margin: "1em",
-                        background: "rgb(28, 184, 65)",
-                        color: "white",
-                    }}
                     disabled
-                    className="pure-button"
+                    className="inline-block cursor-not-allowed text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                     type="button"
                     onClick={() => loginWithRedirect({})}
                 >
@@ -30,12 +25,7 @@ const Auth = () => {
 
             {!isAuthenticated && !loading && (
                 <button
-                    style={{
-                        margin: "1em",
-                        background: "rgb(28, 184, 65)",
-                        color: "white",
-                    }}
-                    className="pure-button"
+                    className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                     type="button"
                     onClick={() => loginWithRedirect({})}
                 >
@@ -45,20 +35,15 @@ const Auth = () => {
 
             {isAuthenticated && !loading && (
                 <button
-                    style={{
-                        margin: "1em",
-                        background: "rgb(28, 184, 65)",
-                        color: "white",
-                    }}
-                    className="pure-button"
+                    className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
                     type="button"
                     onClick={() => logout()}
                 >
                     Log out ({user.name})
                 </button>
             )}
-        </div>
+        </span>
     );
 };
 
-export default Auth;
+export default AuthButton;

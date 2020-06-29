@@ -44,12 +44,12 @@ namespace FakeSurveyGenerator.API
                         .Enrich.FromLogContext()
                         .WriteTo.Console();
 
-                    if (!string.IsNullOrWhiteSpace(hostBuilderContext.Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY")))
-                    {
-                        loggerConfiguration.WriteTo.ApplicationInsights(
-                            services.GetRequiredService<TelemetryConfiguration>(),
-                            TelemetryConverter.Traces);
-                    }
+                    //if (!string.IsNullOrWhiteSpace(hostBuilderContext.Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY")))
+                    //{
+                    //    loggerConfiguration.WriteTo.ApplicationInsights(
+                    //        services.GetRequiredService<TelemetryConfiguration>(),
+                    //        TelemetryConverter.Traces);
+                    //}
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
   fake-survey-generator-ui:
@@ -15,15 +15,13 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=44367
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - HealthChecksUI__HealthChecks__0__Name=httpBasic
-      - HealthChecksUI__HealthChecks__0__Uri=http://fakesurveygeneratorapi/health/ready
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
       - REDIS_URL=redis
       - REDIS_DEFAULT_DATABASE=0
       - IDENTITY_PROVIDER_URL=https://marcelmichau.eu.auth0.com/
     ports:
-      - "6523:80"
+      - "5000:80"
       - "44367:443"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
@@ -43,4 +41,4 @@ services:
 
   redis:
     ports:
-      - "6379:6379"
+      - "63790:6379"

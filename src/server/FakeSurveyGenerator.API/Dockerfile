@@ -18,8 +18,11 @@ COPY src/server/. .
 WORKDIR /src/FakeSurveyGenerator.API
 RUN dotnet build FakeSurveyGenerator.API.csproj -c Release -o /app
 
-FROM build AS unittest
+FROM build AS domaintest
 WORKDIR /src/FakeSurveyGenerator.Domain.Tests
+
+FROM build AS applicationtest
+WORKDIR /src/FakeSurveyGenerator.Application.Tests
 
 FROM build AS integrationtest
 WORKDIR /src/FakeSurveyGenerator.API.Tests.Integration

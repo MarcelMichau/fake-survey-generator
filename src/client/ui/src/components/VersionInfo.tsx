@@ -20,19 +20,17 @@ const VersionInfo = () => {
 
     return (
         <>
-            <div>
-                <small>UI Version: {process.env.REACT_APP_VERSION}</small>
-            </div>
+            <span className="block mt-4 lg:inline-block lg:mt-0 text-white mr-4">
+                UI Version: {process.env.REACT_APP_VERSION}
+            </span>
 
-            {isLoading ? (
-                <div>
-                    <small>Loading API Version...</small>
-                </div>
-            ) : (
-                <div>
-                    <small>API Version: {apiVersion.assemblyFileVersion}</small>
-                </div>
-            )}
+            <span className="block mt-4 lg:inline-block lg:mt-0 text-white">
+                {isLoading ? (
+                    <span>Loading API Version...</span>
+                ) : (
+                    <span>API Version: {apiVersion.assemblyFileVersion}</span>
+                )}
+            </span>
         </>
     );
 };

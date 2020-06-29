@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "./react-auth0-spa";
-import Auth from "./Auth";
+import NavBar from "./components/NavBar";
 import CreateSurvey from "./components/CreateSurvey";
 import GetSurvey from "./components/GetSurvey";
-import VersionInfo from "./components/VersionInfo";
+import Splash from "./components/Splash";
 import * as Types from "./types";
 
 const App: React.FC = () => {
@@ -11,7 +11,7 @@ const App: React.FC = () => {
     const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
     const [errorMessage, setErrorMessage] = useState("");
     const [validationErrors, setValidationErrors] = useState([] as string[]);
-    const { getTokenSilently, user, isAuthenticated } = useAuth0();
+    const { getTokenSilently, user, isAuthenticated, loading } = useAuth0();
 
     const registerUser = async () => {
         const token = await getTokenSilently();
@@ -158,32 +158,36 @@ const App: React.FC = () => {
     };
 
     return (
-        <div>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Auth></Auth>
-            </div>
-            <div style={{ textAlign: "center" }}>
-                <h1>Fake Survey Generator</h1>
-                <VersionInfo></VersionInfo>
-                {errorMessage !== "" && (
-                    <p style={errorStyle}>{errorMessage}</p>
-                )}
-                <h2>Get Survey</h2>
-                <GetSurvey
-                    surveyId={surveyId}
-                    onUpdateSurveyId={(value: number) => setSurveyId(value)}
-                    onFetch={() => fetchSurvey(surveyId)}
-                    surveyDetail={surveyDetail}
-                />
-                <div style={{ margin: "2em" }}>---- ¯\_(ツ)_/¯ ----</div>
-                <h2>Create Survey</h2>
-                <CreateSurvey onCreateSurvey={createSurvey} />
-                <div style={errorStyle}>
-                    {validationErrors.map((error, index) => (
-                        <p key={index}>{error}</p>
-                    ))}
+        <div className="dark:bg-gray-900 h-screen">
+            <NavBar></NavBar>
+
+            {isAuthenticated && !loading && (
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <CreateSurvey onCreateSurvey={createSurvey} />
+                        <div style={errorStyle}>
+                            {validationErrors.map((error, index) => (
+                                <p key={index}>{error}</p>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        {errorMessage !== "" && (
+                            <p style={errorStyle}>{errorMessage}</p>
+                        )}
+                        <GetSurvey
+                            surveyId={surveyId}
+                            onUpdateSurveyId={(value: number) =>
+                                setSurveyId(value)
+                            }
+                            onFetch={() => fetchSurvey(surveyId)}
+                            surveyDetail={surveyDetail}
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {!isAuthenticated && !loading && <Splash></Splash>}
         </div>
     );
 };
