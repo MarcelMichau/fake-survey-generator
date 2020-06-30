@@ -19,7 +19,13 @@ const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
     const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
     const [errorMessage, setErrorMessage] = useState("");
 
+    const resetMessage = (): void => {
+        setErrorMessage("");
+    };
+
     const fetchSurvey = async (surveyId: number) => {
+        resetMessage();
+
         const token = await getTokenSilently();
 
         const response = await fetch(`/api/survey/${surveyId}`, {
@@ -32,6 +38,7 @@ const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
 
         if (data.isError) {
             setErrorMessage(data.responseException.exceptionMessage.detail);
+            setSurveyDetail({} as Types.SurveyModel);
             return;
         }
 
