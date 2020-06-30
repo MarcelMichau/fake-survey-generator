@@ -1,5 +1,7 @@
 import React from "react";
 import { SurveyModel } from "../types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 
 type SurveyResultProps = {
     surveyDetail: SurveyModel;
@@ -12,7 +14,7 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => (
                 <p className="whitespace-pre text-sm text-gray-500 flex items-center">
                     This Survey Asked
                     <span> </span>
-                    <span className="font-bold dark:text-teal-600">
+                    <span className="font-bold dark:text-indigo-500">
                         {surveyDetail.numberOfRespondents}
                         <span> </span>
                         {surveyDetail.respondentType}
@@ -50,6 +52,7 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => (
             </div>
             <div className="text-sm">
                 <p className="text-gray-500">
+                    <FontAwesomeIcon icon={faCalendarAlt} className="mr-2" />
                     {new Intl.DateTimeFormat("en-ZA", {
                         weekday: "long",
                         year: "numeric",

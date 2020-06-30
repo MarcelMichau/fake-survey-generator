@@ -5,6 +5,8 @@ import * as Types from "../types";
 import Field from "./Field";
 import Button from "./Button";
 import Alert from "./Alert";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 type CreateSurveyProps = {
     loading: boolean;
@@ -158,7 +160,6 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                     ))}
                     <div className="my-2 float-right">
                         <Button
-                            text="+ Add Option"
                             onClick={() =>
                                 setOptions([
                                     ...options,
@@ -166,14 +167,19 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                                 ] as Types.SurveyOptionModel[])
                             }
                             loading={loading}
-                        />
+                        >
+                            Add Option{" "}
+                            <FontAwesomeIcon icon={faPlus} className="ml-1" />
+                        </Button>
                     </div>
                     <div className="my-2">
-                        <Button
-                            type="submit"
-                            text="Create Survey"
-                            loading={loading}
-                        />
+                        <Button type="submit" loading={loading}>
+                            Create Survey{" "}
+                            <FontAwesomeIcon
+                                icon={faPaperPlane}
+                                className="ml-1"
+                            />
+                        </Button>
                     </div>
                 </form>
                 <div>

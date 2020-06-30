@@ -1,5 +1,5 @@
 import React from "react";
-import illustration from "../assets/undraw_customer_survey_f9ur.svg";
+import { ReactComponent as Illustration } from "../assets/undraw_customer_survey_f9ur.svg";
 
 const Splash = () => (
     <div className="container mx-auto px-5">
@@ -15,7 +15,7 @@ const Splash = () => (
             </p>
         </div>
         <div className="flex justify-center my-3 md:my-6 lg:my-10 xl:my-12">
-            <img src={illustration} alt="Survey Illustration" />
+            <Illustration className="h-64"></Illustration>
         </div>
         <div className="flex justify-center mt-6">
             <p className="dark:text-white text-md">

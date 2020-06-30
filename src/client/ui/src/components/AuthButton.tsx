@@ -1,5 +1,7 @@
 import React from "react";
 import { useAuth0 } from "../react-auth0-spa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignInAlt, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 const AuthButton = () => {
     const {
@@ -29,7 +31,8 @@ const AuthButton = () => {
                     type="button"
                     onClick={() => loginWithRedirect({})}
                 >
-                    Log in / Register
+                    Log in / Register{" "}
+                    <FontAwesomeIcon icon={faSignInAlt} className="ml-2" />
                 </button>
             )}
 
@@ -39,7 +42,8 @@ const AuthButton = () => {
                     type="button"
                     onClick={() => logout()}
                 >
-                    Log out ({user.name})
+                    Log out ({user.name}){" "}
+                    <FontAwesomeIcon icon={faSignOutAlt} className="ml-2" />
                 </button>
             )}
         </span>

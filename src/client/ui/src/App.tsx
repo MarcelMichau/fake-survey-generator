@@ -5,6 +5,7 @@ import CreateSurvey from "./components/CreateSurvey";
 import GetSurvey from "./components/GetSurvey";
 import Splash from "./components/Splash";
 import Alert from "./components/Alert";
+import Footer from "./components/Footer";
 import * as Types from "./types";
 
 const App: React.FC = () => {
@@ -67,27 +68,32 @@ const App: React.FC = () => {
     }, [isAuthenticated, user]);
 
     return (
-        <div>
-            <NavBar />
-            {!isAuthenticated && !loading ? (
-                <Splash />
-            ) : (
-                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <CreateSurvey loading={loading} />
+        <div className="flex flex-col h-full">
+            <div className="flex-1">
+                <NavBar />
+                {!isAuthenticated && !loading ? (
+                    <Splash />
+                ) : (
+                    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <CreateSurvey loading={loading} />
+                        </div>
+                        <div>
+                            <GetSurvey loading={loading} />
+                            {errorMessage !== "" && (
+                                <Alert
+                                    type="error"
+                                    title="Oh no! Something did not go as planned."
+                                    message={errorMessage}
+                                ></Alert>
+                            )}
+                        </div>
                     </div>
-                    <div>
-                        <GetSurvey loading={loading} />
-                        {errorMessage !== "" && (
-                            <Alert
-                                type="error"
-                                title="Oh no! Something did not go as planned."
-                                message={errorMessage}
-                            ></Alert>
-                        )}
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
+            <div className="flex-shrink-0">
+                <Footer />
+            </div>
         </div>
     );
 };

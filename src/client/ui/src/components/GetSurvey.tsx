@@ -6,6 +6,8 @@ import Field from "./Field";
 import Button from "./Button";
 import Alert from "./Alert";
 import SurveyResult from "./SurveyResult";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export type GetSurveyProps = {
     loading: boolean;
@@ -68,11 +70,10 @@ const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
                             loading={loading}
                         />
                     </div>
-                    <Button
-                        text="Get Survey"
-                        onClick={submitForm}
-                        loading={loading}
-                    />
+                    <Button onClick={submitForm} loading={loading}>
+                        Get Survey
+                        <FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
+                    </Button>
                 </form>
 
                 {surveyDetail.id > 0 && (

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import AuthButton from "./AuthButton";
 import VersionInfo from "./VersionInfo";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPollH } from "@fortawesome/free-solid-svg-icons";
 
 const NavBar = () => {
     const [collapsed, setCollapsed] = useState(true);
@@ -10,6 +12,7 @@ const NavBar = () => {
             <div className="flex items-center flex-shrink-0 text-white mr-6">
                 <span className="font-semibold text-xl tracking-tight">
                     Fake Survey Generator
+                    <FontAwesomeIcon icon={faPollH} className="ml-2" />
                 </span>
             </div>
             <div className="block lg:hidden">
