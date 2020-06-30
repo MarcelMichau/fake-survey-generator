@@ -6,7 +6,7 @@ const NavBar = () => {
     const [collapsed, setCollapsed] = useState(true);
 
     return (
-        <nav className="flex items-center justify-between flex-wrap bg-teal-500 p-6">
+        <nav className="flex items-center justify-between flex-wrap bg-indigo-600 p-6">
             <div className="flex items-center flex-shrink-0 text-white mr-6">
                 <span className="font-semibold text-xl tracking-tight">
                     Fake Survey Generator
@@ -14,7 +14,7 @@ const NavBar = () => {
             </div>
             <div className="block lg:hidden">
                 <button
-                    className="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
+                    className="flex items-center px-3 py-2 border rounded text-indigo-200 border-indigo-400 hover:text-white hover:border-white"
                     onClick={() => setCollapsed(!collapsed)}
                 >
                     <svg
@@ -35,19 +35,19 @@ const NavBar = () => {
                 <div className="text-sm lg:flex-grow">
                     <a
                         href="/swagger"
-                        className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                        className="block mt-4 lg:inline-block lg:mt-0 text-indigo-200 hover:text-white mr-4"
                     >
                         API Swagger
                     </a>
                     <a
                         href="/health/ready"
-                        className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                        className="block mt-4 lg:inline-block lg:mt-0 text-indigo-200 hover:text-white mr-4"
                     >
                         Health Check
                     </a>
                     <a
                         href="https://github.com/MarcelMichau/fake-survey-generator"
-                        className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+                        className="block mt-4 lg:inline-block lg:mt-0 text-indigo-200 hover:text-white mr-4"
                     >
                         GitHub Repo
                     </a>

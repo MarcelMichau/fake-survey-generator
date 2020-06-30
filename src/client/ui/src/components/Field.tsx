@@ -14,7 +14,7 @@ type FieldProps<T extends FieldValue> = {
 function Field<T extends FieldValue>(props: FieldProps<T>) {
     return (
         <SkeletonTheme color="#2d3748" highlightColor="#a0aec0">
-            <label className="block text-gray-400 text-sm">
+            <label className="block text-gray-400">
                 {props.loading ? (
                     <Skeleton width={250} className="block" />
                 ) : (
