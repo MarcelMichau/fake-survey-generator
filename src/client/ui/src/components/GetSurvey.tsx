@@ -1,110 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useAuth0 } from "../react-auth0-spa";
 import * as Types from "../types";
 import Field from "./Field";
 import Button from "./Button";
+import Alert from "./Alert";
+import SurveyResult from "./SurveyResult";
 
-const GetSurvey: React.FC<Types.GetSurveyProps> = ({
-    surveyId,
-    onUpdateSurveyId,
-    onFetch,
-    surveyDetail,
-}) => {
+export type GetSurveyProps = {
+    loading: boolean;
+};
+
+const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
+    const { getTokenSilently } = useAuth0();
+    const [surveyId, setSurveyId] = useState(0);
+    const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const fetchSurvey = async (surveyId: number) => {
+        const token = await getTokenSilently();
+
+        const response = await fetch(`/api/survey/${surveyId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const data: Types.SurveyResponse = await response.json();
+
+        if (data.isError) {
+            setErrorMessage(data.responseException.exceptionMessage.detail);
+            return;
+        }
+
+        const survey = data.result;
+
+        setSurveyDetail(survey);
+    };
+
+    const submitForm = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await fetchSurvey(surveyId);
+    };
+
     return (
-        <div className="dark:bg-gray-800 rounded px-8 pt-6 pb-8 mb-4">
-            <h2 className="dark:text-teal-600 text-xl font-semibold tracking-tight mb-2">
-                Get Survey
-            </h2>
-            <form>
-                <div className="mb-4">
-                    <Field
-                        label="Survey ID"
-                        value={surveyId}
-                        onChange={(value) =>
-                            onUpdateSurveyId(
-                                Number.isNaN(Number(value))
-                                    ? surveyId
-                                    : Number(value)
-                            )
-                        }
-                    />
-                </div>
-                <Button
-                    text="Get Survey"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        onFetch();
-                    }}
-                />
-            </form>
-
-            {surveyDetail.id > 0 && (
-                <div className="max-w-sm w-full lg:max-w-full lg:flex my-5">
-                    <div className="dark:bg-gray-900 border dark:border-gray-600 bg-white rounded p-4 flex flex-col justify-between leading-normal shadow-md">
-                        <div className="mb-8">
-                            <p className="whitespace-pre text-sm text-gray-500 flex items-center">
-                                This Survey Asked
-                                <span> </span>
-                                <span className="font-bold dark:text-teal-600">
-                                    {surveyDetail.numberOfRespondents}
-                                    <span> </span>
-                                    {surveyDetail.respondentType}
-                                </span>
-                                <span> </span>
-                                the Question:
-                            </p>
-                            <div className="text-gray-300 font-bold text-xl mb-2">
-                                {surveyDetail.topic}
-                            </div>
-                            <p className="text-sm text-gray-500 flex items-center mb-2">
-                                And the results were:
-                            </p>
-                            <div className="text-gray-500 text-base">
-                                {surveyDetail.options
-                                    .sort(
-                                        (x, y) =>
-                                            y.numberOfVotes - x.numberOfVotes
-                                    )
-                                    .map((option, index) => (
-                                        <p key={option.id} className="my-1">
-                                            <span className="mr-2">
-                                                #{index + 1})
-                                            </span>
-                                            <span>
-                                                <span>{option.optionText}</span>
-                                                <span
-                                                    className={`inline-block bg-${
-                                                        index === 0
-                                                            ? "green"
-                                                            : "orange"
-                                                    }-200 rounded-full px-3 py-1 text-sm font-semibold text-${
-                                                        index === 0
-                                                            ? "green"
-                                                            : "orange"
-                                                    }-700 mx-2`}
-                                                >
-                                                    {option.numberOfVotes} votes
-                                                </span>
-                                            </span>
-                                        </p>
-                                    ))}
-                            </div>
-                        </div>
-                        <div className="flex items-center">
-                            <div className="text-sm">
-                                <p className="text-gray-500">
-                                    {new Intl.DateTimeFormat("en-ZA", {
-                                        weekday: "long",
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                    }).format(new Date(surveyDetail.createdOn))}
-                                </p>
-                            </div>
-                        </div>
+        <SkeletonTheme color="#2d3748" highlightColor="#319795">
+            <div className="dark:bg-gray-800 rounded px-8 pt-6 pb-8 mb-4">
+                <h2 className="dark:text-teal-600 text-xl font-semibold tracking-tight mb-2">
+                    {loading ? (
+                        <Skeleton width={100} />
+                    ) : (
+                        <span>Get Survey</span>
+                    )}
+                </h2>
+                <form onSubmit={submitForm}>
+                    <div className="mb-4">
+                        <Field
+                            label="Survey ID"
+                            value={surveyId}
+                            onChange={(value) =>
+                                setSurveyId(
+                                    Number.isNaN(Number(value))
+                                        ? surveyId
+                                        : Number(value)
+                                )
+                            }
+                            loading={loading}
+                        />
                     </div>
-                </div>
-            )}
-        </div>
+                    <Button
+                        text="Get Survey"
+                        onClick={submitForm}
+                        loading={loading}
+                    />
+                </form>
+
+                {surveyDetail.id > 0 && (
+                    <SurveyResult surveyDetail={surveyDetail} />
+                )}
+                {errorMessage !== "" && (
+                    <Alert
+                        type="error"
+                        title="Oh no! Something did not go as planned."
+                        message={errorMessage}
+                    ></Alert>
+                )}
+            </div>
+        </SkeletonTheme>
     );
 };
 

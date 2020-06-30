@@ -72,13 +72,6 @@ export type SurveyOptionModel = {
     preferredNumberOfVotes: number;
 };
 
-export type GetSurveyProps = {
-    surveyId: number;
-    onUpdateSurveyId: (surveyId: number) => void;
-    onFetch: () => Promise<void>;
-    surveyDetail: SurveyModel;
-};
-
 export type CreateSurveyCommand = {
     surveyTopic: string;
     numberOfRespondents: number;
