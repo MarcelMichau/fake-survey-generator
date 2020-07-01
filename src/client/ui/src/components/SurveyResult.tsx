@@ -14,11 +14,13 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => {
                 <div className="mb-6">
                     <p className="text-sm text-gray-500 flex items-center">
                         This survey asked
-                        <span className="mx-1 font-bold dark:text-indigo-500">
-                            <span className="mx-1">
-                                {surveyDetail.numberOfRespondents}
+                        <span className="mx-1 font-bold">
+                            <span className="mx-1 dark:text-gray-400">
+                                {new Intl.NumberFormat().format(
+                                    surveyDetail.numberOfRespondents
+                                )}
                             </span>
-                            <span className="mx-1">
+                            <span className="mx-1 dark:text-indigo-500">
                                 {surveyDetail.respondentType}
                             </span>
                         </span>
@@ -49,7 +51,10 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => {
                                                     : "text-orange"
                                             }-700 mx-2`}
                                         >
-                                            {option.numberOfVotes} votes
+                                            {new Intl.NumberFormat().format(
+                                                option.numberOfVotes
+                                            )}{" "}
+                                            votes
                                         </span>
                                     </span>
                                 </p>
@@ -62,7 +67,7 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => {
                             icon={faCalendarAlt}
                             className="mr-2"
                         />
-                        {new Intl.DateTimeFormat("en-ZA", {
+                        {new Intl.DateTimeFormat("default", {
                             weekday: "long",
                             year: "numeric",
                             month: "long",
