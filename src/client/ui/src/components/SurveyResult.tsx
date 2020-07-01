@@ -13,18 +13,18 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => {
             <div className="dark:bg-gray-900 border dark:border-gray-600 bg-white rounded p-4 flex flex-col justify-between leading-normal shadow-md">
                 <div className="mb-6">
                     <p className="text-sm text-gray-500 flex items-center">
-                        This survey asked
-                        <span className="mx-1 font-bold">
-                            <span className="mx-1 dark:text-gray-400">
+                        <span>
+                            This survey asked{" "}
+                            <span className="font-bold dark:text-gray-400">
                                 {new Intl.NumberFormat().format(
                                     surveyDetail.numberOfRespondents
                                 )}
-                            </span>
-                            <span className="mx-1 dark:text-indigo-500">
+                            </span>{" "}
+                            <span className="font-bold dark:text-indigo-500">
                                 {surveyDetail.respondentType}
-                            </span>
+                            </span>{" "}
+                            the question:
                         </span>
-                        the question:
                     </p>
                     <div className="text-gray-300 font-bold text-xl mb-2">
                         {surveyDetail.topic}
