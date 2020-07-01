@@ -43,13 +43,13 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => {
                                         <span
                                             className={`inline-block ${
                                                 index === 0
-                                                    ? "bg-green"
-                                                    : "bg-orange"
-                                            }-200 rounded-full px-3 py-1 text-sm font-semibold ${
+                                                    ? "bg-green-200"
+                                                    : "bg-orange-200"
+                                            } rounded-full px-3 py-1 text-sm font-semibold ${
                                                 index === 0
-                                                    ? "text-green"
-                                                    : "text-orange"
-                                            }-700 mx-2`}
+                                                    ? "text-green-700"
+                                                    : "text-orange-700"
+                                            } mx-2`}
                                         >
                                             {new Intl.NumberFormat().format(
                                                 option.numberOfVotes
