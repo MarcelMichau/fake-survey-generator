@@ -9,11 +9,14 @@ type AlertProps = {
 };
 
 const Alert: React.FC<AlertProps> = ({ title, message, type = "success" }) => {
-    const colour = type === "success" ? "green" : "red";
+    const classes =
+        type === "success"
+            ? "bg-green-800 border-green-500"
+            : "bg-red-800 border-red-500";
 
     return (
         <div
-            className={`bg-${colour}-800 border border-${colour}-500 text-gray-200 px-4 py-3 my-4 rounded relative`}
+            className={`${classes} border text-gray-200 px-4 py-3 my-4 rounded relative`}
             role="alert"
         >
             <div>

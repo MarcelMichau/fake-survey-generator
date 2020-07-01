@@ -21,12 +21,21 @@ const Button: React.FC<ButtonProps> = ({
     actionType = "primary",
 }) => {
     const colourMap = {
-        primary: { value: "green", hexValue: "#48bb78" },
-        secondary: { value: "blue", hexValue: "#4299e1" },
-        destructive: { value: "red", hexValue: "#f56565" },
+        primary: {
+            classes: "bg-green-500 border-green-500 hover:bg-green-400",
+            hexValue: "#48bb78",
+        },
+        secondary: {
+            classes: "bg-blue-500 border-blue-500 hover:bg-blue-400",
+            hexValue: "#4299e1",
+        },
+        destructive: {
+            classes: "bg-red-500 border-red-500 hover:bg-red-400",
+            hexValue: "#f56565",
+        },
     };
 
-    const friendlyColour = colourMap[actionType].value;
+    const classes = colourMap[actionType].classes;
     const hexColour = colourMap[actionType].hexValue;
 
     return (
@@ -36,7 +45,7 @@ const Button: React.FC<ButtonProps> = ({
             ) : (
                 <button
                     type={type}
-                    className={`align-baseline px-4 py-2 border rounded text-white bg-${friendlyColour}-500 border-${friendlyColour}-500 hover:text-white hover:bg-${friendlyColour}-400`}
+                    className={`align-baseline px-4 py-2 border rounded text-white ${classes} hover:text-white`}
                     onClick={onClick}
                 >
                     {children}

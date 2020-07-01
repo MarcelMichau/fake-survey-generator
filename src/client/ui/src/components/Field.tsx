@@ -16,11 +16,7 @@ function Field<T extends FieldValue>(props: FieldProps<T>) {
     return (
         <SkeletonTheme color="#2d3748" highlightColor="#4a5568">
             <label className="block text-gray-400">
-                {props.loading ? (
-                    <Skeleton width={250} className="block" />
-                ) : (
-                    props.label
-                )}
+                {props.loading ? <Skeleton width={250} /> : props.label}
                 <div>
                     {props.loading ? (
                         <Skeleton height={38} className="py-2 mt-1 mb-3" />
