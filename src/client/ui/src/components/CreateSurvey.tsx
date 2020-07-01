@@ -6,7 +6,11 @@ import Field from "./Field";
 import Button from "./Button";
 import Alert from "./Alert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import {
+    faPlus,
+    faMinus,
+    faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 
 type CreateSurveyProps = {
     loading: boolean;
@@ -155,10 +159,28 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                                         ? "Most definitely tabs"
                                         : "Some other option"
                                 }
-                            />
+                            >
+                                <button
+                                    type="button"
+                                    className="align-baseline lg:ml-4 px-4 py-2 border rounded text-white bg-red-500 border-red-500 hover:text-white hover:bg-red-400"
+                                    onClick={() => {
+                                        setOptions([
+                                            ...options.filter(
+                                                (o) => o.id !== option.id
+                                            ),
+                                        ]);
+                                    }}
+                                >
+                                    {`Remove #${option.id}`}
+                                    <FontAwesomeIcon
+                                        icon={faMinus}
+                                        className="ml-1"
+                                    />
+                                </button>
+                            </Field>
                         </div>
                     ))}
-                    <div className="my-2 float-right">
+                    <div className="my-2">
                         <Button
                             onClick={() =>
                                 setOptions([
@@ -167,6 +189,7 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                                 ] as Types.SurveyOptionModel[])
                             }
                             loading={loading}
+                            actionType="secondary"
                         >
                             Add Option{" "}
                             <FontAwesomeIcon icon={faPlus} className="ml-1" />
