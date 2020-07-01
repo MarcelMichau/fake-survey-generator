@@ -652,6 +652,7 @@ module.exports = {
             "responsive",
             "hover",
             "focus",
+            "active",
             "dark",
             "dark-hover",
             "dark-group-hover",

@@ -3,7 +3,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAuth0 } from "../react-auth0-spa";
 import * as Types from "../types";
 import Field from "./Field";
-import Button from "./Button";
+import SkeletonButton from "./SkeletonButton";
 import Alert from "./Alert";
 import SurveyResult from "./SurveyResult";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -77,10 +77,10 @@ const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
                             loading={loading}
                         />
                     </div>
-                    <Button onClick={submitForm} loading={loading}>
+                    <SkeletonButton onClick={submitForm} loading={loading}>
                         Get Survey
                         <FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
-                    </Button>
+                    </SkeletonButton>
                 </form>
 
                 {surveyDetail.id > 0 && (

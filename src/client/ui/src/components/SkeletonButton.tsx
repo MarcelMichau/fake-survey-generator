@@ -1,10 +1,13 @@
 import React from "react";
+import Button from "./Button";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 type ButtonType = "button" | "submit";
 
 type ButtonActionType = "primary" | "secondary" | "destructive";
 
-type ButtonProps = {
+type SkeletonButtonProps = {
+    loading: boolean;
     type?: ButtonType;
     onClick?: (e: React.MouseEvent) => void;
     actionType?: ButtonActionType;
@@ -12,7 +15,8 @@ type ButtonProps = {
     children: React.ReactNode;
 };
 
-const Button: React.FC<ButtonProps> = ({
+const SkeletonButton: React.FC<SkeletonButtonProps> = ({
+    loading,
     type = "button",
     onClick,
     actionType = "primary",
@@ -34,18 +38,22 @@ const Button: React.FC<ButtonProps> = ({
         },
     };
 
-    const classes = colourMap[actionType].classes;
+    const hexColour = colourMap[actionType].hexValue;
 
     return (
-        <button
-            type={type}
-            className={`align-baseline px-4 py-2 rounded text-white ${classes} focus:shadow-outline ${additionalClasses.join(
-                " "
-            )}`}
-            onClick={onClick}
-        >
-            {children}
-        </button>
+        <SkeletonTheme color="#2d3748" highlightColor={hexColour}>
+            {loading ? (
+                <Skeleton height={40} width={150} className="px-4 py-2" />
+            ) : (
+                <Button
+                    type={type}
+                    onClick={onClick}
+                    actionType={actionType}
+                    additionalClasses={additionalClasses}
+                    children={children}
+                ></Button>
+            )}
+        </SkeletonTheme>
     );
 };
-export default Button;
+export default SkeletonButton;

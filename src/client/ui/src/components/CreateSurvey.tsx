@@ -4,6 +4,7 @@ import { useAuth0 } from "../react-auth0-spa";
 import * as Types from "../types";
 import Field from "./Field";
 import Button from "./Button";
+import SkeletonButton from "./SkeletonButton";
 import Alert from "./Alert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -160,28 +161,30 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                                         : "Some other option"
                                 }
                             >
-                                <button
-                                    type="button"
-                                    className="align-baseline lg:ml-4 px-4 py-2 border rounded text-white bg-red-500 border-red-500 hover:text-white hover:bg-red-400"
-                                    onClick={() => {
-                                        setOptions([
-                                            ...options.filter(
-                                                (o) => o.id !== option.id
-                                            ),
-                                        ]);
-                                    }}
-                                >
-                                    {`Remove #${option.id}`}
-                                    <FontAwesomeIcon
-                                        icon={faMinus}
-                                        className="ml-1"
-                                    />
-                                </button>
+                                {index > 0 && (
+                                    <Button
+                                        actionType="destructive"
+                                        onClick={() => {
+                                            setOptions([
+                                                ...options.filter(
+                                                    (o) => o.id !== option.id
+                                                ),
+                                            ]);
+                                        }}
+                                        additionalClasses={["lg:ml-4"]}
+                                    >
+                                        {`Remove #${option.id}`}
+                                        <FontAwesomeIcon
+                                            icon={faMinus}
+                                            className="ml-1"
+                                        />
+                                    </Button>
+                                )}
                             </Field>
                         </div>
                     ))}
                     <div className="my-2">
-                        <Button
+                        <SkeletonButton
                             onClick={() =>
                                 setOptions([
                                     ...options,
@@ -193,16 +196,16 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
                         >
                             Add Option{" "}
                             <FontAwesomeIcon icon={faPlus} className="ml-1" />
-                        </Button>
+                        </SkeletonButton>
                     </div>
                     <div className="my-2">
-                        <Button type="submit" loading={loading}>
+                        <SkeletonButton type="submit" loading={loading}>
                             Create Survey{" "}
                             <FontAwesomeIcon
                                 icon={faPaperPlane}
                                 className="ml-1"
                             />
-                        </Button>
+                        </SkeletonButton>
                     </div>
                 </form>
                 <div>
