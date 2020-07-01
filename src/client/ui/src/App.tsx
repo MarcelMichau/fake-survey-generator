@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuth0 } from "./react-auth0-spa";
+import { useAuth0 } from "@auth0/auth0-react";
 import NavBar from "./components/NavBar";
 import CreateSurvey from "./components/CreateSurvey";
 import GetSurvey from "./components/GetSurvey";
@@ -10,10 +10,15 @@ import * as Types from "./types";
 
 const App: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState("");
-    const { getTokenSilently, user, isAuthenticated, loading } = useAuth0();
+    const {
+        getAccessTokenSilently,
+        user,
+        isAuthenticated,
+        isLoading,
+    } = useAuth0();
 
     const registerUser = async () => {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
 
         const response = await fetch(`/api/user/register`, {
             method: "POST",
@@ -32,7 +37,7 @@ const App: React.FC = () => {
     };
 
     const isUserRegistered = async (): Promise<boolean> => {
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
 
         const response = await fetch(
             `/api/user/isRegistered?userId=${user.sub}`,
@@ -71,15 +76,15 @@ const App: React.FC = () => {
         <div className="flex flex-col h-full">
             <div className="flex-1">
                 <NavBar />
-                {!isAuthenticated && !loading ? (
+                {!isAuthenticated && !isLoading ? (
                     <Splash />
                 ) : (
                     <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <CreateSurvey loading={loading} />
+                            <CreateSurvey loading={isLoading} />
                         </div>
                         <div>
-                            <GetSurvey loading={loading} />
+                            <GetSurvey loading={isLoading} />
                             {errorMessage !== "" && (
                                 <Alert
                                     type="error"

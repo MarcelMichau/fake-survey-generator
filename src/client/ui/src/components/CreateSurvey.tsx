@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { useAuth0 } from "../react-auth0-spa";
+import { useAuth0 } from "@auth0/auth0-react";
 import * as Types from "../types";
 import Field from "./Field";
 import Button from "./Button";
@@ -20,7 +20,7 @@ type CreateSurveyProps = {
 const CreateSurvey: React.FC<CreateSurveyProps> = ({
     loading,
 }): React.ReactElement => {
-    const { getTokenSilently } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
     const [respondentType, setRespondentType] = useState("");
     const [topic, setTopic] = useState("");
     const [numberOfRespondents, setNumberOfRespondents] = useState(0);
@@ -41,7 +41,7 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
     const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
         resetMessages();
 
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
 
         const response = await fetch(`/api/survey`, {
             method: "POST",

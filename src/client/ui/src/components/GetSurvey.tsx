@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { useAuth0 } from "../react-auth0-spa";
+import { useAuth0 } from "@auth0/auth0-react";
 import * as Types from "../types";
 import Field from "./Field";
 import SkeletonButton from "./SkeletonButton";
@@ -14,7 +14,7 @@ export type GetSurveyProps = {
 };
 
 const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
-    const { getTokenSilently } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
     const [surveyId, setSurveyId] = useState(0);
     const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
     const [errorMessage, setErrorMessage] = useState("");
@@ -26,7 +26,7 @@ const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
     const fetchSurvey = async (surveyId: number) => {
         resetMessage();
 
-        const token = await getTokenSilently();
+        const token = await getAccessTokenSilently();
 
         const response = await fetch(`/api/survey/${surveyId}`, {
             headers: {
