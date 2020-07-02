@@ -1,6 +1,6 @@
-<h1 align="center">
+<div align="center">
   <img width="200" src="images/undraw_customer_survey_f9ur.svg">
-</h1>
+</div>
 
 <h1 align="center">
   Fake Survey Generator
