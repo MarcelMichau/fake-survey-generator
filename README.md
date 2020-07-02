@@ -1,4 +1,8 @@
 <h1 align="center">
+  <img width="200" src="images/undraw_customer_survey_f9ur.svg">
+</h1>
+
+<h1 align="center">
   Fake Survey Generator
 </h1>
 
@@ -13,9 +17,13 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 | SQL Server                | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/SQL%20Server?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=9&branchName=master)                    |
 | Redis                     | [![Build Status](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_apis/build/status/Redis?branchName=master)](https://dev.azure.com/marcelmichau-investec/fake-survey-generator/_build/latest?definitionId=8&branchName=master)                           |
 
+## Screenshot
+
+![Screenshot](images/screenshot.png "Screenshot of Fake Survey Generator UI")
+
 ## What is this?
 
-This is an application of moderate complexity (not just a to-do app), used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates some elements from the [https://github.com/jasontaylordev/CleanArchitecture](https://github.com/jasontaylordev/CleanArchitecture) template by [Jason Taylor](https://github.com/jasontaylordev).
+This is an application of moderate complexity (not just a to-do app), used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates various elements from different repos & blog posts which served as inspiration.
 
 It is built using Clean Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
 
