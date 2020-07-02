@@ -1,89 +1,100 @@
-import React from "react";
+import React, { useState } from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useAuth0 } from "@auth0/auth0-react";
 import * as Types from "../types";
+import Field from "./Field";
+import SkeletonButton from "./SkeletonButton";
+import Alert from "./Alert";
+import SurveyResult from "./SurveyResult";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-const GetSurvey: React.FC<Types.GetSurveyProps> = ({
-    surveyId,
-    onUpdateSurveyId,
-    onFetch,
-    surveyDetail,
-}) => {
+export type GetSurveyProps = {
+    loading: boolean;
+};
+
+const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
+    const { getAccessTokenSilently } = useAuth0();
+    const [surveyId, setSurveyId] = useState(0);
+    const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const resetMessage = (): void => {
+        setErrorMessage("");
+    };
+
+    const fetchSurvey = async (surveyId: number) => {
+        resetMessage();
+
+        const token = await getAccessTokenSilently();
+
+        const response = await fetch(`/api/survey/${surveyId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const data: Types.SurveyResponse = await response.json();
+
+        if (data.isError) {
+            setErrorMessage(data.responseException.exceptionMessage.detail);
+            setSurveyDetail({} as Types.SurveyModel);
+            return;
+        }
+
+        const survey = data.result;
+
+        setSurveyDetail(survey);
+    };
+
+    const submitForm = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await fetchSurvey(surveyId);
+    };
+
     return (
-        <div>
-            <form className="pure-form">
-                {" "}
-                <label>
-                    Survey ID
-                    <div>
-                        <input
-                            style={{ margin: "1em auto", color: "black" }}
-                            type="text"
+        <SkeletonTheme color="#2d3748" highlightColor="#667eea">
+            <div className="dark:bg-gray-800 rounded px-8 pt-6 pb-8 mb-4">
+                <h2 className="dark:text-indigo-500 text-xl font-semibold tracking-tight mb-2">
+                    {loading ? (
+                        <Skeleton width={100} />
+                    ) : (
+                        <span>Get Survey</span>
+                    )}
+                </h2>
+                <form onSubmit={submitForm}>
+                    <div className="mb-4">
+                        <Field
+                            label="Survey ID"
                             value={surveyId}
-                            onChange={(e) =>
-                                onUpdateSurveyId(
-                                    Number.isNaN(Number(e.target.value))
+                            onChange={(value) =>
+                                setSurveyId(
+                                    Number.isNaN(Number(value))
                                         ? surveyId
-                                        : Number(e.target.value)
+                                        : Number(value)
                                 )
                             }
+                            loading={loading}
                         />
                     </div>
-                </label>
-            </form>
+                    <SkeletonButton onClick={submitForm} loading={loading}>
+                        Get Survey
+                        <FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
+                    </SkeletonButton>
+                </form>
 
-            <button
-                className="pure-button pure-button-primary"
-                onClick={onFetch}
-            >
-                Fetch
-            </button>
-
-            {surveyDetail.id > 0 && (
-                <div
-                    style={{
-                        border: "2px solid white",
-                        margin: "1em",
-                        padding: "1em",
-                    }}
-                >
-                    <h3>
-                        This Survey Asked{" "}
-                        <em>
-                            {surveyDetail.numberOfRespondents}{" "}
-                            {surveyDetail.respondentType}
-                        </em>{" "}
-                        the Question:
-                    </h3>
-                    <h2>
-                        <em>{surveyDetail.topic}</em>
-                    </h2>
-                    <h3>And the results were:</h3>
-
-                    <ol style={{ display: "inline-block", textAlign: "left" }}>
-                        {surveyDetail.options
-                            .sort((x, y) => y.numberOfVotes - x.numberOfVotes)
-                            .map((option, index) => (
-                                <li key={option.id}>
-                                    {index === 0 ? (
-                                        <strong
-                                            style={{
-                                                color: "rgb(28, 184, 65)",
-                                            }}
-                                        >
-                                            {option.optionText} -{" "}
-                                            {option.numberOfVotes} votes
-                                        </strong>
-                                    ) : (
-                                        <span>
-                                            {option.optionText} -{" "}
-                                            {option.numberOfVotes} votes
-                                        </span>
-                                    )}
-                                </li>
-                            ))}
-                    </ol>
-                </div>
-            )}
-        </div>
+                {surveyDetail.id > 0 && (
+                    <SurveyResult surveyDetail={surveyDetail} />
+                )}
+                {errorMessage !== "" && (
+                    <Alert
+                        type="error"
+                        title="Oh no! Something did not go as planned."
+                        message={errorMessage}
+                    ></Alert>
+                )}
+            </div>
+        </SkeletonTheme>
     );
 };
 

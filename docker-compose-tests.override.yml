@@ -1,18 +1,33 @@
-version: "3.7"
+version: "3.8"
+
+# Service ports do not need to be exposed while running the tests, but they can be exposed for debugging purposes
 
 services:
   fake-survey-generator-ui-test:
-    ports:
-      - "3000:80"
+    # ports:
+    #   - "3000:80"
     volumes:
       - ./src/client/ui/nginx.tests.conf:/etc/nginx/nginx.conf:ro
 
-  fake-survey-generator-api-unit-test:
+  fake-survey-generator-api-domain-test:
     entrypoint:
       - dotnet
       - test
       - --logger
-      - trx;LogFileName=/tests/fake-survey-generator-api-unit-test-results.xml
+      - trx;LogFileName=/tests/fake-survey-generator-api-domain/TestResults.trx
+      - --results-directory
+      - /tests/fake-survey-generator-domain
+      - --collect:"XPlat Code Coverage"
+
+  fake-survey-generator-api-application-test:
+    entrypoint:
+      - dotnet
+      - test
+      - --logger
+      - trx;LogFileName=/tests/fake-survey-generator-api-application/TestResults.trx
+      - --results-directory
+      - /tests/fake-survey-generator-api-application
+      - --collect:"XPlat Code Coverage"
 
   fake-survey-generator-api-integration-test:
     environment:
@@ -24,18 +39,19 @@ services:
       - REDIS_URL=redis-test
       - REDIS_DEFAULT_DATABASE=0
       - IDENTITY_PROVIDER_URL=https://test.com
-    ports:
-      - "6523:80"
+    # ports:
+    #   - "5000:80"
     entrypoint:
       - dotnet
       - test
       - --logger
-      - trx;LogFileName=/tests/fake-survey-generator-api-integration-test-results.xml
-
-  sql-server-test:
-    ports:
-      - "1433:1433"
-
-  redis-test:
-    ports:
-      - "6379:6379"
+      - trx;LogFileName=/tests/fake-survey-generator-api-integration/TestResults.trx
+      - --results-directory
+      - /tests/fake-survey-generator-api-application
+      - --collect:"XPlat Code Coverage"
+  # sql-server-test:
+  #   ports:
+  #     - "1433:1433"
+  # redis-test:
+  #   ports:
+  #     - "6379:6379"

@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
   fake-survey-generator-ui-test:
@@ -9,12 +9,21 @@ services:
     depends_on:
       - fake-survey-generator-api-integration-test
 
-  fake-survey-generator-api-unit-test:
-    image: ${DOCKER_REGISTRY-}fake-survey-generator-api-unit-test:${TAG:-latest}
+  fake-survey-generator-api-domain-test:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-api-domain-test:${TAG:-latest}
     build:
       context: .
       dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
-      target: unittest
+      target: domaintest
+    volumes:
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  fake-survey-generator-api-application-test:
+    image: ${DOCKER_REGISTRY-}fake-survey-generator-api-application-test:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
+      target: applicationtest
     volumes:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
@@ -31,10 +40,10 @@ services:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   sql-server-test:
-    image: mcr.microsoft.com/mssql/server:2019-CU1-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:2019-CU5-ubuntu-16.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
 
   redis-test:
-    image: redis
+    image: redis:6.0.5-alpine

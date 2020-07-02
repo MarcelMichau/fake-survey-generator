@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.8"
 
 services:
   fake-survey-generator-ui:
@@ -29,10 +29,10 @@ services:
       - fake-survey-generator-api
 
   sql-server:
-    image: mcr.microsoft.com/mssql/server:2019-CU4-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:2019-CU5-ubuntu-16.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
 
   redis:
-    image: redis:6.0.3-alpine
+    image: redis:6.0.5-alpine

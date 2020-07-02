@@ -9,7 +9,7 @@ namespace FakeSurveyGenerator.Application.Users.Commands.RegisterUser
     {
         public RegisterUserCommand()
         {
-            
+            // This command has no properties as all the data needed to register a user is retrieved from the request context.
         }
     }
 }

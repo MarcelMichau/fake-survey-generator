@@ -1,19 +1,79 @@
 import React, { useState } from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useAuth0 } from "@auth0/auth0-react";
 import * as Types from "../types";
+import Field from "./Field";
+import Button from "./Button";
+import SkeletonButton from "./SkeletonButton";
+import Alert from "./Alert";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faPlus,
+    faMinus,
+    faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 
 type CreateSurveyProps = {
-    onCreateSurvey: (command: Types.CreateSurveyCommand) => Promise<void>;
+    loading: boolean;
 };
 
 const CreateSurvey: React.FC<CreateSurveyProps> = ({
-    onCreateSurvey,
+    loading,
 }): React.ReactElement => {
+    const { getAccessTokenSilently } = useAuth0();
     const [respondentType, setRespondentType] = useState("");
     const [topic, setTopic] = useState("");
     const [numberOfRespondents, setNumberOfRespondents] = useState(0);
     const [options, setOptions] = useState([
         { id: 1, optionText: "" },
     ] as Types.SurveyOptionModel[]);
+
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+    const [validationErrors, setValidationErrors] = useState([] as string[]);
+
+    const resetMessages = (): void => {
+        setSuccessMessage("");
+        setErrorMessage("");
+        setValidationErrors([]);
+    };
+
+    const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
+        resetMessages();
+
+        const token = await getAccessTokenSilently();
+
+        const response = await fetch(`/api/survey`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(surveyCommand),
+        });
+
+        const data: Types.SurveyResponse = await response.json();
+
+        if (data.isError) {
+            setErrorMessage(data.responseException.exceptionMessage.title);
+
+            if (data.responseException.exceptionMessage.errors) {
+                setValidationErrors(
+                    Object.values(
+                        data.responseException.exceptionMessage.errors
+                    ).flat()
+                );
+            }
+
+            return;
+        }
+
+        setSuccessMessage(
+            `Survey created with ID: ${data.result.id}. Get the survey to see the outcome.`
+        );
+        setErrorMessage("");
+        setValidationErrors([]);
+    };
 
     const updateOption = (optionId: number, optionText: string) => {
         setOptions(
@@ -42,7 +102,7 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
             ),
         };
 
-        onCreateSurvey(surveyCommand);
+        createSurvey(surveyCommand);
 
         setRespondentType("");
         setTopic("");
@@ -51,99 +111,128 @@ const CreateSurvey: React.FC<CreateSurveyProps> = ({
     };
 
     return (
-        <div>
-            <form onSubmit={onSubmit} className="pure-form">
-                <label>
-                    Target Audience (Respondent Type)
-                    <div>
-                        <input
-                            style={{ margin: "1em auto", color: "black" }}
-                            type="text"
-                            value={respondentType}
-                            onChange={(e) => setRespondentType(e.target.value)}
-                        />
-                    </div>
-                </label>
-                <label>
-                    Question (Survey Topic)
-                    <div>
-                        <input
-                            style={{ margin: "1em auto", color: "black" }}
-                            type="text"
-                            value={topic}
-                            onChange={(e) => setTopic(e.target.value)}
-                        />
-                    </div>
-                </label>
-                <label>
-                    Number of Respondents
-                    <div>
-                        <input
-                            style={{ margin: "1em auto", color: "black" }}
-                            type="text"
-                            value={numberOfRespondents}
-                            onChange={(e) =>
-                                setNumberOfRespondents(
-                                    Number.isNaN(Number(e.target.value))
-                                        ? numberOfRespondents
-                                        : Number(e.target.value)
-                                )
-                            }
-                        />
-                    </div>
-                </label>
-
-                <span>Options</span>
-
-                {options.map((option) => (
-                    <div key={option.id}>
-                        <label>
-                            #{option.id}
-                            <div>
-                                <input
-                                    style={{
-                                        margin: "1em auto",
-                                        color: "black",
-                                    }}
-                                    type="text"
-                                    value={option.optionText}
-                                    onChange={(e) =>
-                                        updateOption(option.id, e.target.value)
-                                    }
-                                />
-                            </div>
-                        </label>
-                    </div>
-                ))}
-
-                <div>
-                    <button
-                        style={{
-                            margin: "1em",
-                            background: "rgb(28, 184, 65)",
-                            color: "white",
-                        }}
-                        className="pure-button"
-                        type="button"
-                        onClick={() =>
-                            setOptions([
-                                ...options,
-                                { id: options.length + 1, optionText: "" },
-                            ] as Types.SurveyOptionModel[])
+        <SkeletonTheme color="#2d3748" highlightColor="#667eea">
+            <div className="dark:bg-gray-800 rounded px-8 pt-6 pb-8 mb-4">
+                <h2 className="dark:text-indigo-500 text-xl font-semibold tracking-tight mb-2">
+                    {loading ? <Skeleton /> : <span>Create Survey</span>}
+                </h2>
+                <form onSubmit={onSubmit}>
+                    <Field
+                        label="Target Audience (Respondent Type)"
+                        value={respondentType}
+                        onChange={(value) => setRespondentType(value)}
+                        loading={loading}
+                        placeholder="Pragmatic Developers"
+                    />
+                    <Field
+                        label="Question (Survey Topic)"
+                        value={topic}
+                        onChange={(value) => setTopic(value)}
+                        loading={loading}
+                        placeholder="Do you prefer tabs or spaces?"
+                    />
+                    <Field
+                        label="Number of Respondents"
+                        value={numberOfRespondents}
+                        onChange={(value) =>
+                            setNumberOfRespondents(
+                                Number.isNaN(Number(value))
+                                    ? numberOfRespondents
+                                    : Number(value)
+                            )
                         }
-                    >
-                        + Add Option
-                    </button>
+                        loading={loading}
+                    />
+                    <span className="block text-gray-500">
+                        {loading ? <Skeleton /> : <span>Options</span>}
+                    </span>
+                    {options.map((option, index) => (
+                        <div key={option.id}>
+                            <Field
+                                label={`#${option.id}`}
+                                value={option.optionText}
+                                onChange={(value) =>
+                                    updateOption(option.id, value)
+                                }
+                                loading={loading}
+                                placeholder={
+                                    index === 0
+                                        ? "Most definitely tabs"
+                                        : "Some other option"
+                                }
+                            >
+                                {index > 0 && (
+                                    <Button
+                                        actionType="destructive"
+                                        onClick={() => {
+                                            setOptions([
+                                                ...options.filter(
+                                                    (o) => o.id !== option.id
+                                                ),
+                                            ]);
+                                        }}
+                                        additionalClasses={["lg:ml-4"]}
+                                    >
+                                        {`Remove #${option.id}`}
+                                        <FontAwesomeIcon
+                                            icon={faMinus}
+                                            className="ml-1"
+                                        />
+                                    </Button>
+                                )}
+                            </Field>
+                        </div>
+                    ))}
+                    <div className="my-2">
+                        <SkeletonButton
+                            onClick={() =>
+                                setOptions([
+                                    ...options,
+                                    { id: options.length + 1, optionText: "" },
+                                ] as Types.SurveyOptionModel[])
+                            }
+                            loading={loading}
+                            actionType="secondary"
+                        >
+                            Add Option{" "}
+                            <FontAwesomeIcon icon={faPlus} className="ml-1" />
+                        </SkeletonButton>
+                    </div>
+                    <div className="my-2">
+                        <SkeletonButton type="submit" loading={loading}>
+                            Create Survey{" "}
+                            <FontAwesomeIcon
+                                icon={faPaperPlane}
+                                className="ml-1"
+                            />
+                        </SkeletonButton>
+                    </div>
+                </form>
+                <div>
+                    {successMessage !== "" && (
+                        <Alert
+                            title="Survey Created"
+                            message={successMessage}
+                        ></Alert>
+                    )}
+                    {errorMessage !== "" && (
+                        <Alert
+                            type="error"
+                            title="Oh no! Something did not go as planned."
+                            message={errorMessage}
+                        ></Alert>
+                    )}
+                    {validationErrors.map((error, index) => (
+                        <Alert
+                            key={index}
+                            type="error"
+                            title="Validation Error"
+                            message={error}
+                        ></Alert>
+                    ))}
                 </div>
-
-                <button
-                    className="pure-button pure-button-primary"
-                    type="submit"
-                >
-                    Create Survey
-                </button>
-            </form>
-        </div>
+            </div>
+        </SkeletonTheme>
     );
 };
 
