@@ -269,6 +269,8 @@ stages:
                     --set azureKeyVaultResourceGroup=$(testEnvAzureKeyVaultResourceGroup)
                     --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
+                    --set azurePodIdentityClientId=$(testEnvAzurePodIdentityClientId)
+                    --set azurePodIdentityResourceId=$(testEnvAzurePodIdentityResourceId)
                     --set image.repository=$(imageRepository)
                     --set image.tag=$(VersionTag)
                     --set database=$(testEnvDatabase)
