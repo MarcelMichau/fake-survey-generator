@@ -39,8 +39,11 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
-            var conn = (Microsoft.Data.SqlClient.SqlConnection)Database.GetDbConnection();
-            conn.AccessToken = new Microsoft.Azure.Services.AppAuthentication.AzureServiceTokenProvider().GetAccessTokenAsync("https://database.windows.net/").Result;
+            if (Database.IsSqlServer())
+            {
+                var conn = (Microsoft.Data.SqlClient.SqlConnection)Database.GetDbConnection();
+                conn.AccessToken = new Microsoft.Azure.Services.AppAuthentication.AzureServiceTokenProvider().GetAccessTokenAsync("https://database.windows.net/").Result;
+            }
 
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
