@@ -258,6 +258,7 @@ stages:
                     --version $(VersionTag)
                     --set identityProviderUrl=$(testEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
+                    --set azureDatabaseUseActiveDirectoryAuthentication=$(testEnvAzureDatabaseUseActiveDirectoryAuthentication)
                     --set databaseServer=$(testEnvDatabaseServer)
                     --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled)
                     --set redisUrl=$(testEnvRedisServer)
