@@ -10,6 +10,7 @@ data:
     ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;Authentication=Active Directory Integrated;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
     {{- else }}
     ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;User ID={{ .Values.user }};Password={{ .Values.password }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+    {{- end }}
   {{- else }}
   ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Database={{ .Values.database }};user id={{ .Values.user }};pwd={{ .Values.password }};ConnectRetryCount=0
   ASPNETCORE_ENVIRONMENT: Development
