@@ -1,5 +1,6 @@
 ﻿using AutoWrapper;
 using FakeSurveyGenerator.API.Configuration;
+using FakeSurveyGenerator.API.Configuration.HealthChecks;
 using FakeSurveyGenerator.API.Configuration.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

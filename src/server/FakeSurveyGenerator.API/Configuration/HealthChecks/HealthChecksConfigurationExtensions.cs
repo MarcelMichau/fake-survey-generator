@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace FakeSurveyGenerator.API.Configuration
+namespace FakeSurveyGenerator.API.Configuration.HealthChecks
 {
     internal static class HealthChecksConfigurationExtensions
     {
@@ -18,7 +18,7 @@ namespace FakeSurveyGenerator.API.Configuration
             var healthChecksBuilder = services.AddHealthChecks();
 
             healthChecksBuilder
-                .AddSqlServer(
+                .AddSqlServerWithAzureAd(
                     configuration.GetConnectionString(nameof(SurveyContext)),
                     name: "FakeSurveyGeneratorDB-check",
                     tags: new[] { "fake-survey-generator-db", "ready" },
