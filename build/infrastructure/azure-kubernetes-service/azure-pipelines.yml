@@ -42,5 +42,4 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.json'
             csmParametersFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.parameters.json'
-            overrideParameters: '-siteName $(siteName) -administratorLogin $(adminUser) -administratorLoginPassword $(ARM_PASS)'
             deploymentMode: 'Incremental'
