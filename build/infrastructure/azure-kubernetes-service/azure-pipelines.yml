@@ -23,6 +23,7 @@ stages:
     displayName: 'Deploy'
     jobs:
       - job: Deploy
+        displayName: 'Deploy Cluster'
         pool:
           vmImage: 'ubuntu-latest'
 
@@ -47,17 +48,108 @@ stages:
   - stage: PostDeploy
     displayName: 'Post Deploy'
     jobs:
-      - job: 'PostDeploySetup'
+      - job: 'InstallClusterPrerequisites'
+        displayName: 'Install Cluster Prerequisites'
         pool:
           vmImage: 'ubuntu-latest'
 
         steps:
-        - task: Kubernetes@1
+        - task: HelmDeploy@0
+          displayName: 'Add jetstack Helm Repo'
+          enabled: true
           inputs:
             connectionType: 'Azure Resource Manager'
-            azureSubscriptionEndpoint: 'MyARMConnection'
+            azureSubscription: 'MyARMConnection'
             azureResourceGroup: 'kubernetes-playground-test-rg'
             kubernetesCluster: 'aks-cluster'
-            useClusterAdmin: true
-            command: 'get'
-            arguments: 'ns'
+            command: 'repo'
+            arguments: 'add jetstack https://charts.jetstack.io'
+  
+        - task: HelmDeploy@0
+          displayName: 'Add csi-secrets-store-provider-azure Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            command: 'repo'
+            arguments: 'add csi-secrets-store-provider-azure https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts'
+
+        - task: HelmDeploy@0
+          displayName: 'Add aad-pod-identity Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            command: 'repo'
+            arguments: 'add aad-pod-identity https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts'
+
+        - task: HelmDeploy@0
+          displayName: 'Update Helm Repos'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            command: 'repo'
+            arguments: 'update'
+
+        - task: HelmDeploy@0
+          displayName: 'Install nginx-ingress'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            namespace: 'infrastructure'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'stable/nginx-ingress'
+            releaseName: 'nginx-ingress'
+
+        - task: HelmDeploy@0
+          displayName: 'Install cert-manager'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            namespace: 'infrastructure'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: ' jetstack/cert-manager'
+            releaseName: 'cert-manager'
+
+        - task: HelmDeploy@0
+          displayName: 'Install csi-secrets-store-provider-azure'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            namespace: 'infrastructure'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'csi-secrets-store-provider-azure/csi-secrets-store-provider-azure'
+            releaseName: 'csi-secrets-store-provider-azure'
+
+        - task: HelmDeploy@0
+          displayName: 'Install aad-pod-identity'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            namespace: 'infrastructure'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'aad-pod-identity/aad-pod-identity'
+            releaseName: 'aad-pod-identity'
