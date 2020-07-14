@@ -55,6 +55,17 @@ stages:
 
         steps:
         - task: HelmDeploy@0
+          displayName: 'Add nginx Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            command: 'repo'
+            arguments: 'add nginx https://helm.nginx.com/stable'
+
+        - task: HelmDeploy@0
           displayName: 'Add jetstack Helm Repo'
           enabled: true
           inputs:
@@ -109,7 +120,7 @@ stages:
             command: 'upgrade'
             arguments: '--create-namespace'
             chartType: 'Name'
-            chartName: 'stable/nginx-ingress'
+            chartName: 'nginx/nginx-ingress'
             releaseName: 'nginx-ingress'
 
         - task: HelmDeploy@0
