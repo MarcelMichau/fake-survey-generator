@@ -89,7 +89,6 @@ stages:
 
         - task: HelmDeploy@0
           displayName: 'Add aad-pod-identity Helm Repo'
-          continueOnError: true # Temporary fix until v 1.6.3 of aad-pod-identity is released: https://github.com/Azure/aad-pod-identity/issues/626
           enabled: true
           inputs:
             connectionType: 'Azure Resource Manager'
@@ -154,6 +153,7 @@ stages:
 
         - task: HelmDeploy@0
           displayName: 'Install aad-pod-identity'
+          continueOnError: true # Temporary fix until v 1.6.3 of aad-pod-identity is released: https://github.com/Azure/aad-pod-identity/issues/626
           inputs:
             connectionType: 'Azure Resource Manager'
             azureSubscription: 'MyARMConnection'
