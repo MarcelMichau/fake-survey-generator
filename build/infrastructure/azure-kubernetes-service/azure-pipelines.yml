@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - build/infrastructure/azure-kubernetes-service/*
+
+pr:
+  branches:
+    include:
+    - master
+    - feat/*
+    - fix/*
+    - chore/*
+    - refactor/*
+  paths:
+    include:
+    - build/infrastructure/azure-kubernetes-service/*
+
+stages:
+  - stage: Deploy
+    displayName: 'Deploy'
+    jobs:
+      - job: Deploy
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        variables:
+          resourceGroupName: 'kubernetes-playground-test-rg'
+          location: 'South Africa North'
+
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'MyARMConnection'
+            subscriptionId: '$(subscriptionId)'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: '$(resourceGroupName)'
+            location: '$(location)'
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.parameters.json'
+            overrideParameters: '-siteName $(siteName) -administratorLogin $(adminUser) -administratorLoginPassword $(ARM_PASS)'
+            deploymentMode: 'Incremental'
