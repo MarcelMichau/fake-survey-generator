@@ -43,3 +43,21 @@ stages:
             csmFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.json'
             csmParametersFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.parameters.json'
             deploymentMode: 'Incremental'
+
+  - stage: PostDeploy
+    displayName: 'Post Deploy'
+    jobs:
+      - job: 'PostDeploySetup'
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        steps:
+        - task: Kubernetes@1
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscriptionEndpoint: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            useClusterAdmin: true
+            command: 'get'
+            arguments: 'ns'
