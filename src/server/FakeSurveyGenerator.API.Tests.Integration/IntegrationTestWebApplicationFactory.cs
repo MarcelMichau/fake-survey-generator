@@ -66,8 +66,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             SetEnvironmentVariableIfEmpty("ConnectionStrings__SurveyContext",
                 "Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0");
-            SetEnvironmentVariableIfEmpty("IDENTITY_PROVIDER_URL", "https://marcelmichau.eu.auth0.com/");
-            SetEnvironmentVariableIfEmpty("SQL_SERVER_USE_AZURE_AD_AUTHENTICATION", "false");
+            SetEnvironmentVariableIfEmpty("IDENTITY_PROVIDER_URL", "https://test.com");
         }
 
         private static void ConfigureMockServices(IServiceCollection services)

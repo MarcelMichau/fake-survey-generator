@@ -36,20 +36,20 @@ namespace FakeSurveyGenerator.API.Configuration.HealthChecks
                         failureStatus: HealthStatus.Unhealthy);
             }
 
-            //var redisConnectionString =
-            //    $"{configuration.GetValue<string>("REDIS_URL")},ssl={configuration.GetValue<string>("REDIS_SSL")},password={configuration.GetValue<string>("REDIS_PASSWORD")},defaultDatabase={configuration.GetValue<string>("REDIS_DEFAULT_DATABASE")}";
+            var redisConnectionString =
+                $"{configuration.GetValue<string>("REDIS_URL")},ssl={configuration.GetValue<string>("REDIS_SSL")},password={configuration.GetValue<string>("REDIS_PASSWORD")},defaultDatabase={configuration.GetValue<string>("REDIS_DEFAULT_DATABASE")}";
 
-            //healthChecksBuilder
-            //    .AddRedis(redisConnectionString,
-            //        "RedisCache-check",
-            //        tags: new[] {"redis-cache", "ready"},
-            //        failureStatus: HealthStatus.Degraded);
+            healthChecksBuilder
+                .AddRedis(redisConnectionString,
+                    "RedisCache-check",
+                    tags: new[] {"redis-cache", "ready"},
+                    failureStatus: HealthStatus.Degraded);
 
-            //healthChecksBuilder.AddIdentityServer(
-            //    new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
-            //    "IdentityProvider-check",
-            //    tags: new[] {"identity-provider", "ready"},
-            //    failureStatus: HealthStatus.Unhealthy);
+            healthChecksBuilder.AddIdentityServer(
+                new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
+                "IdentityProvider-check",
+                tags: new[] {"identity-provider", "ready"},
+                failureStatus: HealthStatus.Unhealthy);
 
             return services;
         }
