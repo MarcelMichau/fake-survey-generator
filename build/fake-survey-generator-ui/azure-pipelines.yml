@@ -172,8 +172,10 @@ stages:
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
                 inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Test Environment'
+                  connectionType: 'Azure Resource Manager'
+                  azureSubscription: 'MyARMConnection'
+                  azureResourceGroup: 'kubernetes-playground-test-rg'
+                  kubernetesCluster: 'aks-cluster'
                   namespace: '$(targetNamespace)'
                   command: 'upgrade'
                   chartType: 'Name'
@@ -239,8 +241,10 @@ stages:
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
                 inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Production Environment'
+                  connectionType: 'Azure Resource Manager'
+                  azureSubscription: 'MyARMConnection'
+                  azureResourceGroup: 'kubernetes-playground-test-rg'
+                  kubernetesCluster: 'aks-cluster'
                   namespace: '$(targetNamespace)'
                   command: 'upgrade'
                   chartType: 'Name'
