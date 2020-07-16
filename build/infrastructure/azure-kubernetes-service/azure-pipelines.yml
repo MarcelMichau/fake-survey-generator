@@ -110,7 +110,7 @@ stages:
             arguments: 'update'
 
         - task: HelmDeploy@0
-          displayName: 'Install nginx-ingress'
+          displayName: 'Install ingress-nginx'
           inputs:
             connectionType: 'Azure Resource Manager'
             azureSubscription: 'MyARMConnection'

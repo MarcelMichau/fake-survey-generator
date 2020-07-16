@@ -137,7 +137,7 @@ stages:
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           replicaCount: 2
           targetNamespace: test-env
-        environment: 'aks-test.test-env'
+        environment: 'aks-test'
         strategy:
           runOnce:
             deploy:
@@ -206,7 +206,7 @@ stages:
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           replicaCount: 2
           targetNamespace: prod-env
-        environment: 'aks-prod.prod-env'
+        environment: 'aks-prod'
         strategy:
           runOnce:
             deploy:

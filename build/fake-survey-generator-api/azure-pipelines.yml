@@ -207,7 +207,7 @@ stages:
           ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           targetNamespace: test-env
-        environment: 'aks-test.test-env'
+        environment: 'aks-test'
         strategy:
           runOnce:
             deploy:
@@ -328,7 +328,7 @@ stages:
           ingressHost: aks.fakesurveygenerator.marcelmichau.dev
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           targetNamespace: prod-env
-        environment: 'aks-prod.prod-env'
+        environment: 'aks-prod'
         strategy:
           runOnce:
             deploy:
