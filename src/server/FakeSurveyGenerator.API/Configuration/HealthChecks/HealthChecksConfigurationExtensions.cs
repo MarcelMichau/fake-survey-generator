@@ -17,25 +17,39 @@ namespace FakeSurveyGenerator.API.Configuration.HealthChecks
         {
             var healthChecksBuilder = services.AddHealthChecks();
 
-            healthChecksBuilder
-                .AddSqlServerWithAzureAd(
-                    configuration.GetConnectionString(nameof(SurveyContext)),
-                    name: "FakeSurveyGeneratorDB-check",
-                    tags: new[] { "fake-survey-generator-db", "ready" },
-                    failureStatus: HealthStatus.Unhealthy);
+            if (configuration.GetValue<bool>("SQL_SERVER_USE_AZURE_AD_AUTHENTICATION"))
+            {
+                healthChecksBuilder
+                    .AddSqlServerWithAzureAd(
+                        configuration.GetConnectionString(nameof(SurveyContext)),
+                        name: "FakeSurveyGeneratorDB-check",
+                        tags: new[] {"fake-survey-generator-db", "ready"},
+                        failureStatus: HealthStatus.Unhealthy);
+            }
+            else
+            {
+                healthChecksBuilder
+                    .AddSqlServer(
+                        configuration.GetConnectionString(nameof(SurveyContext)),
+                        name: "FakeSurveyGeneratorDB-check",
+                        tags: new[] {"fake-survey-generator-db", "ready"},
+                        failureStatus: HealthStatus.Unhealthy);
+            }
 
-            healthChecksBuilder
-                .AddRedis(
-                    $"{configuration.GetValue<string>("REDIS_URL")},ssl={configuration.GetValue<string>("REDIS_SSL")},password={configuration.GetValue<string>("REDIS_PASSWORD")},defaultDatabase={configuration.GetValue<string>("REDIS_DEFAULT_DATABASE")}",
-                    "RedisCache-check",
-                    tags: new[] { "redis-cache", "ready" },
-                    failureStatus: HealthStatus.Degraded);
+            //var redisConnectionString =
+            //    $"{configuration.GetValue<string>("REDIS_URL")},ssl={configuration.GetValue<string>("REDIS_SSL")},password={configuration.GetValue<string>("REDIS_PASSWORD")},defaultDatabase={configuration.GetValue<string>("REDIS_DEFAULT_DATABASE")}";
 
-            healthChecksBuilder.AddUrlGroup(
-                new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}.well-known/openid-configuration"),
-                "IdentityProvider-check",
-                tags: new[] { "identity-provider", "ready" },
-                failureStatus: HealthStatus.Unhealthy);
+            //healthChecksBuilder
+            //    .AddRedis(redisConnectionString,
+            //        "RedisCache-check",
+            //        tags: new[] {"redis-cache", "ready"},
+            //        failureStatus: HealthStatus.Degraded);
+
+            //healthChecksBuilder.AddIdentityServer(
+            //    new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
+            //    "IdentityProvider-check",
+            //    tags: new[] {"identity-provider", "ready"},
+            //    failureStatus: HealthStatus.Unhealthy);
 
             return services;
         }

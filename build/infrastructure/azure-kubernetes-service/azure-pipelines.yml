@@ -153,7 +153,7 @@ stages:
 
         - task: HelmDeploy@0
           displayName: 'Install aad-pod-identity'
-          continueOnError: true # Temporary fix until v 1.6.3 of aad-pod-identity is released: https://github.com/Azure/aad-pod-identity/issues/626
+          continueOnError: true # Temporary fix until v 1.6.2 of aad-pod-identity is released: https://github.com/Azure/aad-pod-identity/issues/626
           inputs:
             connectionType: 'Azure Resource Manager'
             azureSubscription: 'MyARMConnection'
@@ -165,3 +165,39 @@ stages:
             chartType: 'Name'
             chartName: 'aad-pod-identity/aad-pod-identity'
             releaseName: 'aad-pod-identity'
+
+        - task: HelmDeploy@0
+          displayName: 'Create Test Environment Cluster Issuer'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            namespace: 'test-env'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: 'build\infrastructure\azure-kubernetes-service\charts\issuer-chart'
+            releaseName: 'staging-cluster-issuer'
+            arguments: >-
+              --create-namespace
+              --set clusterIssuerName=letsencrypt-staging
+              --set acmeServer=$(testEnvAcmeServer)
+              --set acmeEmail=$(testEnvAcmeEmail)
+  
+        - task: HelmDeploy@0
+          displayName: 'Create Prod Environment Cluster Issuer'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            namespace: 'prod-env'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: 'build\infrastructure\azure-kubernetes-service\charts\issuer-chart'
+            releaseName: 'prod-cluster-issuer'
+            arguments: >-
+              --create-namespace
+              --set clusterIssuerName=letsencrypt-prod
+              --set acmeServer=$(prodEnvAcmeServer)
+              --set acmeEmail=$(prodEnvAcmeEmail)

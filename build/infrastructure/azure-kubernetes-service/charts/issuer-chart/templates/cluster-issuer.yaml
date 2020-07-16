@@ -1,0 +1,11 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.clusterIssuerName }}
+spec:
+  acme:
+    server: {{ .Values.acmeServer }}
+    email: {{ .Values.acmeEmail }}
+    privateKeySecretRef:
+      name: {{ .Values.clusterIssuerName }}
+    http01: {}

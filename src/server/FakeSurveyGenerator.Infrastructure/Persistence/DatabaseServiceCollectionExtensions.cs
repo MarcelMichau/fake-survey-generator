@@ -16,11 +16,19 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
             services.AddScoped<IConnectionString>(sp => new ConnectionString(connectionString));
 
             services.AddDbContext<SurveyContext>
-            (options => options.UseSqlServer(connectionString,
-                sqlServerOptions =>
-                    sqlServerOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30),
-                        null)
-            ));
+            (options =>
+                {
+                    options.UseSqlServer(connectionString,
+                        sqlServerOptions =>
+                            sqlServerOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30),
+                                null));
+
+                    if (configuration.GetValue<bool>("SQL_SERVER_USE_AZURE_AD_AUTHENTICATION"))
+                    {
+                        options.UseAzureAccessToken();
+                    }
+                }
+            );
 
             services.AddScoped<ISurveyContext>(provider => provider.GetService<SurveyContext>());
 
