@@ -176,7 +176,7 @@ stages:
             namespace: 'test-env'
             command: 'upgrade'
             chartType: 'FilePath'
-            chartPath: 'build/infrastructure/azure-kubernetes-service/charts/issuer-chart''
+            chartPath: 'build/infrastructure/azure-kubernetes-service/charts/issuer-chart'
             releaseName: 'staging-cluster-issuer'
             arguments: >-
               --create-namespace
