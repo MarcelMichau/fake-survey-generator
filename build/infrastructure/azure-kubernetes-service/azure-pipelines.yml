@@ -132,10 +132,12 @@ stages:
             kubernetesCluster: 'aks-cluster'
             namespace: 'infrastructure'
             command: 'upgrade'
-            arguments: '--create-namespace'
             chartType: 'Name'
             chartName: ' jetstack/cert-manager'
             releaseName: 'cert-manager'
+            arguments: >-
+              --create-namespace
+              --set installCRDs=true
 
         - task: HelmDeploy@0
           displayName: 'Install csi-secrets-store-provider-azure'
