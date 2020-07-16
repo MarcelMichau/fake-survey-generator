@@ -37,7 +37,8 @@ stages:
     displayName: 'Build'
     jobs:
       - job: Build
-        pool: Default
+        pool:
+          vmImage: 'ubuntu-latest'
 
         variables:
           buildConfiguration: 'Release'
