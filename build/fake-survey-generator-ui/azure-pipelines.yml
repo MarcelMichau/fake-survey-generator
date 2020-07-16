@@ -189,7 +189,7 @@ stages:
                     --set ingress.hosts[0].paths[0]=/ 
                     --set ingress.tls[0].secretName=$(ingressTlsSecretName) 
                     --set ingress.tls[0].hosts={$(ingressHost)} 
-                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) 
+                    --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName) 
                     --set replicaCount=$(replicaCount)
 
   - stage: Production_Deployment
@@ -258,5 +258,5 @@ stages:
                     --set ingress.hosts[0].paths[0]=/ 
                     --set ingress.tls[0].secretName=$(ingressTlsSecretName) 
                     --set ingress.tls[0].hosts={$(ingressHost)} 
-                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName) 
+                    --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName) 
                     --set replicaCount=$(replicaCount)
