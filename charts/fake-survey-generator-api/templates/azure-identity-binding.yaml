@@ -1,7 +1,7 @@
 apiVersion: "aadpodidentity.k8s.io/v1"
 kind: AzureIdentityBinding
 metadata:
-  name: fake-survey-generator-api-test-identity-binding
+  name: fake-survey-generator-identity-binding
 spec:
-  azureIdentity: aks-aad-pod-identity-test
-  selector: aks-aad-pod-identity-test
+  azureIdentity: fake-survey-generator-identity
+  selector: fake-survey-generator-identity

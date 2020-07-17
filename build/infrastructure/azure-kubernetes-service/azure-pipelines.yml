@@ -33,6 +33,7 @@ stages:
 
         steps:
         - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Deploy AKS Cluster ARM Template'
           inputs:
             deploymentScope: 'Resource Group'
             azureResourceManagerConnection: 'MyARMConnection'
