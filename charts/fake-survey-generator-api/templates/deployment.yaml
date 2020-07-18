@@ -15,7 +15,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "fake-survey-generator-api.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
-        aadpodidbinding: fake-survey-generator-identity
+        aadpodidbinding: {{ .Values.azurePodIdentityName }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

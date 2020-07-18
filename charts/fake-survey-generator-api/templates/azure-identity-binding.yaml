@@ -3,5 +3,5 @@ kind: AzureIdentityBinding
 metadata:
   name: fake-survey-generator-identity-binding
 spec:
-  azureIdentity: fake-survey-generator-identity
-  selector: fake-survey-generator-identity
+  azureIdentity: {{ .Values.azurePodIdentityName }}
+  selector: {{ .Values.azurePodIdentityName }}

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "identityName": {
+      "type": "string",
+      "metadata": {
+        "description": "<USER ASSIGNED IDENTITY NAME>"
+      }
+    },
+    "aksClusterInfrastructureResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "<AKS CLUSTER INFRASTRUCTURE RESOURCE GROUP>"
+      }
+    },
+    "aksClusterManagedIdentityName": {
+      "type": "string",
+      "metadata": {
+        "description": "<AKS CLUSTER USER ASSIGNED MANAGED IDENTITY NAME>"
+      }
+    },
+    "keyVaultResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "<KEY VAULT RESOURCE GROUP>"
+      }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "<KEY VAULT NAME>"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "name": "[parameters('identityName')]",
+      "apiVersion": "2018-11-30",
+      "location": "[resourceGroup().location]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2017-09-01",
+      "name": "[guid(concat(resourceGroup().id, 'Managed Identity Operator'))]",
+      "properties": {
+        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
+        "principalId": "[reference(resourceId(parameters('aksClusterInfrastructureResourceGroup'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('aksClusterManagedIdentityName')), '2018-11-30').principalId]",
+        "scope": "[resourceGroup().id]"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-05-01",
+      "name": "addAccessPolicy",
+      "resourceGroup": "[parameters('keyVaultResourceGroup')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults/accessPolicies",
+              "name": "[concat(parameters('keyVaultName'), '/add')]",
+              "apiVersion": "2016-10-01",
+              "properties": {
+                "accessPolicies": [
+                  {
+                    "tenantId": "[subscription().tenantId]",
+                    "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName')), '2018-11-30').principalId]",
+                    "permissions": {
+                      "secrets": [ "get" ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "identityName": {
+      "type": "string",
+      "value": "[parameters('identityName')]"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "identityName": {
+      "value": "fake-survey-generator-identity-test-throwaway"
+    },
+    "aksClusterInfrastructureResourceGroup": {
+      "value": "aks-cluster-infrastructure"
+    },
+    "aksClusterManagedIdentityName": {
+      "value": "aks-cluster-agentpool"
+    },
+    "keyVaultResourceGroup": {
+      "value": "key-vault-rg"
+    },
+    "keyVaultName": {
+      "value": "marcel-michau-test-vault"
+    }
+  }
+}
