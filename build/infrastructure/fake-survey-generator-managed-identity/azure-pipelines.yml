@@ -1,22 +1,22 @@
 trigger:
   branches:
     include:
-    - master
+      - master
   paths:
     include:
-    - build/infrastructure/fake-survey-generator-managed-identity/*
+      - build/infrastructure/fake-survey-generator-managed-identity/*
 
 pr:
   branches:
     include:
-    - master
-    - feat/*
-    - fix/*
-    - chore/*
-    - refactor/*
+      - master
+      - feat/*
+      - fix/*
+      - chore/*
+      - refactor/*
   paths:
     include:
-    - build/infrastructure/fake-survey-generator-managed-identity/*
+      - build/infrastructure/fake-survey-generator-managed-identity/*
 
 stages:
   - stage: Create
@@ -29,6 +29,8 @@ stages:
 
         variables:
           identityResourceGroupName: 'kubernetes-playground-test-rg'
+          aksClusterInfrastructureResourceGroup: 'aks-cluster-infrastructure'
+          aksClusterManagedIdentityName: 'aks-cluster-agentpool'
           keyVaultResourceGroupName: 'marcel-michau-key-vault'
           location: 'South Africa North'
 
@@ -48,6 +50,8 @@ stages:
             deploymentMode: 'Incremental'
             overrideParameters: >-
               -identityName "fake-survey-generator-identity-test"
+              -aksClusterInfrastructureResourceGroup "$(aksClusterInfrastructureResourceGroup)"
+              -aksClusterManagedIdentityName "$(aksClusterManagedIdentityName)"
               -keyVaultName "marcel-michau-test-vault"
               -keyVaultResourceGroup "$(keyVaultResourceGroupName)"
 
@@ -66,5 +70,7 @@ stages:
             deploymentMode: 'Incremental'
             overrideParameters: >-
               -identityName "fake-survey-generator-identity-prod"
+              -aksClusterInfrastructureResourceGroup "$(aksClusterInfrastructureResourceGroup)"
+              -aksClusterManagedIdentityName "$(aksClusterManagedIdentityName)"
               -keyVaultName "marcel-michau-key-vault"
               -keyVaultResourceGroup "$(keyVaultResourceGroupName)"

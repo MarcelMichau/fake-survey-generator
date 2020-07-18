@@ -1,22 +1,22 @@
 trigger:
   branches:
     include:
-    - master
+      - master
   paths:
     include:
-    - build/infrastructure/azure-kubernetes-service/*
+      - build/infrastructure/azure-kubernetes-service/*
 
 pr:
   branches:
     include:
-    - master
-    - feat/*
-    - fix/*
-    - chore/*
-    - refactor/*
+      - master
+      - feat/*
+      - fix/*
+      - chore/*
+      - refactor/*
   paths:
     include:
-    - build/infrastructure/azure-kubernetes-service/*
+      - build/infrastructure/azure-kubernetes-service/*
 
 stages:
   - stage: Deploy

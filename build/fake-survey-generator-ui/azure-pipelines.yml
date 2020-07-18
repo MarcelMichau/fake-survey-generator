@@ -1,26 +1,26 @@
 trigger:
   branches:
     include:
-    - master
+      - master
   paths:
     include:
-    - src/client/ui/*
-    - charts/fake-survey-generator-ui/*
-    - build/fake-survey-generator-ui/*
+      - src/client/ui/*
+      - charts/fake-survey-generator-ui/*
+      - build/fake-survey-generator-ui/*
 
 pr:
   branches:
     include:
-    - master
-    - feat/*
-    - fix/*
-    - chore/*
-    - refactor/*
+      - master
+      - feat/*
+      - fix/*
+      - chore/*
+      - refactor/*
   paths:
     include:
-    - src/client/ui/*
-    - charts/fake-survey-generator-ui/*
-    - build/fake-survey-generator-ui/*
+      - src/client/ui/*
+      - charts/fake-survey-generator-ui/*
+      - build/fake-survey-generator-ui/*
 
 stages:
   - stage: Build

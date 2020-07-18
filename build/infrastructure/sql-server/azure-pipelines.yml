@@ -1,15 +1,15 @@
 trigger:
   branches:
     include:
-    - master
-    - feat/*
-    - fix/*
-    - chore/*
-    - refactor/*
+      - master
+      - feat/*
+      - fix/*
+      - chore/*
+      - refactor/*
   paths:
     include:
-    - charts/sql-server/*
-    - build/infrastructure/sql-server/*
+      - charts/sql-server/*
+      - build/infrastructure/sql-server/*
 
 stages:
   - stage: Publish
