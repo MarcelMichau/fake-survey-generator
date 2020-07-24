@@ -56,7 +56,7 @@ stages:
           inputs:
             command: custom
             custom: tool
-            arguments: install --tool-path ./src/server nbgv --version 3.2.7-beta
+            arguments: install --tool-path ./src/server nbgv --version 3.2.31
           displayName: Install NBGV tool
 
         - script: ./nbgv cloud -a
