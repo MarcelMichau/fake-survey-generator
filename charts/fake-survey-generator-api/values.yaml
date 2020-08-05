@@ -1,4 +1,5 @@
 azureDatabaseEnabled: false
+azureDatabaseUseActiveDirectoryAuthentication: false
 databaseServer: sql-server
 database: FakeSurveyGenerator
 user: SA
@@ -14,6 +15,9 @@ azureKeyVaultName: ""
 azureKeyVaultResourceGroup: ""
 azureKeyVaultSubscriptionId: ""
 azureKeyVaultTenantId: ""
+azurePodIdentityClientId: ""
+azurePodIdentityResourceId: ""
+azurePodIdentityName: ""
 
 replicaCount: 1
 
@@ -32,7 +36,8 @@ service:
 
 ingress:
   enabled: true
-  annotations: {}
+  annotations:
+    kubernetes.io/ingress.class: nginx
   hosts:
     - host: k8s.local
       paths:

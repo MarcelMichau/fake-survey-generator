@@ -15,6 +15,7 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=44367
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - SQL_SERVER_USE_AZURE_AD_AUTHENTICATION=false
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
       - REDIS_URL=redis
@@ -30,6 +31,7 @@ services:
   fake-survey-generator-worker:
     environment:
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - SQL_SERVER_USE_AZURE_AD_AUTHENTICATION=false
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
       - REDIS_URL=redis

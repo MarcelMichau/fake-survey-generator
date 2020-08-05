@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using FakeSurveyGenerator.Application.Common.Exceptions;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using Microsoft.AspNetCore.Authorization;
@@ -37,11 +38,18 @@ namespace FakeSurveyGenerator.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateSurvey([FromBody] CreateSurveyCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateSurvey(CreateSurveyCommand command, CancellationToken cancellationToken)
         {
-            var result = await Mediator.Send(command, cancellationToken);
+            try // Temporary try/catch until this issue is fixed: https://github.com/FluentValidation/FluentValidation/issues/1431
+            {
+                var result = await Mediator.Send(command, cancellationToken);
 
-            return result.IsSuccess ? CreatedAtRoute(nameof(GetSurvey), new { id = result.Value.Id }, result.Value) : FromResult(result);
+                return result.IsSuccess ? CreatedAtRoute(nameof(GetSurvey), new { id = result.Value.Id }, result.Value) : FromResult(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Failures);
+            }
         }
     }
 }

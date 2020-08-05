@@ -158,6 +158,7 @@ The application makes use of OpenID Connect for authentication which is implemen
 
 - Auth0
 - Google
+- Microsoft
 
 Initially, this project used IdentityServer for authentication, but I didn't feel like maintaining the separate IdentityServer project as well as the Fake Survey Generator, so I switched it out for Auth0 because authn/authz is hard and I prefer to delegate that responsibility to the people who know how to do it properly. :)
 

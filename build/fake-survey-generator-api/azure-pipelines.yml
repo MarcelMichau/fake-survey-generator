@@ -1,36 +1,36 @@
 trigger:
   branches:
     include:
-    - master
+      - master
   paths:
     include:
-    - src/server/FakeSurveyGenerator.API/*
-    - src/server/FakeSurveyGenerator.API.Tests.Integration/*
-    - src/server/FakeSurveyGenerator.Domain/*
-    - src/server/FakeSurveyGenerator.Domain.Tests/*
-    - src/server/FakeSurveyGenerator.EF.Design/*
-    - src/server/FakeSurveyGenerator.Infrastructure/*
-    - charts/fake-survey-generator-api/*
-    - build/fake-survey-generator-api/*
+      - src/server/FakeSurveyGenerator.API/*
+      - src/server/FakeSurveyGenerator.API.Tests.Integration/*
+      - src/server/FakeSurveyGenerator.Domain/*
+      - src/server/FakeSurveyGenerator.Domain.Tests/*
+      - src/server/FakeSurveyGenerator.EF.Design/*
+      - src/server/FakeSurveyGenerator.Infrastructure/*
+      - charts/fake-survey-generator-api/*
+      - build/fake-survey-generator-api/*
 
 pr:
   branches:
     include:
-    - master
-    - feat/*
-    - fix/*
-    - chore/*
-    - refactor/*
+      - master
+      - feat/*
+      - fix/*
+      - chore/*
+      - refactor/*
   paths:
     include:
-    - src/server/FakeSurveyGenerator.API/*
-    - src/server/FakeSurveyGenerator.API.Tests.Integration/*
-    - src/server/FakeSurveyGenerator.Domain/*
-    - src/server/FakeSurveyGenerator.Domain.Tests/*
-    - src/server/FakeSurveyGenerator.EF.Design/*
-    - src/server/FakeSurveyGenerator.Infrastructure/*
-    - charts/fake-survey-generator-api/*
-    - build/fake-survey-generator-api/*
+      - src/server/FakeSurveyGenerator.API/*
+      - src/server/FakeSurveyGenerator.API.Tests.Integration/*
+      - src/server/FakeSurveyGenerator.Domain/*
+      - src/server/FakeSurveyGenerator.Domain.Tests/*
+      - src/server/FakeSurveyGenerator.EF.Design/*
+      - src/server/FakeSurveyGenerator.Infrastructure/*
+      - charts/fake-survey-generator-api/*
+      - build/fake-survey-generator-api/*
 
 stages:
   - stage: Build
@@ -43,6 +43,7 @@ stages:
         variables:
           buildConfiguration: 'Release'
           imageName: fakesurveygeneratorapi
+          DOCKER_BUILDKIT: 1
 
         steps:
         - task: UseDotNet@2
@@ -55,7 +56,7 @@ stages:
           inputs:
             command: custom
             custom: tool
-            arguments: install --tool-path ./src/server nbgv --version 3.2.7-beta
+            arguments: install --tool-path ./src/server nbgv --version 3.2.31
           displayName: Install NBGV tool
 
         - script: ./nbgv cloud -a
@@ -107,7 +108,8 @@ stages:
           displayName: 'Publish Database Migration Script'
 
         - script: |
-            docker build -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
+            docker pull $(dockerId)/$(imageName):latest
+            docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
           displayName: 'Build Docker Image'
 
         - script: |
@@ -206,7 +208,7 @@ stages:
           ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           targetNamespace: test-env
-        environment: 'aks-test.test-env'
+        environment: 'aks-test'
         strategy:
           runOnce:
             deploy:
@@ -247,8 +249,10 @@ stages:
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
                 inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Test Environment'
+                  connectionType: 'Azure Resource Manager'
+                  azureSubscription: 'MyARMConnection'
+                  azureResourceGroup: 'kubernetes-playground-test-rg'
+                  kubernetesCluster: 'aks-cluster'
                   namespace: '$(targetNamespace)'
                   command: 'upgrade'
                   chartType: 'Name'
@@ -258,6 +262,7 @@ stages:
                     --version $(VersionTag)
                     --set identityProviderUrl=$(testEnvIdentityProviderUrl)
                     --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
+                    --set azureDatabaseUseActiveDirectoryAuthentication=$(testEnvAzureDatabaseUseActiveDirectoryAuthentication)
                     --set databaseServer=$(testEnvDatabaseServer)
                     --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled)
                     --set redisUrl=$(testEnvRedisServer)
@@ -269,6 +274,9 @@ stages:
                     --set azureKeyVaultResourceGroup=$(testEnvAzureKeyVaultResourceGroup)
                     --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
                     --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
+                    --set azurePodIdentityClientId=$(testEnvAzurePodIdentityClientId)
+                    --set azurePodIdentityResourceId=$(testEnvAzurePodIdentityResourceId)
+                    --set azurePodIdentityName=$(testEnvAzurePodIdentityName)
                     --set image.repository=$(imageRepository)
                     --set image.tag=$(VersionTag)
                     --set database=$(testEnvDatabase)
@@ -280,7 +288,7 @@ stages:
                     --set ingress.hosts[0].paths[2]=/health
                     --set ingress.tls[0].secretName=$(ingressTlsSecretName)
                     --set ingress.tls[0].hosts={$(ingressHost)}
-                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName)
+                    --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
                     --set replicaCount=$(testEnvReplicaCount)
  
   - stage: Production_Database_Deployment
@@ -322,7 +330,7 @@ stages:
           ingressHost: aks.fakesurveygenerator.marcelmichau.dev
           ingressTlsSecretName: marcelmichau-dev-tls-secret
           targetNamespace: prod-env
-        environment: 'aks-prod.prod-env'
+        environment: 'aks-prod'
         strategy:
           runOnce:
             deploy:
@@ -363,8 +371,10 @@ stages:
               - task: HelmDeploy@0
                 displayName: 'helm upgrade'
                 inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceConnection: 'AKS Production Environment'
+                  connectionType: 'Azure Resource Manager'
+                  azureSubscription: 'MyARMConnection'
+                  azureResourceGroup: 'kubernetes-playground-test-rg'
+                  kubernetesCluster: 'aks-cluster'
                   namespace: '$(targetNamespace)'
                   command: 'upgrade'
                   chartType: 'Name'
@@ -396,7 +406,7 @@ stages:
                     --set ingress.hosts[0].paths[2]=/health
                     --set ingress.tls[0].secretName=$(ingressTlsSecretName)
                     --set ingress.tls[0].hosts={$(ingressHost)}
-                    --set ingress.annotations."certmanager\.k8s\.io/cluster-issuer"=$(ingressClusterIssuerName)
+                    --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
                     --set replicaCount=$(prodEnvReplicaCount)
                   
 

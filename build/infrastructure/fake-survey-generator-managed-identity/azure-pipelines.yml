@@ -1,0 +1,76 @@
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - build/infrastructure/fake-survey-generator-managed-identity/*
+
+pr:
+  branches:
+    include:
+      - master
+      - feat/*
+      - fix/*
+      - chore/*
+      - refactor/*
+  paths:
+    include:
+      - build/infrastructure/fake-survey-generator-managed-identity/*
+
+stages:
+  - stage: Create
+    displayName: 'Create'
+    jobs:
+      - job: Create
+        displayName: 'Create Managed Identities'
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        variables:
+          identityResourceGroupName: 'kubernetes-playground-test-rg'
+          aksClusterInfrastructureResourceGroup: 'aks-cluster-infrastructure'
+          aksClusterManagedIdentityName: 'aks-cluster-agentpool'
+          keyVaultResourceGroupName: 'marcel-michau-key-vault'
+          location: 'South Africa North'
+
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Deploy Test Managed Identity ARM Template'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'MyARMConnection'
+            subscriptionId: '$(subscriptionId)'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: '$(identityResourceGroupName)'
+            location: '$(location)'
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+            overrideParameters: >-
+              -identityName "fake-survey-generator-identity-test"
+              -aksClusterInfrastructureResourceGroup "$(aksClusterInfrastructureResourceGroup)"
+              -aksClusterManagedIdentityName "$(aksClusterManagedIdentityName)"
+              -keyVaultName "marcel-michau-test-vault"
+              -keyVaultResourceGroup "$(keyVaultResourceGroupName)"
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Deploy Prod Managed Identity ARM Template'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'MyARMConnection'
+            subscriptionId: '$(subscriptionId)'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: '$(identityResourceGroupName)'
+            location: '$(location)'
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+            overrideParameters: >-
+              -identityName "fake-survey-generator-identity-prod"
+              -aksClusterInfrastructureResourceGroup "$(aksClusterInfrastructureResourceGroup)"
+              -aksClusterManagedIdentityName "$(aksClusterManagedIdentityName)"
+              -keyVaultName "marcel-michau-key-vault"
+              -keyVaultResourceGroup "$(keyVaultResourceGroupName)"

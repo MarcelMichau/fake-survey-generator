@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "clusterName": {
+      "value": "aks-cluster"
+    },
+    "dnsPrefix": {
+      "value": "aks-cluster-dns"
+    },
+    "agentCount": {
+      "value": 1
+    },
+    "agentVMSize": {
+      "value": "Standard_B2s"
+    },
+    "kubernetesVersion": {
+      "value": "1.18.4"
+    },
+    "networkPlugin": {
+      "value": "kubenet"
+    },
+    "enableRBAC": {
+      "value": true
+    },
+    "enablePrivateCluster": {
+      "value": false
+    },
+    "enableHttpApplicationRouting": {
+      "value": false
+    }
+  }
+}
