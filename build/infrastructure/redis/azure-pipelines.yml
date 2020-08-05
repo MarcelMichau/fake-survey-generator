@@ -35,26 +35,26 @@ stages:
                   save: false
                 displayName: 'Helm Package'
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'MyARMConnection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az configure --defaults acr=$(registryName)'
-                displayName: 'Set Azure Container Registry Default in Azure CLI'
+              # - task: AzureCLI@1
+              #   inputs:
+              #     azureSubscription: 'MyARMConnection'
+              #     scriptLocation: 'inlineScript'
+              #     inlineScript: 'az configure --defaults acr=$(registryName)'
+              #   displayName: 'Set Azure Container Registry Default in Azure CLI'
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'MyARMConnection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm repo add'
-                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+              # - task: AzureCLI@1
+              #   inputs:
+              #     azureSubscription: 'MyARMConnection'
+              #     scriptLocation: 'inlineScript'
+              #     inlineScript: 'az acr helm repo add'
+              #   displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'MyARMConnection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
-                displayName: 'Push Helm Chart to Azure Container Registry'
+              # - task: AzureCLI@1
+              #   inputs:
+              #     azureSubscription: 'MyARMConnection'
+              #     scriptLocation: 'inlineScript'
+              #     inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
+              #   displayName: 'Push Helm Chart to Azure Container Registry'
 
   # - stage: Deployment
   #   displayName: 'Deployment'
