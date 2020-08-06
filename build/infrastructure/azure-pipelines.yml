@@ -266,7 +266,8 @@ stages:
             arguments: 'update'
 
         - task: HelmDeploy@0
-          displayName: 'Install ingress-nginx'
+          displayName: 'Install aad-pod-identity'
+          continueOnError: true
           inputs:
             connectionType: 'Azure Resource Manager'
             azureSubscription: 'Azure Service Connection'
@@ -276,22 +277,8 @@ stages:
             command: 'upgrade'
             arguments: '--create-namespace'
             chartType: 'Name'
-            chartName: 'ingress-nginx/ingress-nginx'
-            releaseName: 'ingress-nginx'
-
-        - task: HelmDeploy@0
-          displayName: 'Install ExternalDNS'
-          inputs:
-            connectionType: 'Azure Resource Manager'
-            azureSubscription: 'Azure Service Connection'
-            azureResourceGroup: '$(resourceGroupName)'
-            kubernetesCluster: '$(kubernetesClusterName)'
-            namespace: '$(kubernetesInfrastructureNamespace)'
-            command: 'upgrade'
-            chartType: 'Name'
-            chartName: 'bitnami/external-dns'
-            releaseName: 'external-dns'
-            overrideValues: 'provider=azure,podLabels."aadpodidbinding"=$(externalDnsIdentityName),azure.useManagedIdentityExtension=true,azure.resourceGroup=$(resourceGroupName),azure.subscriptionId=$(subscriptionId),azure.tenantId=$(tenantId)'
+            chartName: 'aad-pod-identity/aad-pod-identity'
+            releaseName: 'aad-pod-identity'
 
         - task: HelmDeploy@0
           displayName: 'Install cert-manager'
@@ -311,6 +298,34 @@ stages:
               --set podLabels.aadpodidbinding=$(certManagerIdentityName)
 
         - task: HelmDeploy@0
+          displayName: 'Install ingress-nginx'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'ingress-nginx/ingress-nginx'
+            releaseName: 'ingress-nginx'
+
+        - task: HelmDeploy@0
+          displayName: 'Install external-dns'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'Name'
+            chartName: 'bitnami/external-dns'
+            releaseName: 'external-dns'
+            overrideValues: 'provider=azure,podLabels."aadpodidbinding"=$(externalDnsIdentityName),azure.useManagedIdentityExtension=true,azure.resourceGroup=$(resourceGroupName),azure.subscriptionId=$(subscriptionId),azure.tenantId=$(tenantId)'
+
+        - task: HelmDeploy@0
           displayName: 'Install csi-secrets-store-provider-azure'
           inputs:
             connectionType: 'Azure Resource Manager'
@@ -323,21 +338,6 @@ stages:
             chartType: 'Name'
             chartName: 'csi-secrets-store-provider-azure/csi-secrets-store-provider-azure'
             releaseName: 'csi-secrets-store-provider-azure'
-
-        - task: HelmDeploy@0
-          displayName: 'Install aad-pod-identity'
-          continueOnError: true
-          inputs:
-            connectionType: 'Azure Resource Manager'
-            azureSubscription: 'Azure Service Connection'
-            azureResourceGroup: '$(resourceGroupName)'
-            kubernetesCluster: '$(kubernetesClusterName)'
-            namespace: '$(kubernetesInfrastructureNamespace)'
-            command: 'upgrade'
-            arguments: '--create-namespace'
-            chartType: 'Name'
-            chartName: 'aad-pod-identity/aad-pod-identity'
-            releaseName: 'aad-pod-identity'
 
         - task: HelmDeploy@0
           displayName: 'Create LetsEncrypt Cluster Issuer'
