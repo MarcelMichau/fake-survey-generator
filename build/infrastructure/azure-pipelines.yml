@@ -8,15 +8,17 @@ stages:
           vmImage: 'ubuntu-latest'
 
         variables:
+          azureResourceManagerConnection: 'Azure Service Connection'
           resourceGroupName: 'rg-fake-survey-generator'
           location: 'South Africa North'
+          dnsZoneName: mysecondarydomain.com
 
         steps:
         - task: AzureResourceManagerTemplateDeployment@3
           displayName: 'Create Resource Group'
           inputs:
             deploymentScope: 'Subscription'
-            azureResourceManagerConnection: 'Azure Service Connection'
+            azureResourceManagerConnection: $(azureResourceManagerConnection)
             subscriptionId: '$(subscriptionId)'
             location: '$(location)'
             templateLocation: 'Linked artifact'
@@ -25,4 +27,20 @@ stages:
             deploymentMode: 'Incremental'
             overrideParameters: >-
               -resourceGroupName "$(resourceGroupName)"
-              -location "$(location)"
+              -location "$()"
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create DNS Zone'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: $(azureResourceManagerConnection)
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/dns-zone/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/dns-zone/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -dnsZoneName "$(dnsZoneName)"
+            deploymentMode: 'Incremental'
