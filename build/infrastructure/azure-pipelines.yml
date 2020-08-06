@@ -18,7 +18,7 @@ stages:
           displayName: 'Create Resource Group'
           inputs:
             deploymentScope: 'Subscription'
-            azureResourceManagerConnection: $(azureResourceManagerConnection)
+            azureResourceManagerConnection: 'Azure Service Connection'
             subscriptionId: '$(subscriptionId)'
             location: '$(location)'
             templateLocation: 'Linked artifact'
@@ -27,13 +27,13 @@ stages:
             deploymentMode: 'Incremental'
             overrideParameters: >-
               -resourceGroupName "$(resourceGroupName)"
-              -location "$()"
+              -location "$(location)"
 
         - task: AzureResourceManagerTemplateDeployment@3
           displayName: 'Create DNS Zone'
           inputs:
             deploymentScope: 'Resource Group'
-            azureResourceManagerConnection: $(azureResourceManagerConnection)
+            azureResourceManagerConnection: 'Azure Service Connection'
             subscriptionId: $(subscriptionId)
             action: 'Create Or Update Resource Group'
             resourceGroupName: $(resourceGroupName)
