@@ -111,6 +111,21 @@ stages:
             arguments: 'update'
 
         - task: HelmDeploy@0
+          displayName: 'Install aad-pod-identity'
+          continueOnError: true # Temporary fix until v 1.6.2 of aad-pod-identity is released: https://github.com/Azure/aad-pod-identity/issues/626
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'MyARMConnection'
+            azureResourceGroup: 'kubernetes-playground-test-rg'
+            kubernetesCluster: 'aks-cluster'
+            namespace: 'infrastructure'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'aad-pod-identity/aad-pod-identity'
+            releaseName: 'aad-pod-identity'
+
+        - task: HelmDeploy@0
           displayName: 'Install ingress-nginx'
           inputs:
             connectionType: 'Azure Resource Manager'
@@ -153,21 +168,6 @@ stages:
             chartType: 'Name'
             chartName: 'csi-secrets-store-provider-azure/csi-secrets-store-provider-azure'
             releaseName: 'csi-secrets-store-provider-azure'
-
-        - task: HelmDeploy@0
-          displayName: 'Install aad-pod-identity'
-          continueOnError: true # Temporary fix until v 1.6.2 of aad-pod-identity is released: https://github.com/Azure/aad-pod-identity/issues/626
-          inputs:
-            connectionType: 'Azure Resource Manager'
-            azureSubscription: 'MyARMConnection'
-            azureResourceGroup: 'kubernetes-playground-test-rg'
-            kubernetesCluster: 'aks-cluster'
-            namespace: 'infrastructure'
-            command: 'upgrade'
-            arguments: '--create-namespace'
-            chartType: 'Name'
-            chartName: 'aad-pod-identity/aad-pod-identity'
-            releaseName: 'aad-pod-identity'
 
         - task: HelmDeploy@0
           displayName: 'Create Test Environment Cluster Issuer'
