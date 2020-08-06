@@ -291,7 +291,7 @@ stages:
             chartType: 'Name'
             chartName: 'bitnami/external-dns'
             releaseName: 'external-dns'
-            overrideValues:  'provider=azure,podLabels."aadpodidbinding"=$(externalDnsIdentityName),azure.useManagedIdentityExtension=true,azure.resourceGroup=$(resourceGroupName),azure.subscriptionId=$(subscriptionId),azure.tenantId=$(tenantId)'
+            overrideValues: 'provider=azure,podLabels."aadpodidbinding"=$(externalDnsIdentityName),azure.useManagedIdentityExtension=true,azure.resourceGroup=$(resourceGroupName),azure.subscriptionId=$(subscriptionId),azure.tenantId=$(tenantId)'
 
         - task: HelmDeploy@0
           displayName: 'Install cert-manager'
@@ -303,7 +303,7 @@ stages:
             namespace: '$(kubernetesInfrastructureNamespace)'
             command: 'upgrade'
             chartType: 'Name'
-            chartName: ' jetstack/cert-manager'
+            chartName: 'jetstack/cert-manager'
             releaseName: 'cert-manager'
             arguments: >-
               --create-namespace

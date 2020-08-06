@@ -3,7 +3,7 @@ kind: AzureIdentity
 metadata:
   annotations:
     aadpodidentity.k8s.io/Behavior: namespaced
-  name: cert-manager-identity
+  name: {{ .Values.certManagerIdentityName }}
 spec:
   clientID: {{ .Values.certManagerIdentityClientId }}
   resourceID: {{ .Values.certManagerIdentityResourceId }}
