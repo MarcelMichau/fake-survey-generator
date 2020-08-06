@@ -188,7 +188,7 @@ stages:
             azureResourceManagerConnection: 'Azure Service Connection'
             subscriptionId: $(subscriptionId)
             action: 'Create Or Update Resource Group'
-            resourceGroupName: $(azureResourceGroup)
+            resourceGroupName: $(resourceGroupName)
             location: $(azureRegion)
             templateLocation: 'Linked artifact'
             csmFile: 'build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.json'
