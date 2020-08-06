@@ -103,6 +103,9 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: 'build/infrastructure/azure-sql/azuredeploy.json'
             csmParametersFile: 'build/infrastructure/azure-sql/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -administratorLogin "$(sqlDatabaseAdminLogin)"
+              -administratorLoginPassword "$(sqlDatabaseAdminLoginPassword)"
             deploymentMode: 'Incremental'
 
         - task: AzureResourceManagerTemplateDeployment@3
