@@ -18,6 +18,7 @@ stages:
           certManagerIdentityName: mi-cert-manager
           kubernetesClusterName: aks-cluster
           kubernetesNodeResourceGroupName: aks-cluster-infrastructure
+          kubernetesInfrastructureNamespace: 'infrastructure'
 
         steps:
         - task: AzureResourceManagerTemplateDeployment@3
@@ -197,3 +198,182 @@ stages:
               -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
               -aksClusterNodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
             deploymentMode: 'Incremental'
+
+        - task: HelmDeploy@0
+          displayName: 'Add ingress-nginx Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add ingress-nginx https://kubernetes.github.io/ingress-nginx'
+
+        - task: HelmDeploy@0
+          displayName: 'Add bitnami Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add bitnami https://charts.bitnami.com/bitnami'
+  
+        - task: HelmDeploy@0
+          displayName: 'Add jetstack Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add jetstack https://charts.jetstack.io'
+  
+        - task: HelmDeploy@0
+          displayName: 'Add csi-secrets-store-provider-azure Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add csi-secrets-store-provider-azure https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts'
+
+        - task: HelmDeploy@0
+          displayName: 'Add aad-pod-identity Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add aad-pod-identity https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts'
+
+        - task: HelmDeploy@0
+          displayName: 'Update Helm Repos'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'update'
+
+        - task: HelmDeploy@0
+          displayName: 'Install ingress-nginx'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'ingress-nginx/ingress-nginx'
+            releaseName: 'ingress-nginx'
+
+        - task: HelmDeploy@0
+          displayName: 'Install ExternalDNS'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: $(azureSubscription)
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'Name'
+            chartName: 'bitnami/external-dns'
+            releaseName: 'external-dns'
+            overrideValues:  'provider=azure,podLabels."aadpodidbinding"=$(externalDnsIdentityName),azure.useManagedIdentityExtension=true,azure.resourceGroup=$(resourceGroupName),azure.subscriptionId=$(subscriptionId),azure.tenantId=$(tenantId)'
+
+        - task: HelmDeploy@0
+          displayName: 'Install cert-manager'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'Name'
+            chartName: ' jetstack/cert-manager'
+            releaseName: 'cert-manager'
+            arguments: >-
+              --create-namespace
+              --set installCRDs=true
+
+        - task: HelmDeploy@0
+          displayName: 'Install csi-secrets-store-provider-azure'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'csi-secrets-store-provider-azure/csi-secrets-store-provider-azure'
+            releaseName: 'csi-secrets-store-provider-azure'
+
+        - task: HelmDeploy@0
+          displayName: 'Install aad-pod-identity'
+          continueOnError: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'aad-pod-identity/aad-pod-identity'
+            releaseName: 'aad-pod-identity'
+
+        - task: HelmDeploy@0
+          displayName: 'Create LetsEncrypt Cluster Issuer'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: $(azureSubscription)
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: 'build/infrastructure/azure-kubernetes-service/charts/cluster-issuer-chart'
+            releaseName: 'letsencrypt-cluster-issuer'
+            arguments: >-
+              --create-namespace
+              --set acmeEmail=$(acmeEmail)
+              --set subscriptionId=$(subscriptionId)
+              --set resourceGroupName=$(resourceGroupName)
+              --set azureDnsZone=$(dnsZoneName)
+              --set certManagerIdentityName=$(certManagerIdentityName)
+              --set certManagerIdentityClientId=$(certManagerIdentityClientId)
+              --set certManagerIdentityResourceId=$(certManagerIdentityResourceId)
+  
+        - task: HelmDeploy@0
+          displayName: 'Deploy External DNS Identity Chart'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: $(azureSubscription)
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: 'build/infrastructure/azure-kubernetes-service/charts/external-dns-chart'
+            releaseName: 'external-dns-identity'
+            arguments: >-
+              --create-namespace
+              --set externalDnsIdentityName=$(externalDnsIdentityName)
+              --set externalDnsIdentityClientId=$(externalDnsIdentityClientId)
+              --set externalDnsIdentityResourceId=$(externalDnsIdentityResourceId)
