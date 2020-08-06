@@ -1,3 +1,5 @@
+trigger: none
+
 stages:
   - stage: Provisioning
     displayName: 'Provisioning'
@@ -14,6 +16,8 @@ stages:
           dnsZoneName: mysecondarydomain.com
           externalDnsIdentityName: mi-external-dns
           certManagerIdentityName: mi-cert-manager
+          kubernetesClusterName: aks-cluster
+          kubernetesNodeResourceGroupName: aks-cluster-infrastructure
 
         steps:
         - task: AzureResourceManagerTemplateDeployment@3
@@ -143,3 +147,53 @@ stages:
                 Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
               }
             pwsh: true
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create AKS Cluster'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: '$(subscriptionId)'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: '$(resourceGroupName)'
+            location: '$(location)'
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -clusterName "$(kubernetesClusterName)"
+              -nodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: Create AKS Managed Identity Role Assignments on Node Resource Group
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(kubernetesNodeResourceGroupName)
+            location: $(azureRegion)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
+            deploymentMode: 'Incremental'
+      
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: Create AKS Managed Identity Role Assignments on Cluster Resource Group
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(azureResourceGroup)
+            location: $(azureRegion)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
+              -aksClusterNodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
+            deploymentMode: 'Incremental'
