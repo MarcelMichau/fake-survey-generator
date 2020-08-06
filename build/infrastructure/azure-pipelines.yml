@@ -308,6 +308,7 @@ stages:
             arguments: >-
               --create-namespace
               --set installCRDs=true
+              --set podLabels.aadpodidbinding=$(certManagerIdentityName)
 
         - task: HelmDeploy@0
           displayName: 'Install csi-secrets-store-provider-azure'
