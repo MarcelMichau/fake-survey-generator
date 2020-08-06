@@ -283,7 +283,7 @@ stages:
           displayName: 'Install ExternalDNS'
           inputs:
             connectionType: 'Azure Resource Manager'
-            azureSubscription: $(azureSubscription)
+            azureSubscription: 'Azure Service Connection'
             azureResourceGroup: '$(resourceGroupName)'
             kubernetesCluster: '$(kubernetesClusterName)'
             namespace: '$(kubernetesInfrastructureNamespace)'
@@ -342,7 +342,7 @@ stages:
           displayName: 'Create LetsEncrypt Cluster Issuer'
           inputs:
             connectionType: 'Azure Resource Manager'
-            azureSubscription: $(azureSubscription)
+            azureSubscription: 'Azure Service Connection'
             azureResourceGroup: '$(resourceGroupName)'
             kubernetesCluster: '$(kubernetesClusterName)'
             namespace: '$(kubernetesInfrastructureNamespace)'
@@ -364,7 +364,7 @@ stages:
           displayName: 'Deploy External DNS Identity Chart'
           inputs:
             connectionType: 'Azure Resource Manager'
-            azureSubscription: $(azureSubscription)
+            azureSubscription: 'Azure Service Connection'
             azureResourceGroup: '$(resourceGroupName)'
             kubernetesCluster: '$(kubernetesClusterName)'
             namespace: '$(kubernetesInfrastructureNamespace)'
