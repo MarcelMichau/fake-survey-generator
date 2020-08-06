@@ -12,6 +12,8 @@ stages:
           resourceGroupName: 'rg-fake-survey-generator'
           location: 'South Africa North'
           dnsZoneName: mysecondarydomain.com
+          externalDnsIdentityName: mi-external-dns
+          certManagerIdentityName: mi-cert-manager
 
         steps:
         - task: AzureResourceManagerTemplateDeployment@3
@@ -44,3 +46,97 @@ stages:
             overrideParameters: >-
               -dnsZoneName "$(dnsZoneName)"
             deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Key Vault'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-key-vault/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-key-vault/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -tenantId "$(tenantId)"
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Container Registry'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-container-registry/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-container-registry/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Redis Cache'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-redis-cache/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-redis-cache/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create SQL Server & Database'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-sql/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-sql/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create AKS Managed Identities'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'DeploymentFiles/aks-managed-identities/azuredeploy.json'
+            csmParametersFile: 'DeploymentFiles/aks-managed-identities/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -dnsZoneName "$(dnsZoneName)"
+            deploymentMode: 'Incremental'
+            deploymentOutputs: createManagedIdentitiesArmOutput
+  
+        - task: PowerShell@2
+          name: 'SetOutputVariables'
+          displayName: 'Set Output Variables'
+          inputs:
+            targetType: 'inline'
+            script: |
+              $armOutputObj = '$(createManagedIdentitiesArmOutput)' | ConvertFrom-Json
+              $armOutputObj.PSObject.Properties | ForEach-Object {
+                $keyname = $_.Name
+                $value = $_.Value.value
+            
+                ## Creates a standard pipeline variable
+                Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+                
+                ## Creates an output variable
+                Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+              }
+            pwsh: true

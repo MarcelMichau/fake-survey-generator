@@ -1,0 +1,8 @@
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentity
+metadata:
+  name: external-dns-identity
+spec:
+  clientID: {{ .Values.externalDnsIdentityClientId }}
+  resourceID: {{ .Values.externalDnsIdentityResourceId }}
+  type: 0

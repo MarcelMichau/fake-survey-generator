@@ -1,0 +1,10 @@
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentity
+metadata:
+  annotations:
+    aadpodidentity.k8s.io/Behavior: namespaced
+  name: cert-manager-identity
+spec:
+  clientID: {{ .Values.certManagerIdentityClientId }}
+  resourceID: {{ .Values.certManagerIdentityResourceId }}
+  type: 0

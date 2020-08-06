@@ -1,7 +1,0 @@
-# Default values for issuer-chart.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-clusterIssuerName: letsencrypt-staging
-acmeServer: https://acme-staging-v02.api.letsencrypt.org/directory
-acmeEmail: test@test.com
