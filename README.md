@@ -132,14 +132,14 @@ The application is built for Docker, Docker Compose & Kubernetes with Helm. For 
 
 The hosted version of the application is deployed to two environments:
 
-- Test - https://aks-test.fakesurveygenerator.marcelmichau.dev
-- Production - https://aks.fakesurveygenerator.marcelmichau.dev
+- Test - https://aks-test.fakesurveygenerator.mysecondarydomain.com
+- Production - https://aks.fakesurveygenerator.mysecondarydomain.com
 
 The following endpoints are accessible:
 
-- [/swagger](https://aks.fakesurveygenerator.marcelmichau.dev/swagger/index.html) - The Swagger documentation page for the API
-- [/health/live](https://aks.fakesurveygenerator.marcelmichau.dev/health/live) - Health Checks endpoint used by Kubernetes liveness probe
-- [/health/ready](https://aks.fakesurveygenerator.marcelmichau.dev/health/ready) - Health Checks endpoint used by Kubernetes readiness probe
+- [/swagger](https://aks.fakesurveygenerator.mysecondarydomain.com/swagger/index.html) - The Swagger documentation page for the API
+- [/health/live](https://aks.fakesurveygenerator.mysecondarydomain.com/health/live) - Health Checks endpoint used by Kubernetes liveness probe
+- [/health/ready](https://aks.fakesurveygenerator.mysecondarydomain.com/health/ready) - Health Checks endpoint used by Kubernetes readiness probe
 
 The hosted version utilizes the following:
 

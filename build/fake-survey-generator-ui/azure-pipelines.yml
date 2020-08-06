@@ -133,7 +133,7 @@ stages:
   #       variables:
   #         environmentSuffix: test
   #         ingressClusterIssuerName: letsencrypt-prod
-  #         ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
+  #         ingressHost: aks-test.fakesurveygenerator.mysecondarydomain.com
   #         ingressTlsSecretName: marcelmichau-dev-tls-secret
   #         replicaCount: 2
   #         targetNamespace: test-env
@@ -202,7 +202,7 @@ stages:
   #       variables:
   #         environmentSuffix: prod
   #         ingressClusterIssuerName: letsencrypt-prod
-  #         ingressHost: aks.fakesurveygenerator.marcelmichau.dev
+  #         ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
   #         ingressTlsSecretName: marcelmichau-dev-tls-secret
   #         replicaCount: 2
   #         targetNamespace: prod-env

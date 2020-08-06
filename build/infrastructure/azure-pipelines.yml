@@ -1,0 +1,27 @@
+stages:
+  - stage: Deploy
+    displayName: 'Deploy'
+    jobs:
+      - job: Deploy
+        displayName: 'Deploy Cluster'
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        variables:
+          resourceGroupName: 'rg-fake-survey-generator'
+          location: 'South Africa North'
+
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Resource Group'
+          inputs:
+            deploymentScope: 'Subscription'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: '$(subscriptionId)'
+            location: '$(location)'
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/resource-group/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/resource-group/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+            overrideParameters: >-
+              -resourceGroupName "$(resourceGroupName)"
