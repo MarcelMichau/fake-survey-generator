@@ -8,6 +8,13 @@
       "metadata": {
         "description": "Name of the Resource Group to create."
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "location",
+      "metadata": {
+        "description": "Location in which to create the Resource Group."
+      }
     }
   },
   "resources": [
@@ -15,7 +22,7 @@
       "name": "[parameters('resourceGroupName')]",
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2020-06-01",
-      "location": "string",
+      "location": "[parameters('location')]",
       "tags": {},
       "properties": {
       }

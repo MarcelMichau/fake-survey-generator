@@ -1,9 +1,9 @@
 stages:
-  - stage: Deploy
-    displayName: 'Deploy'
+  - stage: Provisioning
+    displayName: 'Provisioning'
     jobs:
-      - job: Deploy
-        displayName: 'Deploy Cluster'
+      - job: Provisioning
+        displayName: 'Provision Infrastructure'
         pool:
           vmImage: 'ubuntu-latest'
 
@@ -25,3 +25,4 @@ stages:
             deploymentMode: 'Incremental'
             overrideParameters: >-
               -resourceGroupName "$(resourceGroupName)"
+              -location "$(location)"
