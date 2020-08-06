@@ -118,8 +118,8 @@ stages:
             resourceGroupName: $(resourceGroupName)
             location: $(location)
             templateLocation: 'Linked artifact'
-            csmFile: 'DeploymentFiles/aks-managed-identities/azuredeploy.json'
-            csmParametersFile: 'DeploymentFiles/aks-managed-identities/azuredeploy.parameters.json'
+            csmFile: 'build/infrastructure/aks-managed-identities/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/aks-managed-identities/azuredeploy.parameters.json'
             overrideParameters: >-
               -dnsZoneName "$(dnsZoneName)"
             deploymentMode: 'Incremental'
