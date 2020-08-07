@@ -38,6 +38,8 @@ variables:
   imageRepository: '$(registryName).azurecr.io/$(projectName)'
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
+  sqlServerName: sql-marcel-michau.database.windows.net
+  sqlDatabaseName: sqldb-fake-survey-generator
 
 stages:
   - stage: Build
@@ -185,31 +187,43 @@ stages:
                   inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
                 displayName: 'Push Helm Chart to Azure Container Registry'
 
-  # - stage: Test_Database_Deployment
-  #   displayName: 'Test Database Deployment'
-  #   jobs:
-  #     - deployment: Deployment_Job
-  #       displayName: Deploy Fake Survey Generator Database
-  #       pool:
-  #         vmImage: 'windows-2019'
-  #       variables:
-  #         azureSqlServer: 'marcel-michau-sql.database.windows.net'    
-  #         databaseLogin: 'azure-pipelines-user-test'
-  #       environment: 'azure-sql-test'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #               - task: SqlAzureDacpacDeployment@1
-  #                 displayName: 'Execute SQL Migration Script'
-  #                 inputs:
-  #                   azureSubscription: MyARMConnection
-  #                   ServerName: '$(testEnvDatabaseMigrationServer)'
-  #                   DatabaseName: '$(testEnvDatabase)'
-  #                   SqlUsername: '$(testEnvDatabaseAdminLogin)'
-  #                   SqlPassword: '$(testEnvDatabaseAdminPassword)'
-  #                   deployType: SqlTask
-  #                   SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'  
+  - stage: Test_Database_Deployment
+    displayName: 'Test Database Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator Database
+        pool:
+          vmImage: 'windows-2019'
+        variables:
+          azureSqlServer: 'marcel-michau-sql.database.windows.net'    
+          databaseLogin: 'azure-pipelines-user-test'
+        environment: 'azure-sql-test'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                # - task: SqlAzureDacpacDeployment@1
+                #   displayName: 'Execute SQL Migration Script'
+                #   inputs:
+                #     azureSubscription: MyARMConnection
+                #     ServerName: '$(testEnvDatabaseMigrationServer)'
+                #     DatabaseName: '$(testEnvDatabase)'
+                #     SqlUsername: '$(testEnvDatabaseAdminLogin)'
+                #     SqlPassword: '$(testEnvDatabaseAdminPassword)'
+                #     deployType: SqlTask
+                #     SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
+                    
+                - task: SqlAzureDacpacDeployment@1
+                  displayName: 'Execute SQL Migration Script'
+                  inputs:
+                    azureSubscription: 'Azure Service Connection'
+                    AuthenticationType: 'aadAuthenticationIntegrated'
+                    ServerName: '$(sqlServerName)'
+                    DatabaseName: '$(sqlDatabaseName)'
+                    deployType: 'DacpacTask'
+                    DeploymentAction: 'Publish'
+                    DacpacFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
+                    IpDetectionMethod: 'AutoDetect'
 
   # - stage: Test_Application_Deployment
   #   displayName: 'Test Application Deployment'
