@@ -26,6 +26,8 @@ variables:
   projectName: fake-survey-generator-ui
   registryName: acrfakesurveygenerator
   imageRepository: '$(registryName)/$(projectName)'
+  resourceGroupName: rg-fake-survey-generator
+  kubernetesClusterName: aks-cluster
 
 stages:
   - stage: Build
@@ -43,11 +45,11 @@ stages:
             useGlobalJson: true
 
         - task: DotNetCoreCLI@2  
+          displayName: Install NBGV tool
           inputs:
             command: custom
             custom: tool
             arguments: install --tool-path ./src/client/ui nbgv --version 3.2.31
-          displayName: Install NBGV tool
 
         - script: ./nbgv cloud -a
           workingDirectory: src/client/ui
@@ -199,8 +201,8 @@ stages:
                 inputs:
                   connectionType: 'Azure Resource Manager'
                   azureSubscription: 'Azure Service Connection'
-                  azureResourceGroup: 'kubernetes-playground-test-rg'
-                  kubernetesCluster: 'aks-cluster'
+                  azureResourceGroup: '$(resourceGroupName)'
+                  kubernetesCluster: '$(kubernetesClusterName)'
                   namespace: '$(targetNamespace)'
                   command: 'upgrade'
                   chartType: 'Name'
