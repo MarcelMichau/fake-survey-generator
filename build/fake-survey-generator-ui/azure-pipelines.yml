@@ -209,6 +209,7 @@ stages:
                   chartName: '$(registryName)/$(projectName)'
                   releaseName: '$(projectName)-$(environmentSuffix)'
                   arguments: >-
+                    --create-namespace
                     --version $(VersionTag)
                     --set image.repository=$(imageRepository)
                     --set image.tag=$(VersionTag)
