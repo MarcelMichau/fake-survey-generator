@@ -14,6 +14,7 @@ stages:
           resourceGroupName: 'rg-fake-survey-generator'
           location: 'South Africa North'
           dnsZoneName: mysecondarydomain.com
+          azureContainerRegistryName: acrfakesurveygenerator
           externalDnsIdentityName: mi-external-dns
           certManagerIdentityName: mi-cert-manager
           kubernetesClusterName: aks-cluster
@@ -80,6 +81,8 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: 'build/infrastructure/azure-container-registry/azuredeploy.json'
             csmParametersFile: 'build/infrastructure/azure-container-registry/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -registryName "$(azureContainerRegistryName)"
             deploymentMode: 'Incremental'
 
         - task: AzureResourceManagerTemplateDeployment@3
@@ -174,7 +177,7 @@ stages:
             subscriptionId: $(subscriptionId)
             action: 'Create Or Update Resource Group'
             resourceGroupName: $(kubernetesNodeResourceGroupName)
-            location: $(azureRegion)
+            location: $(location)
             templateLocation: 'Linked artifact'
             csmFile: 'build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.json'
             csmParametersFile: 'build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.parameters.json'
@@ -190,13 +193,14 @@ stages:
             subscriptionId: $(subscriptionId)
             action: 'Create Or Update Resource Group'
             resourceGroupName: $(resourceGroupName)
-            location: $(azureRegion)
+            location: $(location)
             templateLocation: 'Linked artifact'
             csmFile: 'build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.json'
             csmParametersFile: 'build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.parameters.json'
             overrideParameters: >-
               -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
               -aksClusterNodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
+              -azureContainerRegistryName "$(azureContainerRegistryName)"
             deploymentMode: 'Incremental'
 
         - task: HelmDeploy@0
