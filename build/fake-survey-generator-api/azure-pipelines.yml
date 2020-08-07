@@ -32,6 +32,13 @@ pr:
       - charts/fake-survey-generator-api/*
       - build/fake-survey-generator-api/*
 
+variables:
+  projectName: fake-survey-generator-api
+  registryName: acrfakesurveygenerator
+  imageRepository: '$(registryName).azurecr.io/$(projectName)'
+  resourceGroupName: rg-fake-survey-generator
+  kubernetesClusterName: aks-cluster
+
 stages:
   - stage: Build
     displayName: 'Build'
@@ -42,8 +49,6 @@ stages:
 
         variables:
           buildConfiguration: 'Release'
-          imageName: fakesurveygeneratorapi
-          DOCKER_BUILDKIT: 1
 
         steps:
         - task: UseDotNet@2
@@ -107,17 +112,28 @@ stages:
             artifact: 'DbMigrationScript'
           displayName: 'Publish Database Migration Script'
 
-        - script: |
-            docker pull $(dockerId)/$(imageName):latest
-            docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(dockerId)/$(imageName):latest -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/server/FakeSurveyGenerator.API/Dockerfile .
+        - task: Docker@2
           displayName: 'Build Docker Image'
+          inputs:
+            containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
+            repository: '$(projectName)'
+            command: 'build'
+            Dockerfile: 'src/client/ui/Dockerfile'
+            buildContext: .
+            arguments: '--build-arg REACT_APP_VERSION=$(NBGV_SemVer1)'
+            tags: |
+              $(NBGV_SemVer1)
+              latest
 
-        - script: |
-            echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
-            docker push $(dockerId)/$(imageName)
-          env:
-            DOCKER_PASSWORD: $(dockerPassword)
-          displayName: 'Push Image to Docker Hub'
+        - task: Docker@2
+          displayName: 'Push Image to Azure Container Registry'
+          inputs:
+            containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
+            repository: '$(projectName)'
+            command: 'push'
+            tags: |
+              $(NBGV_SemVer1)
+              latest
 
   - stage: Publish
     displayName: 'Publish'
@@ -148,26 +164,26 @@ stages:
                   save: false
                 displayName: 'Helm Package'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az configure --defaults acr=$(registryName)'
-  #               displayName: 'Set Azure Container Registry Default in Azure CLI'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm repo add'
-  #               displayName: 'Add Azure Container Registry Repo to Azure CLI'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
-  #               displayName: 'Push Helm Chart to Azure Container Registry'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
+                displayName: 'Push Helm Chart to Azure Container Registry'
 
   # - stage: Test_Database_Deployment
   #   displayName: 'Test Database Deployment'
