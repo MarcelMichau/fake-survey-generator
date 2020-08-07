@@ -228,7 +228,6 @@ stages:
                     AuthenticationType: 'connectionString'
                     ConnectionString: 'Server=$(sqlServerName);Initial Catalog=$(sqlDatabaseName);Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;'
                     deployType: 'SqlTask'
-                    DeploymentAction: 'Publish'
                     SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
                     SqlAdditionalArguments: '/AccessToken:$(sqlAccessToken)'
                     IpDetectionMethod: 'AutoDetect'
