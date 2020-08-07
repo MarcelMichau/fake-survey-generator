@@ -217,6 +217,7 @@ stages:
                   inputs:
                     targetType: 'inline'
                     script: |
+                      az login
                       $SqlAccessToken = (az account get-access-token --resource=https://database.windows.net/ --query accessToken) | Out-String
                       Write-Output "##vso[task.setvariable variable=sqlAccessToken;]$SqlAccessToken"
                     pwsh: true
