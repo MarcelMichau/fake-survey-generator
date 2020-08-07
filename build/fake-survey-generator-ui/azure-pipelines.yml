@@ -69,6 +69,7 @@ stages:
             repository: '$(imageName)'
             command: 'build'
             Dockerfile: 'src/client/ui/Dockerfile'
+            buildContext: .
             tags: '$(NBGV_SemVer1)'
             arguments: '--build-arg REACT_APP_VERSION=$(NBGV_SemVer1)'
 
