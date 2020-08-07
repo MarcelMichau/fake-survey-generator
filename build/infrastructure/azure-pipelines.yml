@@ -285,23 +285,6 @@ stages:
             releaseName: 'aad-pod-identity'
 
         - task: HelmDeploy@0
-          displayName: 'Install cert-manager'
-          inputs:
-            connectionType: 'Azure Resource Manager'
-            azureSubscription: 'Azure Service Connection'
-            azureResourceGroup: '$(resourceGroupName)'
-            kubernetesCluster: '$(kubernetesClusterName)'
-            namespace: '$(kubernetesInfrastructureNamespace)'
-            command: 'upgrade'
-            chartType: 'Name'
-            chartName: 'jetstack/cert-manager'
-            releaseName: 'cert-manager'
-            arguments: >-
-              --create-namespace
-              --set installCRDs=true
-              --set podLabels.aadpodidbinding=$(certManagerIdentityName)
-
-        - task: HelmDeploy@0
           displayName: 'Install ingress-nginx'
           inputs:
             connectionType: 'Azure Resource Manager'
@@ -342,6 +325,23 @@ stages:
             chartType: 'Name'
             chartName: 'csi-secrets-store-provider-azure/csi-secrets-store-provider-azure'
             releaseName: 'csi-secrets-store-provider-azure'
+
+        - task: HelmDeploy@0
+          displayName: 'Install cert-manager'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'Name'
+            chartName: 'jetstack/cert-manager'
+            releaseName: 'cert-manager'
+            arguments: >-
+              --create-namespace
+              --set installCRDs=true
+              --set podLabels.aadpodidbinding=$(certManagerIdentityName)
 
         - task: HelmDeploy@0
           displayName: 'Create LetsEncrypt Cluster Issuer'
