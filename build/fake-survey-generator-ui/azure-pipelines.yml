@@ -25,7 +25,7 @@ pr:
 variables:
   projectName: fake-survey-generator-ui
   registryName: acrfakesurveygenerator
-  imageRepository: '$(registryName)/$(projectName)'
+  imageRepository: '$(registryName).azurecr.io/$(projectName)'
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
 
