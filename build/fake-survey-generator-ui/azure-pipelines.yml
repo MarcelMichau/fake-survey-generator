@@ -70,8 +70,10 @@ stages:
             command: 'build'
             Dockerfile: 'src/client/ui/Dockerfile'
             buildContext: .
-            tags: '$(NBGV_SemVer1)'
             arguments: '--build-arg REACT_APP_VERSION=$(NBGV_SemVer1)'
+            tags: |
+              $(NBGV_SemVer1)
+              latest
 
         - task: Docker@2
           displayName: 'Push Image to Azure Container Registry'
