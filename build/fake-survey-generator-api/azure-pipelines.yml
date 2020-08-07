@@ -211,16 +211,15 @@ stages:
                 #     deployType: SqlTask
                 #     SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
 
-                - task: PowerShell@2
-                  name: 'GetSqlAccessToken'
+                - task: AzureCLI@2
                   displayName: 'Get Sql Access Token'
                   inputs:
-                    targetType: 'inline'
-                    script: |
-                      az login
+                    azureSubscription: 'Azure Service Connection'
+                    scriptType: ps
+                    scriptLocation: inlineScript
+                    inlineScript: |
                       $SqlAccessToken = (az account get-access-token --resource=https://database.windows.net/ --query accessToken) | Out-String
                       Write-Output "##vso[task.setvariable variable=sqlAccessToken;]$SqlAccessToken"
-                    pwsh: true
                                         
                 - task: SqlAzureDacpacDeployment@1
                   displayName: 'Execute SQL Migration Script'
