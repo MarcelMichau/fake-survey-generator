@@ -42,7 +42,7 @@
       "name": "[concat(parameters('azureContainerRegistryName'), '/Microsoft.Authorization/', guid(uniqueString(concat(parameters('aksClusterManagedIdentityName'), variables('acrPullRole')))))]",
       "properties": {
         "roleDefinitionId": "[variables('acrPullRole')]",
-        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('aksClusterManagedIdentityName')), '2018-11-30').principalId]",
+        "principalId": "[reference(resourceId(parameters('aksClusterNodeResourceGroupName'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('aksClusterManagedIdentityName')), '2018-11-30').principalId]",
         "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('azureContainerRegistryName'))]",
         "principalType": "ServicePrincipal"
       }
