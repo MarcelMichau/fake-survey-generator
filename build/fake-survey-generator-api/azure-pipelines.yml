@@ -218,8 +218,16 @@ stages:
                     scriptType: ps
                     scriptLocation: inlineScript
                     inlineScript: |
-                      $SqlAccessToken = (az account get-access-token --resource=https://database.windows.net/ --query accessToken) | Out-String
-                      Write-Output "##vso[task.setvariable variable=sqlAccessToken;]$SqlAccessToken"
+                      $accessToken = (az account get-access-token --resource=https://database.windows.net/ --query accessToken) | Out-String
+                      Write-Output "##vso[task.setvariable variable=sqlAccessToken;]$accessToken"
+
+                - script: |
+                    echo $sqlAccessToken
+                  displayName: 'Log no. 1'
+
+                - script: |
+                    echo $(sqlAccessToken)
+                  displayName: 'Log no. 2'
                                         
                 - task: SqlAzureDacpacDeployment@1
                   displayName: 'Execute SQL Migration Script'
