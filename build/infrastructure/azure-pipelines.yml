@@ -357,6 +357,7 @@ stages:
             chartType: 'Name'
             chartName: 'jetstack/cert-manager'
             releaseName: 'cert-manager'
+            chartVersion: 'v0.15.2' # older version needed because of: https://cert-manager.io/docs/installation/upgrading/upgrading-0.15-0.16/#helm
             arguments: >-
               --create-namespace
               --set installCRDs=true
