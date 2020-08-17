@@ -193,7 +193,7 @@ stages:
         pool:
           vmImage: 'windows-2019'
         variables:
-          sqlServerName: 'tcp:sql-marcel-michau.database.windows.net,1433'
+          sqlServerName: 'sql-marcel-michau.database.windows.net'
           sqlDatabaseName: sqldb-fake-survey-generator
           sqlDatabaseDeploymentUser: azure-pipelines-user-test
         environment: 'azure-sql-test'
