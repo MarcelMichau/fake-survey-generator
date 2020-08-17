@@ -38,6 +38,20 @@ stages:
               -location "$(location)"
 
         - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Application Insights'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-application-insights/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-application-insights/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
           displayName: 'Create DNS Zone'
           inputs:
             deploymentScope: 'Resource Group'
