@@ -217,6 +217,11 @@ stages:
               -azureContainerRegistryName "$(azureContainerRegistryName)"
             deploymentMode: 'Incremental'
 
+        - task: HelmInstaller@1
+          inputs:
+            helmVersionToInstall: '3.3.0'
+          displayName: 'Install Helm'
+
         - task: HelmDeploy@0
           displayName: 'Add ingress-nginx Helm Repo'
           enabled: true

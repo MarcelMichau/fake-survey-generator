@@ -153,7 +153,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.4'
+                  helmVersionToInstall: '3.3.0'
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
@@ -262,7 +262,7 @@ stages:
 
   #             - task: HelmInstaller@1
   #               inputs:
-  #                 helmVersionToInstall: '3.2.4'
+  #                 helmVersionToInstall: '3.3.0'
   #               displayName: 'Install Helm'
 
   #             - task: AzureCLI@1
@@ -384,7 +384,7 @@ stages:
 
   #             - task: HelmInstaller@1
   #               inputs:
-  #                 helmVersionToInstall: '3.2.4'
+  #                 helmVersionToInstall: '3.3.0'
   #               displayName: 'Install Helm'
 
   #             - task: AzureCLI@1
