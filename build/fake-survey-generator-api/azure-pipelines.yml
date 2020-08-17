@@ -195,50 +195,44 @@ stages:
         variables:
           sqlServerName: 'tcp:sql-marcel-michau.database.windows.net,1433'
           sqlDatabaseName: sqldb-fake-survey-generator
+          sqlDatabaseDeploymentUser: azure-pipelines-user-test
         environment: 'azure-sql-test'
         strategy:
           runOnce:
             deploy:
               steps:
-                # - task: SqlAzureDacpacDeployment@1
-                #   displayName: 'Execute SQL Migration Script'
-                #   inputs:
-                #     azureSubscription: MyARMConnection
-                #     ServerName: '$(testEnvDatabaseMigrationServer)'
-                #     DatabaseName: '$(testEnvDatabase)'
-                #     SqlUsername: '$(testEnvDatabaseAdminLogin)'
-                #     SqlPassword: '$(testEnvDatabaseAdminPassword)'
-                #     deployType: SqlTask
-                #     SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
-
-                - task: AzureCLI@2
-                  displayName: 'Get Sql Access Token'
-                  inputs:
-                    azureSubscription: 'Azure Service Connection'
-                    scriptType: ps
-                    scriptLocation: inlineScript
-                    inlineScript: |
-                      $accessToken = (az account get-access-token --resource=https://database.windows.net/ --query accessToken) | Out-String
-                      Write-Output "##vso[task.setvariable variable=sqlAccessToken;]$accessToken"
-
-                - script: |
-                    echo $sqlAccessToken
-                  displayName: 'Log no. 1'
-
-                - script: |
-                    echo $(sqlAccessToken)
-                  displayName: 'Log no. 2'
-                                        
                 - task: SqlAzureDacpacDeployment@1
                   displayName: 'Execute SQL Migration Script'
                   inputs:
                     azureSubscription: 'Azure Service Connection'
-                    AuthenticationType: 'connectionString'
-                    ConnectionString: 'Server=$(sqlServerName);Initial Catalog=$(sqlDatabaseName);Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;'
-                    deployType: 'SqlTask'
+                    ServerName: '$(sqlServerName)'
+                    DatabaseName: '$(sqlDatabaseName)'
+                    SqlUsername: '$(sqlDatabaseDeploymentUser)'
+                    SqlPassword: '$(sqlDatabaseDeploymentPassword)'
+                    deployType: SqlTask
                     SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
-                    AdditionalArguments: '/AccessToken:$(sqlAccessToken)'
-                    IpDetectionMethod: 'AutoDetect'
+
+                # Commented until I find a supported way of running SQL scripts with Azure AD auth
+                # - task: AzureCLI@2
+                #   displayName: 'Get Sql Access Token'
+                #   inputs:
+                #     azureSubscription: 'Azure Service Connection'
+                #     scriptType: ps
+                #     scriptLocation: inlineScript
+                #     inlineScript: |
+                #       $accessToken = (az account get-access-token --resource=https://database.windows.net/ --query accessToken) | Out-String
+                #       Write-Output "##vso[task.setvariable variable=sqlAccessToken;]$accessToken"
+                                        
+                # - task: SqlAzureDacpacDeployment@1
+                #   displayName: 'Execute SQL Migration Script'
+                #   inputs:
+                #     azureSubscription: 'Azure Service Connection'
+                #     AuthenticationType: 'connectionString'
+                #     ConnectionString: 'Server=$(sqlServerName);Initial Catalog=$(sqlDatabaseName);Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;'
+                #     deployType: 'SqlTask'
+                #     SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
+                #     AdditionalArguments: '/AccessToken:$(sqlAccessToken)'
+                #     IpDetectionMethod: 'AutoDetect'
 
   # - stage: Test_Application_Deployment
   #   displayName: 'Test Application Deployment'
