@@ -22,5 +22,10 @@
       }
     }
   ],
-  "outputs": {}
+  "outputs": {
+    "instrumentationKey": {
+      "value": "[reference(resourceId('Microsoft.Insights/components', parameters('name')), '2018-05-01-preview').InstrumentationKey]",
+      "type": "string"
+    }
+  }
 }
