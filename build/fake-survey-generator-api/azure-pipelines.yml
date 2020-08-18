@@ -284,7 +284,7 @@ stages:
               deploymentMode: 'Incremental'
               overrideParameters: >-
                 -identityName "$(managedIdentityName)"
-                -aksClusterInfrastructureResourceGroup "aks-infrastructure"
+                -aksClusterInfrastructureResourceGroup "aks-cluster-infrastructure"
                 -aksClusterManagedIdentityName "aks-cluster-agentpool"
                 -keyVaultName "$(azureKeyVaultName)"
                 -keyVaultResourceGroup "$(azureKeyVaultResourceGroup)"
