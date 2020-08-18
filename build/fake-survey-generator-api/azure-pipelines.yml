@@ -12,6 +12,7 @@ trigger:
       - src/server/FakeSurveyGenerator.Infrastructure/*
       - charts/fake-survey-generator-api/*
       - build/fake-survey-generator-api/*
+      - build/infrastructure/fake-survey-generator-managed-identity/*
 
 pr:
   branches:
@@ -31,6 +32,7 @@ pr:
       - src/server/FakeSurveyGenerator.Infrastructure/*
       - charts/fake-survey-generator-api/*
       - build/fake-survey-generator-api/*
+      - build/infrastructure/fake-survey-generator-managed-identity/*
 
 variables:
   projectName: fake-survey-generator-api
@@ -234,101 +236,161 @@ stages:
                 #     AdditionalArguments: '/AccessToken:$(sqlAccessToken)'
                 #     IpDetectionMethod: 'AutoDetect'
 
-  # - stage: Test_Application_Deployment
-  #   displayName: 'Test Application Deployment'
-  #   jobs:
-  #     - deployment: Deployment_Job
-  #       displayName: Deploy Fake Survey Generator API
-  #       pool:
-  #         vmImage: 'ubuntu-latest'
-  #       variables:
-  #         environmentSuffix: test
-  #         ingressClusterIssuerName: letsencrypt-prod
-  #         ingressHost: aks-test.fakesurveygenerator.mysecondarydomain.com
-  #         ingressTlsSecretName: marcelmichau-dev-tls-secret
-  #         targetNamespace: test-env
-  #       environment: 'aks-test'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #             - script: |
-  #                 GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-  #                 echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-  #               displayName: 'Set Version from Version File'
+  - stage: Test_Application_Deployment
+    displayName: 'Test Application Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          environmentSuffix: test
+          ingressClusterIssuerName: letsencrypt-staging
+          ingressHost: aks-test.fakesurveygenerator.mysecondarydomain.com
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          targetNamespace: test-env
+          identityProviderUrl: https://marcelmichau.eu.auth0.com/
+          azureDatabaseEnabled: true
+          azureDatabaseUseActiveDirectoryAuthentication: true
+          databaseServer: tcp:sql-marcel-michau.database.windows.net,1433
+          databaseName: sqldb-fake-survey-generator
+          databaseUser: 'azure-ad-enabled'
+          databasePassword: 'azure-ad-enabled'
+          azureRedisCacheEnabled: true
+          redisServer: redis-fake-survey-generator.redis.cache.windows.net
+          redisPassword: '$(testEnvRedisPassword)'
+          redisDefaultDatabase: 0
+          azureApplicationInsightsEnabled: false
+          azureKeyVaultEnabled: false
+          azureKeyVaultName: kv-fake-survey-generator
+          azureKeyVaultResourceGroup: '$(resourceGroupName)'
+          azureKeyVaultSubscriptionId: '$(subscriptionId)'
+          azureKeyVaultTenantId: '$(tenantId)'
+          managedIdentityName: mi-fake-survey-generator-test
+          replicaCount: 1
+        environment: 'aks-test'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: AzureResourceManagerTemplateDeployment@3
+                displayName: 'Deploy Test Managed Identity ARM Template'
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: 'Azure Service Connection'
+                  subscriptionId: '$(subscriptionId)'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: '$(resourceGroupName)'
+                  location: 'South Africa North'
+                  templateLocation: 'Linked artifact'
+                  csmFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.json'
+                  csmParametersFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.parameters.json'
+                  deploymentMode: 'Incremental'
+                  overrideParameters: >-
+                    -identityName "$(managedIdentityName)"
+                    -aksClusterInfrastructureResourceGroup "aks-infrastructure"
+                    -aksClusterManagedIdentityName "aks-cluster-agentpool"
+                    -keyVaultName "$(azureKeyVaultName)"
+                    -keyVaultResourceGroup "$(azureKeyVaultResourceGroup)"
+                  deploymentOutputs: createManagedIdentityArmOutput
 
-  #             - task: KubectlInstaller@0
-  #               displayName: 'Install Kubectl latest'
+              - task: PowerShell@2
+                name: 'SetOutputVariables'
+                displayName: 'Set Output Variables'
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    $armOutputObj = '$(createManagedIdentityArmOutput)' | ConvertFrom-Json
+                    $armOutputObj.PSObject.Properties | ForEach-Object {
+                      $keyname = $_.Name
+                      $value = $_.Value.value
+                  
+                      ## Creates a standard pipeline variable
+                      Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+                      
+                      ## Creates an output variable
+                      Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+                    }
+                  pwsh: true
 
-  #             - task: HelmInstaller@1
-  #               inputs:
-  #                 helmVersionToInstall: '3.3.0'
-  #               displayName: 'Install Helm'
+              - script: |
+                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                displayName: 'Set Version from Version File'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az configure --defaults acr=$(registryName)'
-  #               displayName: 'Set Azure Container Registry Default in Azure CLI'
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm repo add'
-  #               displayName: 'Add Azure Container Registry Repo to Azure CLI'
+              - task: HelmInstaller@1
+                inputs:
+                  helmVersionToInstall: '3.3.0'
+                displayName: 'Install Helm'
 
-  #             - task: Bash@3
-  #               inputs:
-  #                 targetType: 'inline'
-  #                 script: 'helm repo update'
-  #               displayName: 'Update Helm Repo'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
 
-  #             - task: HelmDeploy@0
-  #               displayName: 'helm upgrade'
-  #               inputs:
-  #                 connectionType: 'Azure Resource Manager'
-  #                 azureSubscription: 'MyARMConnection'
-  #                 azureResourceGroup: 'kubernetes-playground-test-rg'
-  #                 kubernetesCluster: 'aks-cluster'
-  #                 namespace: '$(targetNamespace)'
-  #                 command: 'upgrade'
-  #                 chartType: 'Name'
-  #                 chartName: '$(registryName)/$(projectName)'
-  #                 releaseName: '$(projectName)-$(environmentSuffix)'
-  #                 arguments: >-
-  #                   --version $(VersionTag)
-  #                   --set identityProviderUrl=$(testEnvIdentityProviderUrl)
-  #                   --set azureDatabaseEnabled=$(testEnvAzureDatabaseEnabled)
-  #                   --set azureDatabaseUseActiveDirectoryAuthentication=$(testEnvAzureDatabaseUseActiveDirectoryAuthentication)
-  #                   --set databaseServer=$(testEnvDatabaseServer)
-  #                   --set azureRedisCacheEnabled=$(testEnvAzureRedisCacheEnabled)
-  #                   --set redisUrl=$(testEnvRedisServer)
-  #                   --set redisPassword=$(testEnvRedisPassword)
-  #                   --set redisDefaultDatabase=$(testEnvRedisDefaultDatabase)
-  #                   --set azureApplicationInsightsEnabled=$(testEnvAzureApplicationInsightsEnabled)
-  #                   --set azureKeyVaultEnabled=$(testEnvAzureKeyVaultEnabled)
-  #                   --set azureKeyVaultName=$(testEnvAzureKeyVaultName)
-  #                   --set azureKeyVaultResourceGroup=$(testEnvAzureKeyVaultResourceGroup)
-  #                   --set azureKeyVaultSubscriptionId=$(testEnvAzureKeyVaultSubscriptionId)
-  #                   --set azureKeyVaultTenantId=$(testEnvAzureKeyVaultTenantId)
-  #                   --set azurePodIdentityClientId=$(testEnvAzurePodIdentityClientId)
-  #                   --set azurePodIdentityResourceId=$(testEnvAzurePodIdentityResourceId)
-  #                   --set azurePodIdentityName=$(testEnvAzurePodIdentityName)
-  #                   --set image.repository=$(imageRepository)
-  #                   --set image.tag=$(VersionTag)
-  #                   --set database=$(testEnvDatabase)
-  #                   --set user=$(testEnvDatabaseUser)
-  #                   --set password=$(testEnvDatabasePassword)
-  #                   --set ingress.hosts[0].host=$(testEnvIngressHost)
-  #                   --set ingress.hosts[0].paths[0]=/api
-  #                   --set ingress.hosts[0].paths[1]=/swagger
-  #                   --set ingress.hosts[0].paths[2]=/health
-  #                   --set ingress.tls[0].secretName=$(ingressTlsSecretName)
-  #                   --set ingress.tls[0].hosts={$(ingressHost)}
-  #                   --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
-  #                   --set replicaCount=$(testEnvReplicaCount)
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+
+              - task: Bash@3
+                inputs:
+                  targetType: 'inline'
+                  script: 'helm repo update'
+                displayName: 'Update Helm Repo'
+
+              - task: HelmDeploy@0
+                displayName: 'helm upgrade'
+                inputs:
+                  connectionType: 'Azure Resource Manager'
+                  azureSubscription: 'Azure Service Connection'
+                  azureResourceGroup: '$(resourceGroupName)'
+                  kubernetesCluster: '$(kubernetesClusterName)'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: >-
+                    --create-namespace
+                    --version $(VersionTag)
+                    --set identityProviderUrl=$(identityProviderUrl)
+                    --set azureDatabaseEnabled=$(azureDatabaseEnabled)
+                    --set azureDatabaseUseActiveDirectoryAuthentication=$(azureDatabaseUseActiveDirectoryAuthentication)
+                    --set databaseServer=$(databaseServer)
+                    --set azureRedisCacheEnabled=$(azureRedisCacheEnabled)
+                    --set redisUrl=$(redisServer)
+                    --set redisPassword=$(redisPassword)
+                    --set redisDefaultDatabase=$(redisDefaultDatabase)
+                    --set azureApplicationInsightsEnabled=$(azureApplicationInsightsEnabled)
+                    --set azureKeyVaultEnabled=$(azureKeyVaultEnabled)
+                    --set azureKeyVaultName=$(azureKeyVaultName)
+                    --set azureKeyVaultResourceGroup=$(azureKeyVaultResourceGroup)
+                    --set azureKeyVaultSubscriptionId=$(azureKeyVaultSubscriptionId)
+                    --set azureKeyVaultTenantId=$(azureKeyVaultTenantId)
+                    --set azurePodIdentityClientId=$(identityClientId)
+                    --set azurePodIdentityResourceId=$(identityResourceId)
+                    --set azurePodIdentityName=$(managedIdentityName)
+                    --set image.repository=$(imageRepository)
+                    --set image.tag=$(VersionTag)
+                    --set database=$(databaseName)
+                    --set user=$(databaseUser)
+                    --set password=$(databasePassword)
+                    --set ingress.hosts[0].host=$(ingressHost)
+                    --set ingress.hosts[0].paths[0]=/api
+                    --set ingress.hosts[0].paths[1]=/swagger
+                    --set ingress.hosts[0].paths[2]=/health
+                    --set ingress.tls[0].secretName=$(ingressTlsSecretName)
+                    --set ingress.tls[0].hosts={$(ingressHost)}
+                    --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
+                    --set replicaCount=$(replicaCount)
  
   # - stage: Production_Database_Deployment
   #   displayName: 'Production Database Deployment'
@@ -348,7 +410,7 @@ stages:
   #               - task: SqlAzureDacpacDeployment@1
   #                 displayName: 'Execute SQL Migration Script'
   #                 inputs:
-  #                   azureSubscription: MyARMConnection
+  #                   azureSubscription: Azure Service Connection
   #                   ServerName: '$(prodEnvDatabaseMigrationServer)'
   #                   DatabaseName: '$(prodEnvDatabase)'
   #                   SqlUsername: '$(prodEnvDatabaseAdminLogin)'
@@ -389,14 +451,14 @@ stages:
 
   #             - task: AzureCLI@1
   #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
+  #                 azureSubscription: 'Azure Service Connection'
   #                 scriptLocation: 'inlineScript'
   #                 inlineScript: 'az configure --defaults acr=$(registryName)'
   #               displayName: 'Set Azure Container Registry Default in Azure CLI'
 
   #             - task: AzureCLI@1
   #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
+  #                 azureSubscription: 'Azure Service Connection'
   #                 scriptLocation: 'inlineScript'
   #                 inlineScript: 'az acr helm repo add'
   #               displayName: 'Add Azure Container Registry Repo to Azure CLI'
@@ -411,7 +473,7 @@ stages:
   #               displayName: 'helm upgrade'
   #               inputs:
   #                 connectionType: 'Azure Resource Manager'
-  #                 azureSubscription: 'MyARMConnection'
+  #                 azureSubscription: 'Azure Service Connection'
   #                 azureResourceGroup: 'kubernetes-playground-test-rg'
   #                 kubernetesCluster: 'aks-cluster'
   #                 namespace: '$(targetNamespace)'

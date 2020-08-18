@@ -1,7 +1,7 @@
 apiVersion: "aadpodidentity.k8s.io/v1"
 kind: AzureIdentity
 metadata:
-  name: fake-survey-generator-identity
+  name: {{ .Values.azurePodIdentityName }}
 spec:
   type: 0
   resourceID: {{ .Values.azurePodIdentityResourceId }}

@@ -90,6 +90,14 @@
     "identityName": {
       "type": "string",
       "value": "[parameters('identityName')]"
+    },
+    "identityResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]"
+    },
+    "identityClientId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName')), '2018-11-30', 'Full').properties.clientId]"
     }
   }
 }
