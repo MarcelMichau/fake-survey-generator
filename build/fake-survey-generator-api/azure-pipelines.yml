@@ -120,9 +120,8 @@ stages:
             containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
             repository: '$(projectName)'
             command: 'build'
-            Dockerfile: 'src/client/ui/Dockerfile'
+            Dockerfile: 'src/server/FakeSurveyGenerator.API/Dockerfile'
             buildContext: .
-            arguments: '--build-arg REACT_APP_VERSION=$(NBGV_SemVer1)'
             tags: |
               $(NBGV_SemVer1)
               latest
