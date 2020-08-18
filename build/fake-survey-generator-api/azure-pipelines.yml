@@ -255,7 +255,7 @@ stages:
       redisPassword: '$(testEnvRedisPassword)'
       redisDefaultDatabase: 0
       azureApplicationInsightsEnabled: false
-      azureKeyVaultEnabled: false
+      azureKeyVaultEnabled: true
       azureKeyVaultName: kv-fake-survey-generator
       azureKeyVaultResourceGroup: '$(resourceGroupName)'
       azureKeyVaultSubscriptionId: '$(subscriptionId)'
