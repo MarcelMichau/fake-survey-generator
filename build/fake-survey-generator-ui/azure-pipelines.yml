@@ -186,7 +186,7 @@ stages:
                 displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
               - task: HelmDeploy@0
-                displayName: 'helm upgrade'
+                displayName: 'Deploy Fake Survey Generator UI using Helm'
                 inputs:
                   connectionType: 'Azure Resource Manager'
                   azureSubscription: 'Azure Service Connection'

@@ -246,7 +246,7 @@ stages:
       identityProviderUrl: https://marcelmichau.eu.auth0.com/
       azureDatabaseEnabled: true
       azureDatabaseUseActiveDirectoryAuthentication: true
-      databaseServer: tcp:sql-marcel-michau.database.windows.net,1433
+      databaseServer: tcp:sql-marcel-michau.database.windows.net\,1433
       databaseName: sqldb-fake-survey-generator
       databaseUser: 'azure-ad-enabled'
       databasePassword: 'azure-ad-enabled'
@@ -355,7 +355,7 @@ stages:
                 displayName: 'Update Helm Repo'
 
               - task: HelmDeploy@0
-                displayName: 'helm upgrade'
+                displayName: 'Deploy Fake Survey Generator API using Helm'
                 inputs:
                   connectionType: 'Azure Resource Manager'
                   azureSubscription: 'Azure Service Connection'
