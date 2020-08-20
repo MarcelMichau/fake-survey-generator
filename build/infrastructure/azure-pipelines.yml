@@ -15,10 +15,10 @@ stages:
           location: 'South Africa North'
           dnsZoneName: mysecondarydomain.com
           azureContainerRegistryName: acrfakesurveygenerator
-          externalDnsIdentityName: mi-external-dns
-          certManagerIdentityName: mi-cert-manager
+          externalDnsIdentityName: mi-aks-external-dns
+          certManagerIdentityName: mi-aks-cert-manager
           kubernetesClusterName: aks-cluster
-          kubernetesNodeResourceGroupName: aks-cluster-infrastructure
+          kubernetesNodeResourceGroupName: rg-aks-cluster-infrastructure
           kubernetesInfrastructureNamespace: 'infrastructure'
 
         steps:
