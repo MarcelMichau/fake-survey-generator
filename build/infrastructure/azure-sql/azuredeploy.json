@@ -60,6 +60,19 @@
           "dependsOn": [
             "[resourceId('Microsoft.Sql/servers', concat(parameters('serverName')))]"
           ]
+        },
+        {
+          "type": "firewallRules",
+          "apiVersion": "2015-05-01-preview",
+          "name": "AllowAllAzureIps",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/servers', parameters('serverName'))]"
+          ],
+          "properties": {
+            "endIpAddress": "0.0.0.0",
+            "startIpAddress": "0.0.0.0"
+          }
         }
       ]
     }

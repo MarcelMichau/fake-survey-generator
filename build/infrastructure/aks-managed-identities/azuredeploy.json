@@ -50,7 +50,7 @@
       "apiVersion": "2017-09-01",
       "name": "[guid(concat(resourceGroup().id, parameters('externalDnsIdentityName'), 'Reader'))]",
       "dependsOn": [
-        "[parameters('externalDnsIdentityName')]"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('externalDnsIdentityName'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('readerRole')]",
@@ -64,7 +64,7 @@
       "apiVersion": "2018-09-01-preview",
       "name": "[concat(parameters('dnsZoneName'), '/Microsoft.Authorization/', guid(uniqueString(concat(parameters('externalDnsIdentityName'), variables('dnsZoneContributorRole')))))]",
       "dependsOn": [
-        "[parameters('externalDnsIdentityName')]"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('externalDnsIdentityName'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('dnsZoneContributorRole')]",
@@ -78,7 +78,7 @@
       "apiVersion": "2018-09-01-preview",
       "name": "[concat(parameters('dnsZoneName'), '/Microsoft.Authorization/', guid(uniqueString(concat(parameters('certManagerIdentityName'), variables('dnsZoneContributorRole')))))]",
       "dependsOn": [
-        "[parameters('certManagerIdentityName')]"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('certManagerIdentityName'))]"
       ],
       "properties": {
         "roleDefinitionId": "[variables('dnsZoneContributorRole')]",
