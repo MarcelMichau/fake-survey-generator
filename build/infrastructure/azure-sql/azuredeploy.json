@@ -34,6 +34,24 @@
       "metadata": {
         "description": "The administrator password of the SQL logical server."
       }
+    },
+    "azureAdAdministratorLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AD administrator username of the SQL logical server."
+      }
+    },
+    "azureAdAdministratorObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AD administrator Azure AD Object ID."
+      }
+    },
+    "azureAdAdministratorTenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Azure AD administrator Azure AD Tenant ID."
+      }
     }
   },
   "variables": {},
@@ -73,6 +91,21 @@
             "endIpAddress": "0.0.0.0",
             "startIpAddress": "0.0.0.0"
           }
+        },
+        {
+          "type": "administrators",
+          "name": "activeDirectory",
+          "apiVersion": "2019-06-01-preview",
+          "location": "[parameters('location')]",
+          "properties": {
+            "administratorType": "ActiveDirectory",
+            "login": "[parameters('azureAdAdministratorLogin')]",
+            "sid": "[parameters('azureAdAdministratorObjectId')]",
+            "tenantId": "[parameters('azureAdAdministratorTenantId')]"
+          },
+          "dependsOn": [
+            "[concat('Microsoft.Sql/servers/', parameters('serverName'))]"
+          ]
         }
       ]
     }
