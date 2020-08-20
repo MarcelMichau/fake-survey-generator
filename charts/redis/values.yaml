@@ -9,7 +9,7 @@ replicaCount: 1
 
 image:
   repository: redis
-  tag: latest
+  tag: 6.0.6-alpine
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []

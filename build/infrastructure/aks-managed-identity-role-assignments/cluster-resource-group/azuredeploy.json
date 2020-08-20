@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "aksClusterManagedIdentityName": {
+      "metadata": {
+        "description": "Managed Identity Name used by the AKS Cluster"
+      },
+      "type": "string"
+    },
+    "aksClusterNodeResourceGroupName": {
+      "metadata": {
+        "description": "Resource Group Name which contains all the nodes in the AKS Cluster."
+      },
+      "type": "string"
+    },
+    "azureContainerRegistryName": {
+      "metadata": {
+        "description": "Name of the Azure Container Registry for which the AKS Cluster Managed Identity requires AcrPull role."
+      },
+      "type": "string"
+    }
+  },
+  "variables": {
+    "managedIdentityOperatorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
+    "acrPullRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2017-09-01",
+      "name": "[guid(concat(resourceGroup().id, parameters('aksClusterManagedIdentityName'), 'Managed Identity Operator'))]",
+      "properties": {
+        "roleDefinitionId": "[variables('managedIdentityOperatorRole')]",
+        "principalId": "[reference(resourceId(parameters('aksClusterNodeResourceGroupName'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('aksClusterManagedIdentityName')), '2018-11-30').principalId]",
+        "scope": "[resourceGroup().id]"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(parameters('azureContainerRegistryName'), '/Microsoft.Authorization/', guid(uniqueString(concat(parameters('aksClusterManagedIdentityName'), variables('acrPullRole')))))]",
+      "properties": {
+        "roleDefinitionId": "[variables('acrPullRole')]",
+        "principalId": "[reference(resourceId(parameters('aksClusterNodeResourceGroupName'), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('aksClusterManagedIdentityName')), '2018-11-30').principalId]",
+        "scope": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('azureContainerRegistryName'))]",
+        "principalType": "ServicePrincipal"
+      }
+    }
+  ]
+}

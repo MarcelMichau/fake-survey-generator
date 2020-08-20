@@ -10,12 +10,11 @@
 This is an app. That generates surveys. Fake ones. For fun. That is all.
 </p>
 
-| Component                 | Build Status                                                                                                                                                                                                                                     |
+| Component(s)              | Build Status                                                                                                                                                                                                                                     |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Fake Survey Generator API | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-api?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=10&branchName=master) |
 | Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-ui?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=11&branchName=master)  |
-| SQL Server                | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/sql-server?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=13&branchName=master)                |
-| Redis                     | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/redis?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=12&branchName=master)                     |
+| Azure Infrastructure      | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/azure-infrastructure?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=17&branchName=master)      |
 
 ## Screenshot
 
@@ -23,11 +22,15 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 
 ## What is this?
 
-This is an application of moderate complexity (not just a to-do app), used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates various elements from different repos & blog posts which served as inspiration.
+This is a .NET | C# | React | TypeScript full-stack application of moderate complexity (not just a to-do app), used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates various elements from different repos & blog posts which served as inspiration.
 
 It is built using Clean Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
 
-It also includes some examples that typical real-world applications might need to deal with:
+It is heavily centered around the Microsoft .NET + Azure technology stacks as these are what I have the most experience in & just like building things with. 😀
+
+Here are some of the features incorporated into this project:
+
+### Application Features
 
 - Unit & Integration tests for a CQRS/DDD project
 - Running Unit & Integration tests with Docker Compose
@@ -41,19 +44,27 @@ It also includes some examples that typical real-world applications might need t
 - Using AutoWrapper to return consistent API response models
 - Using Hosted Services in ASP.NET Core Web API
 - Using a distributed Redis cache
-- Creating trusted SSL certificates for HTTPS in development
 - Configuring SQL Server retry policies
 - Using Polly to make resilient HTTP requests
 - Implementing Forwarded Headers for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using FluentValidation
+- Configuring Azure Application Insights for telemetry
+
+### Infrastructure Features
+
+- Automatic semantic versioning using Nerdbank.GitVersioning
+- Creating trusted SSL certificates for HTTPS in development
 - Deploying Entity Framework Core Code-First Migrations to Azure SQL Server using Azure Pipelines
-- Running a microservice application using Docker Compose
+- Using Azure Active Directory authentication to Azure SQL Database with Entity Framework Core
+- Running a microservice application locally using Docker Compose
 - Deploying a microservice application to Kubernetes using Helm charts
 - Local Kubernetes development using Skaffold
-- Using Azure Pipelines to Build & Deploy a microservice application to Azure Kubernetes Service
+- Using Azure Pipelines to build & deploy a microservice application to Azure Kubernetes Service
+- Using Azure Active Directory Pod Identity in Azure Kubernetes Service to associate an Azure AD identity to pods
 - Using Azure Key Vault with Azure Kubernetes Service to protect sensitive application configuration
-- Configuring Azure Application Insights for telemetry
-- Automatic semantic versioning using Nerdbank.GitVersioning
+- Configuring Kubernetes External DNS with Azure DNS Zone for custom domain names in AKS
+- Configuring Cert Manager with AKS & Azure DNS for automatic TLS certificates using Let's Encrypt
+- Infrastructure as Code for Azure resources using Azure Resource Manager (ARM) templates
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
 
@@ -68,6 +79,8 @@ It has a very simple domain: it generates surveys. Fake ones. They can be used a
 This application is also used as a reference for configuring/wiring up some common things I sometimes forget how to do. _Living Documentation_ if you will. You know the culprits: How do I wire up that database again? What is the syntax for that logging configuration? How do I make thing A talk to thing B?
 
 The domain is kept relatively simple such that it doesn't overwhelm the app with unnecessary complexity. It should be quite easy to wrap your head around without requiring a degree in Computer Science.
+
+I also felt that a lot of reference/demo/boilerplate projects out there cover the core application domain & don't go into much detail around the building/deployment/hosting of final application. So this project aims to cover both. It contains application code, configuration, CI/CD pipelines, infrastructure-as-code needed to run the application, as well as a live, running version of the application (as long as budget allows 😁). So this repo hopefully may contain something for everyone & fill in the potential gaps across the whole spectrum of application development. It falls somewhere between a template/boilerplate project & a real-world production open-source application.
 
 ## How is this thing built?
 
@@ -130,18 +143,15 @@ The client side makes use of the following tools, libraries & frameworks:
 
 The application is built for Docker, Docker Compose & Kubernetes with Helm. For local development, Docker Compose is used when debugging the application with Visual Studio, and Skaffold is used to package the application into a Helm chart to deploy to a local Kubernetes cluster for running locally.
 
-The hosted version of the application is deployed to two environments:
-
-- Test - https://aks-test.fakesurveygenerator.marcelmichau.dev
-- Production - https://aks.fakesurveygenerator.marcelmichau.dev
+The hosted version of the application is deployed here: https://aks.fakesurveygenerator.mysecondarydomain.com
 
 The following endpoints are accessible:
 
-- [/swagger](https://aks.fakesurveygenerator.marcelmichau.dev/swagger/index.html) - The Swagger documentation page for the API
-- [/health/live](https://aks.fakesurveygenerator.marcelmichau.dev/health/live) - Health Checks endpoint used by Kubernetes liveness probe
-- [/health/ready](https://aks.fakesurveygenerator.marcelmichau.dev/health/ready) - Health Checks endpoint used by Kubernetes readiness probe
+- [/swagger](https://aks.fakesurveygenerator.mysecondarydomain.com/swagger/index.html) - The Swagger documentation page for the API
+- [/health/live](https://aks.fakesurveygenerator.mysecondarydomain.com/health/live) - Health Checks endpoint used by Kubernetes liveness probe
+- [/health/ready](https://aks.fakesurveygenerator.mysecondarydomain.com/health/ready) - Health Checks endpoint used by Kubernetes readiness probe
 
-The hosted version utilizes the following:
+The hosted version utilizes the following infrastructure:
 
 - Azure Kubernetes Service
 - Azure SQL Database
@@ -149,7 +159,7 @@ The hosted version utilizes the following:
 - Azure Container Registry
 - Azure Key Vault
 - Azure Application Insights
-- Docker Hub
+- Azure DNS Zone
 - Azure DevOps Services (for CI/CD)
 
 ## Authentication
@@ -160,7 +170,7 @@ The application makes use of OpenID Connect for authentication which is implemen
 - Google
 - Microsoft
 
-Initially, this project used IdentityServer for authentication, but I didn't feel like maintaining the separate IdentityServer project as well as the Fake Survey Generator, so I switched it out for Auth0 because authn/authz is hard and I prefer to delegate that responsibility to the people who know how to do it properly. :)
+Initially, this project used IdentityServer for authentication, but I didn't feel like maintaining the separate IdentityServer project as well as the Fake Survey Generator, so I switched it out for Auth0 because authn/authz is hard and I prefer to delegate that responsibility to the people who know how to do it properly. 😁
 
 ## How do I run this thing?
 
@@ -215,3 +225,13 @@ To deploy to a local Kubernetes cluster:
 ## How do I contribute?
 
 If you find a bug, want to add a feature, or want to improve the documentation, open up a PR!
+
+## References
+
+My deepest thanks to all the people who provided these resources as reference:
+
+- [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/)
+- [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
+- [jasontaylordev/CleanArchitecture](https://github.com/jasontaylordev/CleanArchitecture)
+- [Vladimir Khorikov - Applying Functional Principles in C#](https://pluralsight.com/courses/csharp-applying-functional-principles)
+- [Vladimir Khorikov - Functional C#: Primitive obsession](https://enterprisecraftsmanship.com/posts/functional-c-primitive-obsession/)

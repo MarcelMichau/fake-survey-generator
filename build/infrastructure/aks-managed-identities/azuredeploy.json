@@ -1,0 +1,117 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location of the Managed Identities."
+      }
+    },
+    "externalDnsIdentityName": {
+      "type": "string",
+      "metadata": {
+        "description": "<USER ASSIGNED EXTERNAL DNS IDENTITY NAME>"
+      }
+    },
+    "dnsZoneName": {
+      "type": "string",
+      "metadata": {
+        "description": "DNS Zone for which the externalDnsIdentity needs to have Contributor Role access"
+      }
+    },
+    "certManagerIdentityName": {
+      "type": "string",
+      "metadata": {
+        "description": "<USER ASSIGNED CERT MANAGER IDENTITY NAME>"
+      }
+    }
+  },
+  "variables": {
+    "readerRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+    "dnsZoneContributorRole": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'befefa01-2a29-4197-83a8-272ff33ce314')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "name": "[parameters('externalDnsIdentityName')]",
+      "apiVersion": "2018-11-30",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "name": "[parameters('certManagerIdentityName')]",
+      "apiVersion": "2018-11-30",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2017-09-01",
+      "name": "[guid(concat(resourceGroup().id, parameters('externalDnsIdentityName'), 'Reader'))]",
+      "dependsOn": [
+        "[parameters('externalDnsIdentityName')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('readerRole')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('externalDnsIdentityName')), '2018-11-30').principalId]",
+        "scope": "[resourceGroup().id]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.Network/dnsZones/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(parameters('dnsZoneName'), '/Microsoft.Authorization/', guid(uniqueString(concat(parameters('externalDnsIdentityName'), variables('dnsZoneContributorRole')))))]",
+      "dependsOn": [
+        "[parameters('externalDnsIdentityName')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('dnsZoneContributorRole')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('externalDnsIdentityName')), '2018-11-30').principalId]",
+        "scope": "[resourceId('Microsoft.Network/dnsZones', parameters('dnsZoneName'))]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.Network/dnsZones/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(parameters('dnsZoneName'), '/Microsoft.Authorization/', guid(uniqueString(concat(parameters('certManagerIdentityName'), variables('dnsZoneContributorRole')))))]",
+      "dependsOn": [
+        "[parameters('certManagerIdentityName')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('dnsZoneContributorRole')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('certManagerIdentityName')), '2018-11-30').principalId]",
+        "scope": "[resourceId('Microsoft.Network/dnsZones', parameters('dnsZoneName'))]",
+        "principalType": "ServicePrincipal"
+      }
+    }
+  ],
+  "outputs": {
+    "externalDnsIdentityName": {
+      "type": "string",
+      "value": "[parameters('externalDnsIdentityName')]"
+    },
+    "externalDnsIdentityResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('externalDnsIdentityName'))]"
+    },
+    "externalDnsIdentityClientId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('externalDnsIdentityName')), '2018-11-30', 'Full').properties.clientId]"
+    },
+    "certManagerIdentityName": {
+      "type": "string",
+      "value": "[parameters('certManagerIdentityName')]"
+    },
+    "certManagerIdentityResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('certManagerIdentityName'))]"
+    },
+    "certManagerIdentityClientId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('certManagerIdentityName')), '2018-11-30', 'Full').properties.clientId]"
+    }
+  }
+}

@@ -7,12 +7,12 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
         public CreateSurveyCommandValidator()
         {
             RuleFor(command => command.SurveyTopic)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MaximumLength(250)
                 .NotEmpty();
 
             RuleFor(command => command.RespondentType)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MaximumLength(250)
                 .NotEmpty();
 
@@ -32,7 +32,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
         public SurveyOptionValidator()
         {
             RuleFor(command => command.OptionText)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .MaximumLength(250)
                 .NotEmpty();
         }

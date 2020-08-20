@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: {{ .Values.acmeEmail }}
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+    - dns01:
+        azuredns:
+          subscriptionID: {{ .Values.subscriptionId }}
+          resourceGroupName: {{ .Values.resourceGroupName }}
+          hostedZoneName: {{ .Values.azureDnsZone }}

@@ -22,6 +22,13 @@ pr:
       - charts/fake-survey-generator-ui/*
       - build/fake-survey-generator-ui/*
 
+variables:
+  projectName: fake-survey-generator-ui
+  registryName: acrfakesurveygenerator
+  imageRepository: '$(registryName).azurecr.io/$(projectName)'
+  resourceGroupName: rg-fake-survey-generator
+  kubernetesClusterName: aks-cluster
+
 stages:
   - stage: Build
     displayName: 'Build'
@@ -29,9 +36,6 @@ stages:
       - job: Build
         pool:
           vmImage: 'ubuntu-latest'
-
-        variables:
-          imageName: fakesurveygeneratorui
 
         steps:
         - task: UseDotNet@2
@@ -41,11 +45,11 @@ stages:
             useGlobalJson: true
 
         - task: DotNetCoreCLI@2  
+          displayName: Install NBGV tool
           inputs:
             command: custom
             custom: tool
             arguments: install --tool-path ./src/client/ui nbgv --version 3.2.31
-          displayName: Install NBGV tool
 
         - script: ./nbgv cloud -a
           workingDirectory: src/client/ui
@@ -62,16 +66,28 @@ stages:
             artifact: 'VersionFile'
           displayName: 'Publish Version File'
 
-        - script: |
-            docker build --build-arg REACT_APP_VERSION=$(NBGV_SemVer1) -t $(dockerId)/$(imageName):$(NBGV_SemVer1) -t $(dockerId)/$(imageName):latest -f src/client/ui/Dockerfile .
+        - task: Docker@2
           displayName: 'Build Docker Image'
+          inputs:
+            containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
+            repository: '$(projectName)'
+            command: 'build'
+            Dockerfile: 'src/client/ui/Dockerfile'
+            buildContext: .
+            arguments: '--build-arg REACT_APP_VERSION=$(NBGV_SemVer1)'
+            tags: |
+              $(NBGV_SemVer1)
+              latest
 
-        - script: |
-            echo "$DOCKER_PASSWORD" | docker login -u $(dockerId) --password-stdin
-            docker push $(dockerId)/$(imageName)
-          env:
-            DOCKER_PASSWORD: $(dockerPassword)
-          displayName: 'Push Image to Docker Hub'
+        - task: Docker@2
+          displayName: 'Push Image to Azure Container Registry'
+          inputs:
+            containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
+            repository: '$(projectName)'
+            command: 'push'
+            tags: |
+              $(NBGV_SemVer1)
+              latest
 
   - stage: Publish
     displayName: 'Publish'
@@ -91,7 +107,7 @@ stages:
 
               - task: HelmInstaller@1
                 inputs:
-                  helmVersionToInstall: '3.2.4'
+                  helmVersionToInstall: '3.3.0'
                 displayName: 'Install Helm'
 
               - task: HelmDeploy@0
@@ -102,161 +118,93 @@ stages:
                   save: false
                 displayName: 'Helm Package'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az configure --defaults acr=$(registryName)'
-  #               displayName: 'Set Azure Container Registry Default in Azure CLI'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm repo add'
-  #               displayName: 'Add Azure Container Registry Repo to Azure CLI'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
-  #               displayName: 'Push Helm Chart to Azure Container Registry'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
+                displayName: 'Push Helm Chart to Azure Container Registry'
 
-  # - stage: Test_Deployment
-  #   displayName: 'Test Deployment'
-  #   jobs:
-  #     - deployment: Deployment_Job
-  #       displayName: Deploy Fake Survey Generator UI
-  #       pool:
-  #         vmImage: 'ubuntu-latest'
-  #       variables:
-  #         environmentSuffix: test
-  #         ingressClusterIssuerName: letsencrypt-prod
-  #         ingressHost: aks-test.fakesurveygenerator.marcelmichau.dev
-  #         ingressTlsSecretName: marcelmichau-dev-tls-secret
-  #         replicaCount: 2
-  #         targetNamespace: test-env
-  #       environment: 'aks-test'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #             - script: |
-  #                 GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-  #                 echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-  #               displayName: 'Set Version from Version File'
+  - stage: Application_Deployment
+    displayName: 'Application Deployment'
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator UI
+        pool:
+          vmImage: 'ubuntu-latest'
+        variables:
+          environmentSuffix: prod
+          ingressClusterIssuerName: letsencrypt
+          ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
+          ingressTlsSecretName: marcelmichau-dev-tls-secret
+          replicaCount: 1
+          targetNamespace: prod-env
+        environment: 'aks'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - script: |
+                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                displayName: 'Set Version from Version File'
 
-  #             - task: KubectlInstaller@0
-  #               displayName: 'Install Kubectl latest'
+              - task: KubectlInstaller@0
+                displayName: 'Install Kubectl latest'
 
-  #             - task: HelmInstaller@1
-  #               inputs:
-  #                 helmVersionToInstall: '3.2.4'
-  #               displayName: 'Install Helm'
+              - task: HelmInstaller@1
+                inputs:
+                  helmVersionToInstall: '3.3.0'
+                displayName: 'Install Helm'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az configure --defaults acr=$(registryName)'
-  #               displayName: 'Set Azure Container Registry Default in Azure CLI'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az configure --defaults acr=$(registryName)'
+                displayName: 'Set Azure Container Registry Default in Azure CLI'
 
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm repo add'
-  #               displayName: 'Add Azure Container Registry Repo to Azure CLI'
+              - task: AzureCLI@1
+                inputs:
+                  azureSubscription: 'Azure Service Connection'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az acr helm repo add'
+                displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
-  #             - task: HelmDeploy@0
-  #               displayName: 'helm upgrade'
-  #               inputs:
-  #                 connectionType: 'Azure Resource Manager'
-  #                 azureSubscription: 'MyARMConnection'
-  #                 azureResourceGroup: 'kubernetes-playground-test-rg'
-  #                 kubernetesCluster: 'aks-cluster'
-  #                 namespace: '$(targetNamespace)'
-  #                 command: 'upgrade'
-  #                 chartType: 'Name'
-  #                 chartName: '$(registryName)/$(projectName)'
-  #                 releaseName: '$(projectName)-$(environmentSuffix)'
-  #                 arguments: >-
-  #                   --version $(VersionTag) 
-  #                   --set image.repository=$(imageRepository) 
-  #                   --set image.tag=$(VersionTag) 
-  #                   --set ingress.hosts[0].host=$(testEnvIngressHost) 
-  #                   --set ingress.hosts[0].paths[0]=/ 
-  #                   --set ingress.tls[0].secretName=$(ingressTlsSecretName) 
-  #                   --set ingress.tls[0].hosts={$(ingressHost)} 
-  #                   --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName) 
-  #                   --set replicaCount=$(replicaCount)
-
-  # - stage: Production_Deployment
-  #   displayName: 'Production Deployment'
-  #   jobs:
-  #     - deployment: Deployment_Job
-  #       displayName: Deploy Fake Survey Generator UI
-  #       pool:
-  #         vmImage: 'ubuntu-latest'
-  #       variables:
-  #         environmentSuffix: prod
-  #         ingressClusterIssuerName: letsencrypt-prod
-  #         ingressHost: aks.fakesurveygenerator.marcelmichau.dev
-  #         ingressTlsSecretName: marcelmichau-dev-tls-secret
-  #         replicaCount: 2
-  #         targetNamespace: prod-env
-  #       environment: 'aks-prod'
-  #       strategy:
-  #         runOnce:
-  #           deploy:
-  #             steps:
-  #             - script: |
-  #                 GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-  #                 echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-  #               displayName: 'Set Version from Version File'
-
-  #             - task: KubectlInstaller@0
-  #               displayName: 'Install Kubectl latest'
-
-  #             - task: HelmInstaller@1
-  #               inputs:
-  #                 helmVersionToInstall: '3.2.4'
-  #               displayName: 'Install Helm'
-
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az configure --defaults acr=$(registryName)'
-  #               displayName: 'Set Azure Container Registry Default in Azure CLI'
-
-  #             - task: AzureCLI@1
-  #               inputs:
-  #                 azureSubscription: 'MyARMConnection'
-  #                 scriptLocation: 'inlineScript'
-  #                 inlineScript: 'az acr helm repo add'
-  #               displayName: 'Add Azure Container Registry Repo to Azure CLI'
-
-  #             - task: HelmDeploy@0
-  #               displayName: 'helm upgrade'
-  #               inputs:
-  #                 connectionType: 'Azure Resource Manager'
-  #                 azureSubscription: 'MyARMConnection'
-  #                 azureResourceGroup: 'kubernetes-playground-test-rg'
-  #                 kubernetesCluster: 'aks-cluster'
-  #                 namespace: '$(targetNamespace)'
-  #                 command: 'upgrade'
-  #                 chartType: 'Name'
-  #                 chartName: '$(registryName)/$(projectName)'
-  #                 releaseName: '$(projectName)-$(environmentSuffix)'
-  #                 arguments: >-
-  #                   --version $(VersionTag) 
-  #                   --set image.repository=$(imageRepository) 
-  #                   --set image.tag=$(VersionTag) 
-  #                   --set ingress.hosts[0].host=$(prodEnvIngressHost) 
-  #                   --set ingress.hosts[0].paths[0]=/ 
-  #                   --set ingress.tls[0].secretName=$(ingressTlsSecretName) 
-  #                   --set ingress.tls[0].hosts={$(ingressHost)} 
-  #                   --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName) 
-  #                   --set replicaCount=$(replicaCount)
+              - task: HelmDeploy@0
+                displayName: 'Deploy Fake Survey Generator UI using Helm'
+                inputs:
+                  connectionType: 'Azure Resource Manager'
+                  azureSubscription: 'Azure Service Connection'
+                  azureResourceGroup: '$(resourceGroupName)'
+                  kubernetesCluster: '$(kubernetesClusterName)'
+                  namespace: '$(targetNamespace)'
+                  command: 'upgrade'
+                  chartType: 'Name'
+                  chartName: '$(registryName)/$(projectName)'
+                  releaseName: '$(projectName)-$(environmentSuffix)'
+                  arguments: >-
+                    --create-namespace
+                    --version $(VersionTag)
+                    --set image.repository=$(imageRepository)
+                    --set image.tag=$(VersionTag)
+                    --set ingress.hosts[0].host=$(ingressHost)
+                    --set ingress.hosts[0].paths[0]=/
+                    --set ingress.tls[0].secretName=$(ingressTlsSecretName)
+                    --set ingress.tls[0].hosts={$(ingressHost)}
+                    --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
+                    --set replicaCount=$(replicaCount)

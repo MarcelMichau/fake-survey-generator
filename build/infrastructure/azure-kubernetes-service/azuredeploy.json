@@ -4,9 +4,16 @@
   "parameters": {
     "clusterName": {
       "type": "string",
-      "defaultValue": "aks101cluster",
+      "defaultValue": "aks-cluster",
       "metadata": {
         "description": "The name of the Managed Cluster resource."
+      }
+    },
+    "nodeResourceGroupName": {
+      "type": "string",
+      "defaultValue": "aks-cluster-infrastructure",
+      "metadata": {
+        "description": "Name of the resource group containing agent pool nodes."
       }
     },
     "location": {
@@ -118,7 +125,7 @@
             "mode": "System"
           }
         ],
-        "nodeResourceGroup": "[concat(parameters('clusterName'), '-infrastructure')]",
+        "nodeResourceGroup": "[parameters('nodeResourceGroupName')]",
         "networkProfile": {
           "loadBalancerSku": "standard",
           "networkPlugin": "[parameters('networkPlugin')]"

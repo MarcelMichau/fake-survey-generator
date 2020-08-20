@@ -1,0 +1,7 @@
+# Default values for issuer-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+externalDnsIdentityName: test-identity
+externalDnsIdentityClientId: <client_id>
+externalDnsIdentityResourceId: /subscriptions/<subscription_id>/resourcegroups/<resource_group_name>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<identity_name>

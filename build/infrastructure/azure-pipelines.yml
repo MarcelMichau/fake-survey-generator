@@ -1,0 +1,404 @@
+trigger: none
+
+stages:
+  - stage: Provisioning
+    displayName: 'Provisioning'
+    jobs:
+      - job: Provisioning
+        displayName: 'Provision Infrastructure'
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        variables:
+          azureResourceManagerConnection: 'Azure Service Connection'
+          resourceGroupName: 'rg-fake-survey-generator'
+          location: 'South Africa North'
+          dnsZoneName: mysecondarydomain.com
+          azureContainerRegistryName: acrfakesurveygenerator
+          externalDnsIdentityName: mi-aks-external-dns
+          certManagerIdentityName: mi-aks-cert-manager
+          kubernetesClusterName: aks-cluster
+          kubernetesNodeResourceGroupName: rg-aks-cluster-infrastructure
+          kubernetesInfrastructureNamespace: 'infrastructure'
+
+        steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Resource Group'
+          inputs:
+            deploymentScope: 'Subscription'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: '$(subscriptionId)'
+            location: '$(location)'
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/resource-group/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/resource-group/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+            overrideParameters: >-
+              -resourceGroupName "$(resourceGroupName)"
+              -location "$(location)"
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Application Insights'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-application-insights/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-application-insights/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create DNS Zone'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/dns-zone/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/dns-zone/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -dnsZoneName "$(dnsZoneName)"
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Key Vault'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-key-vault/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-key-vault/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -tenantId "$(tenantId)"
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Container Registry'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-container-registry/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-container-registry/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -registryName "$(azureContainerRegistryName)"
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create Redis Cache'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-redis-cache/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-redis-cache/azuredeploy.parameters.json'
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create SQL Server & Database'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-sql/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-sql/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -administratorLogin "$(sqlDatabaseAdminLogin)"
+              -administratorLoginPassword "$(sqlDatabaseAdminLoginPassword)"
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create AKS Managed Identities'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/aks-managed-identities/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/aks-managed-identities/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -dnsZoneName "$(dnsZoneName)"
+            deploymentMode: 'Incremental'
+            deploymentOutputs: createManagedIdentitiesArmOutput
+  
+        - task: PowerShell@2
+          name: 'SetOutputVariables'
+          displayName: 'Set Output Variables'
+          inputs:
+            targetType: 'inline'
+            script: |
+              $armOutputObj = '$(createManagedIdentitiesArmOutput)' | ConvertFrom-Json
+              $armOutputObj.PSObject.Properties | ForEach-Object {
+                $keyname = $_.Name
+                $value = $_.Value.value
+            
+                ## Creates a standard pipeline variable
+                Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+                
+                ## Creates an output variable
+                Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+              }
+            pwsh: true
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Create AKS Cluster'
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: '$(subscriptionId)'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: '$(resourceGroupName)'
+            location: '$(location)'
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/azure-kubernetes-service/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -clusterName "$(kubernetesClusterName)"
+              -nodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
+            deploymentMode: 'Incremental'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: Create AKS Managed Identity Role Assignments on Node Resource Group
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(kubernetesNodeResourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
+            deploymentMode: 'Incremental'
+      
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: Create AKS Managed Identity Role Assignments on Cluster Resource Group
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'Azure Service Connection'
+            subscriptionId: $(subscriptionId)
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: $(resourceGroupName)
+            location: $(location)
+            templateLocation: 'Linked artifact'
+            csmFile: 'build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.json'
+            csmParametersFile: 'build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.parameters.json'
+            overrideParameters: >-
+              -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
+              -aksClusterNodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
+              -azureContainerRegistryName "$(azureContainerRegistryName)"
+            deploymentMode: 'Incremental'
+
+        - task: HelmInstaller@1
+          inputs:
+            helmVersionToInstall: '3.3.0'
+          displayName: 'Install Helm'
+
+        - task: HelmDeploy@0
+          displayName: 'Add ingress-nginx Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add ingress-nginx https://kubernetes.github.io/ingress-nginx'
+
+        - task: HelmDeploy@0
+          displayName: 'Add bitnami Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add bitnami https://charts.bitnami.com/bitnami'
+  
+        - task: HelmDeploy@0
+          displayName: 'Add jetstack Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add jetstack https://charts.jetstack.io'
+  
+        - task: HelmDeploy@0
+          displayName: 'Add csi-secrets-store-provider-azure Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add csi-secrets-store-provider-azure https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts'
+
+        - task: HelmDeploy@0
+          displayName: 'Add aad-pod-identity Helm Repo'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'add aad-pod-identity https://raw.githubusercontent.com/Azure/aad-pod-identity/master/charts'
+
+        - task: HelmDeploy@0
+          displayName: 'Update Helm Repos'
+          enabled: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            command: 'repo'
+            arguments: 'update'
+
+        - task: HelmDeploy@0
+          displayName: 'Install aad-pod-identity'
+          continueOnError: true
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'aad-pod-identity/aad-pod-identity'
+            releaseName: 'aad-pod-identity'
+
+        - task: HelmDeploy@0
+          displayName: 'Install ingress-nginx'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'ingress-nginx/ingress-nginx'
+            releaseName: 'ingress-nginx'
+
+        - task: HelmDeploy@0
+          displayName: 'Install external-dns'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'Name'
+            chartName: 'bitnami/external-dns'
+            releaseName: 'external-dns'
+            overrideValues: 'provider=azure,podLabels."aadpodidbinding"=$(externalDnsIdentityName),azure.useManagedIdentityExtension=true,azure.resourceGroup=$(resourceGroupName),azure.subscriptionId=$(subscriptionId),azure.tenantId=$(tenantId)'
+
+        - task: HelmDeploy@0
+          displayName: 'Install csi-secrets-store-provider-azure'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            arguments: '--create-namespace'
+            chartType: 'Name'
+            chartName: 'csi-secrets-store-provider-azure/csi-secrets-store-provider-azure'
+            releaseName: 'csi-secrets-store-provider-azure'
+
+        - task: HelmDeploy@0
+          displayName: 'Install cert-manager'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'Name'
+            chartName: 'jetstack/cert-manager'
+            releaseName: 'cert-manager'
+            chartVersion: 'v0.15.2' # older version needed because of: https://cert-manager.io/docs/installation/upgrading/upgrading-0.15-0.16/#helm
+            arguments: >-
+              --create-namespace
+              --set installCRDs=true
+              --set podLabels.aadpodidbinding=$(certManagerIdentityName)
+
+        - task: HelmDeploy@0
+          displayName: 'Create LetsEncrypt Cluster Issuer'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: 'build/infrastructure/azure-kubernetes-service/charts/cluster-issuer-chart'
+            releaseName: 'letsencrypt-cluster-issuer'
+            arguments: >-
+              --create-namespace
+              --set acmeEmail=$(acmeEmail)
+              --set subscriptionId=$(subscriptionId)
+              --set resourceGroupName=$(resourceGroupName)
+              --set azureDnsZone=$(dnsZoneName)
+              --set certManagerIdentityName=$(certManagerIdentityName)
+              --set certManagerIdentityClientId=$(certManagerIdentityClientId)
+              --set certManagerIdentityResourceId=$(certManagerIdentityResourceId)
+  
+        - task: HelmDeploy@0
+          displayName: 'Deploy External DNS Identity Chart'
+          inputs:
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'Azure Service Connection'
+            azureResourceGroup: '$(resourceGroupName)'
+            kubernetesCluster: '$(kubernetesClusterName)'
+            namespace: '$(kubernetesInfrastructureNamespace)'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: 'build/infrastructure/azure-kubernetes-service/charts/external-dns-chart'
+            releaseName: 'external-dns-identity'
+            arguments: >-
+              --create-namespace
+              --set externalDnsIdentityName=$(externalDnsIdentityName)
+              --set externalDnsIdentityClientId=$(externalDnsIdentityClientId)
+              --set externalDnsIdentityResourceId=$(externalDnsIdentityResourceId)
