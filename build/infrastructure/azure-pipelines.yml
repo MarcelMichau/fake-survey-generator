@@ -144,6 +144,8 @@ stages:
             csmParametersFile: 'build/infrastructure/aks-managed-identities/azuredeploy.parameters.json'
             overrideParameters: >-
               -dnsZoneName "$(dnsZoneName)"
+              -externalDnsIdentityName "$(externalDnsIdentityName)"
+              -certManagerIdentityName "$(certManagerIdentityName)"
             deploymentMode: 'Incremental'
             deploymentOutputs: createManagedIdentitiesArmOutput
   
