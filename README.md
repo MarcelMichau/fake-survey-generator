@@ -60,10 +60,10 @@ Here are some of the features incorporated into this project:
 - Deploying a microservice application to [Kubernetes](https://kubernetes.io/) using [Helm](https://helm.sh/) charts
 - Local [Kubernetes](https://kubernetes.io/) development using [Skaffold](https://skaffold.dev/)
 - Using Azure Pipelines to build & deploy a microservice application to [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/)
-- Using [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) in [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/) to associate an [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) identity to pods
-- Integrating [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/) with [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/) to protect sensitive application configuration using [Azure Key Vault Provider for Secrets Store CSI Driver](https://github.com/Azure/secrets-store-csi-driver-provider-azure)
+- Using [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) in AKS to associate an Azure Active Directory identity to pods
+- Integrating [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/) with AKS to protect sensitive application configuration using [Azure Key Vault Provider for Secrets Store CSI Driver](https://github.com/Azure/secrets-store-csi-driver-provider-azure)
 - Configuring Kubernetes [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) with [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview) for custom domain names in AKS
-- Configuring [Cert Manager](https://cert-manager.io/) with AKS & [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview) for automatic TLS certificates using [Let's Encrypt](https://letsencrypt.org/)
+- Configuring [Cert Manager](https://cert-manager.io/) with AKS & Azure DNS for automatic TLS certificates using [Let's Encrypt](https://letsencrypt.org/)
 - Infrastructure as Code for Azure resources using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview) (ARM) templates
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
