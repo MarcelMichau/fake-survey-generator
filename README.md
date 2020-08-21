@@ -26,45 +26,45 @@ This is a .NET | C# | React | TypeScript full-stack application of moderate comp
 
 It is built using Clean Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
 
-It is heavily centered around the Microsoft .NET + Azure technology stacks as these are what I have the most experience in & just like building things with. 😀
+It is heavily centered around the Microsoft [.NET](https://dotnet.microsoft.com/) + [Azure](https://azure.microsoft.com/) technology stacks as these are what I have the most experience in & just like building things with. 😀
 
 Here are some of the features incorporated into this project:
 
 ### Application Features
 
-- Unit & Integration tests for a CQRS/DDD project
-- Running Unit & Integration tests with Docker Compose
+- Unit & Integration tests for a CQRS/DDD project with [XUnit](https://xunit.net/)
+- Running Unit & Integration tests with [Docker Compose](https://docs.docker.com/compose/)
 - Using an in-memory database for testing
-- Implementing health checks for an ASP.NET Core Web API
-- Adding Swagger to an ASP.NET Core Web API
+- Implementing health checks for an ASP.NET Core Web API using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
+- Adding Swagger to an ASP.NET Core Web API using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
 - Adding OpenID Connect for Authentication
 - Adding OpenID Connect to Swagger UI
 - Securing an ASP.NET Core Web API using JWT Bearer authentication
-- Adding security headers to API responses
-- Using AutoWrapper to return consistent API response models
-- Using Hosted Services in ASP.NET Core Web API
-- Using a distributed Redis cache
+- Adding security headers to API responses using [NetEscapades.AspNetCore.SecurityHeaders](https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders)
+- Using [AutoWrapper](https://github.com/proudmonkey/AutoWrapper) to return consistent API response models
+- Using [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services) in ASP.NET Core Web API
+- Using a distributed [Redis](https://redis.io/) cache
 - Configuring SQL Server retry policies
-- Using Polly to make resilient HTTP requests
-- Implementing Forwarded Headers for hosting ASP.NET Core Web API behind a load balancer
-- Validation of commands using FluentValidation
-- Configuring Azure Application Insights for telemetry
+- Using [Polly](https://github.com/App-vNext/Polly) to make resilient HTTP requests
+- Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
+- Validation of commands using [FluentValidation](https://fluentvalidation.net/)
+- Configuring [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) for telemetry
 
 ### Infrastructure Features
 
-- Automatic semantic versioning using Nerdbank.GitVersioning
+- Automatic semantic versioning using [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning)
 - Creating trusted SSL certificates for HTTPS in development
-- Deploying Entity Framework Core Code-First Migrations to Azure SQL Server using Azure Pipelines
-- Using Azure Active Directory authentication to Azure SQL Database with Entity Framework Core
-- Running a microservice application locally using Docker Compose
-- Deploying a microservice application to Kubernetes using Helm charts
-- Local Kubernetes development using Skaffold
-- Using Azure Pipelines to build & deploy a microservice application to Azure Kubernetes Service
-- Using Azure Active Directory Pod Identity in Azure Kubernetes Service to associate an Azure AD identity to pods
-- Using Azure Key Vault with Azure Kubernetes Service to protect sensitive application configuration
-- Configuring Kubernetes External DNS with Azure DNS Zone for custom domain names in AKS
-- Configuring Cert Manager with AKS & Azure DNS for automatic TLS certificates using Let's Encrypt
-- Infrastructure as Code for Azure resources using Azure Resource Manager (ARM) templates
+- Deploying Entity Framework Core Code-First Migrations to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) using Azure Pipelines
+- Using Azure Active Directory authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework Core
+- Running a microservice application locally using [Docker Compose](https://docs.docker.com/compose/)
+- Deploying a microservice application to [Kubernetes](https://kubernetes.io/) using [Helm](https://helm.sh/) charts
+- Local [Kubernetes](https://kubernetes.io/) development using [Skaffold](https://skaffold.dev/)
+- Using Azure Pipelines to build & deploy a microservice application to [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/)
+- Using [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) in [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/) to associate an [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) identity to pods
+- Using [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/) with [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/) to protect sensitive application configuration
+- Configuring Kubernetes [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) with [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview) for custom domain names in AKS
+- Configuring [Cert Manager](https://cert-manager.io/) with AKS & [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview) for automatic TLS certificates using [Let's Encrypt](https://letsencrypt.org/)
+- Infrastructure as Code for Azure resources using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview) (ARM) templates
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
 
@@ -105,19 +105,19 @@ The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API
   - .NET 5.0
-  - ASP.NET Core 5.0 Web API
-  - Entity Framework Core 5.0 with Code-First Migrations
-  - Dapper
-  - Redis
-  - Swagger
-  - AutoMapper
-  - MediatR
-  - FluentValidation
-  - Polly
-  - AspNetCore.Diagnostics.HealthChecks
-  - Docker
-  - Serilog
-  - AutoWrapper
+  - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 5.0 Web API
+  - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 5.0 with [Code-First Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
+  - [Dapper](https://github.com/StackExchange/Dapper)
+  - [Redis](https://redis.io/)
+  - [Swagger](https://swagger.io/)
+  - [AutoMapper](https://automapper.org/)
+  - [MediatR](https://github.com/jbogard/MediatR)
+  - [FluentValidation](https://fluentvalidation.net/)
+  - [Polly](https://github.com/App-vNext/Polly)
+  - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
+  - [Docker](https://www.docker.com/)
+  - [Serilog](https://serilog.net/)
+  - [AutoWrapper](https://github.com/proudmonkey/AutoWrapper)
 - Fake Survey Generator Worker
   - .NET 5.0
   - ASP.NET Core 5.0 Worker Service
@@ -130,18 +130,18 @@ The client side consists of the following main components:
 
 The client side makes use of the following tools, libraries & frameworks:
 
-- React
-- TypeScript
-- auth0.js
-- Tailwind CSS
-- PostCSS
-- React Loading Skeleton
-- NGINX
-- Docker
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [auth0.js](https://github.com/auth0/auth0.js/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [PostCSS](https://postcss.org/)
+- [React Loading Skeleton](https://github.com/dvtng/react-loading-skeleton)
+- [NGINX](https://www.nginx.com/)
+- [Docker](https://www.docker.com/)
 
 ### Common
 
-The application is built for Docker, Docker Compose & Kubernetes with Helm. For local development, Docker Compose is used when debugging the application with Visual Studio, and Skaffold is used to package the application into a Helm chart to deploy to a local Kubernetes cluster for running locally.
+The application is built for Docker, Docker Compose & Kubernetes with Helm. For local development, Docker Compose is used when debugging the application with Visual Studio, and [Skaffold](https://skaffold.dev/) is used to package the application into a Helm chart to deploy to a local Kubernetes cluster for running locally.
 
 The hosted version of the application is deployed here: https://aks.fakesurveygenerator.mysecondarydomain.com
 
@@ -153,24 +153,24 @@ The following endpoints are accessible:
 
 The hosted version utilizes the following infrastructure:
 
-- Azure Kubernetes Service
-- Azure SQL Database
-- Azure Redis Cache
-- Azure Container Registry
-- Azure Key Vault
-- Azure Application Insights
-- Azure DNS Zone
-- Azure DevOps Services (for CI/CD)
+- [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/)
+- [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/)
+- [Azure Cache for Redis](https://azure.microsoft.com/en-us/services/cache/)
+- [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/)
+- [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/)
+- [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview)
+- [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview)
+- [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) (for CI/CD)
 
 ## Authentication
 
-The application makes use of OpenID Connect for authentication which is implemented by Auth0. Currently supported connections are:
+The application makes use of OpenID Connect for authentication which is implemented by [Auth0](https://auth0.com/). Currently supported connections are:
 
 - Auth0
 - Google
 - Microsoft
 
-Initially, this project used IdentityServer for authentication, but I didn't feel like maintaining the separate IdentityServer project as well as the Fake Survey Generator, so I switched it out for Auth0 because authn/authz is hard and I prefer to delegate that responsibility to the people who know how to do it properly. 😁
+Initially, this project used [IdentityServer](https://identityserver.io/) for authentication, but I didn't feel like maintaining the separate IdentityServer project as well as the Fake Survey Generator, so I switched it out for Auth0 because authn/authz is hard and I prefer to delegate that responsibility to the people who know how to do it properly. 😁
 
 ## How do I run this thing?
 
@@ -178,9 +178,9 @@ In order to run FSG on your local machine, you will need the following prerequis
 
 To run with Docker Compose:
 
-- Docker Desktop
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [mkcert](https://github.com/FiloSottile/mkcert) - To generate SSL certificates for local development
-- Visual Studio (optional)
+- [Visual Studio](https://visualstudio.microsoft.com/) (optional)
 
 To run with Docker Compose:
 
@@ -206,9 +206,9 @@ or
 
 To run on local Kubernetes:
 
-- Docker Desktop with Kubernetes enabled (Ensure that at least 2048 MB of Memory is allocated to Docker Engine)
-- NGINX Ingress installed on the Kubernetes cluster
-- Skaffold
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) with Kubernetes enabled (Ensure that at least 2048 MB of Memory is allocated to Docker Engine)
+- [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/#contents) installed on the Kubernetes cluster
+- [Skaffold](https://skaffold.dev/)
 
 To deploy to a local Kubernetes cluster:
 
