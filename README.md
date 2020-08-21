@@ -36,9 +36,9 @@ Here are some of the features incorporated into this project:
 - Running Unit & Integration tests with [Docker Compose](https://docs.docker.com/compose/)
 - Using an in-memory database for testing
 - Implementing health checks for an ASP.NET Core Web API using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
-- Adding Swagger to an ASP.NET Core Web API using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
-- Adding OpenID Connect for Authentication
-- Adding OpenID Connect to Swagger UI
+- Adding [Swagger](https://swagger.io/) to an ASP.NET Core Web API using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
+- Adding [OpenID Connect](https://openid.net/connect/) for Authentication
+- Adding [OpenID Connect](https://openid.net/connect/) to Swagger UI
 - Securing an ASP.NET Core Web API using JWT Bearer authentication
 - Adding security headers to API responses using [NetEscapades.AspNetCore.SecurityHeaders](https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders)
 - Using [AutoWrapper](https://github.com/proudmonkey/AutoWrapper) to return consistent API response models
@@ -54,8 +54,8 @@ Here are some of the features incorporated into this project:
 
 - Automatic semantic versioning using [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning)
 - Creating trusted SSL certificates for HTTPS in development
-- Deploying Entity Framework Core Code-First Migrations to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) using Azure Pipelines
-- Using Azure Active Directory authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework Core
+- Deploying Entity Framework Core Code-First Migrations to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops)
+- Using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework Core
 - Running a microservice application locally using [Docker Compose](https://docs.docker.com/compose/)
 - Deploying a microservice application to [Kubernetes](https://kubernetes.io/) using [Helm](https://helm.sh/) charts
 - Local [Kubernetes](https://kubernetes.io/) development using [Skaffold](https://skaffold.dev/)
@@ -82,7 +82,7 @@ The domain is kept relatively simple such that it doesn't overwhelm the app with
 
 I also felt that a lot of reference/demo/boilerplate projects out there cover the core application domain & don't go into much detail around the building/deployment/hosting of final application. So this project aims to cover both. It contains application code, configuration, CI/CD pipelines, infrastructure-as-code needed to run the application, as well as a live, running version of the application (as long as budget allows 😁). So this repo hopefully may contain something for everyone & fill in the potential gaps across the whole spectrum of application development. It falls somewhere between a template/boilerplate project & a real-world production open-source application.
 
-## How is this thing built?
+## How is this thing structured?
 
 FSG consists of two parts:
 
@@ -164,7 +164,7 @@ The hosted version utilizes the following infrastructure:
 
 ## Authentication
 
-The application makes use of OpenID Connect for authentication which is implemented by [Auth0](https://auth0.com/). Currently supported connections are:
+The application makes use of [OpenID Connect](https://openid.net/connect/) for authentication which is implemented by [Auth0](https://auth0.com/). Currently supported connections are:
 
 - Auth0
 - Google
@@ -181,8 +181,6 @@ To run with Docker Compose:
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [mkcert](https://github.com/FiloSottile/mkcert) - To generate SSL certificates for local development
 - [Visual Studio](https://visualstudio.microsoft.com/) (optional)
-
-To run with Docker Compose:
 
 1. After installing mkcert, run: `mkcert localhost` in the `certs` directory to create the localhost development certificates. If successful, the following will be printed:
 
