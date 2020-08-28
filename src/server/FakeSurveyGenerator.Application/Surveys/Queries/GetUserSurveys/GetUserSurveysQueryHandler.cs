@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using CSharpFunctionalExtensions;
+using Dapper;
 using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Persistence;
@@ -14,17 +13,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
 {
-    public sealed class GetUserSurveysQueryHandler : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
+    public sealed class
+        GetUserSurveysQueryHandler : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
     {
         private readonly IUserService _userService;
         private readonly ISurveyContext _surveyContext;
-        private readonly IMapper _mapper;
+        private readonly IDatabaseConnection _databaseConnection;
 
-        public GetUserSurveysQueryHandler(IUserService userService, ISurveyContext surveyContext, IMapper mapper)
+        public GetUserSurveysQueryHandler(IDatabaseConnection databaseConnection, IUserService userService,
+            ISurveyContext surveyContext)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
         }
 
         public async Task<Result<List<UserSurveyModel>, Error>> Handle(GetUserSurveysQuery request,
@@ -36,14 +37,35 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
                 await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
                     cancellationToken);
 
-            var surveys = await _surveyContext.Surveys
-                .Include(s => s.Options)
-                .Include(s => s.Owner)
-                .Where(s => s.Owner.Id == surveyOwner.Id)
-                .ProjectTo<UserSurveyModel>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
+            await using var connection = await _databaseConnection.GetDbConnection();
+            await connection.OpenAsync(cancellationToken);
 
-            return Result.Success<List<UserSurveyModel>, Error>(surveys);
+            var surveys = await connection.QueryAsync<UserSurveyModel>(@"
+                        SELECT s.Id,
+                               s.Topic,
+                               s.RespondentType,
+                               s.NumberOfRespondents,
+
+                          (SELECT COUNT(*)
+                           FROM [FakeSurveyGenerator].[Survey].[SurveyOption]
+                           WHERE SurveyId = s.Id) AS NumberOfOptions,
+                               surveyOption1.OptionText AS WinningOption,
+                               surveyOption1.NumberOfVotes AS WinningOptionNumberOfVotes
+                        FROM [FakeSurveyGenerator].[Survey].[Survey] s
+                        LEFT OUTER JOIN Survey.SurveyOption surveyOption1 ON surveyOption1.SurveyId = s.Id
+                        LEFT OUTER JOIN Survey.SurveyOption surveyOption2 ON surveyOption2.SurveyId = s.Id
+                        AND surveyOption2.NumberOfVotes > surveyOption1.NumberOfVotes
+                        WHERE s.OwnerId = 1
+                          AND surveyOption2.SurveyId IS NULL
+                        GROUP BY s.Id,
+                                 s.Topic,
+                                 s.RespondentType,
+                                 s.NumberOfRespondents,
+                                 surveyOption1.OptionText,
+                                 surveyOption1.NumberOfVotes
+                        ", new {ownerId = surveyOwner.Id});
+
+            return Result.Success<List<UserSurveyModel>, Error>(surveys.ToList());
         }
     }
 }

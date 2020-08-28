@@ -7,7 +7,7 @@ metadata:
 data:
   {{- if .Values.azureDatabaseEnabled }}
     {{- if .Values.azureDatabaseUseActiveDirectoryAuthentication }}
-  ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+  ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Integrated;
   SQL_SERVER_USE_AZURE_AD_AUTHENTICATION: "true"
     {{- else }}
   ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;User ID={{ .Values.user }};Password={{ .Values.password }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
