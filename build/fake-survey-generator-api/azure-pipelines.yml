@@ -37,181 +37,182 @@ pr:
 variables:
   projectName: fake-survey-generator-api
   registryName: acrfakesurveygenerator
-  imageRepository: '$(registryName).azurecr.io/$(projectName)'
+  imageRepository: "$(registryName).azurecr.io/$(projectName)"
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
 
 stages:
   - stage: Build
-    displayName: 'Build'
+    displayName: "Build"
     jobs:
       - job: Build
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: "ubuntu-latest"
 
         variables:
-          buildConfiguration: 'Release'
+          buildConfiguration: "Release"
 
         steps:
-        - task: UseDotNet@2
-          displayName: 'Install .NET Core SDK'
-          inputs:
-            packageType: 'sdk'
-            useGlobalJson: true
+          - task: UseDotNet@2
+            displayName: "Install .NET Core SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
 
-        - task: DotNetCoreCLI@2  
-          inputs:
-            command: custom
-            custom: tool
-            arguments: install --tool-path ./src/server nbgv --version 3.2.31
-          displayName: Install NBGV tool
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: custom
+              custom: tool
+              arguments: install --tool-path ./src/server nbgv --version 3.2.31
+            displayName: Install NBGV tool
 
-        - script: ./nbgv cloud -a
-          workingDirectory: src/server
-          displayName: Set Version
+          - script: ./nbgv cloud -a
+            workingDirectory: src/server
+            displayName: Set Version
 
-        - script: |
-            ./nbgv get-version -v SemVer1 > version.txt
-          workingDirectory: src/server
-          displayName: 'Create Version file'
+          - script: |
+              ./nbgv get-version -v SemVer1 > version.txt
+            workingDirectory: src/server
+            displayName: "Create Version file"
 
-        - task: PublishPipelineArtifact@1
-          inputs:
-            targetPath: 'src/server/version.txt'
-            artifact: 'VersionFile'
-          displayName: 'Publish Version File'
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: "src/server/version.txt"
+              artifact: "VersionFile"
+            displayName: "Publish Version File"
 
-        - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
-          displayName: 'Build Solution'
+          - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
+            displayName: "Build Solution"
 
-        - script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
-          displayName: 'Run Domain Tests'
+          - script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
+            displayName: "Run Domain Tests"
 
-        - script: dotnet test src/server/FakeSurveyGenerator.Application.Tests/FakeSurveyGenerator.Application.Tests.csproj --logger trx
-          displayName: 'Run Application Tests'
+          - script: dotnet test src/server/FakeSurveyGenerator.Application.Tests/FakeSurveyGenerator.Application.Tests.csproj --logger trx
+            displayName: "Run Application Tests"
 
-        - script: dotnet test src/server/FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
-          displayName: 'Run Integration Tests'
+          - script: dotnet test src/server/FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
+            displayName: "Run Integration Tests"
 
-        - task: PublishTestResults@2
-          inputs:
-            testRunner: VSTest
-            testResultsFiles: '**/*.trx'
-          displayName: 'Publish Test Results'
+          - task: PublishTestResults@2
+            inputs:
+              testRunner: VSTest
+              testResultsFiles: "**/*.trx"
+            displayName: "Publish Test Results"
 
-        - script: |
-            dotnet tool install --global dotnet-ef --version 5.0.0-preview.7.20365.15
-          displayName: 'Install EF Core Global Tool'
+          - script: |
+              dotnet tool install --global dotnet-ef --version 5.0.0-preview.8.20407.4
+            displayName: "Install EF Core Global Tool"
 
-        - script: |
-            dotnet ef migrations script -o DbMigrationScript.sql -i
-          workingDirectory: src/server/FakeSurveyGenerator.EF.Design
-          displayName: 'Create Database Migration Script'
+          - script: |
+              dotnet ef migrations script -o DbMigrationScript.sql -i
+            workingDirectory: src/server/FakeSurveyGenerator.EF.Design
+            displayName: "Create Database Migration Script"
 
-        - task: PublishPipelineArtifact@1
-          inputs:
-            targetPath: 'src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql'
-            artifact: 'DbMigrationScript'
-          displayName: 'Publish Database Migration Script'
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: "src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql"
+              artifact: "DbMigrationScript"
+            displayName: "Publish Database Migration Script"
 
-        - task: Docker@2
-          displayName: 'Build Docker Image'
-          inputs:
-            containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
-            repository: '$(projectName)'
-            command: 'build'
-            Dockerfile: 'src/server/FakeSurveyGenerator.API/Dockerfile'
-            buildContext: .
-            tags: |
-              $(NBGV_SemVer1)
-              latest
+          - task: Docker@2
+            displayName: "Build Docker Image"
+            inputs:
+              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+              repository: "$(projectName)"
+              command: "build"
+              Dockerfile: "src/server/FakeSurveyGenerator.API/Dockerfile"
+              buildContext: .
+              tags: |
+                $(NBGV_SemVer1)
+                latest
 
-        - task: Docker@2
-          displayName: 'Push Image to Azure Container Registry'
-          inputs:
-            containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
-            repository: '$(projectName)'
-            command: 'push'
-            tags: |
-              $(NBGV_SemVer1)
-              latest
+          - task: Docker@2
+            displayName: "Push Image to Azure Container Registry"
+            inputs:
+              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+              repository: "$(projectName)"
+              command: "push"
+              tags: |
+                $(NBGV_SemVer1)
+                latest
 
   - stage: Publish
-    displayName: 'Publish'
+    displayName: "Publish"
     jobs:
       - job: Publish_Chart
-        displayName: 'Publish Fake Survey Generator API Chart'
+        displayName: "Publish Fake Survey Generator API Chart"
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: "ubuntu-latest"
         steps:
-              - download: 'current'
-                artifact: 'VersionFile'
+          - download: "current"
+            artifact: "VersionFile"
 
-              - script: |
-                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-                displayName: 'Set Version from Version File'
+          - script: |
+              GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+              echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+            displayName: "Set Version from Version File"
 
-              - task: HelmInstaller@1
-                inputs:
-                  helmVersionToInstall: '3.3.0'
-                displayName: 'Install Helm'
+          - task: HelmInstaller@1
+            inputs:
+              helmVersionToInstall: "3.3.0"
+            displayName: "Install Helm"
 
-              - task: HelmDeploy@0
-                inputs:
-                  command: 'package'
-                  chartPath: 'charts/$(projectName)'
-                  chartVersion: $(VersionTag)
-                  save: false
-                displayName: 'Helm Package'
+          - task: HelmDeploy@0
+            inputs:
+              command: "package"
+              chartPath: "charts/$(projectName)"
+              chartVersion: $(VersionTag)
+              save: false
+            displayName: "Helm Package"
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'Azure Service Connection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az configure --defaults acr=$(registryName)'
-                displayName: 'Set Azure Container Registry Default in Azure CLI'
+          - task: AzureCLI@1
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptLocation: "inlineScript"
+              inlineScript: "az configure --defaults acr=$(registryName)"
+            displayName: "Set Azure Container Registry Default in Azure CLI"
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'Azure Service Connection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm repo add'
-                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+          - task: AzureCLI@1
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptLocation: "inlineScript"
+              inlineScript: "az acr helm repo add"
+            displayName: "Add Azure Container Registry Repo to Azure CLI"
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'Azure Service Connection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz'
-                displayName: 'Push Helm Chart to Azure Container Registry'
+          - task: AzureCLI@1
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptLocation: "inlineScript"
+              inlineScript: "az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz"
+            displayName: "Push Helm Chart to Azure Container Registry"
 
   - stage: Database_Deployment
-    displayName: 'Database Deployment'
+    displayName: "Database Deployment"
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator Database
         pool:
-          vmImage: 'windows-2019'
+          vmImage: "windows-2019"
         variables:
-          sqlServerName: 'sql-marcel-michau.database.windows.net'
+          sqlServerName: "sql-marcel-michau.database.windows.net"
           sqlDatabaseName: sqldb-fake-survey-generator
           sqlDatabaseDeploymentUser: azure-pipelines-user
-        environment: 'azure-sql'
+        environment: "azure-sql"
         strategy:
           runOnce:
             deploy:
               steps:
                 - task: SqlAzureDacpacDeployment@1
-                  displayName: 'Execute SQL Migration Script'
+                  displayName: "Execute SQL Migration Script"
                   inputs:
-                    azureSubscription: 'Azure Service Connection'
-                    ServerName: '$(sqlServerName)'
-                    DatabaseName: '$(sqlDatabaseName)'
-                    SqlUsername: '$(sqlDatabaseDeploymentUser)'
-                    SqlPassword: '$(sqlDatabaseDeploymentPassword)'
+                    azureSubscription: "Azure Service Connection"
+                    ServerName: "$(sqlServerName)"
+                    DatabaseName: "$(sqlDatabaseName)"
+                    SqlUsername: "$(sqlDatabaseDeploymentUser)"
+                    SqlPassword: "$(sqlDatabaseDeploymentPassword)"
                     deployType: SqlTask
-                    SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
+                    SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
+
 
                 # Commented until I find a supported way of running SQL scripts with Azure AD auth
                 # - task: AzureCLI@2
@@ -223,7 +224,7 @@ stages:
                 #     inlineScript: |
                 #       $accessToken = (az account get-access-token --resource=https://database.windows.net/ --query accessToken) | Out-String
                 #       Write-Output "##vso[task.setvariable variable=sqlAccessToken;]$accessToken"
-                                        
+
                 # - task: SqlAzureDacpacDeployment@1
                 #   displayName: 'Execute SQL Migration Script'
                 #   inputs:
@@ -236,7 +237,7 @@ stages:
                 #     IpDetectionMethod: 'AutoDetect'
 
   - stage: Application_Deployment
-    displayName: 'Application Deployment'
+    displayName: "Application Deployment"
     variables:
       environmentSuffix: prod
       ingressClusterIssuerName: letsencrypt
@@ -248,40 +249,40 @@ stages:
       azureDatabaseUseActiveDirectoryAuthentication: true
       databaseServer: tcp:sql-marcel-michau.database.windows.net\,1433
       databaseName: sqldb-fake-survey-generator
-      databaseUser: 'azure-ad-enabled'
-      databasePassword: 'azure-ad-enabled'
+      databaseUser: "azure-ad-enabled"
+      databasePassword: "azure-ad-enabled"
       azureRedisCacheEnabled: true
       redisServer: redis-fake-survey-generator.redis.cache.windows.net
-      redisPassword: '$(testEnvRedisPassword)'
+      redisPassword: "$(testEnvRedisPassword)"
       redisDefaultDatabase: 0
       azureApplicationInsightsEnabled: false
       azureKeyVaultEnabled: true
       azureKeyVaultName: kv-fake-survey-generator
-      azureKeyVaultResourceGroup: '$(resourceGroupName)'
-      azureKeyVaultSubscriptionId: '$(subscriptionId)'
-      azureKeyVaultTenantId: '$(tenantId)'
+      azureKeyVaultResourceGroup: "$(resourceGroupName)"
+      azureKeyVaultSubscriptionId: "$(subscriptionId)"
+      azureKeyVaultTenantId: "$(tenantId)"
       managedIdentityName: mi-fake-survey-generator
       replicaCount: 1
     jobs:
       - job: CreateIdentities
         displayName: Create Identities
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: "ubuntu-latest"
 
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
-            displayName: 'Deploy Test Managed Identity ARM Template'
+            displayName: "Deploy Test Managed Identity ARM Template"
             inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'Azure Service Connection'
-              subscriptionId: '$(subscriptionId)'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: '$(resourceGroupName)'
-              location: 'South Africa North'
-              templateLocation: 'Linked artifact'
-              csmFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.json'
-              csmParametersFile: 'build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.parameters.json'
-              deploymentMode: 'Incremental'
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: "Azure Service Connection"
+              subscriptionId: "$(subscriptionId)"
+              action: "Create Or Update Resource Group"
+              resourceGroupName: "$(resourceGroupName)"
+              location: "South Africa North"
+              templateLocation: "Linked artifact"
+              csmFile: "build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.json"
+              csmParametersFile: "build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.parameters.json"
+              deploymentMode: "Incremental"
               overrideParameters: >-
                 -identityName "$(managedIdentityName)"
                 -keyVaultName "$(azureKeyVaultName)"
@@ -289,16 +290,16 @@ stages:
               deploymentOutputs: createManagedIdentityArmOutput
 
           - task: PowerShell@2
-            name: 'SetOutputVariables'
-            displayName: 'Set Output Variables'
+            name: "SetOutputVariables"
+            displayName: "Set Output Variables"
             inputs:
-              targetType: 'inline'
+              targetType: "inline"
               script: |
                 $armOutputObj = '$(createManagedIdentityArmOutput)' | ConvertFrom-Json
                 $armOutputObj.PSObject.Properties | ForEach-Object {
                   $keyname = $_.Name
                   $value = $_.Value.value
-              
+
                   ## Creates a standard pipeline variable
                   Write-Output "##vso[task.setvariable variable=$keyName;]$value"
                   
@@ -312,8 +313,8 @@ stages:
         dependsOn:
           - CreateIdentities
         pool:
-          vmImage: 'ubuntu-latest'
-        environment: 'aks'
+          vmImage: "ubuntu-latest"
+        environment: "aks"
         variables:
           identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
           identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
@@ -321,84 +322,81 @@ stages:
           runOnce:
             deploy:
               steps:
-              - script: |
-                  GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-                  echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-                displayName: 'Set Version from Version File'
+                - script: |
+                    GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
+                    echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
+                  displayName: "Set Version from Version File"
 
-              - task: KubectlInstaller@0
-                displayName: 'Install Kubectl latest'
+                - task: KubectlInstaller@0
+                  displayName: "Install Kubectl latest"
 
-              - task: HelmInstaller@1
-                inputs:
-                  helmVersionToInstall: '3.3.0'
-                displayName: 'Install Helm'
+                - task: HelmInstaller@1
+                  inputs:
+                    helmVersionToInstall: "3.3.0"
+                  displayName: "Install Helm"
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'Azure Service Connection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az configure --defaults acr=$(registryName)'
-                displayName: 'Set Azure Container Registry Default in Azure CLI'
+                - task: AzureCLI@1
+                  inputs:
+                    azureSubscription: "Azure Service Connection"
+                    scriptLocation: "inlineScript"
+                    inlineScript: "az configure --defaults acr=$(registryName)"
+                  displayName: "Set Azure Container Registry Default in Azure CLI"
 
-              - task: AzureCLI@1
-                inputs:
-                  azureSubscription: 'Azure Service Connection'
-                  scriptLocation: 'inlineScript'
-                  inlineScript: 'az acr helm repo add'
-                displayName: 'Add Azure Container Registry Repo to Azure CLI'
+                - task: AzureCLI@1
+                  inputs:
+                    azureSubscription: "Azure Service Connection"
+                    scriptLocation: "inlineScript"
+                    inlineScript: "az acr helm repo add"
+                  displayName: "Add Azure Container Registry Repo to Azure CLI"
 
-              - task: Bash@3
-                inputs:
-                  targetType: 'inline'
-                  script: 'helm repo update'
-                displayName: 'Update Helm Repo'
+                - task: Bash@3
+                  inputs:
+                    targetType: "inline"
+                    script: "helm repo update"
+                  displayName: "Update Helm Repo"
 
-              - task: HelmDeploy@0
-                displayName: 'Deploy Fake Survey Generator API using Helm'
-                inputs:
-                  connectionType: 'Azure Resource Manager'
-                  azureSubscription: 'Azure Service Connection'
-                  azureResourceGroup: '$(resourceGroupName)'
-                  kubernetesCluster: '$(kubernetesClusterName)'
-                  namespace: '$(targetNamespace)'
-                  command: 'upgrade'
-                  chartType: 'Name'
-                  chartName: '$(registryName)/$(projectName)'
-                  releaseName: '$(projectName)-$(environmentSuffix)'
-                  arguments: >-
-                    --create-namespace
-                    --version $(VersionTag)
-                    --set identityProviderUrl=$(identityProviderUrl)
-                    --set azureDatabaseEnabled=$(azureDatabaseEnabled)
-                    --set azureDatabaseUseActiveDirectoryAuthentication=$(azureDatabaseUseActiveDirectoryAuthentication)
-                    --set databaseServer=$(databaseServer)
-                    --set azureRedisCacheEnabled=$(azureRedisCacheEnabled)
-                    --set redisUrl=$(redisServer)
-                    --set redisPassword=$(redisPassword)
-                    --set redisDefaultDatabase=$(redisDefaultDatabase)
-                    --set azureApplicationInsightsEnabled=$(azureApplicationInsightsEnabled)
-                    --set azureKeyVaultEnabled=$(azureKeyVaultEnabled)
-                    --set azureKeyVaultName=$(azureKeyVaultName)
-                    --set azureKeyVaultResourceGroup=$(azureKeyVaultResourceGroup)
-                    --set azureKeyVaultSubscriptionId=$(azureKeyVaultSubscriptionId)
-                    --set azureKeyVaultTenantId=$(azureKeyVaultTenantId)
-                    --set azurePodIdentityClientId=$(identityClientId)
-                    --set azurePodIdentityResourceId=$(identityResourceId)
-                    --set azurePodIdentityName=$(managedIdentityName)
-                    --set image.repository=$(imageRepository)
-                    --set image.tag=$(VersionTag)
-                    --set database=$(databaseName)
-                    --set user=$(databaseUser)
-                    --set password=$(databasePassword)
-                    --set ingress.hosts[0].host=$(ingressHost)
-                    --set ingress.hosts[0].paths[0]=/api
-                    --set ingress.hosts[0].paths[1]=/swagger
-                    --set ingress.hosts[0].paths[2]=/health
-                    --set ingress.tls[0].secretName=$(ingressTlsSecretName)
-                    --set ingress.tls[0].hosts={$(ingressHost)}
-                    --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
-                    --set replicaCount=$(replicaCount)
-                  
-
-  
+                - task: HelmDeploy@0
+                  displayName: "Deploy Fake Survey Generator API using Helm"
+                  inputs:
+                    connectionType: "Azure Resource Manager"
+                    azureSubscription: "Azure Service Connection"
+                    azureResourceGroup: "$(resourceGroupName)"
+                    kubernetesCluster: "$(kubernetesClusterName)"
+                    namespace: "$(targetNamespace)"
+                    command: "upgrade"
+                    chartType: "Name"
+                    chartName: "$(registryName)/$(projectName)"
+                    releaseName: "$(projectName)-$(environmentSuffix)"
+                    arguments: >-
+                      --create-namespace
+                      --version $(VersionTag)
+                      --set identityProviderUrl=$(identityProviderUrl)
+                      --set azureDatabaseEnabled=$(azureDatabaseEnabled)
+                      --set azureDatabaseUseActiveDirectoryAuthentication=$(azureDatabaseUseActiveDirectoryAuthentication)
+                      --set databaseServer=$(databaseServer)
+                      --set azureRedisCacheEnabled=$(azureRedisCacheEnabled)
+                      --set redisUrl=$(redisServer)
+                      --set redisPassword=$(redisPassword)
+                      --set redisDefaultDatabase=$(redisDefaultDatabase)
+                      --set azureApplicationInsightsEnabled=$(azureApplicationInsightsEnabled)
+                      --set azureKeyVaultEnabled=$(azureKeyVaultEnabled)
+                      --set azureKeyVaultName=$(azureKeyVaultName)
+                      --set azureKeyVaultResourceGroup=$(azureKeyVaultResourceGroup)
+                      --set azureKeyVaultSubscriptionId=$(azureKeyVaultSubscriptionId)
+                      --set azureKeyVaultTenantId=$(azureKeyVaultTenantId)
+                      --set azurePodIdentityClientId=$(identityClientId)
+                      --set azurePodIdentityResourceId=$(identityResourceId)
+                      --set azurePodIdentityName=$(managedIdentityName)
+                      --set image.repository=$(imageRepository)
+                      --set image.tag=$(VersionTag)
+                      --set database=$(databaseName)
+                      --set user=$(databaseUser)
+                      --set password=$(databasePassword)
+                      --set ingress.hosts[0].host=$(ingressHost)
+                      --set ingress.hosts[0].paths[0]=/api
+                      --set ingress.hosts[0].paths[1]=/swagger
+                      --set ingress.hosts[0].paths[2]=/health
+                      --set ingress.tls[0].secretName=$(ingressTlsSecretName)
+                      --set ingress.tls[0].hosts={$(ingressHost)}
+                      --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
+                      --set replicaCount=$(replicaCount)

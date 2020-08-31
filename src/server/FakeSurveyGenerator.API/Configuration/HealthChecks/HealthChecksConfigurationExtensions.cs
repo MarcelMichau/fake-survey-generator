@@ -20,7 +20,7 @@ namespace FakeSurveyGenerator.API.Configuration.HealthChecks
             if (configuration.GetValue<bool>("SQL_SERVER_USE_AZURE_AD_AUTHENTICATION"))
             {
                 healthChecksBuilder
-                    .AddSqlServerWithAzureAd(
+                    .AddSqlServer(
                         configuration.GetConnectionString(nameof(SurveyContext)),
                         name: "FakeSurveyGeneratorDB-check",
                         tags: new[] {"fake-survey-generator-db", "ready"},

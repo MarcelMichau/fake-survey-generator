@@ -17,9 +17,9 @@ namespace FakeSurveyGenerator.API.HostedServices
 
         public DatabaseCreationHostedService(IServiceProvider serviceProvider, IHostEnvironment hostEnvironment, ILogger<DatabaseCreationHostedService> logger)
         {
-            _serviceProvider = serviceProvider;
-            _hostEnvironment = hostEnvironment;
-            _logger = logger;
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -37,7 +37,15 @@ namespace FakeSurveyGenerator.API.HostedServices
             if (context.Database.IsSqlServer()) // Do not migrate database when running integration tests with in-memory database
             {
                 _logger.LogInformation("Creating/Migrating Database...");
-                await context.Database.MigrateAsync(cancellationToken);
+
+                try
+                {
+                    await context.Database.MigrateAsync(cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "An error occurred while migrating the database");
+                }
             }
         }
 
