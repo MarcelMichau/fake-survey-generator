@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29001.49
+VisualStudioVersion = 16.0.30420.98
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{438984B1-9FA7-45B5-8716-CDE285922F9B}"
 EndProject
@@ -22,9 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		build\fake-survey-generator-api\azure-pipelines.yml = build\fake-survey-generator-api\azure-pipelines.yml
 		build\fake-survey-generator-ui\azure-pipelines.yml = build\fake-survey-generator-ui\azure-pipelines.yml
-		build\identityserver\azure-pipelines.yml = build\identityserver\azure-pipelines.yml
-		build\infrastructure\redis\azure-pipelines.yml = build\infrastructure\redis\azure-pipelines.yml
-		build\infrastructure\sql-server\azure-pipelines.yml = build\infrastructure\sql-server\azure-pipelines.yml
+		build\infrastructure\azure-pipelines.yml = build\infrastructure\azure-pipelines.yml
 		global.json = global.json
 		LICENSE = LICENSE
 		README.md = README.md
