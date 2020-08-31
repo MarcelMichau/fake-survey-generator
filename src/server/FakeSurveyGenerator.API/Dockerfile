@@ -6,7 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0.100-preview.8-buster-slim AS build
 RUN dotnet tool install --tool-path . nbgv --version 3.2.31
 COPY ./.git /.git
-COPY Directory.Build.props /Directory.Build.props
+COPY src/server/Directory.Build.props /Directory.Build.props
 COPY src/server/version.json /version.json
 WORKDIR /src
 COPY src/server/FakeSurveyGenerator.API/FakeSurveyGenerator.API.csproj FakeSurveyGenerator.API/
