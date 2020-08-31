@@ -47,11 +47,11 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
                                s.NumberOfRespondents,
 
                           (SELECT COUNT(*)
-                           FROM [FakeSurveyGenerator].[Survey].[SurveyOption]
+                           FROM [Survey].[SurveyOption]
                            WHERE SurveyId = s.Id) AS NumberOfOptions,
                                surveyOption1.OptionText AS WinningOption,
                                surveyOption1.NumberOfVotes AS WinningOptionNumberOfVotes
-                        FROM [FakeSurveyGenerator].[Survey].[Survey] s
+                        FROM [Survey].[Survey] s
                         LEFT OUTER JOIN Survey.SurveyOption surveyOption1 ON surveyOption1.SurveyId = s.Id
                         LEFT OUTER JOIN Survey.SurveyOption surveyOption2 ON surveyOption2.SurveyId = s.Id
                         AND surveyOption2.NumberOfVotes > surveyOption1.NumberOfVotes
