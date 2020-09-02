@@ -23,6 +23,7 @@ pr:
       - build/fake-survey-generator-ui/*
 
 variables:
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
   projectName: fake-survey-generator-ui
   registryName: acrfakesurveygenerator
   imageRepository: "$(registryName).azurecr.io/$(projectName)"
@@ -140,6 +141,7 @@ stages:
             displayName: "Push Helm Chart to Azure Container Registry"
 
   - stage: Application_Deployment
+    condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Application Deployment"
     jobs:
       - deployment: Deployment_Job
