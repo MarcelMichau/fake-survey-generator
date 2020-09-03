@@ -55,7 +55,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
                         LEFT OUTER JOIN Survey.SurveyOption surveyOption1 ON surveyOption1.SurveyId = s.Id
                         LEFT OUTER JOIN Survey.SurveyOption surveyOption2 ON surveyOption2.SurveyId = s.Id
                         AND surveyOption2.NumberOfVotes > surveyOption1.NumberOfVotes
-                        WHERE s.OwnerId = 1
+                        WHERE s.OwnerId = @ownerId
                           AND surveyOption2.SurveyId IS NULL
                         GROUP BY s.Id,
                                  s.Topic,
