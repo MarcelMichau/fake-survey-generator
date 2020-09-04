@@ -35,6 +35,13 @@ export type SurveyResponse = {
     responseException: ResponseException;
 };
 
+export type UserSurveysResponse = {
+    message: string;
+    result: UserSurveyModel[];
+    isError: boolean;
+    responseException: ResponseException;
+};
+
 export type UserResponse = {
     message: string;
     result: UserModel;
@@ -63,6 +70,16 @@ export type SurveyModel = {
     numberOfRespondents: number;
     createdOn: Date;
     options: SurveyOptionModel[];
+};
+
+export type UserSurveyModel = {
+    id: number;
+    topic: string;
+    respondentType: string;
+    numberOfRespondents: number;
+    numberOfOptions: number;
+    winningOption: string;
+    winningOptionNumberOfVotes: number;
 };
 
 export type SurveyOptionModel = {

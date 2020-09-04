@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import NavBar from "./components/NavBar";
 import CreateSurvey from "./components/CreateSurvey";
 import GetSurvey from "./components/GetSurvey";
+import MySurveys from "./components/MySurveys";
 import Splash from "./components/Splash";
 import Alert from "./components/Alert";
 import Footer from "./components/Footer";
@@ -92,6 +93,9 @@ const App: React.FC = () => {
                                     message={errorMessage}
                                 ></Alert>
                             )}
+                        </div>
+                        <div>
+                            <MySurveys loading={isLoading} />
                         </div>
                     </div>
                 )}
