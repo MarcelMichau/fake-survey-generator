@@ -4,12 +4,7 @@ trigger:
       - master
   paths:
     include:
-      - src/server/FakeSurveyGenerator.API/*
-      - src/server/FakeSurveyGenerator.API.Tests.Integration/*
-      - src/server/FakeSurveyGenerator.Domain/*
-      - src/server/FakeSurveyGenerator.Domain.Tests/*
-      - src/server/FakeSurveyGenerator.EF.Design/*
-      - src/server/FakeSurveyGenerator.Infrastructure/*
+      - src/server/*
       - charts/fake-survey-generator-api/*
       - build/fake-survey-generator-api/*
       - build/infrastructure/fake-survey-generator-managed-identity/*
@@ -24,12 +19,7 @@ pr:
       - refactor/*
   paths:
     include:
-      - src/server/FakeSurveyGenerator.API/*
-      - src/server/FakeSurveyGenerator.API.Tests.Integration/*
-      - src/server/FakeSurveyGenerator.Domain/*
-      - src/server/FakeSurveyGenerator.Domain.Tests/*
-      - src/server/FakeSurveyGenerator.EF.Design/*
-      - src/server/FakeSurveyGenerator.Infrastructure/*
+      - src/server/*
       - charts/fake-survey-generator-api/*
       - build/fake-survey-generator-api/*
       - build/infrastructure/fake-survey-generator-managed-identity/*
