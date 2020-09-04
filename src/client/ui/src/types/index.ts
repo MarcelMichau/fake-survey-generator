@@ -35,7 +35,7 @@ export type SurveyResponse = {
     responseException: ResponseException;
 };
 
-export type UserSurveyResponse = {
+export type UserSurveysResponse = {
     message: string;
     result: UserSurveyModel[];
     isError: boolean;

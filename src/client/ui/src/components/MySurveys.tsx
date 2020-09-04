@@ -13,18 +13,11 @@ export type MySurveysProps = {
 
 const MySurveys: React.FC<MySurveysProps> = ({ loading }) => {
     const { getAccessTokenSilently } = useAuth0();
-    const [userSurveys, setUserSurveys] = useState(
-        [] as Types.UserSurveyModel[]
+    const [userSurveysResponse, setUserSurveysResponse] = useState(
+        {} as Types.UserSurveysResponse
     );
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const resetMessage = (): void => {
-        setErrorMessage("");
-    };
 
     const fetchSurveys = async () => {
-        resetMessage();
-
         const token = await getAccessTokenSilently();
 
         const response = await fetch(`/api/survey/user`, {
@@ -33,23 +26,26 @@ const MySurveys: React.FC<MySurveysProps> = ({ loading }) => {
             },
         });
 
-        const data: Types.UserSurveyResponse = await response.json();
+        const data: Types.UserSurveysResponse = await response.json();
 
-        if (data.isError) {
-            setErrorMessage(data.responseException.exceptionMessage.detail);
-            setUserSurveys([] as Types.UserSurveyModel[]);
-            return;
-        }
-
-        const surveys = data.result;
-
-        setUserSurveys(surveys);
+        setUserSurveysResponse(data);
     };
 
     const submitForm = async (e: React.FormEvent) => {
         e.preventDefault();
         await fetchSurveys();
     };
+
+    const tablePadding = "px-4 py-2";
+    const tableBorder = "border border-gray-700";
+
+    const TableHeader = ({ children }: JSX.ElementChildrenAttribute) => (
+        <th className={`${tablePadding}`}>{children}</th>
+    );
+
+    const TableData = ({ children }: JSX.ElementChildrenAttribute) => (
+        <td className={`${tableBorder} ${tablePadding}`}>{children}</td>
+    );
 
     return (
         <SkeletonTheme color="#2d3748" highlightColor="#667eea">
@@ -68,53 +64,64 @@ const MySurveys: React.FC<MySurveysProps> = ({ loading }) => {
                     </SkeletonButton>
                 </form>
 
-                {userSurveys.length > 0 && (
-                    <table className="table-auto bg-gray-900 text-gray-400 border border-gray-700 my-4">
-                        <thead>
-                            <tr>
-                                <th className="px-4 py-2">Question</th>
-                                <th className="px-4 py-2">Audience</th>
-                                <th className="px-4 py-2"># Respondents</th>
-                                <th className="px-4 py-2"># Options</th>
-                                <th className="px-4 py-2">Winning Option</th>
-                                <th className="px-4 py-2">Winning # Votes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {userSurveys.map((survey, index) => (
-                                <tr key={survey.id}>
-                                    <td className="border border-gray-700 px-4 py-2">
-                                        {survey.topic}
-                                    </td>
-                                    <td className="border border-gray-700 px-4 py-2">
-                                        {survey.respondentType}
-                                    </td>
-                                    <td className="border border-gray-700 px-4 py-2">
-                                        {new Intl.NumberFormat().format(
-                                            survey.numberOfRespondents
-                                        )}
-                                    </td>
-                                    <td className="border border-gray-700 px-4 py-2">
-                                        {survey.numberOfOptions}
-                                    </td>
-                                    <td className="border border-gray-700 px-4 py-2">
-                                        {survey.winningOption}
-                                    </td>
-                                    <td className="border border-gray-700 px-4 py-2">
-                                        {new Intl.NumberFormat().format(
-                                            survey.winningOptionNumberOfVotes
-                                        )}
-                                    </td>
+                {!userSurveysResponse?.isError &&
+                    userSurveysResponse?.result?.length > 0 && (
+                        <table
+                            className={`table-auto bg-gray-900 text-gray-400 ${tableBorder} my-4`}
+                        >
+                            <thead>
+                                <tr>
+                                    <TableHeader>Question</TableHeader>
+                                    <TableHeader>Audience</TableHeader>
+                                    <TableHeader># Respondents</TableHeader>
+                                    <TableHeader># Options</TableHeader>
+                                    <TableHeader>Winning Option</TableHeader>
+                                    <TableHeader>Winning # Votes</TableHeader>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
-                {errorMessage !== "" && (
+                            </thead>
+                            <tbody>
+                                {userSurveysResponse.result.map((survey) => (
+                                    <tr key={survey.id}>
+                                        <TableData>{survey.topic}</TableData>
+                                        <TableData>
+                                            {survey.respondentType}
+                                        </TableData>
+                                        <TableData>
+                                            {new Intl.NumberFormat().format(
+                                                survey.numberOfRespondents
+                                            )}
+                                        </TableData>
+                                        <TableData>
+                                            {survey.numberOfOptions}
+                                        </TableData>
+                                        <TableData>
+                                            {survey.winningOption}
+                                        </TableData>
+                                        <TableData>
+                                            {new Intl.NumberFormat().format(
+                                                survey.winningOptionNumberOfVotes
+                                            )}
+                                        </TableData>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                {!userSurveysResponse?.isError &&
+                    userSurveysResponse?.result?.length === 0 && (
+                        <Alert
+                            title="No Surveys"
+                            message={"You have not created any surveys yet. :("}
+                        ></Alert>
+                    )}
+                {userSurveysResponse?.isError && (
                     <Alert
                         type="error"
                         title="Oh no! Something did not go as planned."
-                        message={errorMessage}
+                        message={
+                            userSurveysResponse.responseException
+                                .exceptionMessage.detail
+                        }
                     ></Alert>
                 )}
             </div>

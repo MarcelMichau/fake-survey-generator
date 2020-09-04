@@ -45,7 +45,6 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
                                s.Topic,
                                s.RespondentType,
                                s.NumberOfRespondents,
-
                           (SELECT COUNT(*)
                            FROM [Survey].[SurveyOption]
                            WHERE SurveyId = s.Id) AS NumberOfOptions,
@@ -61,8 +60,10 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
                                  s.Topic,
                                  s.RespondentType,
                                  s.NumberOfRespondents,
+                                 s.CreatedOn,
                                  surveyOption1.OptionText,
                                  surveyOption1.NumberOfVotes
+                        ORDER BY s.CreatedOn DESC
                         ", new {ownerId = surveyOwner.Id});
 
             return Result.Success<List<UserSurveyModel>, Error>(surveys.ToList());
