@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using FakeSurveyGenerator.Application.Common.DomainEvents;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.SeedWork;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -16,8 +17,8 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
     public sealed class SurveyContext : DbContext, ISurveyContext
     {
         private readonly IUserService _userService;
+        private readonly IDomainEventService _domainEventService;
         private readonly ILogger _logger;
-        private readonly IMediator _mediator;
 
         public const string DefaultSchema = "Survey";
 
@@ -34,14 +35,14 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public SurveyContext(DbContextOptions options, IMediator mediator, IUserService userService, ILogger<SurveyContext> logger) : base(options)
+        public SurveyContext(DbContextOptions options, IDomainEventService domainEventService, IUserService userService, ILogger<SurveyContext> logger) : base(options)
         {
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _domainEventService = domainEventService ?? throw new ArgumentNullException(nameof(domainEventService));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -57,7 +58,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
             {
                 SetAuditProperties();
 
-                await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
+                await DispatchEvents(cancellationToken);
 
                 SetAuditProperties(); // This needs to be run again to set the audit properties of any entities that were added/modified in any Domain Event Handlers after dispatch
 
@@ -69,6 +70,19 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
             {
                 _logger.LogError(ex, "An error occurred during a database update");
                 return 0;
+            }
+        }
+
+        private async Task DispatchEvents(CancellationToken cancellationToken)
+        {
+            var domainEventEntities = ChangeTracker.Entries<IHasDomainEvents>()
+                .Select(x => x.Entity.DomainEvents)
+                .SelectMany(x => x)
+                .ToArray();
+
+            foreach (var domainEvent in domainEventEntities)
+            {
+                await _domainEventService.Publish(domainEvent, cancellationToken);
             }
         }
 

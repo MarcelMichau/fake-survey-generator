@@ -1,10 +1,10 @@
 ﻿using System;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using MediatR;
+using FakeSurveyGenerator.Domain.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.DomainEvents
 {
-    public sealed class SurveyCreatedDomainEvent : INotification
+    public sealed class SurveyCreatedDomainEvent : DomainEvent
     {
         public Survey Survey { get; }
 

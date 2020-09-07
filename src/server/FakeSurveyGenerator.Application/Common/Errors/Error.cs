@@ -14,7 +14,7 @@ namespace FakeSurveyGenerator.Application.Common.Errors
             Message = message;
         }
 
-        protected override IEnumerable<object> GetAtomicValues()
+        protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Code;
         }

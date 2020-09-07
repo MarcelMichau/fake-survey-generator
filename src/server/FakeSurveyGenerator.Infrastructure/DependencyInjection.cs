@@ -1,6 +1,8 @@
-﻿using FakeSurveyGenerator.Application.Common.Identity;
+﻿using FakeSurveyGenerator.Application.Common.DomainEvents;
+using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Notifications;
 using FakeSurveyGenerator.Infrastructure.Caching;
+using FakeSurveyGenerator.Infrastructure.DomainEvents;
 using FakeSurveyGenerator.Infrastructure.Identity;
 using FakeSurveyGenerator.Infrastructure.Notifications;
 using FakeSurveyGenerator.Infrastructure.Persistence;
@@ -24,6 +26,7 @@ namespace FakeSurveyGenerator.Infrastructure
             services.AddDatabaseConfiguration(configuration);
             services.AddCacheConfiguration(configuration);
             services.AddSingleton<IUserService, SystemUserInfoService>();
+            services.AddScoped<IDomainEventService, DomainEventService>();
 
             return services;
         }
@@ -35,6 +38,7 @@ namespace FakeSurveyGenerator.Infrastructure
             services.AddDatabaseConfiguration(configuration);
             services.AddCacheConfiguration(configuration);
             services.AddOAuthConfiguration();
+            services.AddScoped<IDomainEventService, DomainEventService>();
 
             return services;
         }
