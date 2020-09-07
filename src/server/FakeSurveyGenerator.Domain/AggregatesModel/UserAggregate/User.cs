@@ -15,6 +15,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate
         private readonly List<Survey> _ownedSurveys = new List<Survey>();
         public IReadOnlyList<Survey> OwnedSurveys => _ownedSurveys.ToList();
 
+        private User() { } // Necessary for Entity Framework Core
+
         public User(NonEmptyString displayName, NonEmptyString emailAddress, NonEmptyString externalUserId)
         {
             DisplayName = displayName;

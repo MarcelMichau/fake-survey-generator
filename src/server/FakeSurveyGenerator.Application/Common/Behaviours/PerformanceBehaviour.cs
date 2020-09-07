@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -14,8 +15,7 @@ namespace FakeSurveyGenerator.Application.Common.Behaviours
         public PerformanceBehaviour(ILogger<TRequest> logger)
         {
             _timer = new Stopwatch();
-
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
