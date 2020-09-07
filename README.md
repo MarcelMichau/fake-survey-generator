@@ -38,7 +38,7 @@ Here are some of the features incorporated into this project:
 - Implementing health checks for an ASP.NET Core Web API using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
 - Adding [Swagger](https://swagger.io/) to an ASP.NET Core Web API using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
 - Adding [OpenID Connect](https://openid.net/connect/) for Authentication
-- Adding [OpenID Connect](https://openid.net/connect/) to Swagger UI
+- Adding OpenID Connect to Swagger UI
 - Securing an ASP.NET Core Web API using JWT Bearer authentication
 - Adding security headers to API responses using [NetEscapades.AspNetCore.SecurityHeaders](https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders)
 - Using [AutoWrapper](https://github.com/proudmonkey/AutoWrapper) to return consistent API response models

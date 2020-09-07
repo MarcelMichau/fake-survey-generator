@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
+using FakeSurveyGenerator.Application.Common.DomainEvents;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -14,7 +14,7 @@ namespace FakeSurveyGenerator.Application.Tests
     {
         public static SurveyContext Create()
         {
-            var mockMediator = new Mock<IMediator>();
+            var mockDomainEventService = new Mock<IDomainEventService>();
 
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
@@ -24,7 +24,7 @@ namespace FakeSurveyGenerator.Application.Tests
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new SurveyContext(options, mockMediator.Object, mockUserService.Object, new NullLogger<SurveyContext>());
+            var context = new SurveyContext(options, mockDomainEventService.Object, mockUserService.Object, new NullLogger<SurveyContext>());
 
             context.Database.EnsureCreated();
 
