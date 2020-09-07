@@ -9,6 +9,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
         public int NumberOfVotes { get; private set; }
         public int PreferredNumberOfVotes { get; }
 
+        private SurveyOption() { } // Necessary for Entity Framework Core
+
         public SurveyOption(NonEmptyString optionText)
         {
             OptionText = optionText;

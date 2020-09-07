@@ -55,8 +55,8 @@ namespace FakeSurveyGenerator.Domain.SeedWork
             _requestedHashCode ??= Id.GetHashCode() ^ 31;
 
             return _requestedHashCode.Value;
-
         }
+
         public static bool operator ==(Entity left, Entity right)
         {
             return left?.Equals(right) ?? Equals(right, null);

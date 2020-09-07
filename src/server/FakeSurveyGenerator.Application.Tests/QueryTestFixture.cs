@@ -12,7 +12,6 @@ namespace FakeSurveyGenerator.Application.Tests
 
         public IMapper Mapper { get; }
 
-
         public QueryTestFixture()
         {
             Context = SurveyContextFactory.Create();
