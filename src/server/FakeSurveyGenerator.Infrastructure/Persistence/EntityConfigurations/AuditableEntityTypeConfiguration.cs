@@ -1,4 +1,4 @@
-﻿using FakeSurveyGenerator.Domain.SeedWork;
+﻿using FakeSurveyGenerator.Shared.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

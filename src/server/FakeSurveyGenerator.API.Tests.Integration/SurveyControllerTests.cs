@@ -95,7 +95,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Given_Invalid_CreateSurveyCommand_PostSurvey_Should_Return_Bad_Request()
+        public async Task Given_Invalid_CreateSurveyCommand_PostSurvey_Should_Return_Unprocessable_Entity_Response()
         {
             var createSurveyCommand = new CreateSurveyCommand("", 0, "",
                 new List<SurveyOptionDto>
@@ -110,7 +110,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             var statusCode = (int) response.StatusCode;
 
-            statusCode.ShouldBe(StatusCodes.Status400BadRequest);
+            statusCode.ShouldBe(StatusCodes.Status422UnprocessableEntity);
         }
 
         [Fact]

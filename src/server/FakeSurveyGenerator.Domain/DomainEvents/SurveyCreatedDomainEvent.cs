@@ -1,6 +1,6 @@
 ﻿using System;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Shared.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.DomainEvents
 {

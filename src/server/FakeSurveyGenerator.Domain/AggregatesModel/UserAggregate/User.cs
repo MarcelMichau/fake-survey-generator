@@ -2,7 +2,7 @@
 using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Common;
-using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Shared.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate
 {

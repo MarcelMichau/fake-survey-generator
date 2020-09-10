@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Shared.SeedWork;
 
 namespace FakeSurveyGenerator.Application.Common.Errors
 {

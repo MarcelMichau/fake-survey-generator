@@ -1,5 +1,5 @@
 ﻿using FakeSurveyGenerator.Domain.Common;
-using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Shared.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {

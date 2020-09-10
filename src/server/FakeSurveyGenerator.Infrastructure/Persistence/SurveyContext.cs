@@ -8,7 +8,7 @@ using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
-using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Shared.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

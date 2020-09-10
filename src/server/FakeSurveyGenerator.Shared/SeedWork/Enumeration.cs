@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace FakeSurveyGenerator.Domain.SeedWork
+namespace FakeSurveyGenerator.Shared.SeedWork
 {
     public abstract class Enumeration : IComparable
     {
