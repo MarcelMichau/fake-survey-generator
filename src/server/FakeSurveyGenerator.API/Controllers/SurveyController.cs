@@ -50,9 +50,10 @@ namespace FakeSurveyGenerator.API.Controllers
         /// </summary>
         /// <returns>A newly created SurveyModel</returns>
         /// <response code="201">Returns the newly created SurveyModel</response>
+        /// <response code="422">If the CreateSurveyCommand fails validation</response>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.UnprocessableEntity)]
         public async Task<IActionResult> CreateSurvey(CreateSurveyCommand command, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(command, cancellationToken);

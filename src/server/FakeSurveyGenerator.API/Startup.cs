@@ -27,7 +27,8 @@ namespace FakeSurveyGenerator.API
 
             services.AddControllers()
                 .AddJsonConfiguration()
-                .AddValidationConfiguration();
+                .AddValidationConfiguration()
+                .AddExceptionHandlingConfiguration();
 
             services.AddHealthChecksConfiguration(_configuration);
             services.AddSwaggerConfiguration(_configuration);
@@ -35,6 +36,7 @@ namespace FakeSurveyGenerator.API
             services.AddForwardedHeadersConfiguration();
             services.AddApplicationInsightsConfiguration(_configuration);
             services.AddApplicationServicesConfiguration(_configuration);
+            services.AddApiBehaviourConfiguration(_configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

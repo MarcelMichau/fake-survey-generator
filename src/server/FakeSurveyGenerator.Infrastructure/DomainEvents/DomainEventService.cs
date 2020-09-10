@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Common.DomainEvents;
-using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Shared.SeedWork;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

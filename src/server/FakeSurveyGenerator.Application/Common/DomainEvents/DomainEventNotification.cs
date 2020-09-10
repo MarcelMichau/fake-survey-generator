@@ -1,4 +1,4 @@
-﻿using FakeSurveyGenerator.Domain.SeedWork;
+﻿using FakeSurveyGenerator.Shared.SeedWork;
 using MediatR;
 
 namespace FakeSurveyGenerator.Application.Common.DomainEvents

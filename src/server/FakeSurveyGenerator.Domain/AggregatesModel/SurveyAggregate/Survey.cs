@@ -4,8 +4,8 @@ using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Domain.DomainEvents;
 using FakeSurveyGenerator.Domain.Exceptions;
-using FakeSurveyGenerator.Domain.SeedWork;
 using FakeSurveyGenerator.Domain.Services;
+using FakeSurveyGenerator.Shared.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {

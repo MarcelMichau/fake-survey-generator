@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using FakeSurveyGenerator.Domain.SeedWork;
+using FakeSurveyGenerator.Shared.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.Common
 {
     public sealed class NonEmptyString : ValueObject
     {
-        public string Value { get; set; }
+        public string Value { get; }
 
         private NonEmptyString(string value)
         {

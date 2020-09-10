@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace FakeSurveyGenerator.Domain.SeedWork
+namespace FakeSurveyGenerator.Shared.SeedWork
 {
     public abstract class ValueObject
     {

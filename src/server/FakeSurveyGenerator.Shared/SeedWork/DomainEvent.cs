@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FakeSurveyGenerator.Domain.SeedWork
+namespace FakeSurveyGenerator.Shared.SeedWork
 {
     public interface IHasDomainEvents
     {
