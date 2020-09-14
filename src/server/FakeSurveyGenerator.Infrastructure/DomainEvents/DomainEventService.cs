@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Infrastructure.DomainEvents
 {
-    public sealed class DomainEventService : IDomainEventService
+    internal sealed class DomainEventService : IDomainEventService
     {
         private readonly ILogger<DomainEventService> _logger;
         private readonly IMediator _mediator;

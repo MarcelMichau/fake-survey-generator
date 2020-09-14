@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Domain.Common;
+﻿using System;
+using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Shared.SeedWork;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
@@ -19,7 +20,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 
         public SurveyOption(NonEmptyString optionText, int preferredNumberOfVotes)
         {
-            OptionText = optionText;
+            OptionText = optionText ?? throw new ArgumentNullException(nameof(optionText));
             PreferredNumberOfVotes = preferredNumberOfVotes;
         }
 

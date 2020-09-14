@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Infrastructure.Caching
 {
-    public sealed class Cache<T> : ICache<T>
+    internal sealed class Cache<T> : ICache<T>
     {
         private readonly IDistributedCache _distributedCache;
         private readonly ILogger<Cache<T>> _logger;
