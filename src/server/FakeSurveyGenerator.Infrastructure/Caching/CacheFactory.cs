@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.Infrastructure.Caching
 {
-    public sealed class CacheFactory : ICacheFactory
+    internal sealed class CacheFactory : ICacheFactory
     {
         private readonly IServiceProvider _serviceProvider;
 

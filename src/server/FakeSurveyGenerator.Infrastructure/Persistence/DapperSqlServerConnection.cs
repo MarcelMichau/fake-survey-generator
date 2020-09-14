@@ -5,7 +5,7 @@ using Microsoft.Data.SqlClient;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence
 {
-    public sealed class DapperSqlServerConnection : IDatabaseConnection
+    internal sealed class DapperSqlServerConnection : IDatabaseConnection
     {
         private readonly string _connectionString;
  

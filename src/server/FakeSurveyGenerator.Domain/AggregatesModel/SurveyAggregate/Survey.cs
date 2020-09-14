@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
@@ -28,9 +29,9 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
             if (numberOfRespondents < 1)
                 throw new SurveyDomainException("Survey should have at least one respondent");
 
-            Owner = owner;
-            Topic = topic;
-            RespondentType = respondentType;
+            Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+            Topic = topic ?? throw new ArgumentNullException(nameof(topic));
+            RespondentType = respondentType ?? throw new ArgumentNullException(nameof(respondentType));
             NumberOfRespondents = numberOfRespondents;
 
             _selectedVoteDistribution = new RandomVoteDistribution();
