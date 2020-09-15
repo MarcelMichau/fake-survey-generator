@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoWrapper.Server;
-using AutoWrapper.Wrappers;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -15,8 +13,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using FluentAssertions;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
