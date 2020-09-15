@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FakeSurveyGenerator.Application.Common.Exceptions;
 using FluentValidation.Results;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Common.Exceptions
@@ -14,7 +14,7 @@ namespace FakeSurveyGenerator.Application.Tests.Common.Exceptions
         {
             var actual = new ValidationException().Errors;
 
-            actual.Keys.ShouldBe(Array.Empty<string>());
+            actual.Keys.Should().BeEquivalentTo(Array.Empty<string>());
         }
 
         [Fact]
@@ -27,8 +27,8 @@ namespace FakeSurveyGenerator.Application.Tests.Common.Exceptions
 
             var actual = new ValidationException(failures).Errors;
 
-            actual.Keys.ShouldBe(new[] {"Age"});
-            actual["Age"].ShouldBe(new[] {"must be over 18"});
+            actual.Keys.Should().BeEquivalentTo(new[] {"Age"});
+            actual["Age"].Should().BeEquivalentTo(new[] {"must be over 18"});
         }
 
         [Fact]
@@ -46,15 +46,15 @@ namespace FakeSurveyGenerator.Application.Tests.Common.Exceptions
 
             var actual = new ValidationException(failures).Errors;
 
-            actual.Keys.ShouldBe(new[] {"Age", "Password"});
+            actual.Keys.Should().BeEquivalentTo(new[] {"Age", "Password"});
 
-            actual["Age"].ShouldBe(new[]
+            actual["Age"].Should().BeEquivalentTo(new[]
             {
                 "must be 18 or older",
                 "must be 25 or younger"
             });
 
-            actual["Password"].ShouldBe(new[]
+            actual["Password"].Should().BeEquivalentTo(new[]
             {
                 "must contain at least 8 characters",
                 "must contain a digit",

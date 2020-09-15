@@ -13,14 +13,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
     public sealed class UserControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
     {
-        private readonly HttpClient _client;
+        private readonly HttpClient _existingUserClient;
         private readonly IntegrationTestWebApplicationFactory<Startup> _clientFactory;
 
         private readonly IUser _newTestUser =
@@ -33,17 +33,16 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
         public UserControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
         {
-            _client = factory.WithWebHostBuilder(builder =>
+            _existingUserClient = factory.WithWebHostBuilder(builder =>
             {
-                builder.ConfigureTestServices(ConfigureAuthenticationHandler)
-                    .ConfigureServices(ConfigureNewUserUserService);
+                builder.ConfigureTestServices(ConfigureAuthenticationHandler);
             }).CreateDefaultClient(new UnwrappingResponseHandler());
 
             _clientFactory = factory;
         }
 
         [Fact]
-        public async Task GetUser_Should_Return_User()
+        public async Task GivenExistingUserId_WhenCallingGetUser_ThenExistingUserShouldBeReturned()
         {
             const int userId = 1;
 
@@ -51,38 +50,38 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             const string expectedEmailAddress = "test.user@test.com";
             const string expectedExternalUserId = "test-id";
 
-            var user = await _client.GetFromJsonAsync<UserModel>($"api/user/{userId}");
+            var user = await _existingUserClient.GetFromJsonAsync<UserModel>($"api/user/{userId}");
 
-            user.Id.ShouldBe(userId);
-            user.DisplayName.ShouldBe(expectedDisplayName);
-            user.EmailAddress.ShouldBe(expectedEmailAddress);
-            user.ExternalUserId.ShouldBe(expectedExternalUserId);
+            user.Id.Should().Be(userId);
+            user.DisplayName.Should().Be(expectedDisplayName);
+            user.EmailAddress.Should().Be(expectedEmailAddress);
+            user.ExternalUserId.Should().Be(expectedExternalUserId);
         }
 
         [Fact]
-        public async Task IsUserRegistered_Should_Return_True_For_Existing_User()
+        public async Task GivenExistingRegisteredUser_WhenCallingIsUserRegistered_ThenResponseShouldBeTrue()
         {
             const string userId = "test-id";
 
-            var result = await _client.GetFromJsonAsync<bool>($"api/user/isRegistered?userId={userId}");
+            var result = await _existingUserClient.GetFromJsonAsync<bool>($"api/user/isRegistered?userId={userId}");
 
-            result.ShouldBeTrue();
+            result.Should().BeTrue();
         }
 
         [Fact]
-        public async Task IsUserRegistered_Should_Return_False_For_NonExistent_User()
+        public async Task GivenNewUser_WhenCallingIsUserRegistered_ThenResponseShouldBeFalse()
         {
             const string userId = "non-existent-id";
 
-            var result = await _client.GetFromJsonAsync<bool>($"api/user/isRegistered?userId={userId}");
+            var result = await _existingUserClient.GetFromJsonAsync<bool>($"api/user/isRegistered?userId={userId}");
 
-            result.ShouldBeFalse();
+            result.Should().BeFalse();
         }
 
         [Fact]
-        public async Task RegisterUser_Should_Create_User()
+        public async Task GivenAuthenticatedNewUser_WhenCallingRegisterUser_ThenSuccessfulResponseWithNewlyRegisteredUserShouldBeReturned()
         {
-            var clientForNewUser = _clientFactory.WithWebHostBuilder(builder =>
+            var newUserClient = _clientFactory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(ConfigureAuthenticationHandler)
                     .ConfigureServices(ConfigureNewUserUserService);
@@ -90,7 +89,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             var registerUserCommand = new RegisterUserCommand();
 
-            var response = await clientForNewUser.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+            var response = await newUserClient.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
 
             response.EnsureSuccessStatusCode();
 
@@ -98,20 +97,20 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             var user = await JsonSerializer.DeserializeAsync<UserModel>(content, Options);
 
-            user.Id.ShouldBeGreaterThan(0);
-            user.DisplayName.ShouldBe(_newTestUser.DisplayName);
-            user.EmailAddress.ShouldBe(_newTestUser.EmailAddress);
-            user.ExternalUserId.ShouldBe(_newTestUser.Id);
+            user.Id.Should().BePositive();
+            user.DisplayName.Should().Be(_newTestUser.DisplayName);
+            user.EmailAddress.Should().Be(_newTestUser.EmailAddress);
+            user.ExternalUserId.Should().Be(_newTestUser.Id);
         }
 
         [Fact]
-        public async Task RegisterUser_Should_Return_BadRequest_When_Trying_To_Register_Existing_User()
+        public async Task GivenExistingUser_WhenCallingRegisterUser_ThenBadRequestResponseShouldBeReturned()
         {
             var registerUserCommand = new RegisterUserCommand();
 
-            var response = await _client.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+            var response = await _existingUserClient.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
 
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         private static void ConfigureAuthenticationHandler(IServiceCollection services)

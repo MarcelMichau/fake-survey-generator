@@ -4,8 +4,8 @@ using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Data;
+using FluentAssertions;
 using Moq;
-using Shouldly;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
@@ -13,7 +13,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
     public sealed class RegisterUserCommandTests : CommandTestBase
     {
         [Fact]
-        public async Task GivenNewUser_Handle_ShouldBeAbleToRegisterUser()
+        public async Task GivenValidRegisterUserCommand_WhenCallingHandle_ThenResultShouldBeSuccessful()
         {
             var registerUserCommand = new RegisterUserCommand();
 
@@ -25,11 +25,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
 
             var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-            result.IsSuccess.ShouldBe(true);
+            result.IsSuccess.Should().BeTrue();
         }
 
         [Fact]
-        public async Task GivenNewUser_Handle_ShouldReturnNewRegisteredUser()
+        public async Task GivenValidRegisterUserCommand_WhenCallingHandle_ThenNewUserShouldBeReturned()
         {
             var registerUserCommand = new RegisterUserCommand();
 
@@ -45,14 +45,14 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
 
             var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-            result.Value.Id.ShouldBeGreaterThan(0);
-            result.Value.DisplayName.ShouldBe(expectedNewUserDisplayName);
-            result.Value.EmailAddress.ShouldBe(expectedNewUserEmailAddress);
-            result.Value.ExternalUserId.ShouldBe(expectedNewUserId);
+            result.Value.Id.Should().BePositive();
+            result.Value.DisplayName.Should().Be(expectedNewUserDisplayName);
+            result.Value.EmailAddress.Should().Be(expectedNewUserEmailAddress);
+            result.Value.ExternalUserId.Should().Be(expectedNewUserId);
         }
 
         [Fact]
-        public async Task GivenAlreadyExistingUser_Handle_ShouldNotRegisterUser()
+        public async Task GivenAlreadyExistingUser_WhenCallingHandle_ThenResultShouldBeFailure()
         {
             var registerUserCommand = new RegisterUserCommand();
 
@@ -64,11 +64,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
 
             var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-            result.IsFailure.ShouldBe(true);
+            result.IsFailure.Should().BeTrue();
         }
 
         [Fact]
-        public async Task GivenAlreadyExistingUser_Handle_ShouldReturnUserAlreadyRegisteredError()
+        public async Task GivenAlreadyExistingUser_WhenCallingHandle_ThenUserAlreadyRegisteredErrorShouldBeReturned()
         {
             var registerUserCommand = new RegisterUserCommand();
 
@@ -80,7 +80,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
 
             var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-            result.Error.Code.ShouldBe(Errors.General.UserAlreadyRegistered().Code);
+            result.Error.Code.Should().Be(Errors.General.UserAlreadyRegistered().Code);
         }
     }
 }
