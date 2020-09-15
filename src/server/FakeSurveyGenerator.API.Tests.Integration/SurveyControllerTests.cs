@@ -24,8 +24,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
         private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            IncludeFields = true
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
         public SurveyControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
