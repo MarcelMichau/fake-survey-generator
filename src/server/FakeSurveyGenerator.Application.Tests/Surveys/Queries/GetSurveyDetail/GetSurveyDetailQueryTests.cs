@@ -8,7 +8,7 @@ using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Moq;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
@@ -28,7 +28,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Type()
+        public async Task GivenExistingSurveyId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
         {
             const int id = 1;
 
@@ -38,11 +38,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.ShouldBeOfType<Result<SurveyModel, Error>>();
+            result.Should().BeOfType<Result<SurveyModel, Error>>();
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Id()
+        public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyIdShouldMatchGivenSurveyId()
         {
             const int id = 1;
 
@@ -54,11 +54,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var survey = result.Value;
 
-            survey.Id.ShouldBe(id);
+            survey.Id.Should().Be(id);
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Topic()
+        public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyTopicShouldMatchExpectedValue()
         {
             const int id = 1;
             const string expectedTopicText = "Test Topic 1";
@@ -71,11 +71,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var survey = result.Value;
 
-            survey.Topic.ShouldBe(expectedTopicText);
+            survey.Topic.Should().Be(expectedTopicText);
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Number_Of_Respondents()
+        public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyNumberOfRespondentsShouldMatchExpectedValue()
         {
             const int id = 1;
             const int expectedNumberOfRespondents = 10;
@@ -88,11 +88,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var survey = result.Value;
 
-            survey.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
+            survey.NumberOfRespondents.Should().Be(expectedNumberOfRespondents);
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Respondent_Type()
+        public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyRespondentTypeShouldMatchExpectedValue()
         {
             const int id = 1;
             const string expectedTopicText = "Testers";
@@ -105,11 +105,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var survey = result.Value;
 
-            survey.RespondentType.ShouldBe(expectedTopicText);
+            survey.RespondentType.Should().Be(expectedTopicText);
         }
 
         [Fact]
-        public async Task Handle_Returns_Error_When_Survey_Id_Does_Not_Exist()
+        public async Task GivenSurveyIdWhichDoesNotExist_WhenCallingHandle_ThenResponseShouldIndicateNotFoundError()
         {
             const int id = 100;
 
@@ -119,7 +119,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Error.ShouldBe(Errors.General.NotFound());
+            result.Error.Should().Be(Errors.General.NotFound());
         }
     }
 }

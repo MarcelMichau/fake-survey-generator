@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
@@ -43,7 +43,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Authenticated_Call_To_Post_Survey_Should_Create_Survey()
+        public async Task GivenAuthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenSuccessfulResponseWithNewlyCreatedSurveyShouldBeReturned()
         {
             var createSurveyCommand = new CreateSurveyCommand("How awesome is this?", 350, "Individuals",
                 new List<SurveyOptionDto>
@@ -74,7 +74,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Unauthenticated_Call_To_PostSurvey_Should_Return_Unauthorized_Response()
+        public async Task GivenUnauthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnauthorizedResponseShouldBeReturned()
         {
             var createSurveyCommand = new CreateSurveyCommand("How unauthorized is this?", 400, "Unauthorized users",
                 new List<SurveyOptionDto>
@@ -95,7 +95,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         }
 
         [Fact]
-        public async Task Given_Invalid_CreateSurveyCommand_PostSurvey_Should_Return_Unprocessable_Entity_Response()
+        public async Task GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnprocessableEntityResponseShouldBeReturned()
         {
             var createSurveyCommand = new CreateSurveyCommand("", 0, "",
                 new List<SurveyOptionDto>
@@ -110,11 +110,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             var statusCode = (int) response.StatusCode;
 
-            statusCode.ShouldBe(StatusCodes.Status422UnprocessableEntity);
+            statusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
         }
 
         [Fact]
-        public async Task GetSurvey_Should_Return_Survey()
+        public async Task GivenExistingSurveyId_WhenCallingGetSurvey_ThenExistingSurveyShouldBeReturned()
         {
             const int surveyId = 1;
 
@@ -126,11 +126,23 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
             var survey = await _authenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{surveyId}");
 
-            survey.Id.ShouldBe(surveyId);
-            survey.Topic.ShouldBe(expectedSurveyTopic);
-            survey.NumberOfRespondents.ShouldBe(expectedNumberOfRespondents);
-            survey.RespondentType.ShouldBe(expectedRespondentType);
-            survey.Options.First().OptionText.ShouldBe(expectedOptionText);
+            survey.Id.Should().Be(surveyId);
+            survey.Topic.Should().Be(expectedSurveyTopic);
+            survey.NumberOfRespondents.Should().Be(expectedNumberOfRespondents);
+            survey.RespondentType.Should().Be(expectedRespondentType);
+            survey.Options.First().OptionText.Should().Be(expectedOptionText);
+        }
+
+        [Fact]
+        public async Task GivenNonExistentSurveyId_WhenCallingGetSurvey_ThenNotFoundResponseShouldBeReturned()
+        {
+            const int surveyId = 100;
+
+            var response = await _authenticatedClient.GetAsync($"api/survey/{surveyId}");
+
+            var statusCode = (int) response.StatusCode;
+
+            statusCode.Should().Be(StatusCodes.Status404NotFound);
         }
     }
 }

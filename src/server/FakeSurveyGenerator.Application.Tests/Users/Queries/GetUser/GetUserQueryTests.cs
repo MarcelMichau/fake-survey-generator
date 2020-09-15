@@ -6,7 +6,7 @@ using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Users.Models;
 using FakeSurveyGenerator.Application.Users.Queries.GetUser;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
@@ -24,7 +24,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Type()
+        public async Task GivenExistingUserId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
         {
             const int id = 1;
 
@@ -34,11 +34,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.ShouldBeOfType<Result<UserModel, Error>>();
+            result.Should().BeOfType<Result<UserModel, Error>>();
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Id()
+        public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedUserIdShouldMatchGivenUserId()
         {
             const int id = 1;
 
@@ -50,11 +50,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
 
             var user = result.Value;
 
-            user.Id.ShouldBe(id);
+            user.Id.Should().Be(id);
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_DisplayName()
+        public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedDisplayNameShouldMatchExpectedValue()
         {
             const int id = 1;
             const string expectedDisplayName = "Test User";
@@ -67,11 +67,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
 
             var user = result.Value;
 
-            user.DisplayName.ShouldBe(expectedDisplayName);
+            user.DisplayName.Should().Be(expectedDisplayName);
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_EmailAddress()
+        public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedEmailAddressShouldMatchExpectedValue()
         {
             const int id = 1;
             const string expectedEmailAddress = "test.user@test.com";
@@ -84,11 +84,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
 
             var user = result.Value;
 
-            user.EmailAddress.ShouldBe(expectedEmailAddress);
+            user.EmailAddress.Should().Be(expectedEmailAddress);
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_ExternalUserId()
+        public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedExternalUserIdShouldMatchExpectedValue()
         {
             const int id = 1;
             const string expectedExternalUserId = "test-id";
@@ -101,7 +101,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
 
             var user = result.Value;
 
-            user.ExternalUserId.ShouldBe(expectedExternalUserId);
+            user.ExternalUserId.Should().Be(expectedExternalUserId);
         }
     }
 }

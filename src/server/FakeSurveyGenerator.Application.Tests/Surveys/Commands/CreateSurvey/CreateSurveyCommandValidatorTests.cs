@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
@@ -8,7 +8,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
     public sealed class CreateSurveyCommandValidatorTests
     {
         [Fact]
-        public void IsValid_ShouldBeTrue_WhenValidValuesAreSpecified()
+        public void GivenValidCreateSurveyCommand_WhenValidatingCommand_ThenIsValidShouldBeTrue()
         {
             var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>
             {
@@ -23,11 +23,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = validator.Validate(command);
 
-            result.IsValid.ShouldBe(true);
+            result.IsValid.Should().BeTrue();
         }
 
         [Fact]
-        public void IsValid_ShouldBeFalse_WhenSurveyTopicIsBlank()
+        public void GivenBlankSurveyTopic_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
             var command = new CreateSurveyCommand("", 1, "Test", new List<SurveyOptionDto>
             {
@@ -42,12 +42,12 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = validator.Validate(command);
 
-            result.IsValid.ShouldBe(false);
-            result.Errors.ShouldContain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyTopic));
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyTopic));
         }
 
         [Fact]
-        public void IsValid_ShouldBeFalse_WhenNumberOfRespondentsIsZero()
+        public void GivenZeroNumberOfRespondents_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
             var command = new CreateSurveyCommand("Test", 0, "Test", new List<SurveyOptionDto>
             {
@@ -62,12 +62,12 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = validator.Validate(command);
 
-            result.IsValid.ShouldBe(false);
-            result.Errors.ShouldContain(error => error.PropertyName == nameof(CreateSurveyCommand.NumberOfRespondents));
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.NumberOfRespondents));
         }
 
         [Fact]
-        public void IsValid_ShouldBeFalse_WhenRespondentTypeIsNotSpecified()
+        public void GivenEmptyRespondentType_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
             var command = new CreateSurveyCommand("Test", 1, "", new List<SurveyOptionDto>
             {
@@ -82,12 +82,12 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = validator.Validate(command);
 
-            result.IsValid.ShouldBe(false);
-            result.Errors.ShouldContain(error => error.PropertyName == nameof(CreateSurveyCommand.RespondentType));
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.RespondentType));
         }
 
         [Fact]
-        public void IsValid_ShouldBeFalse_WhenSurveyOptionsAreEmpty()
+        public void GivenEmptySurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
             var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>());
 
@@ -95,12 +95,12 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = validator.Validate(command);
 
-            result.IsValid.ShouldBe(false);
-            result.Errors.ShouldContain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyOptions));
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyOptions));
         }
 
         [Fact]
-        public void IsValid_ShouldBeFalse_WhenSurveyOptionsIsNull()
+        public void GivenNullSurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
             var command = new CreateSurveyCommand("Test", 1, "Test", null);
 
@@ -108,12 +108,12 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = validator.Validate(command);
 
-            result.IsValid.ShouldBe(false);
-            result.Errors.ShouldContain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyOptions));
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyOptions));
         }
 
         [Fact]
-        public void IsValid_ShouldBeFalse_WhenSurveyOptionTextIsEmpty()
+        public void GivenEmptySurveyOptionText_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
             var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>
             {
@@ -127,8 +127,8 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var result = validator.Validate(command);
 
-            result.IsValid.ShouldBe(false);
-            result.Errors.ShouldContain(error => error.PropertyName == "SurveyOptions[0].OptionText");
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(error => error.PropertyName == "SurveyOptions[0].OptionText");
         }
     }
 }

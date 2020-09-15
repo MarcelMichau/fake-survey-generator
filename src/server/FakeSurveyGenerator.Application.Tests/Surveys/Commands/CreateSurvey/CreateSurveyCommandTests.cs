@@ -10,7 +10,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
     public sealed class CreateSurveyCommandTests : CommandTestBase
     {
         [Fact]
-        public async Task Handle_GivenValidRequest_ShouldRaiseSurveyCreatedNotification()
+        public async Task GivenValidCreateSurveyCommand_WhenCallingHandle_ThenNewSurveyShouldBeReturned()
         {
             var topic = "Tabs or spaces?";
             var numberOfRespondents = 1;
@@ -42,7 +42,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         }
 
         [Fact]
-        public async Task Handle_GivenValidPreferredNumberOfVotesRequest_ShouldHaveCorrectVoteDistribution()
+        public async Task GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
         {
             var topic = "Tabs or spaces?";
             var numberOfRespondents = 500;

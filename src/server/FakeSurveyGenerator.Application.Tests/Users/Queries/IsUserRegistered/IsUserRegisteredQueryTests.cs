@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
@@ -19,7 +19,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
         }
 
         [Fact]
-        public async Task Handle_Returns_Correct_Type()
+        public async Task GivenExistingUserId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
         {
             const string userId = "test-id";
 
@@ -29,11 +29,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.ShouldBeOfType<Result<bool>>();
+            result.Should().BeOfType<Result<bool>>();
         }
 
         [Fact]
-        public async Task Handle_Returns_True_For_Existing_User()
+        public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedResultShouldBeTrue()
         {
             const string userId = "test-id";
 
@@ -43,11 +43,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.ShouldBe(true);
+            result.Value.Should().BeTrue();
         }
 
         [Fact]
-        public async Task Handle_Returns_False_For_Nonexistent_User()
+        public async Task GivenNewUserId_WhenCallingHandle_ThenReturnedResultShouldBeFalse()
         {
             const string userId = "unregistered-id";
 
@@ -57,7 +57,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.ShouldBe(false);
+            result.Value.Should().BeFalse();
         }
     }
 }
