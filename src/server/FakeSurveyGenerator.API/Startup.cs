@@ -62,6 +62,8 @@ namespace FakeSurveyGenerator.API
 
             app.UseApiResponseAndExceptionWrapper();
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
 
             app.UseAuthentication();
