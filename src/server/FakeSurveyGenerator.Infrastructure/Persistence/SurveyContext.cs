@@ -76,13 +76,16 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
         private async Task DispatchEvents(CancellationToken cancellationToken)
         {
             var domainEventEntities = ChangeTracker.Entries<IHasDomainEvents>()
-                .Select(x => x.Entity.DomainEvents)
-                .SelectMany(x => x)
-                .ToArray();
+                .ToList();
 
-            foreach (var domainEvent in domainEventEntities)
+            foreach (var domainEventEntity in domainEventEntities)
             {
-                await _domainEventService.Publish(domainEvent, cancellationToken);
+                domainEventEntity.Entity.ClearDomainEvents();
+
+                foreach (var domainEvent in domainEventEntity.Entity.DomainEvents)
+                {
+                    await _domainEventService.Publish(domainEvent, cancellationToken);
+                }
             }
         }
 

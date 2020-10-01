@@ -22,8 +22,7 @@
     "autoprefixer": "^9.8.6",
     "cross-env": "^7.0.2",
     "postcss-cli": "^8.0.0",
-    "tailwindcss": "^1.8.10",
-    "tailwindcss-dark-mode": "^1.1.6"
+    "tailwindcss": "^1.8.10"
   },
   "scripts": {
     "start": "npm run watch:css && cross-env HTTPS=true REACT_APP_VERSION=latest react-scripts start",

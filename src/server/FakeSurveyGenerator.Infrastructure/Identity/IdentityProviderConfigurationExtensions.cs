@@ -19,6 +19,8 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
                 .AddHttpClient<IUserService, OAuthUserInfoService>()
                 .AddPolicyHandler(commonResilience);
 
+            services.AddScoped<ITokenProviderService>(sp => new JwtBearerTokenProviderService(sp));
+
             return services;
         }
 
