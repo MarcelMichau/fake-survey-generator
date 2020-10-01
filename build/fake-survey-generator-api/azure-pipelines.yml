@@ -145,7 +145,7 @@ stages:
 
           - task: HelmInstaller@1
             inputs:
-              helmVersionToInstall: "3.3.0"
+              helmVersionToInstall: "3.3.4"
             displayName: "Install Helm"
 
           - task: HelmDeploy@0
@@ -174,7 +174,7 @@ stages:
             inputs:
               azureSubscription: "Azure Service Connection"
               scriptLocation: "inlineScript"
-              inlineScript: "az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz"
+              inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz"
             displayName: "Push Helm Chart to Azure Container Registry"
 
   - stage: Database_Deployment
@@ -204,7 +204,6 @@ stages:
                     SqlPassword: "$(sqlDatabaseDeploymentPassword)"
                     deployType: SqlTask
                     SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
-
 
                 # Commented until I find a supported way of running SQL scripts with Azure AD auth
                 # - task: AzureCLI@2
@@ -325,7 +324,7 @@ stages:
 
                 - task: HelmInstaller@1
                   inputs:
-                    helmVersionToInstall: "3.3.0"
+                    helmVersionToInstall: "3.3.4"
                   displayName: "Install Helm"
 
                 - task: AzureCLI@1

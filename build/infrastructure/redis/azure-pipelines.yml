@@ -13,48 +13,48 @@ trigger:
 
 stages:
   - stage: Publish
-    displayName: 'Publish'
+    displayName: "Publish"
     variables:
       versionTag: $(build.buildNumber)
     jobs:
       - job: Publish_Chart
-        displayName: 'Publish Redis Chart'
+        displayName: "Publish Redis Chart"
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: "ubuntu-latest"
         steps:
-              - task: HelmInstaller@1
-                inputs:
-                  helmVersionToInstall: '3.2.1'
-                displayName: 'Install Helm'
+          - task: HelmInstaller@1
+            inputs:
+              helmVersionToInstall: "3.2.1"
+            displayName: "Install Helm"
 
-              - task: HelmDeploy@0
-                inputs:
-                  command: 'package'
-                  chartPath: 'charts/$(projectName)'
-                  chartVersion: '$(versionTag)'
-                  save: false
-                displayName: 'Helm Package'
+          - task: HelmDeploy@0
+            inputs:
+              command: "package"
+              chartPath: "charts/$(projectName)"
+              chartVersion: "$(versionTag)"
+              save: false
+            displayName: "Helm Package"
 
-              # - task: AzureCLI@1
-              #   inputs:
-              #     azureSubscription: 'MyARMConnection'
-              #     scriptLocation: 'inlineScript'
-              #     inlineScript: 'az configure --defaults acr=$(registryName)'
-              #   displayName: 'Set Azure Container Registry Default in Azure CLI'
+          # - task: AzureCLI@1
+          #   inputs:
+          #     azureSubscription: 'MyARMConnection'
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: 'az configure --defaults acr=$(registryName)'
+          #   displayName: 'Set Azure Container Registry Default in Azure CLI'
 
-              # - task: AzureCLI@1
-              #   inputs:
-              #     azureSubscription: 'MyARMConnection'
-              #     scriptLocation: 'inlineScript'
-              #     inlineScript: 'az acr helm repo add'
-              #   displayName: 'Add Azure Container Registry Repo to Azure CLI'
+          # - task: AzureCLI@1
+          #   inputs:
+          #     azureSubscription: 'MyARMConnection'
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: 'az acr helm repo add'
+          #   displayName: 'Add Azure Container Registry Repo to Azure CLI'
 
-              # - task: AzureCLI@1
-              #   inputs:
-              #     azureSubscription: 'MyARMConnection'
-              #     scriptLocation: 'inlineScript'
-              #     inlineScript: 'az acr helm push $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
-              #   displayName: 'Push Helm Chart to Azure Container Registry'
+          # - task: AzureCLI@1
+          #   inputs:
+          #     azureSubscription: 'MyARMConnection'
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: 'az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(versionTag).tgz'
+          #   displayName: 'Push Helm Chart to Azure Container Registry'
 
   # - stage: Deployment
   #   displayName: 'Deployment'
