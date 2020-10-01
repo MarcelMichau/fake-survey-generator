@@ -1,4 +1,4 @@
-FROM node:14.10.0-alpine3.12 as build
+FROM node:14.11.0-alpine3.12 as build
 ARG REACT_APP_VERSION
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/yarn.lock ./
