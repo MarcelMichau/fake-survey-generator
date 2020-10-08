@@ -46,9 +46,9 @@ ingress:
         - /health
 
   tls:
-   - secretName: k8s-local-tls-secret
-     hosts:
-       - k8s.local
+    - secretName: k8s-local-tls-secret
+      hosts:
+        - k8s.local
 
 resources:
   limits:
@@ -56,7 +56,7 @@ resources:
     memory: 500Mi
   requests:
     cpu: 100m
-    memory: 300Mi
+    memory: 200Mi
 
 nodeSelector: {}
 
