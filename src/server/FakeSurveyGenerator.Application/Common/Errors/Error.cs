@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using FakeSurveyGenerator.Shared.SeedWork;
-
-namespace FakeSurveyGenerator.Application.Common.Errors
+﻿namespace FakeSurveyGenerator.Application.Common.Errors
 {
-    public sealed class Error : ValueObject
+    public sealed record Error
     {
         public string Code { get; }
         public string Message { get; }
@@ -12,11 +9,6 @@ namespace FakeSurveyGenerator.Application.Common.Errors
         {
             Code = code;
             Message = message;
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Code;
         }
     }
 }

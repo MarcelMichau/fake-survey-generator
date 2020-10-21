@@ -25,7 +25,7 @@ namespace FakeSurveyGenerator.API.Controllers
             return result.IsSuccess
                 ? Ok(result.Value)
                 : BuildProblemDetails(result,
-                    Equals(result.Error, Errors.General.NotFound())
+                    Equals(result.Error.Code, Errors.General.NotFound().Code)
                         ? StatusCodes.Status404NotFound
                         : StatusCodes.Status400BadRequest);
         }

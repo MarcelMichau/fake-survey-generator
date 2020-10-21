@@ -119,7 +119,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Error.Should().Be(Errors.General.NotFound());
+            result.Error.Code.Should().Be(Errors.General.NotFound().Code);
         }
     }
 }
