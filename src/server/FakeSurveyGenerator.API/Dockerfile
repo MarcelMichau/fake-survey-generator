@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.0-rc.2-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.0-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0.100-rc.2-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0.100-buster-slim AS build
 RUN dotnet tool install --tool-path . nbgv --version 3.2.31
 COPY ./.git /.git
 COPY src/server/Directory.Build.props /Directory.Build.props
