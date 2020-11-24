@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,9 +32,7 @@ namespace FakeSurveyGenerator.API.Configuration.Swagger
                     }
                 });
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
+                options.EnableAnnotations();
 
                 options.OperationFilter<AuthorizeOperationFilter>();
 

@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeOfType<Result<bool>>();
+            result.Should().BeOfType<Result<UserRegistrationStatusModel>>();
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.Should().BeTrue();
+            result.Value.IsUserRegistered.Should().BeTrue();
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Value.Should().BeFalse();
+            result.Value.IsUserRegistered.Should().BeFalse();
         }
     }
 }

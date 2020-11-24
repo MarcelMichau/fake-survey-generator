@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace FakeSurveyGenerator.API.Controllers
 {
+    [SwaggerTag("Administrative operations for testing/diagnostic purposes")]
     public sealed class AdminController : ApiController
     {
         private readonly IConfiguration _configuration;
@@ -12,9 +14,7 @@ namespace FakeSurveyGenerator.API.Controllers
             _configuration = configuration;
         }
 
-        /// <summary>
-        /// Returns API version information
-        /// </summary>
+        [SwaggerOperation("Returns API version information")]
         [HttpGet("version")]
         public IActionResult Version()
         {
@@ -30,18 +30,14 @@ namespace FakeSurveyGenerator.API.Controllers
             });
         }
 
-        /// <summary>
-        /// Returns a 200 OK Result. Used for testing network latency and as a sanity check
-        /// </summary>
+        [SwaggerOperation("Returns a 200 OK Result. Used for testing network latency and as a sanity check")]
         [HttpGet("ping")]
         public IActionResult Ping()
         {
             return Ok();
         }
 
-        /// <summary>
-        /// Retrieves a test secret from Azure Key Vault. Used for debugging connection to Azure Key Vault
-        /// </summary>
+        [SwaggerOperation("Retrieves a test secret from Azure Key Vault. Used for debugging connection to Azure Key Vault")]
         [HttpGet("keyvaulttest")]
         public IActionResult KeyVaultTest()
         {

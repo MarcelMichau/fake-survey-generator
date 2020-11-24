@@ -4,7 +4,7 @@
     "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:5000",
-      "sslPort": 44367
+      "sslPort": 5001
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -46,7 +46,7 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
         "ASPNETCORE_URLS": "https://+:443;http://+:80",
-        "ASPNETCORE_HTTPS_PORT": "44300",
+        "ASPNETCORE_HTTPS_PORT": "5001",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=host.docker.internal;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>",
         "SQL_SERVER_USE_AZURE_AD_AUTHENTICATION": "false",
@@ -56,9 +56,9 @@
         "REDIS_DEFAULT_DATABASE": "0",
         "IDENTITY_PROVIDER_URL": "https://marcelmichau.eu.auth0.com/"
       },
-      "httpPort": 10000,
+      "httpPort": 5000,
       "useSSL": true,
-      "sslPort": 44300
+      "sslPort": 5001
     }
   }
 }

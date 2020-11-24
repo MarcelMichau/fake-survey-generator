@@ -56,7 +56,7 @@ const App: React.FC = () => {
             return false;
         }
 
-        return data.result;
+        return data.result.isUserRegistered;
     };
 
     useEffect(() => {

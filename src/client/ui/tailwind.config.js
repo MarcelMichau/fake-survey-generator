@@ -1,16 +1,9 @@
 module.exports = {
-    future: {
-        removeDeprecatedGapUtilities: true,
-        purgeLayersByDefault: true,
-    },
     purge: ["./public/**/*.html", "./src/**/*.tsx"],
+    darkMode: "media",
     theme: {
         extend: {},
     },
     variants: {},
     plugins: [],
-    dark: "media",
-    experimental: {
-        darkModeVariant: true,
-    },
 };

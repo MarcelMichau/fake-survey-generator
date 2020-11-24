@@ -49,9 +49,13 @@ export type UserResponse = {
     responseException: ResponseException;
 };
 
+export type UserRegistrationStatusModel = {
+    isUserRegistered: boolean;
+};
+
 export type IsUserRegisteredResponse = {
     message: string;
-    result: boolean;
+    result: UserRegistrationStatusModel;
     isError: boolean;
     responseException: ResponseException;
 };

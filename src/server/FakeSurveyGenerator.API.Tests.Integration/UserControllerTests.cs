@@ -8,6 +8,7 @@ using AutoWrapper.Server;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
+using FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered;
 using FakeSurveyGenerator.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
@@ -63,9 +64,9 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             const string userId = "test-id";
 
-            var result = await _existingUserClient.GetFromJsonAsync<bool>($"api/user/isRegistered?userId={userId}");
+            var result = await _existingUserClient.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
 
-            result.Should().BeTrue();
+            result.IsUserRegistered.Should().BeTrue();
         }
 
         [Fact]
@@ -73,9 +74,9 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             const string userId = "non-existent-id";
 
-            var result = await _existingUserClient.GetFromJsonAsync<bool>($"api/user/isRegistered?userId={userId}");
+            var result = await _existingUserClient.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
 
-            result.Should().BeFalse();
+            result.IsUserRegistered.Should().BeFalse();
         }
 
         [Fact]

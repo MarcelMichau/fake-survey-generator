@@ -1,43 +1,37 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoWrapper.Models;
+using AutoWrapper.Wrappers;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
+using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace FakeSurveyGenerator.API.Controllers
 {
     [Authorize]
+    [SwaggerTag("Create & read Surveys")]
     public sealed class SurveyController : ApiController
     {
-        /// <summary>
-        /// Retrieves a specific Survey.
-        /// </summary>
-        /// <param name="id">Primary key of the Survey</param>
-        /// <param name="cancellationToken">Automatically set by ASP.NET Core</param>
-        /// <returns>The requested SurveyModel</returns>
-        /// <response code="200">Returns the requested SurveyModel</response> 
-        /// <response code="404">If the requested Survey is not found</response> 
         [HttpGet("{id}", Name = nameof(GetSurvey))]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetSurvey(int id, CancellationToken cancellationToken)
+        [SwaggerOperation("Retrieves a specific Survey")]
+        [SwaggerResponse(StatusCodes.Status200OK, "The requested survey was found", typeof(ApiResultResponse<SurveyModel>))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "The requested Survey was not found")]
+        public async Task<IActionResult> GetSurvey([SwaggerParameter("Primary key of the Survey")] int id, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(new GetSurveyDetailQuery(id), cancellationToken);
 
             return FromResult(result);
         }
 
-        /// <summary>
-        /// Retrieves all Surveys created by the current user.
-        /// </summary>
-        /// <param name="cancellationToken">Automatically set by ASP.NET Core</param>
-        /// <returns>The current user's SurveyModels</returns>
-        /// <response code="200">Returns all SurveyModels for the current user</response> 
         [HttpGet("user")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [SwaggerOperation("Retrieves all Surveys created by the current user")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Surveys were found for the current user", typeof(ApiResultResponse<List<UserSurveyModel>>))]
         public async Task<IActionResult> GetUserSurveys(CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(new GetUserSurveysQuery(), cancellationToken);
@@ -45,16 +39,11 @@ namespace FakeSurveyGenerator.API.Controllers
             return FromResult(result);
         }
 
-        /// <summary>
-        /// Creates a new Survey.
-        /// </summary>
-        /// <returns>A newly created SurveyModel</returns>
-        /// <response code="201">Returns the newly created SurveyModel</response>
-        /// <response code="422">If the CreateSurveyCommand fails validation</response>
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.Created)]
-        [ProducesResponseType((int)HttpStatusCode.UnprocessableEntity)]
-        public async Task<IActionResult> CreateSurvey(CreateSurveyCommand command, CancellationToken cancellationToken)
+        [SwaggerOperation("Creates a new Survey")]
+        [SwaggerResponse(StatusCodes.Status201Created, "The Survey was created", typeof(ApiResultResponse<SurveyModel>))]
+        [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, "The Survey creation command contains validation errors")]
+        public async Task<IActionResult> CreateSurvey([SwaggerParameter("Command to create new Survey", Required = true)] CreateSurveyCommand command, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(command, cancellationToken);
 

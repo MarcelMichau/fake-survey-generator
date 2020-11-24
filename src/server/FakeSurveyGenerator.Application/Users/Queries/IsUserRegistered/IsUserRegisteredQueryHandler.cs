@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered
 {
-    public sealed class IsUserRegisteredQueryHandler : IRequestHandler<IsUserRegisteredQuery, Result<bool>>
+    public sealed class IsUserRegisteredQueryHandler : IRequestHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel>>
     {
         private readonly ISurveyContext _surveyContext;
 
@@ -17,13 +17,16 @@ namespace FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered
             _surveyContext = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Result<bool>> Handle(IsUserRegisteredQuery request, CancellationToken cancellationToken)
+        public async Task<Result<UserRegistrationStatusModel>> Handle(IsUserRegisteredQuery request, CancellationToken cancellationToken)
         {
             var isUserRegistered =
                 await _surveyContext.Users.AsNoTracking()
                     .AnyAsync(user => user.ExternalUserId == request.UserId, cancellationToken);
 
-            return Result.Success(isUserRegistered);
+            return Result.Success(new UserRegistrationStatusModel
+            {
+                IsUserRegistered = isUserRegistered
+            });
         }
     }
 }
