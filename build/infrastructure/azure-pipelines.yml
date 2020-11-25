@@ -307,10 +307,12 @@ stages:
               kubernetesCluster: "$(kubernetesClusterName)"
               namespace: "$(kubernetesInfrastructureNamespace)"
               command: "upgrade"
-              arguments: "--create-namespace"
               chartType: "Name"
               chartName: "aad-pod-identity/aad-pod-identity"
               releaseName: "aad-pod-identity"
+              arguments: >-
+                --create-namespace
+                --set nmi.allowNetworkPluginKubenet=true
 
           - task: HelmDeploy@0
             displayName: "Install ingress-nginx"

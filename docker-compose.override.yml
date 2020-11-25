@@ -13,7 +13,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - ASPNETCORE_HTTPS_PORT=44367
+      - ASPNETCORE_HTTPS_PORT=5001
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>
       - SQL_SERVER_USE_AZURE_AD_AUTHENTICATION=false
       - REDIS_PASSWORD=testing
