@@ -8,12 +8,12 @@ namespace FakeSurveyGenerator.Application.Surveys.Models
 {
     public sealed class SurveyModel : AuditableModel, IMapFrom<Survey>
     {
-        public int Id { get; set; }
-        public int OwnerId { get; set; }
-        public string Topic { get; set; }
-        public string RespondentType { get; set; }
-        public int NumberOfRespondents { get; set; }
-        public List<SurveyOptionModel> Options { get; set; }
+        public int Id { get; init; }
+        public int OwnerId { get; init; }
+        public string Topic { get; init; }
+        public string RespondentType { get; init; }
+        public int NumberOfRespondents { get; init; }
+        public List<SurveyOptionModel> Options { get; init; }
 
         public void Mapping(Profile profile)
         {

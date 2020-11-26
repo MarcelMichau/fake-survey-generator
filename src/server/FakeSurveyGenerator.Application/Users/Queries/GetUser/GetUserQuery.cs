@@ -7,7 +7,7 @@ namespace FakeSurveyGenerator.Application.Users.Queries.GetUser
 {
     public sealed class GetUserQuery : IRequest<Result<UserModel, Error>>
     {
-        public int Id { get; set; }
+        public int Id { get; }
 
         public GetUserQuery(int id)
         {

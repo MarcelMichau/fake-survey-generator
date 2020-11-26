@@ -16,7 +16,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
  
         public async Task<SqlConnection> GetDbConnection()
         {
-            return new SqlConnection(_connectionString);
+            return new(_connectionString);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         private readonly IUser _newTestUser =
             new TestUser("brand-new-test-id", "Brand New Test User", "brandnewtestuser@test.com");
 
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions Options = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };

@@ -4,9 +4,9 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
 {
     internal sealed class OAuthUser : IUser
     {
-        public string Id { get; set; }
-        public string DisplayName { get; set; }
-        public string EmailAddress { get; set; }
+        public string Id { get; init; }
+        public string DisplayName { get; init; }
+        public string EmailAddress { get; init; }
 
         public OAuthUser() { } // Used for System.Text.Json deserialization
 

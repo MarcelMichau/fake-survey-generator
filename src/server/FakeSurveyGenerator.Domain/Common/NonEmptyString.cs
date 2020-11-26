@@ -17,12 +17,12 @@ namespace FakeSurveyGenerator.Domain.Common
 
         public static NonEmptyString Create(string value)
         {
-            return new NonEmptyString(value);
+            return new(value);
         }
 
         public static explicit operator NonEmptyString(string value)
         {
-            return new NonEmptyString(value);
+            return new(value);
         }
 
         public static implicit operator string(NonEmptyString value)

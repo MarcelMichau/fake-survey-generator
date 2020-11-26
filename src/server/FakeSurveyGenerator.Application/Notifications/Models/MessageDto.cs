@@ -2,9 +2,9 @@
 {
     public sealed class MessageDto
     {
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
+        public string From { get; init; }
+        public string To { get; init; }
+        public string Subject { get; init; }
+        public string Body { get; init; }
     }
 }

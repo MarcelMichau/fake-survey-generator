@@ -18,11 +18,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var options = new List<SurveyOptionDto>
             {
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Tabs"
                 },
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Spaces"
                 }
@@ -50,12 +50,12 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var options = new List<SurveyOptionDto>
             {
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Tabs",
                     PreferredNumberOfVotes = 100
                 },
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Spaces",
                     PreferredNumberOfVotes = 400

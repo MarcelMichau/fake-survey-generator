@@ -7,7 +7,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
     public sealed class GetSurveyDetailQuery : IRequest<Result<SurveyModel, Error>>
     {
-        public int Id { get; set; }
+        public int Id { get; }
 
         public GetSurveyDetailQuery(int id)
         {

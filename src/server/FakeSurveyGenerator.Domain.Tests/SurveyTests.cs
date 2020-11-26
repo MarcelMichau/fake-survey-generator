@@ -12,7 +12,7 @@ namespace FakeSurveyGenerator.Domain.Tests
 {
     public sealed class SurveyTests
     {
-        private readonly User _testUser = new User(NonEmptyString.Create("Test User"),
+        private readonly User _testUser = new(NonEmptyString.Create("Test User"),
             NonEmptyString.Create("test.user@test.com"), NonEmptyString.Create("test-id"));
 
         [Fact]

@@ -12,7 +12,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate
         public NonEmptyString EmailAddress { get; }
         public NonEmptyString ExternalUserId { get; }
 
-        private readonly List<Survey> _ownedSurveys = new List<Survey>();
+        private readonly List<Survey> _ownedSurveys = new();
         public IReadOnlyList<Survey> OwnedSurveys => _ownedSurveys.ToList();
 
         private User() { } // Necessary for Entity Framework Core

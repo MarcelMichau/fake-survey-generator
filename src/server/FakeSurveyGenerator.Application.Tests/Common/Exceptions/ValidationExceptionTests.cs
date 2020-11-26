@@ -22,7 +22,7 @@ namespace FakeSurveyGenerator.Application.Tests.Common.Exceptions
         {
             var failures = new List<ValidationFailure>
             {
-                new ValidationFailure("Age", "must be over 18"),
+                new("Age", "must be over 18"),
             };
 
             var actual = new ValidationException(failures).Errors;
@@ -36,12 +36,12 @@ namespace FakeSurveyGenerator.Application.Tests.Common.Exceptions
         {
             var failures = new List<ValidationFailure>
             {
-                new ValidationFailure("Age", "must be 18 or older"),
-                new ValidationFailure("Age", "must be 25 or younger"),
-                new ValidationFailure("Password", "must contain at least 8 characters"),
-                new ValidationFailure("Password", "must contain a digit"),
-                new ValidationFailure("Password", "must contain upper case letter"),
-                new ValidationFailure("Password", "must contain lower case letter"),
+                new("Age", "must be 18 or older"),
+                new("Age", "must be 25 or younger"),
+                new("Password", "must contain at least 8 characters"),
+                new("Password", "must contain a digit"),
+                new("Password", "must contain upper case letter"),
+                new("Password", "must contain lower case letter"),
             };
 
             var actual = new ValidationException(failures).Errors;

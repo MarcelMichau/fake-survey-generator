@@ -2,12 +2,12 @@
 {
     public sealed class UserSurveyModel
     {
-        public int Id { get; set; }
-        public string Topic { get; set; }
-        public string RespondentType { get; set; }
-        public int NumberOfRespondents { get; set; }
-        public int NumberOfOptions { get; set; }
-        public string WinningOption { get; set; }
-        public int WinningOptionNumberOfVotes { get; set; }
+        public int Id { get; init; }
+        public string Topic { get; init; }
+        public string RespondentType { get; init; }
+        public int NumberOfRespondents { get; init; }
+        public int NumberOfOptions { get; init; }
+        public string WinningOption { get; init; }
+        public int WinningOptionNumberOfVotes { get; init; }
     }
 }

@@ -2,6 +2,6 @@
 {
     public sealed class UserRegistrationStatusModel
     {
-        public bool IsUserRegistered { get; set; }
+        public bool IsUserRegistered { get; init; }
     }
 }

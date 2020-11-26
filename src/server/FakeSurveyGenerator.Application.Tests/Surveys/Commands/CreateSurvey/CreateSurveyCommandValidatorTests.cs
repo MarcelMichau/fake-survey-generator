@@ -12,7 +12,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         {
             var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>
             {
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Test",
                     PreferredNumberOfVotes = 1
@@ -31,7 +31,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         {
             var command = new CreateSurveyCommand("", 1, "Test", new List<SurveyOptionDto>
             {
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Test",
                     PreferredNumberOfVotes = 1
@@ -51,7 +51,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         {
             var command = new CreateSurveyCommand("Test", 0, "Test", new List<SurveyOptionDto>
             {
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Test",
                     PreferredNumberOfVotes = 1
@@ -71,7 +71,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         {
             var command = new CreateSurveyCommand("Test", 1, "", new List<SurveyOptionDto>
             {
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = "Test",
                     PreferredNumberOfVotes = 1
@@ -117,7 +117,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         {
             var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>
             {
-                new SurveyOptionDto
+                new()
                 {
                     OptionText = ""
                 }

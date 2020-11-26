@@ -22,7 +22,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         private readonly HttpClient _authenticatedClient;
         private readonly HttpClient _unauthenticatedClient;
 
-        private static readonly JsonSerializerOptions Options = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions Options = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
@@ -48,11 +48,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             var createSurveyCommand = new CreateSurveyCommand("How awesome is this?", 350, "Individuals",
                 new List<SurveyOptionDto>
                 {
-                    new SurveyOptionDto
+                    new()
                     {
                         OptionText = "Very awesome"
                     },
-                    new SurveyOptionDto
+                    new()
                     {
                         OptionText = "Not so much"
                     }
@@ -79,11 +79,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             var createSurveyCommand = new CreateSurveyCommand("How unauthorized is this?", 400, "Unauthorized users",
                 new List<SurveyOptionDto>
                 {
-                    new SurveyOptionDto
+                    new()
                     {
                         OptionText = "Very Unauthorized"
                     },
-                    new SurveyOptionDto
+                    new()
                     {
                         OptionText = "Completely Unauthorized"
                     }
@@ -100,7 +100,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             var createSurveyCommand = new CreateSurveyCommand("", 0, "",
                 new List<SurveyOptionDto>
                 {
-                    new SurveyOptionDto
+                    new()
                     {
                         OptionText = ""
                     }

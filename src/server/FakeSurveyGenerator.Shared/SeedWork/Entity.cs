@@ -7,7 +7,7 @@ namespace FakeSurveyGenerator.Shared.SeedWork
         private int? _requestedHashCode;
         public virtual int Id { get; protected set; }
 
-        private List<DomainEvent> _domainEvents = new List<DomainEvent>();
+        private List<DomainEvent> _domainEvents = new();
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         public void AddDomainEvent(DomainEvent eventItem)

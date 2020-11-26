@@ -7,10 +7,10 @@ namespace FakeSurveyGenerator.Application.Users.Models
 {
     public sealed class UserModel : AuditableModel, IMapFrom<User>
     {
-        public int Id { get; set; }
-        public string DisplayName { get; set; }
-        public string EmailAddress { get; set; }
-        public string ExternalUserId { get; set; }
+        public int Id { get; init; }
+        public string DisplayName { get; init; }
+        public string EmailAddress { get; init; }
+        public string ExternalUserId { get; init; }
 
         public void Mapping(Profile profile)
         {

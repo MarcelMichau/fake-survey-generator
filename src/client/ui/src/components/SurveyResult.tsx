@@ -44,11 +44,11 @@ const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => {
                                             className={`inline-block ${
                                                 index === 0
                                                     ? "bg-green-200"
-                                                    : "bg-orange-200"
+                                                    : "bg-yellow-200"
                                             } rounded-full px-3 py-1 text-sm font-semibold ${
                                                 index === 0
                                                     ? "text-green-700"
-                                                    : "text-orange-700"
+                                                    : "text-yellow-700"
                                             } mx-2`}
                                         >
                                             {new Intl.NumberFormat().format(

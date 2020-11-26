@@ -17,7 +17,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
         public NonEmptyString RespondentType { get; }
         public int NumberOfRespondents { get; }
 
-        private readonly List<SurveyOption> _options = new List<SurveyOption>();
+        private readonly List<SurveyOption> _options = new();
         public IReadOnlyList<SurveyOption> Options => _options.ToList();
 
         private IVoteDistribution _selectedVoteDistribution;

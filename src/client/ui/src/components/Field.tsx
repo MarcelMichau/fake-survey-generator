@@ -23,7 +23,7 @@ function Field<T extends FieldValue>(props: FieldProps<T>) {
                     ) : (
                         <>
                             <input
-                                className="appearance-none border border-gray-700 rounded w-full lg:w-1/2 py-2 px-3 text-gray-200 bg-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-1 mb-3"
+                                className="appearance-none border border-gray-700 rounded w-full lg:w-1/2 py-2 px-3 text-gray-200 bg-gray-700 leading-tight focus:outline-none focus:ring mt-1 mb-3"
                                 type="text"
                                 value={props.value}
                                 placeholder={props.placeholder}

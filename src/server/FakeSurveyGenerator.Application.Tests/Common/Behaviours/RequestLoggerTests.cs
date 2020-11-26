@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Application.Tests.Common.Behaviours
             await requestLogger.Process(new CreateSurveyCommand("Test Topic", 10, "Test Respondents",
                 new List<SurveyOptionDto>
                 {
-                    new SurveyOptionDto
+                    new()
                     {
                         OptionText = "Option 1"
                     }

@@ -39,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
     return (
         <button
             type={type}
-            className={`align-baseline px-4 py-2 rounded text-white ${classes} focus:shadow-outline ${additionalClasses.join(
+            className={`align-baseline px-4 py-2 rounded text-white ${classes} focus:ring ${additionalClasses.join(
                 " "
             )}`}
             onClick={onClick}
