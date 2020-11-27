@@ -36,7 +36,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 
             _selectedVoteDistribution = new RandomVoteDistribution();
 
-            AddSurveyCreatedEvent();
+            AddDomainEvent(new SurveyCreatedDomainEvent(this));
         }
 
         public void AddSurveyOption(NonEmptyString optionText)
@@ -84,12 +84,6 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
         {
             if (!_options.Any())
                 throw new SurveyDomainException("Cannot calculate the outcome of a Survey with no Options");
-        }
-
-        private void AddSurveyCreatedEvent()
-        {
-            var surveyCreatedEvent = new SurveyCreatedDomainEvent(this);
-            AddDomainEvent(surveyCreatedEvent);
         }
 
         private void DetermineVoteDistributionStrategy()
