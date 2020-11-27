@@ -245,7 +245,7 @@ stages:
       databasePassword: "azure-ad-enabled"
       azureRedisCacheEnabled: true
       redisServer: redis-fake-survey-generator.redis.cache.windows.net
-      redisPassword: "$(testEnvRedisPassword)"
+      redisPassword: "$(prodEnvRedisPassword)"
       redisDefaultDatabase: 0
       azureApplicationInsightsEnabled: false
       azureKeyVaultEnabled: true
@@ -263,7 +263,7 @@ stages:
 
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
-            displayName: "Deploy Test Managed Identity ARM Template"
+            displayName: "Deploy Fake Survey Generator Managed Identity ARM Template"
             inputs:
               deploymentScope: "Resource Group"
               azureResourceManagerConnection: "Azure Service Connection"
