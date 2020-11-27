@@ -244,7 +244,7 @@ stages:
       databaseUser: "azure-ad-enabled"
       databasePassword: "azure-ad-enabled"
       azureRedisCacheEnabled: true
-      redisServer: redis-fake-survey-generator.redis.cache.windows.net
+      redisServer: redis-fake-survey-generator.redis.cache.windows.net:6380
       redisPassword: "$(prodEnvRedisPassword)"
       redisDefaultDatabase: 0
       azureApplicationInsightsEnabled: false
