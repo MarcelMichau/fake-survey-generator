@@ -1,4 +1,4 @@
-FROM node:14.11.0-alpine3.12 as build
+FROM node:15.3.0-alpine3.12 as build
 ARG REACT_APP_VERSION
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/yarn.lock ./
@@ -7,7 +7,7 @@ COPY src/client/ui/. ./
 RUN chmod +x node_modules/.bin/react-scripts
 RUN yarn build
 
-FROM nginx:1.19.2-alpine
+FROM nginx:1.19.5-alpine
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
