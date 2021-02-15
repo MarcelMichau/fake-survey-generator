@@ -2,6 +2,10 @@
   <img width="200" src="images/undraw_customer_survey_f9ur.svg">
 </div>
 
+<div align="center">
+  <small align="center">Logo by <a href="https://undraw.co">Undraw</a></small>
+</div>
+
 <h1 align="center">
   Fake Survey Generator
 </h1>
