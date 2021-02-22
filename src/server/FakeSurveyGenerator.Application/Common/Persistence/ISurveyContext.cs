@@ -10,8 +10,8 @@ namespace FakeSurveyGenerator.Application.Common.Persistence
 {
     public interface ISurveyContext
     {
-        DbSet<User> Users { get; set; }
-        DbSet<Survey> Surveys { get; set; }
+        DbSet<User> Users { get; }
+        DbSet<Survey> Surveys { get; }
         DbSet<SurveyOption> SurveyOptions { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         EntityEntry<TEntity> Entry<TEntity>([NotNull] TEntity entity) where TEntity : class;

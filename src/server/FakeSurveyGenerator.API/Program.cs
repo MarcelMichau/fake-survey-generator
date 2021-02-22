@@ -9,7 +9,7 @@ using Serilog.Events;
 
 namespace FakeSurveyGenerator.API
 {
-    internal sealed class Program
+    internal static class Program
     {
         internal static int Main(string[] args)
         {

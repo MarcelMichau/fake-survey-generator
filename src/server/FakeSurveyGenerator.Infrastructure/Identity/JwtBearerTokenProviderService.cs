@@ -18,7 +18,10 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
         {
             var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
-            if (httpContext.User.Identity != null && !httpContext.User.Identity.IsAuthenticated)
+            if (httpContext is null)
+                throw new InvalidOperationException("Tried to get a JWT from outside an HttpContext");
+
+            if (httpContext.User.Identity is {IsAuthenticated: false})
                 throw new InvalidOperationException("Cannot retrieve a token for an unauthorized user");
 
             var accessToken = httpContext.Request.Headers[HeaderNames.Authorization].ToString().Substring(7);

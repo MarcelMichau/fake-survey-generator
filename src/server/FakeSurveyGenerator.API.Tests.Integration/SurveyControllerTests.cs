@@ -35,7 +35,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                 {
                     services.AddAuthentication("Test")
                         .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                            "Test", options => { });
+                            "Test", _ => { });
                 });
             }).CreateDefaultClient(new UnwrappingResponseHandler());
 

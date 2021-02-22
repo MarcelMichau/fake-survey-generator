@@ -4,12 +4,12 @@ namespace FakeSurveyGenerator.Application.Common.Auditing
 {
     public class AuditableModel
     {
-        public string CreatedBy { get; set; }
+        public string CreatedBy { get; init; }
 
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; init; }
 
-        public string ModifiedBy { get; set; }
+        public string ModifiedBy { get; init; }
 
-        public DateTimeOffset? ModifiedOn { get; set; }
+        public DateTimeOffset? ModifiedOn { get; init; }
     }
 }

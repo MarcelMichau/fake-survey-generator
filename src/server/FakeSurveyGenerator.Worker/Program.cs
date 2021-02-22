@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Worker
 {
-    internal sealed class Program
+    internal static class Program
     {
         public static void Main(string[] args)
         {

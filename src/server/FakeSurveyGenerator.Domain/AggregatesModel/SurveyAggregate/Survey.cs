@@ -7,6 +7,7 @@ using FakeSurveyGenerator.Domain.DomainEvents;
 using FakeSurveyGenerator.Domain.Exceptions;
 using FakeSurveyGenerator.Domain.Services;
 using FakeSurveyGenerator.Shared.SeedWork;
+using JetBrains.Annotations;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
@@ -22,7 +23,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 
         private IVoteDistribution _selectedVoteDistribution;
 
-        private Survey() { } // Necessary for Entity Framework Core
+        [UsedImplicitly]
+        private Survey() { } // Necessary for Entity Framework Core + AutoMapper
 
         public Survey(User owner, NonEmptyString topic, int numberOfRespondents, NonEmptyString respondentType)
         {

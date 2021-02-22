@@ -11,11 +11,11 @@ namespace FakeSurveyGenerator.Application.Tests
 {
     public class CommandTestBase : IDisposable
     {
-        public SurveyContext Context { get; }
-        public IMapper Mapper { get; }
-        public IUserService UserService { get; }
+        protected SurveyContext Context { get; }
+        protected IMapper Mapper { get; }
+        protected IUserService UserService { get; }
 
-        public CommandTestBase()
+        protected CommandTestBase()
         {
             var configurationProvider = new MapperConfiguration(cfg =>
             {

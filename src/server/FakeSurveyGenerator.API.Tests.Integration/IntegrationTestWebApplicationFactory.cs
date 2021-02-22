@@ -86,7 +86,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             mockUserService.Setup(service => service.GetUserIdentity())
                 .Returns(new TestUser().Id);
 
-            services.AddScoped(sp => mockUserService.Object);
+            services.AddScoped(_ => mockUserService.Object);
         }
 
         private static void SetEnvironmentVariableIfEmpty(string key, string value)
@@ -98,14 +98,14 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         private static void RemoveDefaultDbContextFromServiceCollection(IServiceCollection services)
         {
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SurveyContext>));
-            if (descriptor == null) return;
+            if (descriptor is null) return;
             services.Remove(descriptor);
         }
 
         private static void RemoveDefaultDistributedCacheFromServiceCollection(IServiceCollection services)
         {
             var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDistributedCache));
-            if (descriptor == null) return;
+            if (descriptor is null) return;
             services.Remove(descriptor);
         }
     }

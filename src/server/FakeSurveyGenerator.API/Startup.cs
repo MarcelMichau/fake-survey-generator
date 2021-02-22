@@ -23,23 +23,21 @@ namespace FakeSurveyGenerator.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthorization();
-
-            services.AddControllers()
-                .AddJsonConfiguration()
-                .AddValidationConfiguration()
-                .AddExceptionHandlingConfiguration();
-
-            services.AddHealthChecksConfiguration(_configuration);
-            services.AddSwaggerConfiguration(_configuration);
-            services.AddAuthenticationConfiguration(_configuration);
-            services.AddForwardedHeadersConfiguration();
-            services.AddApplicationInsightsConfiguration(_configuration);
-            services.AddApplicationServicesConfiguration(_configuration);
-            services.AddApiBehaviourConfiguration(_configuration);
+            services.AddAuthorization()
+                .AddHealthChecksConfiguration(_configuration)
+                .AddSwaggerConfiguration(_configuration)
+                .AddAuthenticationConfiguration(_configuration)
+                .AddForwardedHeadersConfiguration()
+                .AddApplicationInsightsConfiguration(_configuration)
+                .AddApplicationServicesConfiguration(_configuration)
+                .AddApiBehaviourConfiguration()
+                .AddControllers()
+                    .AddJsonConfiguration()
+                    .AddValidationConfiguration()
+                    .AddExceptionHandlingConfiguration();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseSecurityHeaders();
 

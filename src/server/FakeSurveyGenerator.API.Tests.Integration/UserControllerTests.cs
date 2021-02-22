@@ -118,7 +118,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             services.AddAuthentication("Test")
                 .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                    "Test", options => { });
+                    "Test", _ => { });
         }
 
         private void ConfigureNewUserUserService(IServiceCollection services)
@@ -129,7 +129,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             mockUserService.Setup(service => service.GetUserIdentity())
                 .Returns(_newTestUser.Id);
 
-            services.AddScoped(sp => mockUserService.Object);
+            services.AddScoped(_ => mockUserService.Object);
         }
     }
 }

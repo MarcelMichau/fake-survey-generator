@@ -25,7 +25,7 @@ namespace FakeSurveyGenerator.Application.Common.Behaviours
 
             var validationResults =
                 await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
-            var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
+            var failures = validationResults.SelectMany(r => r.Errors).Where(f => f is not null).ToList();
 
             if (failures.Any())
                 throw new ValidationException(failures);

@@ -1,6 +1,7 @@
 ﻿using System;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Shared.SeedWork;
+using JetBrains.Annotations;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
 {
@@ -10,7 +11,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate
         public int NumberOfVotes { get; private set; }
         public int PreferredNumberOfVotes { get; }
 
-        private SurveyOption() { } // Necessary for Entity Framework Core
+        [UsedImplicitly]
+        private SurveyOption() { } // Necessary for Entity Framework Core + AutoMapper
 
         public SurveyOption(NonEmptyString optionText)
         {

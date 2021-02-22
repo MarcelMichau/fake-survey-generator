@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Behaviours;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

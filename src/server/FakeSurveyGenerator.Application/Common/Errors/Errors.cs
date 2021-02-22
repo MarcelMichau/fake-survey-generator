@@ -12,7 +12,7 @@
 
             public static Error NotFound(string entityName = "Record", long? id = null)
             {
-                var forId = id == null ? "" : $"for Id: '{id}'";
+                var forId = id is null ? "" : $"for Id: '{id}'";
                 return new Error("record.not.found", $"{entityName} not found {forId}");
             }
         }

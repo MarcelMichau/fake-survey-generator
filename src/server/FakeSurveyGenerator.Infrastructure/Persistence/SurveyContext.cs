@@ -28,7 +28,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
 
         public SurveyContext(DbContextOptions options, IUserService userService, ILogger<SurveyContext> logger) : base(options)
         {
-            if (options == null)
+            if (options is null)
                 throw new ArgumentNullException(nameof(options));
 
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
@@ -37,7 +37,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
 
         public SurveyContext(DbContextOptions options, IDomainEventService domainEventService, IUserService userService, ILogger<SurveyContext> logger) : base(options)
         {
-            if (options == null)
+            if (options is null)
                 throw new ArgumentNullException(nameof(options));
 
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));

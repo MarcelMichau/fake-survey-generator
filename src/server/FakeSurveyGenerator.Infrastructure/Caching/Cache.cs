@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Infrastructure.Caching
         {
             var value = await GetAsync(key, cancellationToken);
 
-            return (value != null, value);
+            return (value is not null, value);
         }
 
         public async Task<T> GetAsync(string key, CancellationToken cancellationToken)
@@ -39,11 +39,11 @@ namespace FakeSurveyGenerator.Infrastructure.Caching
                 var cachedResult = await _distributedCache.GetAsync(CacheKey(key), cancellationToken);
 
                 _logger.LogInformation(
-                    cachedResult == null
+                    cachedResult is null
                         ? "Cache miss for cache key: {CacheKey}"
                         : "Cache hit for cache key: {CacheKey}", CacheKey(key));
 
-                return cachedResult == null ? default : await DeserialiseCacheResult(cachedResult, cancellationToken);
+                return cachedResult is null ? default : await DeserialiseCacheResult(cachedResult, cancellationToken);
             }
             catch (Exception e)
             {
@@ -101,7 +101,7 @@ namespace FakeSurveyGenerator.Infrastructure.Caching
 
         private string SerialiseForCaching(T item)
         {
-            if (item == null) return null;
+            if (item is null) return null;
 
             try
             {

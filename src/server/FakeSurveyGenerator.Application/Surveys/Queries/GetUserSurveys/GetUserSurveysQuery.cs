@@ -7,8 +7,5 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
 {
     public sealed class GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>
     {
-        public GetUserSurveysQuery()
-        {
-        }
     }
 }

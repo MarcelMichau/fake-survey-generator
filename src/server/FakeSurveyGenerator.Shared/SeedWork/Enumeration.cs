@@ -44,7 +44,7 @@ namespace FakeSurveyGenerator.Shared.SeedWork
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Enumeration otherValue))
+            if (obj is not Enumeration otherValue)
             {
                 return false;
             }
@@ -82,7 +82,7 @@ namespace FakeSurveyGenerator.Shared.SeedWork
         {
             var matchingItem = GetAll<T>().FirstOrDefault(predicate);
 
-            if (matchingItem != null) return matchingItem;
+            if (matchingItem is not null) return matchingItem;
 
             var message = $"'{value}' is not a valid {description} in {typeof(T)}";
 

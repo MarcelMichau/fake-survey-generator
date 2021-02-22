@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 
 namespace FakeSurveyGenerator.API.Networking
 {
-    internal sealed class Utilities
+    internal static class Utilities
     {
         //Courtesy of this legend: https://stackoverflow.com/a/53219111/5186798
         internal static IEnumerable<IPNetwork> GetNetworks(NetworkInterfaceType type)
@@ -19,7 +19,7 @@ namespace FakeSurveyGenerator.API.Networking
                 .Where(n => n.GatewayAddresses.Any())) // where the IPs have a gateway defined
             {
                 var ipInfo = item.UnicastAddresses.FirstOrDefault(i => i.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork); // get the first cluster-facing IP address
-                if (ipInfo == null) { continue; }
+                if (ipInfo is null) { continue; }
 
                 // convert the mask to bits
                 var maskBytes = ipInfo.IPv4Mask.GetAddressBytes();

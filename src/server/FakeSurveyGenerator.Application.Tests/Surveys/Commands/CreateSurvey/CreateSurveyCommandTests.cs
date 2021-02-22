@@ -12,9 +12,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public async Task GivenValidCreateSurveyCommand_WhenCallingHandle_ThenNewSurveyShouldBeReturned()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 1;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 1;
+            const string respondentType = "Developers";
 
             var options = new List<SurveyOptionDto>
             {
@@ -44,9 +44,9 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public async Task GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
         {
-            var topic = "Tabs or spaces?";
-            var numberOfRespondents = 500;
-            var respondentType = "Developers";
+            const string topic = "Tabs or spaces?";
+            const int numberOfRespondents = 500;
+            const string respondentType = "Developers";
 
             var options = new List<SurveyOptionDto>
             {

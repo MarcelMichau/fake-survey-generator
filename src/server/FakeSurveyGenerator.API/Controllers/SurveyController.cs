@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoWrapper.Models;
-using AutoWrapper.Wrappers;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
@@ -18,7 +17,7 @@ namespace FakeSurveyGenerator.API.Controllers
     [SwaggerTag("Create & read Surveys")]
     public sealed class SurveyController : ApiController
     {
-        [HttpGet("{id}", Name = nameof(GetSurvey))]
+        [HttpGet("{id:int}", Name = nameof(GetSurvey))]
         [SwaggerOperation("Retrieves a specific Survey")]
         [SwaggerResponse(StatusCodes.Status200OK, "The requested survey was found", typeof(ApiResultResponse<SurveyModel>))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "The requested Survey was not found")]

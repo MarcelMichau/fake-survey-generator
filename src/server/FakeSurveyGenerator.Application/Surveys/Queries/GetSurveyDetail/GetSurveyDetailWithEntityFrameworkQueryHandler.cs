@@ -42,7 +42,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
                 .ProjectTo<SurveyModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
 
-            if (survey == null)
+            if (survey is null)
                 return Result.Failure<SurveyModel, Error>(Errors.General.NotFound(nameof(Survey), request.Id));
 
             await _cache.SetAsync(cacheKey, survey, 60, cancellationToken);

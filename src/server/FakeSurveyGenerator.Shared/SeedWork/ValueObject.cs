@@ -24,7 +24,7 @@ namespace FakeSurveyGenerator.Shared.SeedWork
 
         public override bool Equals(object obj)
         {
-            if (obj == null || obj.GetType() != GetType())
+            if (obj is null || obj.GetType() != GetType())
             {
                 return false;
             }
@@ -36,7 +36,7 @@ namespace FakeSurveyGenerator.Shared.SeedWork
         public override int GetHashCode()
         {
             return GetEqualityComponents()
-             .Select(x => x != null ? x.GetHashCode() : 0)
+             .Select(x => x is not null ? x.GetHashCode() : 0)
              .Aggregate((x, y) => x ^ y);
         }
 

@@ -34,7 +34,7 @@
     //            {
     //                lookup.Add(s.Id, survey = s);
     //            }
-    //            if (survey.Options == null)
+    //            if (survey.Options is null)
     //                survey.Options = new List<SurveyOptionModel>();
     //            survey.Options.Add(so);
     //            return survey;

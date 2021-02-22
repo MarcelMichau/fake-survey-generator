@@ -16,7 +16,7 @@ namespace FakeSurveyGenerator.API.Controllers
     [SwaggerTag("Create & read Users")]
     public sealed class UserController : ApiController
     {
-        [HttpGet("{id}", Name = nameof(GetUser))]
+        [HttpGet("{id:int}", Name = nameof(GetUser))]
         [SwaggerOperation("Retrieves a specific User")]
         [SwaggerResponse(StatusCodes.Status200OK, "The requested User was found", typeof(ApiResultResponse<UserModel>))]
         [SwaggerResponse(StatusCodes.Status404NotFound, "The requested User was not found")]

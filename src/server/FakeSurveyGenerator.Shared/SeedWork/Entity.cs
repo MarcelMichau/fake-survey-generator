@@ -26,14 +26,14 @@ namespace FakeSurveyGenerator.Shared.SeedWork
             _domainEvents?.Clear();
         }
 
-        public bool IsTransient()
+        private bool IsTransient()
         {
             return Id == default;
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Entity))
+            if (obj is not Entity)
                 return false;
 
             if (ReferenceEquals(this, obj))

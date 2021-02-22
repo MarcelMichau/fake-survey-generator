@@ -3,6 +3,7 @@ using System.Linq;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Shared.SeedWork;
+using JetBrains.Annotations;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate
 {
@@ -15,7 +16,8 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate
         private readonly List<Survey> _ownedSurveys = new();
         public IReadOnlyList<Survey> OwnedSurveys => _ownedSurveys.ToList();
 
-        private User() { } // Necessary for Entity Framework Core
+        [UsedImplicitly]
+        private User() { } // Necessary for Entity Framework Core + AutoMapper
 
         public User(NonEmptyString displayName, NonEmptyString emailAddress, NonEmptyString externalUserId)
         {

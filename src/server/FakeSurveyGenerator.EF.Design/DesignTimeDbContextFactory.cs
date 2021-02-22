@@ -1,5 +1,6 @@
 ﻿using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Infrastructure.Persistence;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -7,6 +8,7 @@ using Moq;
 
 namespace FakeSurveyGenerator.EF.Design
 {
+    [UsedImplicitly]
     internal sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SurveyContext>
     {
         public SurveyContext CreateDbContext(string[] args)
