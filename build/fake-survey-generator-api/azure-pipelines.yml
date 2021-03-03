@@ -54,7 +54,7 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/server nbgv --version 3.2.31
+              arguments: install --tool-path ./src/server nbgv --version 3.3.37
             displayName: Install NBGV tool
 
           - script: ./nbgv cloud -a
@@ -72,17 +72,28 @@ stages:
               artifact: "VersionFile"
             displayName: "Publish Version File"
 
-          - script: dotnet build FakeSurveyGenerator.sln --configuration $(buildConfiguration)
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "build"
+              arguments: "--configuration $(buildConfiguration)"
+              projects: |
+                FakeSurveyGenerator.sln
             displayName: "Build Solution"
 
-          - script: dotnet test src/server/FakeSurveyGenerator.Domain.Tests/FakeSurveyGenerator.Domain.Tests.csproj --logger trx
-            displayName: "Run Domain Tests"
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              publishTestResults: true
+              arguments: '--collect "XPlat Code Coverage"'
+              projects: |
+                FakeSurveyGenerator.sln
+            displayName: "Run All Tests"
 
-          - script: dotnet test src/server/FakeSurveyGenerator.Application.Tests/FakeSurveyGenerator.Application.Tests.csproj --logger trx
-            displayName: "Run Application Tests"
-
-          - script: dotnet test src/server/FakeSurveyGenerator.API.Tests.Integration/FakeSurveyGenerator.API.Tests.Integration.csproj --logger trx
-            displayName: "Run Integration Tests"
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: "cobertura"
+              summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
+            displayName: "Publish Code Coverage Results"
 
           - task: PublishTestResults@2
             inputs:
@@ -197,13 +208,13 @@ stages:
                 - task: SqlAzureDacpacDeployment@1
                   displayName: "Execute SQL Migration Script"
                   inputs:
-                    azureSubscription: 'Azure Service Connection'
-                    AuthenticationType: 'servicePrincipal'
-                    ServerName: '$(sqlServerName)'
-                    DatabaseName: '$(sqlDatabaseName)'
-                    deployType: 'SqlTask'
-                    SqlFile: '$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql'
-                    IpDetectionMethod: 'AutoDetect'
+                    azureSubscription: "Azure Service Connection"
+                    AuthenticationType: "servicePrincipal"
+                    ServerName: "$(sqlServerName)"
+                    DatabaseName: "$(sqlDatabaseName)"
+                    deployType: "SqlTask"
+                    SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
+                    IpDetectionMethod: "AutoDetect"
 
   - stage: Application_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
