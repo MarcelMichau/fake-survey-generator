@@ -95,12 +95,6 @@ stages:
               summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
             displayName: "Publish Code Coverage Results"
 
-          - task: PublishTestResults@2
-            inputs:
-              testRunner: VSTest
-              testResultsFiles: "**/*.trx"
-            displayName: "Publish Test Results"
-
           - script: |
               dotnet tool install --global dotnet-ef --version 5.0.2
             displayName: "Install EF Core Global Tool"
