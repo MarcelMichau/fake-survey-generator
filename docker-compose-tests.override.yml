@@ -34,7 +34,6 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__SurveyContext=Server=sql-server-test;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
-      - SQL_SERVER_USE_AZURE_AD_AUTHENTICATION=false
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
       - REDIS_URL=redis-test

@@ -7,15 +7,12 @@ metadata:
 data:
   {{- if .Values.azureDatabaseEnabled }}
     {{- if .Values.azureDatabaseUseActiveDirectoryAuthentication }}
-  ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Integrated;
-  SQL_SERVER_USE_AZURE_AD_AUTHENTICATION: "true"
+  ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Managed Identity;
     {{- else }}
   ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Initial Catalog={{ .Values.database }};Persist Security Info=False;User ID={{ .Values.user }};Password={{ .Values.password }};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
-  SQL_SERVER_USE_AZURE_AD_AUTHENTICATION: "false"
     {{- end }}
   {{- else }}
   ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Database={{ .Values.database }};user id={{ .Values.user }};pwd={{ .Values.password }};ConnectRetryCount=0
-  SQL_SERVER_USE_AZURE_AD_AUTHENTICATION: "false"
   ASPNETCORE_ENVIRONMENT: Development
   {{- end }}
   REDIS_URL: {{ .Values.redisUrl }}

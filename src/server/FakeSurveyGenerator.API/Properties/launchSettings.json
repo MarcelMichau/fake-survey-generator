@@ -16,7 +16,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>",
-        "SQL_SERVER_USE_AZURE_AD_AUTHENTICATION": "false",
         "REDIS_PASSWORD": "testing",
         "REDIS_SSL": "false",
         "REDIS_URL": "redis",
@@ -31,7 +30,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>",
-        "SQL_SERVER_USE_AZURE_AD_AUTHENTICATION": "false",
         "REDIS_PASSWORD": "testing",
         "REDIS_SSL": "false",
         "REDIS_URL": "redis",
@@ -49,7 +47,6 @@
         "ASPNETCORE_HTTPS_PORT": "5001",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ConnectionStrings__SurveyContext": "Server=host.docker.internal;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>",
-        "SQL_SERVER_USE_AZURE_AD_AUTHENTICATION": "false",
         "REDIS_PASSWORD": "testing",
         "REDIS_SSL": "false",
         "REDIS_URL": "redis",

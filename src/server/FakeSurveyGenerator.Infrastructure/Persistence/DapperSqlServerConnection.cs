@@ -14,9 +14,9 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
             _connectionString = !string.IsNullOrWhiteSpace(connectionString) ? connectionString : throw new ArgumentNullException(nameof(connectionString));
         }
  
-        public async Task<SqlConnection> GetDbConnection()
+        public Task<SqlConnection> GetDbConnection()
         {
-            return new(_connectionString);
+            return Task.FromResult(new SqlConnection(_connectionString));
         }
     }
 }

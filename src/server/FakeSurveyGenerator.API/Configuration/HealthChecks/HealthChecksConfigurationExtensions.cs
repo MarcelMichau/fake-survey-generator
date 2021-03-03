@@ -17,24 +17,12 @@ namespace FakeSurveyGenerator.API.Configuration.HealthChecks
         {
             var healthChecksBuilder = services.AddHealthChecks();
 
-            if (configuration.GetValue<bool>("SQL_SERVER_USE_AZURE_AD_AUTHENTICATION"))
-            {
-                healthChecksBuilder
-                    .AddSqlServer(
-                        configuration.GetConnectionString(nameof(SurveyContext)),
-                        name: "FakeSurveyGeneratorDB-check",
-                        tags: new[] {"fake-survey-generator-db", "ready"},
-                        failureStatus: HealthStatus.Unhealthy);
-            }
-            else
-            {
-                healthChecksBuilder
-                    .AddSqlServer(
-                        configuration.GetConnectionString(nameof(SurveyContext)),
-                        name: "FakeSurveyGeneratorDB-check",
-                        tags: new[] {"fake-survey-generator-db", "ready"},
-                        failureStatus: HealthStatus.Unhealthy);
-            }
+            healthChecksBuilder
+                .AddSqlServer(
+                    configuration.GetConnectionString(nameof(SurveyContext)),
+                    name: "FakeSurveyGeneratorDB-check",
+                    tags: new[] { "fake-survey-generator-db", "ready" },
+                    failureStatus: HealthStatus.Unhealthy);
 
             var redisConnectionString =
                 $"{configuration.GetValue<string>("REDIS_URL")},ssl={configuration.GetValue<string>("REDIS_SSL")},password={configuration.GetValue<string>("REDIS_PASSWORD")},defaultDatabase={configuration.GetValue<string>("REDIS_DEFAULT_DATABASE")}";
