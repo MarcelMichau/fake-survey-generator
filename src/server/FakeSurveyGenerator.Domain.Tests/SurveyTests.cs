@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using AutoFixture;
+using AutoFixture.Idioms;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
@@ -12,18 +14,16 @@ namespace FakeSurveyGenerator.Domain.Tests
 {
     public sealed class SurveyTests
     {
-        private readonly User _testUser = new(NonEmptyString.Create("Test User"),
-            NonEmptyString.Create("test.user@test.com"), NonEmptyString.Create("test-id"));
+        private readonly Fixture _fixture = new();
 
         [Fact]
         public void GivenValidSurveyDetail_WhenCreatingSurvey_ThenValidSurveyIsCreated()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
             survey.Topic.Value.Should().Be(topic);
             survey.NumberOfRespondents.Should().Be(numberOfRespondents);
@@ -31,98 +31,54 @@ namespace FakeSurveyGenerator.Domain.Tests
         }
 
         [Fact]
-        public void GivenNoUser_WhenCreatingSurvey_ThenExceptionShouldBeThrown()
+        public void GivenSomeEmptyFields_WhenCreatingSurvey_ThenExceptionShouldBeThrown()
         {
-            const string topic = "";
-            const int numberOfRespondents = 1;
-            const string respondentType = "Developers";
-
-            Action act = () =>
-            {
-                _ = new Survey(null, NonEmptyString.Create(topic), numberOfRespondents,
-                    NonEmptyString.Create(respondentType));
-            };
-
-            act.Should().Throw<Exception>();
-        }
-
-        [Fact]
-        public void GivenNoTopic_WhenCreatingSurvey_ThenExceptionShouldBeThrown()
-        {
-            const string topic = "";
-            const int numberOfRespondents = 1;
-            const string respondentType = "Developers";
-
-            Action act = () =>
-            {
-                _ = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                    NonEmptyString.Create(respondentType));
-            };
-
-            act.Should().Throw<Exception>();
+            var assertion = _fixture.Create<GuardClauseAssertion>();
+            assertion.Verify(typeof(Survey).GetConstructors());
         }
 
         [Fact]
         public void GivenNoRespondents_WhenCreatingSurvey_ThenSurveyDomainExceptionShouldBeThrown()
         {
-            const string topic = "To be, or not to be?";
+            var topic = _fixture.Create<NonEmptyString>();
             const int numberOfRespondents = 0;
-            const string respondentType = "Writers";
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            Action act = () =>
-            {
-                _ = new Survey(_testUser, NonEmptyString.Create(topic),
-                    numberOfRespondents, NonEmptyString.Create(respondentType));
-            };
+            Action act = () => { _ = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType); };
 
             act.Should().ThrowExactly<SurveyDomainException>();
         }
 
         [Fact]
-        public void GivenNoRespondentType_WhenCreatingSurvey_ThenExceptionShouldBeThrown()
-        {
-            const string topic = "To be, or not to be?";
-            const int numberOfRespondents = 1;
-            const string respondentType = "";
-
-            Action act = () =>
-            {
-                _ = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                    NonEmptyString.Create(respondentType));
-            };
-
-            act.Should().Throw<Exception>();
-        }
-
-        [Fact]
         public void GivenValidOption_WhenAddingOptionToSurvey_ShouldAddOptionToSurveyOptionsList()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
-            survey.AddSurveyOption(NonEmptyString.Create("Spaces"));
+            var option1 = _fixture.Create<NonEmptyString>();
+            var option2 = _fixture.Create<NonEmptyString>();
+
+            survey.AddSurveyOption(option1);
+            survey.AddSurveyOption(option2);
 
             survey.Options.Count.Should().Be(2);
-            survey.Options.First().OptionText.Value.Should().Be("Tabs");
-            survey.Options.Last().OptionText.Value.Should().Be("Spaces");
+            survey.Options[0].OptionText.Value.Should().Be(option1);
+            survey.Options[^1].OptionText.Value.Should().Be(option2);
         }
 
         [Fact]
         public void GivenEmptyOption_WhenAddingOptionToSurvey_ThenExceptionShouldBeThrown()
         {
-            const string topic = "To be, or not to be?";
-            const int numberOfRespondents = 2;
-            const string respondentType = "Writers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
             Action act = () =>
             {
-                var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                    NonEmptyString.Create(respondentType));
+                var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
                 survey.AddSurveyOption(NonEmptyString.Create(""));
             };
@@ -133,14 +89,13 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void GivenSurveyWithNoOption_WhenCalculatingOutcome_ThenSurveyDomainExceptionShouldBeThrown()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1000;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
             Action act = () =>
             {
-                var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                    NonEmptyString.Create(respondentType));
+                var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
                 survey.CalculateOutcome();
             };
@@ -151,15 +106,14 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void GivenSurveyWithOptions_WhenCalculatingOutcome_ThenOptionNumberOfVotesShouldBeDistributedEvenly()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1000;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
-            survey.AddSurveyOption(NonEmptyString.Create("Spaces"));
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
 
             survey.CalculateOutcome();
 
@@ -170,15 +124,14 @@ namespace FakeSurveyGenerator.Domain.Tests
         [Fact]
         public void GivenSurveyWithOptions_WhenCalculatingOneSidedOutcome_ThenOneOptionShouldReceiveAllVotes()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1000;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
-            survey.AddSurveyOption(NonEmptyString.Create("Spaces"));
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
 
             survey.CalculateOneSidedOutcome();
 
@@ -189,36 +142,34 @@ namespace FakeSurveyGenerator.Domain.Tests
         public void
             GivenSurveyWithOptionsHavingPreferredNumberOfVotes_WhenCalculatingOutcome_ThenEachOptionShouldHaveExpectedPreferredNumberOfVotes()
         {
-            const string topic = "Tabs or spaces?";
+            var topic = _fixture.Create<NonEmptyString>();
             const int numberOfRespondents = 1000;
-            const string respondentType = "Developers";
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption(NonEmptyString.Create("Tabs"), 600);
-            survey.AddSurveyOption(NonEmptyString.Create("Spaces"), 400);
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), 600);
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), 400);
 
             survey.CalculateOutcome();
 
-            survey.Options.First().NumberOfVotes.Should().Be(600);
-            survey.Options.Last().NumberOfVotes.Should().Be(400);
+            survey.Options[0].NumberOfVotes.Should().Be(600);
+            survey.Options[^1].NumberOfVotes.Should().Be(400);
         }
 
         [Fact]
         public void
             GivenSurveyWithOneOptionHavingPreferredNumberOfVotesExceedingTotalRespondents_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1000;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption(NonEmptyString.Create("Tabs"), 1);
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents - 1);
 
-            Action act = () => { survey.AddSurveyOption(NonEmptyString.Create("Spaces"), 1001); };
+            Action act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
 
             act.Should().ThrowExactly<SurveyDomainException>();
         }
@@ -227,16 +178,15 @@ namespace FakeSurveyGenerator.Domain.Tests
         public void
             GivenSurveyWithOptionsWhereCombinedPreferredNumberOfVotesExceedTotalRespondents_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1000;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption(NonEmptyString.Create("Tabs"), 500);
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents);
 
-            Action act = () => { survey.AddSurveyOption(NonEmptyString.Create("Spaces"), 501); };
+            Action act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
 
             act.Should().ThrowExactly<SurveyDomainException>();
         }
@@ -245,15 +195,14 @@ namespace FakeSurveyGenerator.Domain.Tests
         public void
             GivenValidSurveyDetail_WhenCreatingSurvey_ThenValidSurveyIsCreatedWithSurveyCreatedEventAddedToDomainEvents()
         {
-            const string topic = "Tabs or spaces?";
-            const int numberOfRespondents = 1;
-            const string respondentType = "Developers";
+            var topic = _fixture.Create<NonEmptyString>();
+            var numberOfRespondents = _fixture.Create<int>();
+            var respondentType = _fixture.Create<NonEmptyString>();
 
-            var survey = new Survey(_testUser, NonEmptyString.Create(topic), numberOfRespondents,
-                NonEmptyString.Create(respondentType));
+            var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-            survey.AddSurveyOption(NonEmptyString.Create("Tabs"));
-            survey.AddSurveyOption(NonEmptyString.Create("Spaces"));
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
 
             survey.DomainEvents.Should().AllBeOfType<SurveyCreatedDomainEvent>();
 

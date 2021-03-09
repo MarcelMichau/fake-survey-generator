@@ -13,7 +13,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 {
-    [Collection("QueryTests")]
+    [Collection(nameof(QueryTestFixture))]
     public sealed class GetSurveyDetailQueryTests
     {
         private readonly SurveyContext _surveyContext;
@@ -119,7 +119,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Error.Code.Should().Be(Errors.General.NotFound().Code);
+            result.Error.Should().Be(Errors.General.NotFound());
         }
     }
 }

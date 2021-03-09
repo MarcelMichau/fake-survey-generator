@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutoFixture;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FluentAssertions;
 using Xunit;
@@ -7,15 +8,17 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 {
     public sealed class CreateSurveyCommandValidatorTests
     {
+        private readonly IFixture _fixture = new Fixture();
+
         [Fact]
         public void GivenValidCreateSurveyCommand_WhenValidatingCommand_ThenIsValidShouldBeTrue()
         {
-            var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>
+            var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), new List<SurveyOptionDto>
             {
                 new()
                 {
-                    OptionText = "Test",
-                    PreferredNumberOfVotes = 1
+                    OptionText = _fixture.Create<string>(),
+                    PreferredNumberOfVotes = _fixture.Create<int>()
                 }
             });
 
@@ -29,11 +32,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public void GivenBlankSurveyTopic_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
-            var command = new CreateSurveyCommand("", 1, "Test", new List<SurveyOptionDto>
+            var command = new CreateSurveyCommand("", 1, _fixture.Create<string>(), new List<SurveyOptionDto>
             {
                 new()
                 {
-                    OptionText = "Test",
+                    OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 1
                 }
             });
@@ -49,11 +52,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public void GivenZeroNumberOfRespondents_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
-            var command = new CreateSurveyCommand("Test", 0, "Test", new List<SurveyOptionDto>
+            var command = new CreateSurveyCommand(_fixture.Create<string>(), 0, _fixture.Create<string>(), new List<SurveyOptionDto>
             {
                 new()
                 {
-                    OptionText = "Test",
+                    OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 1
                 }
             });
@@ -69,11 +72,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public void GivenEmptyRespondentType_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
-            var command = new CreateSurveyCommand("Test", 1, "", new List<SurveyOptionDto>
+            var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, "", new List<SurveyOptionDto>
             {
                 new()
                 {
-                    OptionText = "Test",
+                    OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 1
                 }
             });
@@ -89,7 +92,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public void GivenEmptySurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
-            var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>());
+            var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), new List<SurveyOptionDto>());
 
             var validator = new CreateSurveyCommandValidator();
 
@@ -102,7 +105,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public void GivenNullSurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
-            var command = new CreateSurveyCommand("Test", 1, "Test", null);
+            var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), null);
 
             var validator = new CreateSurveyCommandValidator();
 
@@ -115,7 +118,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
         [Fact]
         public void GivenEmptySurveyOptionText_WhenValidatingCommand_ThenIsValidShouldBeFalse()
         {
-            var command = new CreateSurveyCommand("Test", 1, "Test", new List<SurveyOptionDto>
+            var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), new List<SurveyOptionDto>
             {
                 new()
                 {

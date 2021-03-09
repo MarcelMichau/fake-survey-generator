@@ -9,7 +9,6 @@ namespace FakeSurveyGenerator.Application.Tests
     public sealed class QueryTestFixture : IDisposable
     {
         public SurveyContext Context { get; }
-
         public IMapper Mapper { get; }
 
         public QueryTestFixture()
@@ -32,6 +31,6 @@ namespace FakeSurveyGenerator.Application.Tests
         }
     }
 
-    [CollectionDefinition("QueryTests")]
+    [CollectionDefinition(nameof(QueryTestFixture))]
     public class QueryCollection : ICollectionFixture<QueryTestFixture> { }
 }

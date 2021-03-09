@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using FakeSurveyGenerator.Application.Common.Identity;
@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -19,16 +19,19 @@ namespace FakeSurveyGenerator.API.Tests.Integration
     public sealed class IntegrationTestWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
-        // Needed for some reason because of: https://github.com/dotnet/aspnetcore/issues/17707
-        protected override IHost CreateHost(IHostBuilder builder)
-        {
-            builder.UseContentRoot(Directory.GetCurrentDirectory());
-            return base.CreateHost(builder);
-        }
-
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            SetupEnvironmentVariables();
+            builder.ConfigureAppConfiguration(config =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    {
+                        "ConnectionStrings__SurveyContext",
+                        "Server=sqlserver; Database = FakeSurveyGenerator; user id = SA; pwd =< YourStrong!Passw0rd >; ConnectRetryCount = 0"
+                    },
+                    {"IDENTITY_PROVIDER_URL", "https://test.com"}
+                });
+            });
 
             builder.ConfigureServices(services =>
             {
@@ -71,13 +74,6 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             });
         }
 
-        private static void SetupEnvironmentVariables()
-        {
-            SetEnvironmentVariableIfEmpty("ConnectionStrings__SurveyContext",
-                "Server=sqlserver;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0");
-            SetEnvironmentVariableIfEmpty("IDENTITY_PROVIDER_URL", "https://test.com");
-        }
-
         private static void ConfigureMockServices(IServiceCollection services)
         {
             var mockUserService = new Mock<IUserService>();
@@ -87,12 +83,6 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                 .Returns(new TestUser().Id);
 
             services.AddScoped(_ => mockUserService.Object);
-        }
-
-        private static void SetEnvironmentVariableIfEmpty(string key, string value)
-        {
-            if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(key)))
-                Environment.SetEnvironmentVariable(key, value);
         }
 
         private static void RemoveDefaultDbContextFromServiceCollection(IServiceCollection services)

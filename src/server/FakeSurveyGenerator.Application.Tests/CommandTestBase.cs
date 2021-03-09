@@ -13,7 +13,6 @@ namespace FakeSurveyGenerator.Application.Tests
     {
         protected SurveyContext Context { get; }
         protected IMapper Mapper { get; }
-        protected IUserService UserService { get; }
 
         protected CommandTestBase()
         {
@@ -28,8 +27,6 @@ namespace FakeSurveyGenerator.Application.Tests
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TestUser());
-
-            UserService = mockUserService.Object;
 
             SurveyContextFactory.SeedSampleData(Context);
         }
