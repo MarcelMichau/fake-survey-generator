@@ -28,7 +28,7 @@ namespace FakeSurveyGenerator.Application.Tests
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new TestUser());
 
-            SurveyContextFactory.SeedSampleData(Context);
+            SurveyContextFactory.SeedSampleData(Context).GetAwaiter().GetResult();
         }
 
         public void Dispose()

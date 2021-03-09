@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Common.DomainEvents;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Data;
@@ -31,9 +32,9 @@ namespace FakeSurveyGenerator.Application.Tests
             return context;
         }
 
-        public static void SeedSampleData(SurveyContext context)
+        public static async Task SeedSampleData(SurveyContext context)
         {
-            DatabaseSeed.SeedSampleData(context);
+            await DatabaseSeed.SeedSampleData(context);
         }
 
         public static void Destroy(SurveyContext context)

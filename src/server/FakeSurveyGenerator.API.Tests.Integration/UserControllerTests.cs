@@ -19,7 +19,8 @@ using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public sealed class UserControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
+    [Collection(nameof(IntegrationTestFixture))]
+    public sealed class UserControllerTests
     {
         private readonly HttpClient _existingUserClient;
         private readonly IntegrationTestWebApplicationFactory<Startup> _clientFactory;
@@ -32,14 +33,14 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        public UserControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
+        public UserControllerTests(IntegrationTestFixture fixture)
         {
-            _existingUserClient = factory.WithWebHostBuilder(builder =>
+            _existingUserClient = fixture.Factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(ConfigureAuthenticationHandler);
             }).CreateDefaultClient(new UnwrappingResponseHandler());
 
-            _clientFactory = factory;
+            _clientFactory = fixture.Factory;
         }
 
         [Fact]

@@ -33,6 +33,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - USE_REAL_DEPENDENCIES=true
       - ConnectionStrings__SurveyContext=Server=sql-server-test;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
@@ -49,9 +50,9 @@ services:
       - --results-directory
       - /tests/fake-survey-generator-api-application
       - --collect:"XPlat Code Coverage"
-  # sql-server-test:
-  #   ports:
-  #     - "1433:1433"
-  # redis-test:
-  #   ports:
-  #     - "6379:6379"
+  sql-server-test:
+    ports:
+      - "1433:1433"
+  redis-test:
+    ports:
+      - "6379:6379"

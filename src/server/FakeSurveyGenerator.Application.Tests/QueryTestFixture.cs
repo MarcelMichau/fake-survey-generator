@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Infrastructure.Persistence;
@@ -6,7 +7,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests
 {
-    public sealed class QueryTestFixture : IDisposable
+    public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
     {
         public SurveyContext Context { get; }
         public IMapper Mapper { get; }
@@ -14,8 +15,6 @@ namespace FakeSurveyGenerator.Application.Tests
         public QueryTestFixture()
         {
             Context = SurveyContextFactory.Create();
-
-            SurveyContextFactory.SeedSampleData(Context);
 
             var configurationProvider = new MapperConfiguration(cfg =>
             {
@@ -28,6 +27,16 @@ namespace FakeSurveyGenerator.Application.Tests
         public void Dispose()
         {
             SurveyContextFactory.Destroy(Context);
+        }
+
+        public async Task InitializeAsync()
+        {
+            await SurveyContextFactory.SeedSampleData(Context);
+        }
+
+        public Task DisposeAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 
