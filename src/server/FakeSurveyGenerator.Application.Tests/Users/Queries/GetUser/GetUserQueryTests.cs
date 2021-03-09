@@ -11,7 +11,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Users.Queries.GetUser
 {
-    [Collection("QueryTests")]
+    [Collection(nameof(QueryTestFixture))]
     public sealed class GetUserQueryTests
     {
         private readonly SurveyContext _surveyContext;

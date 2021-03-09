@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Users.Queries.IsUserRegistered
 {
-    [Collection("QueryTests")]
+    [Collection(nameof(QueryTestFixture))]
     public sealed class IsUserRegisteredQueryTests
     {
         private readonly SurveyContext _surveyContext;

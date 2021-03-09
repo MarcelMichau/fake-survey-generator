@@ -193,7 +193,6 @@ stages:
         variables:
           sqlServerName: "sql-marcel-michau.database.windows.net"
           sqlDatabaseName: sqldb-fake-survey-generator
-          sqlDatabaseDeploymentUser: azure-pipelines-user
         environment: "azure-sql"
         strategy:
           runOnce:

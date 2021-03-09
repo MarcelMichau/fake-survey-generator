@@ -1,5 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using AutoFixture.Xunit2;
 using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
@@ -12,6 +15,15 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
 {
     public sealed class RegisterUserCommandTests : CommandTestBase
     {
+        private readonly IFixture _fixture = new Fixture();
+        private readonly Mock<IUserService> _mockUserService = new();
+
+        public RegisterUserCommandTests()
+        {
+            _mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TestUser());
+        }
+
         [Fact]
         public async Task GivenValidRegisterUserCommand_WhenCallingHandle_ThenResultShouldBeSuccessful()
         {
@@ -19,7 +31,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
 
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser("new-id", "New User", "new.user@test.com"));
+                .ReturnsAsync(new TestUser(_fixture.Create<string>(), _fixture.Create<string>(), _fixture.Create<string>()));
 
             var sut = new RegisterUserCommandHandler(mockUserService.Object, Context, Mapper);
 
@@ -28,27 +40,24 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
             result.IsSuccess.Should().BeTrue();
         }
 
-        [Fact]
-        public async Task GivenValidRegisterUserCommand_WhenCallingHandle_ThenNewUserShouldBeReturned()
+        [Theory]
+        [AutoData]
+        public async Task GivenValidRegisterUserCommand_WhenCallingHandle_ThenNewUserShouldBeReturned(string newUserId, string newUserDisplayName, string newUserEmailAddress)
         {
             var registerUserCommand = new RegisterUserCommand();
 
-            const string expectedNewUserId = "new-id";
-            const string expectedNewUserDisplayName = "New User";
-            const string expectedNewUserEmailAddress = "new.user@test.com";
-
             var mockUserService = new Mock<IUserService>();
             mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser(expectedNewUserId, expectedNewUserDisplayName, expectedNewUserEmailAddress));
+                .ReturnsAsync(new TestUser(newUserId, newUserDisplayName, newUserEmailAddress));
 
             var sut = new RegisterUserCommandHandler(mockUserService.Object, Context, Mapper);
 
             var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
             result.Value.Id.Should().BePositive();
-            result.Value.DisplayName.Should().Be(expectedNewUserDisplayName);
-            result.Value.EmailAddress.Should().Be(expectedNewUserEmailAddress);
-            result.Value.ExternalUserId.Should().Be(expectedNewUserId);
+            result.Value.ExternalUserId.Should().Be(newUserId);
+            result.Value.DisplayName.Should().Be(newUserDisplayName);
+            result.Value.EmailAddress.Should().Be(newUserEmailAddress);
         }
 
         [Fact]
@@ -56,11 +65,7 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
         {
             var registerUserCommand = new RegisterUserCommand();
 
-            var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser("test-id", "Test User", "test.user@test.com"));
-
-            var sut = new RegisterUserCommandHandler(mockUserService.Object, Context, Mapper);
+            var sut = new RegisterUserCommandHandler(_mockUserService.Object, Context, Mapper);
 
             var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
@@ -72,15 +77,11 @@ namespace FakeSurveyGenerator.Application.Tests.Users.Commands.RegisterUser
         {
             var registerUserCommand = new RegisterUserCommand();
 
-            var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser("test-id", "Test User", "test.user@test.com"));
-
-            var sut = new RegisterUserCommandHandler(mockUserService.Object, Context, Mapper);
+            var sut = new RegisterUserCommandHandler(_mockUserService.Object, Context, Mapper);
 
             var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-            result.Error.Code.Should().Be(Errors.General.UserAlreadyRegistered().Code);
+            result.Error.Should().Be(Errors.General.UserAlreadyRegistered());
         }
     }
 }

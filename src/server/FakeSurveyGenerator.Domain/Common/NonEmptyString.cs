@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using CSharpFunctionalExtensions;
 
 namespace FakeSurveyGenerator.Domain.Common
 {
-    public sealed record NonEmptyString
+    public sealed class NonEmptyString : ValueObject
     {
         public string Value { get; }
 
@@ -28,6 +30,11 @@ namespace FakeSurveyGenerator.Domain.Common
         public static implicit operator string(NonEmptyString value)
         {
             return value.Value;
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
         }
     }
 }

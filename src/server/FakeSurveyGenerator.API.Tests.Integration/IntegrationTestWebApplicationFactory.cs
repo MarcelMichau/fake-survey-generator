@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using FakeSurveyGenerator.Application.Common.Identity;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -19,13 +17,6 @@ namespace FakeSurveyGenerator.API.Tests.Integration
     public sealed class IntegrationTestWebApplicationFactory<TStartup>
         : WebApplicationFactory<TStartup> where TStartup : class
     {
-        // Needed for some reason because of: https://github.com/dotnet/aspnetcore/issues/17707
-        protected override IHost CreateHost(IHostBuilder builder)
-        {
-            builder.UseContentRoot(Directory.GetCurrentDirectory());
-            return base.CreateHost(builder);
-        }
-
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             SetupEnvironmentVariables();
