@@ -33,7 +33,7 @@ variables:
   kubernetesClusterName: aks-cluster
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
-  NUGET_PACKAGES: $(UserProfile)/.nuget/packages
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
   - stage: BuildTest
