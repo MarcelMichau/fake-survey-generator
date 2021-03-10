@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
@@ -21,56 +20,57 @@ namespace FakeSurveyGenerator.API.Tests.Integration
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureAppConfiguration(config =>
+            // When running the integration tests with Docker Compose, the USE_ENVIRONMENT_VARIABLES_ONLY is set to true & the environment variables used
+            // in the docker-compose-tests.override.yml file are used.
+            // Integration tests can be run with Docker Compose by running the following in a terminal:
+            // docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up --build fake-survey-generator-api-integration-test
+
+            // When running the integration tests with `dotnet test` or through Visual Studio, the USE_ENVIRONMENT_VARIABLES_ONLY is not set, therefore
+            // any necessary config is set by using builder.ConfigureAppConfiguration().
+
+            if (!Convert.ToBoolean(Environment.GetEnvironmentVariable("USE_ENVIRONMENT_VARIABLES_ONLY")))
             {
-                config.AddInMemoryCollection(new Dictionary<string, string>
+                builder.ConfigureAppConfiguration(config =>
                 {
+                    config.AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        "ConnectionStrings__SurveyContext",
-                        "Server=sqlserver; Database = FakeSurveyGenerator; user id = SA; pwd =< YourStrong!Passw0rd >; ConnectRetryCount = 0"
-                    },
-                    {"IDENTITY_PROVIDER_URL", "https://test.com"}
-                });
-            });
+                        // To test with real dependencies for SQL Server & Redis outside of Docker Compose, the USE_REAL_DEPENDENCIES setting can be set to true here.
+                        // Ensure that the SQL Server & Redis docker containers are running before starting the test run by running the following in a terminal:
+                        // docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build sql-server redis
 
-            builder.ConfigureServices(services =>
+                        // When running with USE_REAL_DEPENDENCIES set to false, an in-memory database & an in-memory distributed cache will be used instead.
+
+                        {"ASPNETCORE_ENVIRONMENT", "Production" }, // Run integration tests as close as possible to how code will be run in Production
+                        {"USE_REAL_DEPENDENCIES", "false" },
+                        {
+                            "ConnectionStrings:SurveyContext",
+                            "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0"
+                        },
+                        {"REDIS_PASSWORD", "testing"},
+                        {"REDIS_SSL", "false"},
+                        {"REDIS_URL", "127.0.0.1"},
+                        {"REDIS_DEFAULT_DATABASE", "0"},
+                        {"IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com"}
+                    });
+                });
+            }
+
+            builder.ConfigureServices((hostBuilderContext, services) =>
             {
-                RemoveDefaultDbContextFromServiceCollection(services);
-                RemoveDefaultDistributedCacheFromServiceCollection(services);
-
-                services.AddDistributedMemoryCache();
-
-                services.AddDbContext<SurveyContext>(options =>
+                if (!hostBuilderContext.Configuration.GetValue<bool>("USE_REAL_DEPENDENCIES"))
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
-                });
+                    RemoveDefaultDbContextFromServiceCollection(services);
+                    RemoveDefaultDistributedCacheFromServiceCollection(services);
+
+                    services.AddDistributedMemoryCache();
+
+                    services.AddDbContext<SurveyContext>(options =>
+                    {
+                        options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    });
+                }
 
                 ConfigureMockServices(services);
-
-                var rootServiceProvider = services.BuildServiceProvider();
-
-                using var scope = rootServiceProvider.CreateScope();
-
-                var scopedServiceProvider = scope.ServiceProvider;
-                var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
-                var logger = scopedServiceProvider
-                    .GetRequiredService<ILogger<IntegrationTestWebApplicationFactory<TStartup>>>();
-
-                var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
-
-                cache.Remove("FakeSurveyGenerator");
-
-                context.Database.EnsureCreated();
-
-                try
-                {
-                    DatabaseSeed.SeedSampleData(context);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "An error occurred seeding the database with test surveys. Error: {Message}",
-                        ex.Message);
-                }
             });
         }
 

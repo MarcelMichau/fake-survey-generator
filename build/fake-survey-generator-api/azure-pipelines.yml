@@ -33,10 +33,11 @@ variables:
   kubernetesClusterName: aks-cluster
 
 stages:
-  - stage: Build
-    displayName: "Build"
+  - stage: BuildTest
+    displayName: "Build + Test"
     jobs:
       - job: Build
+        displayName: "Build + Test API"
         pool:
           vmImage: "ubuntu-latest"
 
@@ -96,7 +97,7 @@ stages:
             displayName: "Publish Code Coverage Results"
 
           - script: |
-              dotnet tool install --global dotnet-ef --version 5.0.2
+              dotnet tool install --global dotnet-ef --version 5.0.4
             displayName: "Install EF Core Global Tool"
 
           - script: |
@@ -131,6 +132,18 @@ stages:
               tags: |
                 $(NBGV_SemVer1)
                 latest
+
+          - task: DockerCompose@0
+            displayName: "Run Integration Tests with Real Dependencies"
+            inputs:
+              containerregistrytype: "Azure Container Registry"
+              azureSubscription: "Azure Service Connection"
+              azureContainerRegistry: '{"loginServer":"acrfakesurveygenerator.azurecr.io", "id" : "/subscriptions/492e64aa-2506-4b65-8105-b490c3c34a40/resourceGroups/rg-fake-survey-generator/providers/Microsoft.ContainerRegistry/registries/acrfakesurveygenerator"}'
+              dockerComposeFile: "docker-compose-tests.yml"
+              additionalDockerComposeFiles: "docker-compose-tests.override.yml"
+              action: "Run a specific service"
+              serviceName: "fake-survey-generator-api-integration-test"
+              detached: false
 
   - stage: Publish
     displayName: "Publish"

@@ -40,10 +40,10 @@ services:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   sql-server-test:
-    image: mcr.microsoft.com/mssql/server:2019-CU6-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
 
   redis-test:
-    image: redis:6.0.7-alpine
+    image: redis:6.0.10-alpine

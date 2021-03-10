@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
@@ -8,7 +9,7 @@ namespace FakeSurveyGenerator.Data
 {
     public static class DatabaseSeed
     {
-        public static void SeedSampleData(SurveyContext context)
+        public static async Task SeedSampleData(SurveyContext context)
         {
             var testOwner = new User(NonEmptyString.Create("Test User"), NonEmptyString.Create("test.user@test.com"), NonEmptyString.Create("test-id"));
 
@@ -25,10 +26,10 @@ namespace FakeSurveyGenerator.Data
             survey3.AddSurveyOption(NonEmptyString.Create("Test Option 5"));
             survey3.AddSurveyOption(NonEmptyString.Create("Test Option 6"));
 
-            context.Users.Add(testOwner);
-            context.Surveys.AddRange(new List<Survey> { survey1, survey2, survey3 });
+            await context.Users.AddAsync(testOwner);
+            await context.Surveys.AddRangeAsync(new List<Survey> { survey1, survey2, survey3 });
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

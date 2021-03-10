@@ -5,19 +5,19 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using AutoWrapper.Server;
+using AutoFixture;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
-using Microsoft.AspNetCore.Authentication;
+using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
+using FakeSurveyGenerator.Application.Users.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using FluentAssertions;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
-    public sealed class SurveyControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
+    [Collection(nameof(IntegrationTestFixture))]
+    public sealed class SurveyControllerTests
     {
         private readonly HttpClient _authenticatedClient;
         private readonly HttpClient _unauthenticatedClient;
@@ -27,50 +27,27 @@ namespace FakeSurveyGenerator.API.Tests.Integration
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        public SurveyControllerTests(IntegrationTestWebApplicationFactory<Startup> factory)
+        public SurveyControllerTests(IntegrationTestFixture testFixture)
         {
-            _authenticatedClient = factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    services.AddAuthentication("Test")
-                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                            "Test", _ => { });
-                });
-            }).CreateDefaultClient(new UnwrappingResponseHandler());
+            var fixture = new Fixture();
 
-            _unauthenticatedClient = factory.CreateClient();
+            _authenticatedClient = testFixture.Factory
+                .WithSpecificUser(fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>());
+
+            _unauthenticatedClient = testFixture.Factory.CreateClient();
         }
 
         [Fact]
         public async Task GivenAuthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenSuccessfulResponseWithNewlyCreatedSurveyShouldBeReturned()
         {
-            var createSurveyCommand = new CreateSurveyCommand("How awesome is this?", 350, "Individuals",
-                new List<SurveyOptionDto>
-                {
-                    new()
-                    {
-                        OptionText = "Very awesome"
-                    },
-                    new()
-                    {
-                        OptionText = "Not so much"
-                    }
-                });
+            var newUser = await RegisterNewUser();
+            var newSurvey = await CreateSurvey();
 
-            var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand, Options);
-
-            response.EnsureSuccessStatusCode();
-
-            await using var content = await response.Content.ReadAsStreamAsync();
-
-            var survey = await JsonSerializer.DeserializeAsync<SurveyModel>(content, Options);
-
-            Assert.Equal(350, survey.Options.Sum(option => option.NumberOfVotes));
-            Assert.Equal("How awesome is this?", survey.Topic);
-            Assert.True(survey.Options.All(option => option.NumberOfVotes > 0));
-            Assert.False(survey.CreatedOn == DateTimeOffset.MinValue);
-            Assert.Equal("test-id", survey.CreatedBy);
+            Assert.Equal(350, newSurvey.Options.Sum(option => option.NumberOfVotes));
+            Assert.Equal("How awesome is this?", newSurvey.Topic);
+            Assert.True(newSurvey.Options.All(option => option.NumberOfVotes > 0));
+            Assert.False(newSurvey.CreatedOn == DateTimeOffset.MinValue);
+            Assert.Equal(newUser.ExternalUserId, newSurvey.CreatedBy);
         }
 
         [Fact]
@@ -116,33 +93,67 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         [Fact]
         public async Task GivenExistingSurveyId_WhenCallingGetSurvey_ThenExistingSurveyShouldBeReturned()
         {
-            const int surveyId = 1;
+            await RegisterNewUser();
+            var newSurvey = await CreateSurvey();
 
-            const string expectedSurveyTopic = "Test Topic 1";
-            const int expectedNumberOfRespondents = 10;
-            const string expectedRespondentType = "Testers";
+            var survey = await _authenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{newSurvey.Id}");
 
-            const string expectedOptionText = "Test Option 1";
-
-            var survey = await _authenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{surveyId}");
-
-            survey.Id.Should().Be(surveyId);
-            survey.Topic.Should().Be(expectedSurveyTopic);
-            survey.NumberOfRespondents.Should().Be(expectedNumberOfRespondents);
-            survey.RespondentType.Should().Be(expectedRespondentType);
-            survey.Options.First().OptionText.Should().Be(expectedOptionText);
+            survey.Id.Should().Be(newSurvey.Id);
+            survey.Topic.Should().Be(newSurvey.Topic);
+            survey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
+            survey.RespondentType.Should().Be(newSurvey.RespondentType);
+            survey.Options.First().OptionText.Should().Be(newSurvey.Options.First().OptionText);
         }
 
         [Fact]
         public async Task GivenNonExistentSurveyId_WhenCallingGetSurvey_ThenNotFoundResponseShouldBeReturned()
         {
-            const int surveyId = 100;
+            const int surveyId = 9000000;
 
             var response = await _authenticatedClient.GetAsync($"api/survey/{surveyId}");
 
             var statusCode = (int) response.StatusCode;
 
             statusCode.Should().Be(StatusCodes.Status404NotFound);
+        }
+
+        private async Task<UserModel> RegisterNewUser()
+        {
+            var registerUserCommand = new RegisterUserCommand();
+
+            var response = await _authenticatedClient.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+
+            response.EnsureSuccessStatusCode();
+
+            await using var content = await response.Content.ReadAsStreamAsync();
+
+            var user = await JsonSerializer.DeserializeAsync<UserModel>(content, Options);
+            return user;
+        }
+
+        private async Task<SurveyModel> CreateSurvey()
+        {
+            var createSurveyCommand = new CreateSurveyCommand("How awesome is this?", 350, "Individuals",
+                new List<SurveyOptionDto>
+                {
+                    new()
+                    {
+                        OptionText = "Very awesome"
+                    },
+                    new()
+                    {
+                        OptionText = "Not so much"
+                    }
+                });
+
+            var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand, Options);
+
+            response.EnsureSuccessStatusCode();
+
+            await using var content = await response.Content.ReadAsStreamAsync();
+
+            var survey = await JsonSerializer.DeserializeAsync<SurveyModel>(content, Options);
+            return survey;
         }
     }
 }
