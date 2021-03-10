@@ -1,6 +1,6 @@
 ﻿namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
 {
-    public sealed class UserSurveyModel
+    public sealed record UserSurveyModel
     {
         public int Id { get; init; }
         public string Topic { get; init; }

@@ -5,7 +5,7 @@ using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Application.Surveys.Models
 {
-    public sealed class SurveyOptionModel : AuditableModel, IMapFrom<SurveyOption>
+    public sealed record SurveyOptionModel : AuditableModel, IMapFrom<SurveyOption>
     {
         public int Id { get; init; }
         public string OptionText { get; init; }

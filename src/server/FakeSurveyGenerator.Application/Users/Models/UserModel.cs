@@ -5,7 +5,7 @@ using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 
 namespace FakeSurveyGenerator.Application.Users.Models
 {
-    public sealed class UserModel : AuditableModel, IMapFrom<User>
+    public sealed record UserModel : AuditableModel, IMapFrom<User>
     {
         public int Id { get; init; }
         public string DisplayName { get; init; }

@@ -34,7 +34,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var query = new GetSurveyDetailQuery(id);
 
-            var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
+            var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -48,7 +48,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var query = new GetSurveyDetailQuery(id);
 
-            var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
+            var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -65,7 +65,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var query = new GetSurveyDetailQuery(id);
 
-            var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
+            var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -82,7 +82,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var query = new GetSurveyDetailQuery(id);
 
-            var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
+            var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -99,7 +99,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var query = new GetSurveyDetailQuery(id);
 
-            var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
+            var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -115,7 +115,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
 
             var query = new GetSurveyDetailQuery(id);
 
-            var handler = new GetSurveyDetailWithEntityFrameworkQueryHandler(_surveyContext, _mapper, _cache);
+            var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
 
             var result = await handler.Handle(query, CancellationToken.None);
 

@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Application.Common.Auditing
 {
-    public class AuditableModel
+    public record AuditableModel
     {
         public string CreatedBy { get; init; }
 
