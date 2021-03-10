@@ -37,7 +37,8 @@ namespace FakeSurveyGenerator.API.Configuration.HealthChecks
                 new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
                 "IdentityProvider-check",
                 tags: new[] {"identity-provider", "ready"},
-                failureStatus: HealthStatus.Unhealthy);
+                failureStatus: HealthStatus.Unhealthy,
+                timeout: new TimeSpan(0,0,5));
 
             return services;
         }
