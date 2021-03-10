@@ -35,7 +35,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
                     config.AddInMemoryCollection(new Dictionary<string, string>
                     {
                         // To test with real dependencies for SQL Server & Redis outside of Docker Compose, the USE_REAL_DEPENDENCIES setting can be set to true here.
-                        // Ensure that the SQL Server & Redis docker containers are running before starting the test run by running the following in a terminal:
+                        // Ensure that the SQL Server & Redis Docker containers are running before starting the test run by running the following in a terminal:
                         // docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build sql-server redis
 
                         // When running with USE_REAL_DEPENDENCIES set to false, an in-memory database & an in-memory distributed cache will be used instead.
