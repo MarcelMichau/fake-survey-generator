@@ -117,8 +117,22 @@ stages:
               containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
               command: 'login'
 
-          - script: "docker pull $(imageRepository):latest"
-            displayName: Pull Latest Image for Layer Caching
+          - task: Cache@2
+            displayName: Caching Docker image
+            inputs:
+              key: 'docker | "$(Agent.OS)" | caching-docker.yml'
+              path: $(Pipeline.Workspace)/docker
+              cacheHitVar: DOCKER_CACHE_RESTORED
+
+          - script: |
+              docker load < $(Pipeline.Workspace)/docker/cache.tar
+            condition: and(not(canceled()), eq(variables.DOCKER_CACHE_RESTORED, 'true'))
+
+          - script: |
+              mkdir -p $(Pipeline.Workspace)/docker
+              docker pull $(imageRepository):latest
+              docker save $(imageRepository):latest > $(Pipeline.Workspace)/docker/cache.tar
+            condition: and(not(canceled()), or(failed(), ne(variables.DOCKER_CACHE_RESTORED, 'true')))
 
           - task: Docker@2
             displayName: "Build Docker Image"
@@ -131,7 +145,6 @@ stages:
               tags: |
                 $(NBGV_SemVer1)
                 latest
-              arguments: '--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest'
 
           - task: Docker@2
             displayName: "Push Image to Azure Container Registry"
