@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Data;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
@@ -24,21 +22,21 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             Environment.SetEnvironmentVariable("USE_REAL_DEPENDENCIES", "true");
 
-            builder.ConfigureAppConfiguration(config =>
-            {
-                config.AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    {
-                        "ConnectionStrings:SurveyContext",
-                        "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0"
-                    },
-                    {"REDIS_PASSWORD", "testing"},
-                    {"REDIS_SSL", "false"},
-                    {"REDIS_URL", "127.0.0.1"},
-                    {"REDIS_DEFAULT_DATABASE", "0"},
-                    {"IDENTITY_PROVIDER_URL", "https://test.com"}
-                });
-            });
+            //builder.ConfigureAppConfiguration(config =>
+            //{
+            //    config.AddInMemoryCollection(new Dictionary<string, string>
+            //    {
+            //        {
+            //            "ConnectionStrings:SurveyContext",
+            //            "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0"
+            //        },
+            //        {"REDIS_PASSWORD", "testing"},
+            //        {"REDIS_SSL", "false"},
+            //        {"REDIS_URL", "127.0.0.1"},
+            //        {"REDIS_DEFAULT_DATABASE", "0"},
+            //        {"IDENTITY_PROVIDER_URL", "https://test.com"}
+            //    });
+            //});
 
             builder.ConfigureServices((hostBuilderContext, services) =>
             {

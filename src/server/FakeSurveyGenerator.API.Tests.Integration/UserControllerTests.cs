@@ -2,18 +2,12 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using AutoWrapper.Server;
-using FakeSurveyGenerator.Application.Common.Identity;
+using AutoFixture;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
 using FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered;
 using FakeSurveyGenerator.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using FluentAssertions;
 using Xunit;
 
@@ -22,11 +16,8 @@ namespace FakeSurveyGenerator.API.Tests.Integration
     [Collection(nameof(IntegrationTestFixture))]
     public sealed class UserControllerTests
     {
-        private readonly HttpClient _existingUserClient;
-        private readonly IntegrationTestWebApplicationFactory<Startup> _clientFactory;
-
-        private readonly IUser _newTestUser =
-            new TestUser("brand-new-test-id", "Brand New Test User", "brandnewtestuser@test.com");
+        private readonly IntegrationTestWebApplicationFactory<Startup> _factory;
+        private readonly IFixture _fixture;
 
         private static readonly JsonSerializerOptions Options = new()
         {
@@ -35,37 +26,35 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
         public UserControllerTests(IntegrationTestFixture fixture)
         {
-            _existingUserClient = fixture.Factory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(ConfigureAuthenticationHandler);
-            }).CreateDefaultClient(new UnwrappingResponseHandler());
-
-            _clientFactory = fixture.Factory;
+            _factory = fixture.Factory;
+            _fixture = new Fixture();
         }
 
         [Fact]
         public async Task GivenExistingUserId_WhenCallingGetUser_ThenExistingUserShouldBeReturned()
         {
-            const int userId = 1;
+            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
+                _fixture.Create<string>());
 
-            const string expectedDisplayName = "Test User";
-            const string expectedEmailAddress = "test.user@test.com";
-            const string expectedExternalUserId = "test-id";
+            var newUser = await RegisterNewUser(client);
 
-            var user = await _existingUserClient.GetFromJsonAsync<UserModel>($"api/user/{userId}");
+            var user = await client.GetFromJsonAsync<UserModel>($"api/user/{newUser.Id}");
 
-            user.Id.Should().Be(userId);
-            user.DisplayName.Should().Be(expectedDisplayName);
-            user.EmailAddress.Should().Be(expectedEmailAddress);
-            user.ExternalUserId.Should().Be(expectedExternalUserId);
+            user.Id.Should().Be(newUser.Id);
+            user.DisplayName.Should().Be(newUser.DisplayName);
+            user.EmailAddress.Should().Be(newUser.EmailAddress);
+            user.ExternalUserId.Should().Be(newUser.ExternalUserId);
         }
 
         [Fact]
         public async Task GivenExistingRegisteredUser_WhenCallingIsUserRegistered_ThenResponseShouldBeTrue()
         {
-            const string userId = "test-id";
+            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
+                _fixture.Create<string>());
 
-            var result = await _existingUserClient.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
+            var newUser = await RegisterNewUser(client);
+
+            var result = await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={newUser.ExternalUserId}");
 
             result.IsUserRegistered.Should().BeTrue();
         }
@@ -75,7 +64,10 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         {
             const string userId = "non-existent-id";
 
-            var result = await _existingUserClient.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
+            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
+                _fixture.Create<string>());
+
+            var result = await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
 
             result.IsUserRegistered.Should().BeFalse();
         }
@@ -83,54 +75,44 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         [Fact]
         public async Task GivenAuthenticatedNewUser_WhenCallingRegisterUser_ThenSuccessfulResponseWithNewlyRegisteredUserShouldBeReturned()
         {
-            var newUserClient = _clientFactory.WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureTestServices(ConfigureAuthenticationHandler)
-                    .ConfigureServices(ConfigureNewUserUserService);
-            }).CreateDefaultClient(new UnwrappingResponseHandler());
+            var expectedUser = new TestUser(_fixture.Create<string>(), _fixture.Create<string>(), _fixture.Create<string>());
 
+            var client = _factory.WithSpecificUser(expectedUser.Id, expectedUser.DisplayName, expectedUser.EmailAddress);
+
+            var user = await RegisterNewUser(client);
+            
+            user.Id.Should().BePositive();
+            user.DisplayName.Should().Be(expectedUser.DisplayName);
+            user.EmailAddress.Should().Be(expectedUser.EmailAddress);
+            user.ExternalUserId.Should().Be(expectedUser.Id);
+        }
+
+        [Fact]
+        public async Task GivenExistingUser_WhenCallingRegisterUser_ThenBadRequestResponseShouldBeReturned()
+        {
+            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
+                _fixture.Create<string>());
+
+            var _ = await RegisterNewUser(client);
             var registerUserCommand = new RegisterUserCommand();
 
-            var response = await newUserClient.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+            var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        private static async Task<UserModel> RegisterNewUser(HttpClient client)
+        {
+            var registerUserCommand = new RegisterUserCommand();
+
+            var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
 
             response.EnsureSuccessStatusCode();
 
             await using var content = await response.Content.ReadAsStreamAsync();
 
             var user = await JsonSerializer.DeserializeAsync<UserModel>(content, Options);
-
-            user.Id.Should().BePositive();
-            user.DisplayName.Should().Be(_newTestUser.DisplayName);
-            user.EmailAddress.Should().Be(_newTestUser.EmailAddress);
-            user.ExternalUserId.Should().Be(_newTestUser.Id);
-        }
-
-        [Fact]
-        public async Task GivenExistingUser_WhenCallingRegisterUser_ThenBadRequestResponseShouldBeReturned()
-        {
-            var registerUserCommand = new RegisterUserCommand();
-
-            var response = await _existingUserClient.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
-
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        }
-
-        private static void ConfigureAuthenticationHandler(IServiceCollection services)
-        {
-            services.AddAuthentication("Test")
-                .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                    "Test", _ => { });
-        }
-
-        private void ConfigureNewUserUserService(IServiceCollection services)
-        {
-            var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_newTestUser);
-            mockUserService.Setup(service => service.GetUserIdentity())
-                .Returns(_newTestUser.Id);
-
-            services.AddScoped(_ => mockUserService.Object);
+            return user;
         }
     }
 }

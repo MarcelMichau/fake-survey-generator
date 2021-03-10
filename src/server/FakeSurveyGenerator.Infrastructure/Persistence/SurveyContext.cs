@@ -97,11 +97,11 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedBy = _userService.GetUserIdentity();
-                        entry.Entity.CreatedOn = DateTimeOffset.UtcNow;
+                        entry.Entity.CreatedOn = DateTimeOffset.Now;
                         break;
                     case EntityState.Modified:
                         entry.Entity.ModifiedBy = _userService.GetUserIdentity();
-                        entry.Entity.ModifiedOn = DateTimeOffset.UtcNow;
+                        entry.Entity.ModifiedOn = DateTimeOffset.Now;
                         break;
                     case EntityState.Detached:
                         break;

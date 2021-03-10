@@ -17,7 +17,7 @@ namespace FakeSurveyGenerator.Shared.SeedWork
 
         protected DomainEvent()
         {
-            DateOccurred = DateTimeOffset.UtcNow;
+            DateOccurred = DateTimeOffset.Now;
         }
     }
 }
