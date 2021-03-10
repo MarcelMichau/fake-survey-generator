@@ -111,7 +111,11 @@ stages:
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
 
+          - script: "docker pull $(imageRepository):latest"
+            displayName: Pull Latest Image for Layer Caching
+
           - task: Docker@2
+            displayName: "Build Docker Image"
             inputs:
               containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
               repository: '$(projectName)'
