@@ -117,7 +117,7 @@ stages:
               containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
               command: 'login'
 
-          - script: "docker pull latest"
+          - script: "docker pull $(imageRepository):latest"
             displayName: Pull Latest Image for Layer Caching
 
           - task: Docker@2
