@@ -228,7 +228,7 @@ stages:
 
           - task: HelmInstaller@1
             inputs:
-              helmVersionToInstall: "3.3.1"
+              helmVersionToInstall: "3.5.2"
             displayName: "Install Helm"
 
           - task: HelmDeploy@0
