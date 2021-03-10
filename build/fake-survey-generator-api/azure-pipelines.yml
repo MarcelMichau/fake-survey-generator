@@ -142,6 +142,7 @@ stages:
               additionalDockerComposeFiles: 'docker-compose-tests.override.yml'
               action: 'Run a specific service'
               serviceName: 'fake-survey-generator-api-integration-test'
+              detached: false
 
   - stage: Publish
     displayName: "Publish"
