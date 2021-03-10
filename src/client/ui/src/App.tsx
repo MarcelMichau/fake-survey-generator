@@ -18,48 +18,48 @@ const App: React.FC = () => {
         isLoading,
     } = useAuth0();
 
-    const registerUser = async () => {
-        const token = await getAccessTokenSilently();
+    useEffect(() => {
+        const registerUser = async () => {
+            const token = await getAccessTokenSilently();
 
-        const response = await fetch(`/api/user/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        const data: Types.UserResponse = await response.json();
-
-        if (data.isError) {
-            setErrorMessage(data.responseException.exceptionMessage.detail);
-            return;
-        }
-    };
-
-    const isUserRegistered = async (): Promise<boolean> => {
-        const token = await getAccessTokenSilently();
-
-        const response = await fetch(
-            `/api/user/isRegistered?userId=${user.sub}`,
-            {
+            const response = await fetch(`/api/user/register`, {
+                method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
+            });
+
+            const data: Types.UserResponse = await response.json();
+
+            if (data.isError) {
+                setErrorMessage(data.responseException.exceptionMessage.detail);
+                return;
             }
-        );
+        };
 
-        const data: Types.IsUserRegisteredResponse = await response.json();
+        const isUserRegistered = async (): Promise<boolean> => {
+            const token = await getAccessTokenSilently();
 
-        if (data.isError) {
-            setErrorMessage(data.responseException.exceptionMessage.detail);
-            return false;
-        }
+            const response = await fetch(
+                `/api/user/isRegistered?userId=${user.sub}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-        return data.result.isUserRegistered;
-    };
+            const data: Types.IsUserRegisteredResponse = await response.json();
 
-    useEffect(() => {
+            if (data.isError) {
+                setErrorMessage(data.responseException.exceptionMessage.detail);
+                return false;
+            }
+
+            return data.result.isUserRegistered;
+        };
+
         const register = async () => {
             if (isAuthenticated && user) {
                 const isUserAlreadyRegistered = await isUserRegistered();
@@ -71,7 +71,7 @@ const App: React.FC = () => {
         };
 
         register();
-    }, [isAuthenticated, user]);
+    }, [isAuthenticated, user, getAccessTokenSilently]);
 
     return (
         <div className="flex flex-col h-full">
