@@ -31,6 +31,9 @@ variables:
   imageRepository: "$(registryName).azurecr.io/$(projectName)"
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
   - stage: BuildTest
@@ -65,13 +68,21 @@ stages:
           - script: |
               ./nbgv get-version -v SemVer1 > version.txt
             workingDirectory: src/server
-            displayName: "Create Version file"
+            displayName: "Create Version File"
 
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: "src/server/version.txt"
               artifact: "VersionFile"
             displayName: "Publish Version File"
+
+          - task: Cache@2
+            displayName: Cache NuGet Packages
+            inputs:
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+              restoreKeys: |
+                nuget | "$(Agent.OS)"
+              path: $(NUGET_PACKAGES)
 
           - task: DotNetCoreCLI@2
             inputs:
@@ -85,7 +96,7 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--collect "XPlat Code Coverage"'
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
                 FakeSurveyGenerator.sln
             displayName: "Run All Tests"
@@ -118,7 +129,8 @@ stages:
               repository: "$(projectName)"
               command: "build"
               Dockerfile: "src/server/FakeSurveyGenerator.API/Dockerfile"
-              buildContext: .
+              buildContext: "."
+              arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |
                 $(NBGV_SemVer1)
                 latest

@@ -29,6 +29,7 @@ variables:
   imageRepository: "$(registryName).azurecr.io/$(projectName)"
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
+  DOCKER_BUILDKIT: 1
 
 stages:
   - stage: Build
@@ -75,7 +76,7 @@ stages:
               command: "build"
               Dockerfile: "src/client/ui/Dockerfile"
               buildContext: .
-              arguments: "--build-arg REACT_APP_VERSION=$(NBGV_SemVer1)"
+              arguments: "--build-arg REACT_APP_VERSION=$(NBGV_SemVer1) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |
                 $(NBGV_SemVer1)
                 latest

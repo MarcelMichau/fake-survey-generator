@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.3-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.4-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0.200-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0.201-buster-slim AS build
 RUN dotnet tool install --tool-path . nbgv --version 3.3.37
 COPY ./.git /.git
 COPY src/server/Directory.Build.props /Directory.Build.props
@@ -14,6 +14,7 @@ COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.
 COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
 COPY src/server/FakeSurveyGenerator.Infrastructure/FakeSurveyGenerator.Infrastructure.csproj FakeSurveyGenerator.Infrastructure/
 COPY src/server/FakeSurveyGenerator.Shared/FakeSurveyGenerator.Shared.csproj FakeSurveyGenerator.Shared/
+COPY src/server/FakeSurveyGenerator.API/packages.lock.json FakeSurveyGenerator.API/
 RUN dotnet restore FakeSurveyGenerator.API/FakeSurveyGenerator.API.csproj
 COPY src/server/. .
 WORKDIR /src/FakeSurveyGenerator.API
@@ -21,12 +22,15 @@ RUN dotnet build FakeSurveyGenerator.API.csproj --no-restore -c Release -o /app
 
 FROM build AS domaintest
 WORKDIR /src/FakeSurveyGenerator.Domain.Tests
+RUN dotnet restore FakeSurveyGenerator.Domain.Tests.csproj
 
 FROM build AS applicationtest
 WORKDIR /src/FakeSurveyGenerator.Application.Tests
+RUN dotnet restore FakeSurveyGenerator.Application.Tests.csproj
 
 FROM build AS integrationtest
 WORKDIR /src/FakeSurveyGenerator.API.Tests.Integration
+RUN dotnet restore FakeSurveyGenerator.API.Tests.Integration.csproj
 
 FROM build AS publish
 RUN dotnet publish FakeSurveyGenerator.API.csproj -c Release -o /app
