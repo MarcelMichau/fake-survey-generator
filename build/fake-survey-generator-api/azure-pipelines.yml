@@ -120,7 +120,7 @@ stages:
           - task: Cache@2
             displayName: Caching Docker image
             inputs:
-              key: 'docker | "$(Agent.OS)" | caching-docker.yml'
+              key: 'docker | "$(Agent.OS)"'
               path: $(Pipeline.Workspace)/docker
               cacheHitVar: DOCKER_CACHE_RESTORED
 
