@@ -112,7 +112,6 @@ stages:
             displayName: "Publish Database Migration Script"
 
           - task: Docker@2
-            displayName: "Build Docker Image"
             inputs:
               containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
               repository: '$(projectName)'
@@ -122,7 +121,7 @@ stages:
               tags: |
                 $(NBGV_SemVer1)
                 latest
-              arguments: '--build-arg BUILDKIT_INLINE_CACHE=1'
+              arguments: '--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest'
 
           - task: Docker@2
             displayName: "Push Image to Azure Container Registry"
