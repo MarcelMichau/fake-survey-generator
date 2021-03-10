@@ -87,7 +87,7 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--collect "XPlat Code Coverage"'
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
                 FakeSurveyGenerator.sln
             displayName: "Run All Tests"
