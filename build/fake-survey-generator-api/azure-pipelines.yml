@@ -32,6 +32,7 @@ variables:
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
   DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
 
 stages:
   - stage: BuildTest
