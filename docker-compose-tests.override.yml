@@ -31,7 +31,8 @@ services:
 
   fake-survey-generator-api-integration-test:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - USE_ENVIRONMENT_VARIABLES_ONLY=true
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
       - USE_REAL_DEPENDENCIES=true
       - ConnectionStrings__SurveyContext=Server=sql-server-test;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
@@ -39,7 +40,7 @@ services:
       - REDIS_SSL=false
       - REDIS_URL=redis-test
       - REDIS_DEFAULT_DATABASE=0
-      - IDENTITY_PROVIDER_URL=https://test.com
+      - IDENTITY_PROVIDER_URL=https://somenonexistentdomain.com
     # ports:
     #   - "5000:80"
     entrypoint:
@@ -48,11 +49,11 @@ services:
       - --logger
       - trx;LogFileName=/tests/fake-survey-generator-api-integration/TestResults.trx
       - --results-directory
-      - /tests/fake-survey-generator-api-application
+      - /tests/fake-survey-generator-api-integration
       - --collect:"XPlat Code Coverage"
   sql-server-test:
-    ports:
-      - "1433:1433"
+    # ports:
+    #   - "1433:1433"
   redis-test:
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"

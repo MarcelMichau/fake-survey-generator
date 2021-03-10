@@ -13,10 +13,11 @@ COPY src/server/FakeSurveyGenerator.API/FakeSurveyGenerator.API.csproj FakeSurve
 COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj FakeSurveyGenerator.Application/
 COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
 COPY src/server/FakeSurveyGenerator.Infrastructure/FakeSurveyGenerator.Infrastructure.csproj FakeSurveyGenerator.Infrastructure/
+COPY src/server/FakeSurveyGenerator.Shared/FakeSurveyGenerator.Shared.csproj FakeSurveyGenerator.Shared/
 RUN dotnet restore FakeSurveyGenerator.API/FakeSurveyGenerator.API.csproj
 COPY src/server/. .
 WORKDIR /src/FakeSurveyGenerator.API
-RUN dotnet build FakeSurveyGenerator.API.csproj -c Release -o /app
+RUN dotnet build FakeSurveyGenerator.API.csproj --no-restore -c Release -o /app
 
 FROM build AS domaintest
 WORKDIR /src/FakeSurveyGenerator.Domain.Tests

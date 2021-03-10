@@ -14,7 +14,7 @@ namespace FakeSurveyGenerator.API.Configuration
             services.AddInfrastructureForApi(configuration);
             services.AddApplication();
 
-            //services.AddHostedService<DatabaseCreationHostedService>();
+            services.AddHostedService<DatabaseCreationHostedService>();
 
             return services;
         }

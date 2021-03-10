@@ -108,7 +108,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration
         [Fact]
         public async Task GivenNonExistentSurveyId_WhenCallingGetSurvey_ThenNotFoundResponseShouldBeReturned()
         {
-            const int surveyId = 600000;
+            const int surveyId = 9000000;
 
             var response = await _authenticatedClient.GetAsync($"api/survey/{surveyId}");
 
