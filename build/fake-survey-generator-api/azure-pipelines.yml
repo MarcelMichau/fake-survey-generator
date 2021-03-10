@@ -88,6 +88,16 @@ stages:
               projects: |
                 FakeSurveyGenerator.sln
             displayName: "Run All Tests"
+            
+          - task: DockerCompose@0
+            inputs:
+              containerregistrytype: 'Azure Container Registry'
+              azureSubscription: 'Azure Service Connection'
+              azureContainerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
+              dockerComposeFile: 'docker-compose-tests.yml'
+              additionalDockerComposeFiles: 'docker-compose-tests.override.yml'
+              action: 'Run a specific service'
+              serviceName: 'fake-survey-generator-api-integration-test'
 
           - task: PublishCodeCoverageResults@1
             inputs:
