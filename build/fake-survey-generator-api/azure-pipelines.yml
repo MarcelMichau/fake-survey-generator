@@ -68,7 +68,7 @@ stages:
           - script: |
               ./nbgv get-version -v SemVer1 > version.txt
             workingDirectory: src/server
-            displayName: "Create Version file"
+            displayName: "Create Version File"
 
           - task: PublishPipelineArtifact@1
             inputs:
@@ -77,7 +77,7 @@ stages:
             displayName: "Publish Version File"
 
           - task: Cache@2
-            displayName: Cache NuGet packages
+            displayName: Cache NuGet Packages
             inputs:
               key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
               restoreKeys: |
