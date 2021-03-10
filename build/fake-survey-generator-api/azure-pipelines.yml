@@ -33,6 +33,7 @@ variables:
   kubernetesClusterName: aks-cluster
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
+  NUGET_PACKAGES: $(UserProfile)/.nuget/packages
 
 stages:
   - stage: BuildTest
@@ -75,6 +76,14 @@ stages:
               artifact: "VersionFile"
             displayName: "Publish Version File"
 
+          - task: Cache@2
+            displayName: Cache NuGet packages
+            inputs:
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+              restoreKeys: |
+                nuget | "$(Agent.OS)"
+              path: $(NUGET_PACKAGES)
+
           - task: DotNetCoreCLI@2
             inputs:
               command: "build"
@@ -116,12 +125,12 @@ stages:
           - task: Docker@2
             displayName: "Build Docker Image"
             inputs:
-              containerRegistry: 'FakeSurveyGeneratorAzureContainerRegistry'
-              repository: '$(projectName)'
-              command: 'build'
-              Dockerfile: 'src/server/FakeSurveyGenerator.API/Dockerfile'
-              buildContext: '.'
-              arguments: '--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest'
+              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+              repository: "$(projectName)"
+              command: "build"
+              Dockerfile: "src/server/FakeSurveyGenerator.API/Dockerfile"
+              buildContext: "."
+              arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |
                 $(NBGV_SemVer1)
                 latest
