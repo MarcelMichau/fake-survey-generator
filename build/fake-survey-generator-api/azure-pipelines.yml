@@ -108,6 +108,7 @@ stages:
             displayName: "Publish Code Coverage Results"
 
           - script: |
+              dotnet tool restore
               dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
             workingDirectory: src/server/FakeSurveyGenerator.EF.Design
             displayName: "Create Database Migration Script"
