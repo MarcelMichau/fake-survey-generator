@@ -63,18 +63,12 @@ stages:
 
           - script: ./nbgv cloud -a
             workingDirectory: src/server
-            displayName: Set Version
+            displayName: Set Build Number & Version Variables
 
           - script: |
-              ./nbgv get-version -v SemVer1 > version.txt
-            workingDirectory: src/server
-            displayName: "Create Version File"
-
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: "src/server/version.txt"
-              artifact: "VersionFile"
-            displayName: "Publish Version File"
+              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
+            name: "SetVersionTag"
+            displayName: "Set SemVer Version Tag from NBGV"
 
           - task: Cache@2
             displayName: Cache NuGet Packages
@@ -129,7 +123,7 @@ stages:
               buildContext: "."
               arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |
-                $(NBGV_SemVer1)
+                $(SetVersionTag.VersionTag)
                 latest
 
           - task: Docker@2
@@ -139,7 +133,7 @@ stages:
               repository: "$(projectName)"
               command: "push"
               tags: |
-                $(NBGV_SemVer1)
+                $(SetVersionTag.VersionTag)
                 latest
 
           - task: DockerCompose@0
@@ -161,15 +155,9 @@ stages:
         displayName: "Publish Fake Survey Generator API Chart"
         pool:
           vmImage: "ubuntu-latest"
+        variables:
+          semVerVersionTag: $[stageDependencies.BuildTest.Build.outputs['SetVersionTag.VersionTag']]
         steps:
-          - download: "current"
-            artifact: "VersionFile"
-
-          - script: |
-              GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-              echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-            displayName: "Set Version from Version File"
-
           - task: HelmInstaller@1
             inputs:
               helmVersionToInstall: "3.5.3"
@@ -179,7 +167,7 @@ stages:
             inputs:
               command: "package"
               chartPath: "charts/$(projectName)"
-              chartVersion: $(VersionTag)
+              chartVersion: $(semVerVersionTag)
               save: false
             displayName: "Helm Package"
 
@@ -232,6 +220,7 @@ stages:
                     IpDetectionMethod: "AutoDetect"
 
   - stage: Application_Deployment
+    dependsOn: BuildTest
     condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Application Deployment"
     variables:
@@ -312,17 +301,13 @@ stages:
           vmImage: "ubuntu-latest"
         environment: "aks"
         variables:
+          semVerVersionTag: $[stageDependencies.BuildTest.Build.outputs['SetVersionTag.VersionTag']]
           identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
           identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
         strategy:
           runOnce:
             deploy:
               steps:
-                - script: |
-                    GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-                    echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-                  displayName: "Set Version from Version File"
-
                 - task: KubectlInstaller@0
                   displayName: "Install Kubectl latest"
 
@@ -365,7 +350,7 @@ stages:
                     releaseName: "$(projectName)-$(environmentSuffix)"
                     arguments: >-
                       --create-namespace
-                      --version $(VersionTag)
+                      --version $(semVerVersionTag)
                       --set identityProviderUrl=$(identityProviderUrl)
                       --set azureDatabaseEnabled=$(azureDatabaseEnabled)
                       --set azureDatabaseUseActiveDirectoryAuthentication=$(azureDatabaseUseActiveDirectoryAuthentication)
@@ -384,7 +369,7 @@ stages:
                       --set azurePodIdentityResourceId=$(identityResourceId)
                       --set azurePodIdentityName=$(managedIdentityName)
                       --set image.repository=$(imageRepository)
-                      --set image.tag=$(VersionTag)
+                      --set image.tag=$(semVerVersionTag)
                       --set database=$(databaseName)
                       --set user=$(databaseUser)
                       --set password=$(databasePassword)
