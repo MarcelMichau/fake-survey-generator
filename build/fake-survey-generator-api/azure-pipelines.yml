@@ -108,11 +108,7 @@ stages:
             displayName: "Publish Code Coverage Results"
 
           - script: |
-              dotnet tool install --global dotnet-ef --version 5.0.4
-            displayName: "Install EF Core Global Tool"
-
-          - script: |
-              dotnet ef migrations script -o DbMigrationScript.sql -i
+              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
             workingDirectory: src/server/FakeSurveyGenerator.EF.Design
             displayName: "Create Database Migration Script"
 
@@ -175,7 +171,7 @@ stages:
 
           - task: HelmInstaller@1
             inputs:
-              helmVersionToInstall: "3.5.2"
+              helmVersionToInstall: "3.5.3"
             displayName: "Install Helm"
 
           - task: HelmDeploy@0
@@ -331,7 +327,7 @@ stages:
 
                 - task: HelmInstaller@1
                   inputs:
-                    helmVersionToInstall: "3.5.2"
+                    helmVersionToInstall: "3.5.3"
                   displayName: "Install Helm"
 
                 - task: AzureCLI@1

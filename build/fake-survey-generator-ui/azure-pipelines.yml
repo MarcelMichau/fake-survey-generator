@@ -55,18 +55,12 @@ stages:
 
           - script: ./nbgv cloud -a
             workingDirectory: src/client/ui
-            displayName: Set Version
+            displayName: Set Build Number & Version Variables
 
           - script: |
-              ./nbgv get-version -v SemVer1 > version.txt
-            workingDirectory: src/client/ui
-            displayName: "Create Version file"
-
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: "src/client/ui/version.txt"
-              artifact: "VersionFile"
-            displayName: "Publish Version File"
+              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
+            name: "SetVersionTag"
+            displayName: "Set SemVer Version Tag from NBGV"
 
           - task: Docker@2
             displayName: "Build Docker Image"
@@ -76,9 +70,9 @@ stages:
               command: "build"
               Dockerfile: "src/client/ui/Dockerfile"
               buildContext: .
-              arguments: "--build-arg REACT_APP_VERSION=$(NBGV_SemVer1) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
+              arguments: "--build-arg REACT_APP_VERSION=$(VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |
-                $(NBGV_SemVer1)
+                $(VersionTag)
                 latest
 
           - task: Docker@2
@@ -88,7 +82,7 @@ stages:
               repository: "$(projectName)"
               command: "push"
               tags: |
-                $(NBGV_SemVer1)
+                $(VersionTag)
                 latest
 
   - stage: Publish
@@ -98,25 +92,19 @@ stages:
         displayName: "Publish Fake Survey Generator UI Chart"
         pool:
           vmImage: "ubuntu-latest"
+        variables:
+          semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
         steps:
-          - download: "current"
-            artifact: "VersionFile"
-
-          - script: |
-              GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-              echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-            displayName: "Set Version from Version File"
-
           - task: HelmInstaller@1
             inputs:
-              helmVersionToInstall: "3.5.2"
+              helmVersionToInstall: "3.5.3"
             displayName: "Install Helm"
 
           - task: HelmDeploy@0
             inputs:
               command: "package"
               chartPath: "charts/$(projectName)"
-              chartVersion: "$(VersionTag)"
+              chartVersion: "$(semVerVersionTag)"
               save: false
             displayName: "Helm Package"
 
@@ -138,7 +126,7 @@ stages:
             inputs:
               azureSubscription: "Azure Service Connection"
               scriptLocation: "inlineScript"
-              inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz"
+              inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(semVerVersionTag).tgz"
             displayName: "Push Helm Chart to Azure Container Registry"
 
   - stage: Application_Deployment
@@ -150,6 +138,7 @@ stages:
         pool:
           vmImage: "ubuntu-latest"
         variables:
+          semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
           environmentSuffix: prod
           ingressClusterIssuerName: letsencrypt
           ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
@@ -161,17 +150,12 @@ stages:
           runOnce:
             deploy:
               steps:
-                - script: |
-                    GIT_VERSION=$(< $(Pipeline.Workspace)/VersionFile/version.txt)
-                    echo "##vso[task.setvariable variable=VersionTag]$GIT_VERSION"
-                  displayName: "Set Version from Version File"
-
                 - task: KubectlInstaller@0
                   displayName: "Install Kubectl latest"
 
                 - task: HelmInstaller@1
                   inputs:
-                    helmVersionToInstall: "3.5.2"
+                    helmVersionToInstall: "3.5.3"
                   displayName: "Install Helm"
 
                 - task: AzureCLI@1
@@ -202,9 +186,9 @@ stages:
                     releaseName: "$(projectName)-$(environmentSuffix)"
                     arguments: >-
                       --create-namespace
-                      --version $(VersionTag)
+                      --version $(semVerVersionTag)
                       --set image.repository=$(imageRepository)
-                      --set image.tag=$(VersionTag)
+                      --set image.tag=$(semVerVersionTag)
                       --set ingress.hosts[0].host=$(ingressHost)
                       --set ingress.hosts[0].paths[0]=/
                       --set ingress.tls[0].secretName=$(ingressTlsSecretName)
