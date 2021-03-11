@@ -175,7 +175,7 @@ stages:
         pool:
           vmImage: "ubuntu-latest"
         variables:
-          semVerVersionTag: $[stageDependencies.BuildTest.Build.outputs['SetVersionTag.VersionTag']]
+          semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
         steps:
           - task: HelmInstaller@1
             inputs:
