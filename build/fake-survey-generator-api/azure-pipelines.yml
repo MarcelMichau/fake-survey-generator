@@ -186,7 +186,7 @@ stages:
             displayName: Save Helm Chart
             inputs:
               command: save
-              chartNameForACR: "$(registryName).azurecr.io/charts/$(projectName):$(semVerVersionTag)"
+              chartNameForACR: "helm/charts/$(projectName):$(semVerVersionTag)"
               chartPathForACR: "charts/$(projectName)"
               azureSubscriptionEndpointForACR: "Azure Service Connection"
               azureResourceGroupForACR: "$(resourceGroupName)"
