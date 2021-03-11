@@ -148,11 +148,10 @@ stages:
                   inputs:
                     azureSubscription: "Azure Service Connection"
                     scriptLocation: "inlineScript"
-                    inlineScript: "az acr login -n $(registryName)"
-                  displayName: "Log in to Azure Container Registry"
-
-                - script: helm chart pull $(helmChartPath)
-                  displayName: Pull Helm Chart into Local Cache
+                    inlineScript: |
+                      az acr login -n $(registryName)
+                      helm chart pull $(helmChartPath)
+                  displayName: "Pull Helm Chart into Local Cache"
 
                 - task: HelmDeploy@0
                   displayName: "Deploy Fake Survey Generator UI using Helm"
