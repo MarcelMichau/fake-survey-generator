@@ -39,21 +39,11 @@ stages:
   - stage: BuildTest
     displayName: "Build + Test"
     jobs:
-      - job: Build
-        displayName: "Build + Test API"
+      - job: VersionSetup
+        displayName: "Set Version Tags"
         pool:
           vmImage: "ubuntu-latest"
-
-        variables:
-          buildConfiguration: "Release"
-
         steps:
-          - task: UseDotNet@2
-            displayName: "Install .NET Core SDK"
-            inputs:
-              packageType: "sdk"
-              useGlobalJson: true
-
           - task: DotNetCoreCLI@2
             inputs:
               command: custom
@@ -69,6 +59,21 @@ stages:
               echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
             name: "SetVersionTag"
             displayName: "Set SemVer Version Tag from NBGV"
+
+      - job: Build
+        displayName: "Build + Test API"
+        pool:
+          vmImage: "ubuntu-latest"
+
+        variables:
+          buildConfiguration: "Release"
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET Core SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
 
           - task: Cache@2
             displayName: Cache NuGet Packages
@@ -113,6 +118,14 @@ stages:
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
 
+      - job: Docker
+        displayName: "Docker Preparation"
+        dependsOn: VersionSetup
+        pool:
+          vmImage: "ubuntu-latest"
+        variables:
+          semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
+        steps:
           - task: Docker@2
             displayName: "Build Docker Image"
             inputs:
@@ -123,7 +136,7 @@ stages:
               buildContext: "."
               arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |
-                $(SetVersionTag.VersionTag)
+                $(semVerVersionTag)
                 latest
 
           - task: Docker@2
@@ -133,7 +146,7 @@ stages:
               repository: "$(projectName)"
               command: "push"
               tags: |
-                $(SetVersionTag.VersionTag)
+                $(semVerVersionTag)
                 latest
 
           - task: DockerCompose@0
@@ -304,7 +317,7 @@ stages:
           vmImage: "ubuntu-latest"
         environment: "aks"
         variables:
-          semVerVersionTag: $[stageDependencies.BuildTest.Build.outputs['SetVersionTag.VersionTag']]
+          semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
           identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
           identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
         strategy:
