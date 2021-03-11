@@ -58,7 +58,7 @@ stages:
             displayName: Set Build Number & Version Variables
 
           - script: |
-              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$NBGV_SemVer1"
+              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$($NBGV_SemVer1)"
             name: "SetVersionTag"
             displayName: "Set SemVer Version Tag from NBGV"
 
