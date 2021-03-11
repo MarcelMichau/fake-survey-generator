@@ -192,35 +192,6 @@ stages:
               azureResourceGroupForACR: "$(resourceGroupName)"
               azureContainerRegistry: "$(registryName).azurecr.io"
 
-          # - task: HelmDeploy@0
-          #   inputs:
-          #     command: "package"
-          #     chartPath: "charts/$(projectName)"
-          #     chartVersion: $(semVerVersionTag)
-          #     save: false
-          #   displayName: "Helm Package"
-
-          # - task: AzureCLI@1
-          #   inputs:
-          #     azureSubscription: "Azure Service Connection"
-          #     scriptLocation: "inlineScript"
-          #     inlineScript: "az configure --defaults acr=$(registryName)"
-          #   displayName: "Set Azure Container Registry Default in Azure CLI"
-
-          # - task: AzureCLI@1
-          #   inputs:
-          #     azureSubscription: "Azure Service Connection"
-          #     scriptLocation: "inlineScript"
-          #     inlineScript: "az acr helm repo add"
-          #   displayName: "Add Azure Container Registry Repo to Azure CLI"
-
-          # - task: AzureCLI@1
-          #   inputs:
-          #     azureSubscription: "Azure Service Connection"
-          #     scriptLocation: "inlineScript"
-          #     inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(semVerVersionTag).tgz"
-          #   displayName: "Push Helm Chart to Azure Container Registry"
-
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Database Deployment"
@@ -334,6 +305,7 @@ stages:
         environment: "aks"
         variables:
           semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
+          helmChartPath: $(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)
           identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
           identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
         strategy:
@@ -348,34 +320,15 @@ stages:
                     helmVersionToInstall: "3.5.3"
                   displayName: "Install Helm"
 
-                - task: HelmDeploy@0
-                  displayName: "Log in to Azure Container Registry"
+                - task: AzureCLI@1
                   inputs:
-                    connectionType: "Azure Resource Manager"
-                    azureSubscriptionEndpointForACR: "Azure Service Connection"
-                    azureResourceGroupForACR: "rg-fake-survey-generator"
-                    azureContainerRegistry: "$(registryName).azurecr.io"
-                    command: "login"
+                    azureSubscription: "Azure Service Connection"
+                    scriptLocation: "inlineScript"
+                    inlineScript: "az acr login -n $(registryName)"
+                  displayName: "Log in to Azure Container Registry"
 
-                # - task: AzureCLI@1
-                #   inputs:
-                #     azureSubscription: "Azure Service Connection"
-                #     scriptLocation: "inlineScript"
-                #     inlineScript: "az configure --defaults acr=$(registryName)"
-                #   displayName: "Set Azure Container Registry Default in Azure CLI"
-
-                # - task: AzureCLI@1
-                #   inputs:
-                #     azureSubscription: "Azure Service Connection"
-                #     scriptLocation: "inlineScript"
-                #     inlineScript: "az acr helm repo add"
-                #   displayName: "Add Azure Container Registry Repo to Azure CLI"
-
-                # - task: Bash@3
-                #   inputs:
-                #     targetType: "inline"
-                #     script: "helm repo update"
-                #   displayName: "Update Helm Repo"
+                - script: helm chart pull $(helmChartPath)
+                  displayName: Pull Helm Chart into Local Cache
 
                 - task: HelmDeploy@0
                   displayName: "Deploy Fake Survey Generator API using Helm"
@@ -387,7 +340,7 @@ stages:
                     namespace: "$(targetNamespace)"
                     command: "upgrade"
                     chartType: "Name"
-                    chartName: "$(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)"
+                    chartName: "$(helmChartPath)"
                     releaseName: "$(projectName)-$(environmentSuffix)"
                     arguments: >-
                       --create-namespace
