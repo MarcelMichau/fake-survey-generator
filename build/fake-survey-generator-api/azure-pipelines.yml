@@ -189,7 +189,7 @@ stages:
             inputs:
               azureSubscription: "Azure Service Connection"
               scriptLocation: "inlineScript"
-              inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(VersionTag).tgz"
+              inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(semVerVersionTag).tgz"
             displayName: "Push Helm Chart to Azure Container Registry"
 
   - stage: Database_Deployment
