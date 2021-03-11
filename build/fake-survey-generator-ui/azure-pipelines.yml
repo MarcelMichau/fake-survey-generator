@@ -124,6 +124,7 @@ stages:
         variables:
           semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
           helmChartPath: $(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)
+          HELM_EXPERIMENTAL_OCI: 1
           environmentSuffix: prod
           ingressClusterIssuerName: letsencrypt
           ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
