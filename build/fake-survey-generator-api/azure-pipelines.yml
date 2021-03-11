@@ -220,7 +220,10 @@ stages:
                     IpDetectionMethod: "AutoDetect"
 
   - stage: Application_Deployment
-    dependsOn: BuildTest
+    dependsOn:
+      - BuildTest
+      - Publish
+      - Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Application Deployment"
     variables:

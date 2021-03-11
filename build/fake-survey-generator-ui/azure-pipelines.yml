@@ -130,7 +130,9 @@ stages:
             displayName: "Push Helm Chart to Azure Container Registry"
 
   - stage: Application_Deployment
-    dependsOn: Build
+    dependsOn:
+      - Build
+      - Publish
     condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Application Deployment"
     jobs:
