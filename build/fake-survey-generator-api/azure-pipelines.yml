@@ -348,25 +348,34 @@ stages:
                     helmVersionToInstall: "3.5.3"
                   displayName: "Install Helm"
 
-                - task: AzureCLI@1
+                - task: HelmDeploy@0
+                  displayName: "Log in to Azure Container Registry"
                   inputs:
-                    azureSubscription: "Azure Service Connection"
-                    scriptLocation: "inlineScript"
-                    inlineScript: "az configure --defaults acr=$(registryName)"
-                  displayName: "Set Azure Container Registry Default in Azure CLI"
+                    connectionType: "Azure Resource Manager"
+                    azureSubscriptionEndpointForACR: "Azure Service Connection"
+                    azureResourceGroupForACR: "rg-fake-survey-generator"
+                    azureContainerRegistry: "$(registryName).azurecr.io"
+                    command: "login"
 
-                - task: AzureCLI@1
-                  inputs:
-                    azureSubscription: "Azure Service Connection"
-                    scriptLocation: "inlineScript"
-                    inlineScript: "az acr helm repo add"
-                  displayName: "Add Azure Container Registry Repo to Azure CLI"
+                # - task: AzureCLI@1
+                #   inputs:
+                #     azureSubscription: "Azure Service Connection"
+                #     scriptLocation: "inlineScript"
+                #     inlineScript: "az configure --defaults acr=$(registryName)"
+                #   displayName: "Set Azure Container Registry Default in Azure CLI"
 
-                - task: Bash@3
-                  inputs:
-                    targetType: "inline"
-                    script: "helm repo update"
-                  displayName: "Update Helm Repo"
+                # - task: AzureCLI@1
+                #   inputs:
+                #     azureSubscription: "Azure Service Connection"
+                #     scriptLocation: "inlineScript"
+                #     inlineScript: "az acr helm repo add"
+                #   displayName: "Add Azure Container Registry Repo to Azure CLI"
+
+                # - task: Bash@3
+                #   inputs:
+                #     targetType: "inline"
+                #     script: "helm repo update"
+                #   displayName: "Update Helm Repo"
 
                 - task: HelmDeploy@0
                   displayName: "Deploy Fake Survey Generator API using Helm"
@@ -378,7 +387,7 @@ stages:
                     namespace: "$(targetNamespace)"
                     command: "upgrade"
                     chartType: "Name"
-                    chartName: "$(registryName)/$(projectName)"
+                    chartName: "$(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)"
                     releaseName: "$(projectName)-$(environmentSuffix)"
                     arguments: >-
                       --create-namespace
