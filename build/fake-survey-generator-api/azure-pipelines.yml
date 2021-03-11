@@ -183,33 +183,43 @@ stages:
             displayName: "Install Helm"
 
           - task: HelmDeploy@0
+            displayName: Save Helm Chart
             inputs:
-              command: "package"
-              chartPath: "charts/$(projectName)"
-              chartVersion: $(semVerVersionTag)
-              save: false
-            displayName: "Helm Package"
+              command: save
+              chartNameForACR: "$(registryName).azurecr.io/charts/$(projectName):$(semVerVersionTag)"
+              chartPathForACR: "charts/$(projectName)"
+              azureSubscriptionEndpointForACR: "Azure Service Connection"
+              azureResourceGroupForACR: "$(resourceGroupName)"
+              azureContainerRegistry: "$(registryName).azurecr.io"
 
-          - task: AzureCLI@1
-            inputs:
-              azureSubscription: "Azure Service Connection"
-              scriptLocation: "inlineScript"
-              inlineScript: "az configure --defaults acr=$(registryName)"
-            displayName: "Set Azure Container Registry Default in Azure CLI"
+          # - task: HelmDeploy@0
+          #   inputs:
+          #     command: "package"
+          #     chartPath: "charts/$(projectName)"
+          #     chartVersion: $(semVerVersionTag)
+          #     save: false
+          #   displayName: "Helm Package"
 
-          - task: AzureCLI@1
-            inputs:
-              azureSubscription: "Azure Service Connection"
-              scriptLocation: "inlineScript"
-              inlineScript: "az acr helm repo add"
-            displayName: "Add Azure Container Registry Repo to Azure CLI"
+          # - task: AzureCLI@1
+          #   inputs:
+          #     azureSubscription: "Azure Service Connection"
+          #     scriptLocation: "inlineScript"
+          #     inlineScript: "az configure --defaults acr=$(registryName)"
+          #   displayName: "Set Azure Container Registry Default in Azure CLI"
 
-          - task: AzureCLI@1
-            inputs:
-              azureSubscription: "Azure Service Connection"
-              scriptLocation: "inlineScript"
-              inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(semVerVersionTag).tgz"
-            displayName: "Push Helm Chart to Azure Container Registry"
+          # - task: AzureCLI@1
+          #   inputs:
+          #     azureSubscription: "Azure Service Connection"
+          #     scriptLocation: "inlineScript"
+          #     inlineScript: "az acr helm repo add"
+          #   displayName: "Add Azure Container Registry Repo to Azure CLI"
+
+          # - task: AzureCLI@1
+          #   inputs:
+          #     azureSubscription: "Azure Service Connection"
+          #     scriptLocation: "inlineScript"
+          #     inlineScript: "az acr helm push --force $(Build.ArtifactStagingDirectory)/$(projectName)-$(semVerVersionTag).tgz"
+          #   displayName: "Push Helm Chart to Azure Container Registry"
 
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
