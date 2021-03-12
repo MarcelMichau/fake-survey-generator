@@ -148,6 +148,7 @@ stages:
                   displayName: Log in to Azure Container Registry
                   inputs:
                     command: registry
+                    connectionType: "None"
                     azureSubscriptionEndpointForACR: "Azure Service Connection"
                     azureResourceGroupForACR: "$(resourceGroupName)"
                     azureContainerRegistry: "$(registryName).azurecr.io"
