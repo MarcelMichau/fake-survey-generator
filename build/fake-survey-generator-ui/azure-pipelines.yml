@@ -144,12 +144,20 @@ stages:
                     helmVersionToInstall: "3.5.3"
                   displayName: "Install Helm"
 
+                - task: HelmDeploy@0
+                  displayName: Log in to Azure Container Registry
+                  inputs:
+                    command: registry
+                    azureSubscriptionEndpointForACR: "Azure Service Connection"
+                    azureResourceGroupForACR: "$(resourceGroupName)"
+                    azureContainerRegistry: "$(registryName).azurecr.io"
+                    arguments: login
+
                 - task: AzureCLI@1
                   inputs:
                     azureSubscription: "Azure Service Connection"
                     scriptLocation: "inlineScript"
                     inlineScript: |
-                      az acr login -n $(registryName)
                       helm chart pull $(helmChartPath)
                   displayName: "Pull Helm Chart into Local Cache"
 

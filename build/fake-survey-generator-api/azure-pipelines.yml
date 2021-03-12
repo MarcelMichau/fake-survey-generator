@@ -306,6 +306,7 @@ stages:
         variables:
           semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
           helmChartPath: $(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)
+          HELM_EXPERIMENTAL_OCI: 1
           identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
           identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
         strategy:
