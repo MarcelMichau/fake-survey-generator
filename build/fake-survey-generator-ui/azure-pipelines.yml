@@ -176,11 +176,11 @@ stages:
                     namespace: "$(targetNamespace)"
                     command: "upgrade"
                     chartType: "FilePath"
-                    chartName: "./charts/$(projectName)"
+                    chartPath: "./charts/$(projectName)"
+                    chartVersion: "$(semVerVersionTag)"
                     releaseName: "$(projectName)-$(environmentSuffix)"
                     arguments: >-
                       --create-namespace
-                      --version $(semVerVersionTag)
                       --set image.repository=$(imageRepository)
                       --set image.tag=$(semVerVersionTag)
                       --set ingress.hosts[0].host=$(ingressHost)

@@ -321,14 +321,27 @@ stages:
                     helmVersionToInstall: "3.5.3"
                   displayName: "Install Helm"
 
+                - task: HelmDeploy@0
+                  displayName: Log in to Azure Container Registry
+                  inputs:
+                    command: registry
+                    connectionType: "None"
+                    azureSubscriptionEndpointForACR: "Azure Service Connection"
+                    azureResourceGroupForACR: "$(resourceGroupName)"
+                    azureContainerRegistry: "$(registryName).azurecr.io"
+                    arguments: login
+
                 - task: AzureCLI@1
                   inputs:
                     azureSubscription: "Azure Service Connection"
                     scriptLocation: "inlineScript"
                     inlineScript: |
-                      az acr login -n $(registryName)
                       helm chart pull $(helmChartPath)
                   displayName: "Pull Helm Chart into Local Cache"
+
+                - script: |
+                    helm chart export $(helmChartPath) --destination ./charts
+                  displayName: "Export Helm Chart to Folder"
 
                 - task: HelmDeploy@0
                   displayName: "Deploy Fake Survey Generator API using Helm"
@@ -339,12 +352,12 @@ stages:
                     kubernetesCluster: "$(kubernetesClusterName)"
                     namespace: "$(targetNamespace)"
                     command: "upgrade"
-                    chartType: "Name"
-                    chartName: "$(helmChartPath)"
+                    chartType: "FilePath"
+                    chartPath: "./charts/$(projectName)"
+                    chartVersion: "$(semVerVersionTag)"
                     releaseName: "$(projectName)-$(environmentSuffix)"
                     arguments: >-
                       --create-namespace
-                      --version $(semVerVersionTag)
                       --set identityProviderUrl=$(identityProviderUrl)
                       --set azureDatabaseEnabled=$(azureDatabaseEnabled)
                       --set azureDatabaseUseActiveDirectoryAuthentication=$(azureDatabaseUseActiveDirectoryAuthentication)
