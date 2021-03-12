@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Threading;
 using AutoMapper;
-using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Mappings;
-using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using Moq;
 
 namespace FakeSurveyGenerator.Application.Tests
 {
@@ -23,10 +19,6 @@ namespace FakeSurveyGenerator.Application.Tests
 
             Mapper = configurationProvider.CreateMapper();
             Context = SurveyContextFactory.Create();
-
-            var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser());
 
             SurveyContextFactory.SeedSampleData(Context).GetAwaiter().GetResult();
         }

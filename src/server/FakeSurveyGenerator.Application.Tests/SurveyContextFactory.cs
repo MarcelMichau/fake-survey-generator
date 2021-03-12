@@ -7,7 +7,7 @@ using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FakeSurveyGenerator.Application.Tests
 {
@@ -15,17 +15,15 @@ namespace FakeSurveyGenerator.Application.Tests
     {
         public static SurveyContext Create()
         {
-            var mockDomainEventService = new Mock<IDomainEventService>();
-
-            var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser());
+            var mockUserService = Substitute.For<IUserService>();
+            mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
+            mockUserService.GetUserIdentity().Returns(new TestUser().Id);
 
             var options = new DbContextOptionsBuilder<SurveyContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            var context = new SurveyContext(options, mockDomainEventService.Object, mockUserService.Object, new NullLogger<SurveyContext>());
+            var context = new SurveyContext(options, Substitute.For<IDomainEventService>(), mockUserService, new NullLogger<SurveyContext>());
 
             context.Database.EnsureCreated();
 

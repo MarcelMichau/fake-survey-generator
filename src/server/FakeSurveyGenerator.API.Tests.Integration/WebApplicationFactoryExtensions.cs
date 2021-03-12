@@ -6,7 +6,7 @@ using FakeSurveyGenerator.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using NSubstitute;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
@@ -32,13 +32,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
         private static void ConfigureNewUserUserService(IServiceCollection services, IUser testUser)
         {
-            var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(testUser);
-            mockUserService.Setup(service => service.GetUserIdentity())
-                .Returns(testUser.Id);
+            var mockUserService = Substitute.For<IUserService>();
+            mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(testUser);
+            mockUserService.GetUserIdentity().Returns(testUser.Id);
 
-            services.AddScoped(_ => mockUserService.Object);
+            services.AddScoped(_ => mockUserService);
         }
     }
 }

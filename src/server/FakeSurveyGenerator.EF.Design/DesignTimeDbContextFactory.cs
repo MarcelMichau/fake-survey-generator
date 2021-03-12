@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FakeSurveyGenerator.EF.Design
 {
@@ -18,7 +18,7 @@ namespace FakeSurveyGenerator.EF.Design
 
             var builder = new DbContextOptionsBuilder<SurveyContext>();
             builder.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(SurveyContext).Assembly.FullName));
-            return new SurveyContext(builder.Options, new Mock<IUserService>().Object, new NullLogger<SurveyContext>());
+            return new SurveyContext(builder.Options, Substitute.For<IUserService>(), new NullLogger<SurveyContext>());
         }
     }
 }

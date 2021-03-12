@@ -6,7 +6,7 @@ using AutoFixture;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Data;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
@@ -14,12 +14,11 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
     public sealed class CreateSurveyCommandTests : CommandTestBase
     {
         private readonly Fixture _fixture = new();
-        private readonly Mock<IUserService> _mockUserService = new();
+        private readonly IUserService _mockUserService = Substitute.For<IUserService>();
 
         public CreateSurveyCommandTests()
         {
-            _mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser());
+            _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
         }
 
         [Fact]
@@ -43,7 +42,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService.Object);
+            var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -77,7 +76,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
 
             var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService.Object);
+            var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
 
             var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 

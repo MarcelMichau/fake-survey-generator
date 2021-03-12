@@ -7,8 +7,8 @@ using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail;
 using FakeSurveyGenerator.Infrastructure.Persistence;
-using Moq;
 using FluentAssertions;
+using NSubstitute;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
@@ -24,7 +24,7 @@ namespace FakeSurveyGenerator.Application.Tests.Surveys.Queries.GetSurveyDetail
         {
             _surveyContext = fixture.Context;
             _mapper = fixture.Mapper;
-            _cache = new Mock<ICache<SurveyModel>>().Object;
+            _cache = Substitute.For<ICache<SurveyModel>>();
         }
 
         [Fact]

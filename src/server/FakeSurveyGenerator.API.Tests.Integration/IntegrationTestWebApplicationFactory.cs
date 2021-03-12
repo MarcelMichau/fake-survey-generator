@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using NSubstitute;
 
 namespace FakeSurveyGenerator.API.Tests.Integration
 {
@@ -76,13 +76,11 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 
         private static void ConfigureMockServices(IServiceCollection services)
         {
-            var mockUserService = new Mock<IUserService>();
-            mockUserService.Setup(service => service.GetUserInfo(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new TestUser());
-            mockUserService.Setup(service => service.GetUserIdentity())
-                .Returns(new TestUser().Id);
+            var mockUserService = Substitute.For<IUserService>();
+            mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
+            mockUserService.GetUserIdentity().Returns(new TestUser().Id);
 
-            services.AddScoped(_ => mockUserService.Object);
+            services.AddScoped(_ => mockUserService);
         }
 
         private static void RemoveDefaultDbContextFromServiceCollection(IServiceCollection services)
