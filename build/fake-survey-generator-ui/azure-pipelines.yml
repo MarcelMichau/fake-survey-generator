@@ -162,6 +162,10 @@ stages:
                       helm chart pull $(helmChartPath)
                   displayName: "Pull Helm Chart into Local Cache"
 
+                - script: |
+                    helm chart export $(helmChartPath) --destination ./charts
+                  displayName: "Export Helm Chart to Folder"
+
                 - task: HelmDeploy@0
                   displayName: "Deploy Fake Survey Generator UI using Helm"
                   inputs:
@@ -171,8 +175,8 @@ stages:
                     kubernetesCluster: "$(kubernetesClusterName)"
                     namespace: "$(targetNamespace)"
                     command: "upgrade"
-                    chartType: "Name"
-                    chartName: "$(helmChartPath)"
+                    chartType: "FilePath"
+                    chartName: "./charts/$(projectName)"
                     releaseName: "$(projectName)-$(environmentSuffix)"
                     arguments: >-
                       --create-namespace
