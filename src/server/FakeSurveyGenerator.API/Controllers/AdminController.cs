@@ -26,7 +26,9 @@ namespace FakeSurveyGenerator.API.Controllers
                 ThisAssembly.AssemblyName,
                 ThisAssembly.AssemblyTitle,
                 ThisAssembly.AssemblyConfiguration,
-                ThisAssembly.RootNamespace
+                ThisAssembly.RootNamespace,
+                ThisAssembly.GitCommitDate,
+                ThisAssembly.GitCommitId
             });
         }
 
