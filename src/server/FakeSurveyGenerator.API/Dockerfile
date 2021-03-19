@@ -4,10 +4,9 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0.201-buster-slim AS build
-RUN dotnet tool install --tool-path . nbgv --version 3.3.37
-COPY src/server/Directory.Build.props /Directory.Build.props
-COPY src/server/version.json /version.json
-WORKDIR /src
+WORKDIR /src/server
+COPY src/server/Directory.Build.props .
+COPY src/server/version.json .
 COPY src/server/FakeSurveyGenerator.API/FakeSurveyGenerator.API.csproj FakeSurveyGenerator.API/
 COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj FakeSurveyGenerator.Application/
 COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
@@ -16,8 +15,9 @@ COPY src/server/FakeSurveyGenerator.Shared/FakeSurveyGenerator.Shared.csproj Fak
 COPY src/server/FakeSurveyGenerator.API/packages.lock.json FakeSurveyGenerator.API/
 RUN dotnet restore FakeSurveyGenerator.API/FakeSurveyGenerator.API.csproj
 COPY src/server/. .
-COPY ./.git /.git
-WORKDIR /src/FakeSurveyGenerator.API
+WORKDIR /
+COPY .git .git
+WORKDIR /src/server/FakeSurveyGenerator.API
 RUN dotnet build FakeSurveyGenerator.API.csproj --no-restore -c Release -o /app
 
 FROM build AS domaintest
