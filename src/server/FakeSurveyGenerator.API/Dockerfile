@@ -21,15 +21,15 @@ WORKDIR /src/server/FakeSurveyGenerator.API
 RUN dotnet build FakeSurveyGenerator.API.csproj --no-restore -c Release -o /app
 
 FROM build AS domaintest
-WORKDIR /src/FakeSurveyGenerator.Domain.Tests
+WORKDIR /src/server/FakeSurveyGenerator.Domain.Tests
 RUN dotnet restore FakeSurveyGenerator.Domain.Tests.csproj
 
 FROM build AS applicationtest
-WORKDIR /src/FakeSurveyGenerator.Application.Tests
+WORKDIR /src/server/FakeSurveyGenerator.Application.Tests
 RUN dotnet restore FakeSurveyGenerator.Application.Tests.csproj
 
 FROM build AS integrationtest
-WORKDIR /src/FakeSurveyGenerator.API.Tests.Integration
+WORKDIR /src/server/FakeSurveyGenerator.API.Tests.Integration
 RUN dotnet restore FakeSurveyGenerator.API.Tests.Integration.csproj
 
 FROM build AS publish
