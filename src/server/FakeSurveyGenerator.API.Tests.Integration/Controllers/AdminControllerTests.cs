@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration
+namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
 {
     public sealed class AdminControllerTests : IClassFixture<IntegrationTestWebApplicationFactory<Startup>>
     {

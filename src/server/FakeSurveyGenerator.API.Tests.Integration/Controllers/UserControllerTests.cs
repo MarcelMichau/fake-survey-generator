@@ -11,7 +11,7 @@ using FakeSurveyGenerator.Data;
 using FluentAssertions;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration
+namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
 {
     [Collection(nameof(IntegrationTestFixture))]
     public sealed class UserControllerTests

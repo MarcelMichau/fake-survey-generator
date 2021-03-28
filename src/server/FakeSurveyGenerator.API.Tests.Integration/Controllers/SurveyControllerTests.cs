@@ -10,11 +10,11 @@ using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
-using Microsoft.AspNetCore.Http;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration
+namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
 {
     [Collection(nameof(IntegrationTestFixture))]
     public sealed class SurveyControllerTests
