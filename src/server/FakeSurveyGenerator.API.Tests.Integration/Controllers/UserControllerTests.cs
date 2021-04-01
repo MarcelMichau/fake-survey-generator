@@ -33,8 +33,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
         [Fact]
         public async Task GivenExistingUserId_WhenCallingGetUser_ThenExistingUserShouldBeReturned()
         {
-            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
-                _fixture.Create<string>());
+            var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
 
             var newUser = await RegisterNewUser(client);
 
@@ -49,8 +48,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
         [Fact]
         public async Task GivenExistingRegisteredUser_WhenCallingIsUserRegistered_ThenResponseShouldBeTrue()
         {
-            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
-                _fixture.Create<string>());
+            var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
 
             var newUser = await RegisterNewUser(client);
 
@@ -64,8 +62,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
         {
             const string userId = "non-existent-id";
 
-            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
-                _fixture.Create<string>());
+            var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
 
             var result = await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
 
@@ -75,9 +72,9 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
         [Fact]
         public async Task GivenAuthenticatedNewUser_WhenCallingRegisterUser_ThenSuccessfulResponseWithNewlyRegisteredUserShouldBeReturned()
         {
-            var expectedUser = new TestUser(_fixture.Create<string>(), _fixture.Create<string>(), _fixture.Create<string>());
+            var expectedUser = _fixture.Create<TestUser>();
 
-            var client = _factory.WithSpecificUser(expectedUser.Id, expectedUser.DisplayName, expectedUser.EmailAddress);
+            var client = _factory.WithSpecificUser(expectedUser);
 
             var user = await RegisterNewUser(client);
             
@@ -90,8 +87,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
         [Fact]
         public async Task GivenExistingUser_WhenCallingRegisterUser_ThenBadRequestResponseShouldBeReturned()
         {
-            var client = _factory.WithSpecificUser(_fixture.Create<string>(), _fixture.Create<string>(),
-                _fixture.Create<string>());
+            var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
 
             var _ = await RegisterNewUser(client);
             var registerUserCommand = new RegisterUserCommand();

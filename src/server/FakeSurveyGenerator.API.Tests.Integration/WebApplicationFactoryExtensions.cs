@@ -2,7 +2,6 @@
 using System.Threading;
 using AutoWrapper.Server;
 using FakeSurveyGenerator.Application.Common.Identity;
-using FakeSurveyGenerator.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +11,8 @@ namespace FakeSurveyGenerator.API.Tests.Integration
 {
     public static class WebApplicationFactoryExtensions
     {
-        public static HttpClient WithSpecificUser(this IntegrationTestWebApplicationFactory<Startup> factory, string id, string displayName, string emailAddress)
+        public static HttpClient WithSpecificUser(this IntegrationTestWebApplicationFactory<Startup> factory, IUser user)
         {
-            var user = new TestUser(id, displayName, emailAddress);
-
             return factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureTestServices(ConfigureAuthenticationHandler)

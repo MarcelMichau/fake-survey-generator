@@ -1,5 +1,4 @@
 ﻿using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
-using FakeSurveyGenerator.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -29,19 +28,19 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
                 .Property(u => u.DisplayName)
                 .HasMaxLength(250)
                 .IsRequired()
-                .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
+                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
 
             builder
                 .Property(u => u.EmailAddress)
                 .HasMaxLength(250)
                 .IsRequired()
-                .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
+                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
 
             builder
                 .Property(u => u.ExternalUserId)
                 .HasMaxLength(250)
                 .IsRequired()
-                .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
+                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
 
             builder
                 .HasIndex(u => u.ExternalUserId)

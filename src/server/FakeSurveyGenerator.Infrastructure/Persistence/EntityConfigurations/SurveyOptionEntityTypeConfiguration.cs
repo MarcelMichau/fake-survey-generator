@@ -1,5 +1,4 @@
 ﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
-using FakeSurveyGenerator.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -29,7 +28,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
                 .Property(o => o.OptionText)
                 .HasMaxLength(250)
                 .IsRequired()
-                .HasConversion(domainValue => domainValue.Value, databaseValue => NonEmptyString.Create(databaseValue));
+                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
 
             builder
                 .Property(o => o.NumberOfVotes)

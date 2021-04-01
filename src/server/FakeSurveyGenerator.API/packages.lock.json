@@ -63,12 +63,12 @@
       },
       "IdentityModel": {
         "type": "Direct",
-        "requested": "[5.0.1, )",
-        "resolved": "5.0.1",
-        "contentHash": "njk/AnO85Nc0JWiL3Zf4IAI+7PnlfJbsg3YLchC2oKdgmeFf5d4Px3lhmQyzfH32lp54btyYItXnire8wDYmiQ==",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "Gcv4YYXncvUvTNLF8lDJyItZzaEDFcEi3geMDtylGcl/Rx90vcV7Kv3yAofktJBW7GvmIjQgC8LtUq0s9XQT2w==",
         "dependencies": {
-          "System.Text.Encodings.Web": "5.0.0",
-          "System.Text.Json": "5.0.0"
+          "System.Text.Encodings.Web": "5.0.1",
+          "System.Text.Json": "5.0.1"
         }
       },
       "MediatR": {
@@ -281,8 +281,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.15.0",
-        "contentHash": "k7qlCTRG4u6fJkbAZIBCvXjG0LA3qEHAiJI/xX+RFFDvSEVwSTtsLVVPhCeobEbRd/HbwwEjwI/sM3GSUv1n2g=="
+        "resolved": "2.15.1",
+        "contentHash": "L/MDGN9az/cQAupHLIOWLWBYjqEXkxDl01M2mTWQOP83wzqJUH0/ZAaCYWJ+Lz4Ruimooe5CAGf5yIVbfjvUog=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -1884,8 +1884,8 @@
       },
       "System.Text.Encodings.Web": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "EEslUvHKll1ftizbn20mX3Ix/l4Ygk/bdJ2LY6/X6FlGaP0RIhKMo9nS6JIGnKKT6KBP2PGj6JC3B9/ZF6ErqQ=="
+        "resolved": "5.0.1",
+        "contentHash": "KmJ+CJXizDofbq6mpqDoRRLcxgOd2z9X3XoFNULSbvbqVRZkFX3istvr+MUjL6Zw1RT+RNdoI4GYidIINtgvqQ=="
       },
       "System.Text.Json": {
         "type": "Transitive",
@@ -2034,7 +2034,7 @@
         "dependencies": {
           "AutoMapper": "10.1.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "8.1.1",
-          "CSharpFunctionalExtensions": "2.15.0",
+          "CSharpFunctionalExtensions": "2.15.1",
           "Dapper": "2.0.78",
           "FakeSurveyGenerator.Domain": "1.0.0",
           "FluentValidation": "9.5.3",
@@ -2052,7 +2052,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.15.0",
+          "CSharpFunctionalExtensions": "2.15.1",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2020.3.0"
         }
@@ -2063,7 +2063,7 @@
           "Azure.Identity": "1.3.0",
           "FakeSurveyGenerator.Application": "1.0.0",
           "FakeSurveyGenerator.Domain": "1.0.0",
-          "IdentityModel": "5.0.1",
+          "IdentityModel": "5.1.0",
           "Microsoft.EntityFrameworkCore": "5.0.4",
           "Microsoft.EntityFrameworkCore.SqlServer": "5.0.4",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "5.0.1",

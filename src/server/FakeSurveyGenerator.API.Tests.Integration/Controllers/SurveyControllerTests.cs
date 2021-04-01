@@ -10,6 +10,7 @@ using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
+using FakeSurveyGenerator.Data;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Xunit;
@@ -32,7 +33,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
             var fixture = new Fixture();
 
             _authenticatedClient = testFixture.Factory
-                .WithSpecificUser(fixture.Create<string>(), fixture.Create<string>(), fixture.Create<string>());
+                .WithSpecificUser(fixture.Create<TestUser>());
 
             _unauthenticatedClient = testFixture.Factory.CreateClient();
         }

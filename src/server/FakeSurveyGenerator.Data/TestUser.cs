@@ -2,11 +2,11 @@
 
 namespace FakeSurveyGenerator.Data
 {
-    public sealed class TestUser : IUser
+    public sealed record TestUser : IUser
     {
-        public string Id { get; }
-        public string DisplayName { get; }
-        public string EmailAddress { get; }
+        public string Id { get; init; }
+        public string DisplayName { get; init; }
+        public string EmailAddress { get; init; }
 
         public TestUser()
         {
