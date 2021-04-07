@@ -29,10 +29,10 @@ services:
       - fake-survey-generator-api
 
   sql-server:
-    image: mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
 
   redis:
-    image: redis:6.0.10-alpine
+    image: redis:6.2.1-alpine

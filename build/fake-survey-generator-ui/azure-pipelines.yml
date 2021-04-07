@@ -51,7 +51,7 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/client/ui nbgv --version 3.3.37
+              arguments: install --tool-path ./src/client/ui nbgv --version 3.4.190
 
           - script: ./nbgv cloud -a
             workingDirectory: src/client/ui
