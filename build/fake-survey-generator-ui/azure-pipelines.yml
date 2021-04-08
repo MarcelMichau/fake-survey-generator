@@ -30,7 +30,6 @@ variables:
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
   DOCKER_BUILDKIT: 1
-  NBGV_GitEngine: LibGit2
 
 stages:
   - stage: Build
@@ -52,7 +51,7 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/client/ui nbgv --version 3.4.194
+              arguments: install --tool-path ./src/client/ui nbgv --version 3.3.37
 
           - script: ./nbgv cloud -a
             workingDirectory: src/client/ui

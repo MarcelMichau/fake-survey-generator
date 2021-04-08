@@ -34,7 +34,6 @@ variables:
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
-  NBGV_GitEngine: LibGit2
 
 stages:
   - stage: BuildTest
@@ -55,7 +54,7 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/server nbgv --version 3.4.194
+              arguments: install --tool-path ./src/server nbgv --version 3.3.37
             displayName: Install NBGV tool
 
           - script: ./nbgv cloud -a
