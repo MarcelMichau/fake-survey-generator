@@ -108,9 +108,9 @@ The server side consists of the following main components:
 The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API
-  - .NET 5.0
-  - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 5.0 Web API
-  - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 5.0 with [Code-First Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
+  - .NET 6.0
+  - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 6.0 Web API
+  - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 6.0 with [Code-First Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
   - [Dapper](https://github.com/StackExchange/Dapper)
   - [Redis](https://redis.io/)
   - [Swagger](https://swagger.io/)
@@ -122,9 +122,10 @@ The server side makes use of the following tools, libraries & frameworks:
   - [Docker](https://www.docker.com/)
   - [Serilog](https://serilog.net/)
   - [AutoWrapper](https://github.com/proudmonkey/AutoWrapper)
+  - [NSubstitute](https://nsubstitute.github.io/)
 - Fake Survey Generator Worker
-  - .NET 5.0
-  - ASP.NET Core 5.0 Worker Service
+  - .NET 6.0
+  - ASP.NET Core 6.0 Worker Service
 
 ### Client
 
