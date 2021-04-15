@@ -30,6 +30,7 @@ variables:
   resourceGroupName: rg-fake-survey-generator
   kubernetesClusterName: aks-cluster
   DOCKER_BUILDKIT: 1
+  NBGV_GitEngine: LibGit2
 
 stages:
   - stage: Build
