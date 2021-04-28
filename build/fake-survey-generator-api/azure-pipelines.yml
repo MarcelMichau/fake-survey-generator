@@ -34,7 +34,6 @@ variables:
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
-  NBGV_GitEngine: LibGit2
 
 stages:
   - stage: BuildTest
