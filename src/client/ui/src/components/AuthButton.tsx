@@ -45,7 +45,7 @@ const AuthButton = () => {
                     type="button"
                     onClick={() => logout({ returnTo: window.location.origin })}
                 >
-                    Log out ({user.name}){" "}
+                    Log out ({user?.name}){" "}
                     <FontAwesomeIcon icon={faSignOutAlt} className="ml-2" />
                 </button>
             )}
