@@ -42,7 +42,7 @@ const App: React.FC = () => {
             const token = await getAccessTokenSilently();
 
             const response = await fetch(
-                `/api/user/isRegistered?userId=${user.sub}`,
+                `/api/user/isRegistered?userId=${user?.sub}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
