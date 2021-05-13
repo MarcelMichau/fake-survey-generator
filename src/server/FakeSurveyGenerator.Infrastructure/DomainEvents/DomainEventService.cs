@@ -15,8 +15,8 @@ namespace FakeSurveyGenerator.Infrastructure.DomainEvents
 
         public DomainEventService(ILogger<DomainEventService> logger, IMediator mediator)
         {
-            _logger = logger;
-            _mediator = mediator;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken)

@@ -13,15 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Users.Queries.GetUser
 {
-    public sealed record GetUserQuery : IRequest<Result<UserModel, Error>>
-    {
-        public int Id { get; }
-
-        public GetUserQuery(int id)
-        {
-            Id = id;
-        }
-    }
+    public sealed record GetUserQuery(int Id) : IRequest<Result<UserModel, Error>>;
 
     public sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, Result<UserModel, Error>>
     {

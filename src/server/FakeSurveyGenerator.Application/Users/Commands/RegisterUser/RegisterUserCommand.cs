@@ -14,10 +14,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Users.Commands.RegisterUser
 {
-    public sealed record RegisterUserCommand : IRequest<Result<UserModel, Error>>
-    {
-        // This command has no properties as all the data needed to register a user is retrieved from the request context.
-    }
+    // This command has no properties as all the data needed to register a user is retrieved from the request context.
+    public sealed record RegisterUserCommand : IRequest<Result<UserModel, Error>>;
 
     public sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Result<UserModel, Error>>
     {

@@ -10,7 +10,7 @@ COPY src/server/FakeSurveyGenerator.Worker/packages.lock.json FakeSurveyGenerato
 RUN dotnet restore src/server/FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj
 COPY src/server/. .
 WORKDIR /src/server/FakeSurveyGenerator.Worker
-RUN dotnet build FakeSurveyGenerator.Worker.csproj -c Release -o /app/build
+RUN dotnet build FakeSurveyGenerator.Worker.csproj --no-restore -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish FakeSurveyGenerator.Worker.csproj -c Release -o /app/publish

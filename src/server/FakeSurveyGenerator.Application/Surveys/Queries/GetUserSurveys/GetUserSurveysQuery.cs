@@ -13,9 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
 {
-    public sealed record GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>
-    {
-    }
+    public sealed record GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>;
 
     public sealed class
         GetUserSurveysQueryHandler : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>

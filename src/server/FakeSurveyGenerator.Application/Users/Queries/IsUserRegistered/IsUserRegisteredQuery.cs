@@ -8,15 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered
 {
-    public sealed record IsUserRegisteredQuery : IRequest<Result<UserRegistrationStatusModel>>
-    {
-        public string UserId { get; }
-
-        public IsUserRegisteredQuery(string userId)
-        {
-            UserId = userId;
-        }
-    }
+    public sealed record IsUserRegisteredQuery(string UserId) : IRequest<Result<UserRegistrationStatusModel>>;
 
     public sealed class IsUserRegisteredQueryHandler : IRequestHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel>>
     {

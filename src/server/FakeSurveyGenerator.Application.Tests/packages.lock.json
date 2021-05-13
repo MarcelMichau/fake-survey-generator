@@ -48,12 +48,12 @@
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
-        "requested": "[16.10.0-release-20210422-02, )",
-        "resolved": "16.10.0-release-20210422-02",
-        "contentHash": "xKMpjdwYCo37x8DrbQuIOZ1aKEKiNOYMhi0Jh6eOLgZ07nbm8Pf06/hYKMYtpEVQeiao7ugaMkf8xh6algFi7Q==",
+        "requested": "[16.10.0-release-20210429-01, )",
+        "resolved": "16.10.0-release-20210429-01",
+        "contentHash": "visNlG/nWRaSNeDLKhY88m/bIVz2CBSWWIdPnSOgnBjZ0ABCRu938xc67SrxQmSbo3OZao6qQOVVrc9By/Qd2Q==",
         "dependencies": {
-          "Microsoft.CodeCoverage": "16.10.0-release-20210422-02",
-          "Microsoft.TestPlatform.TestHost": "16.10.0-release-20210422-02"
+          "Microsoft.CodeCoverage": "16.10.0-release-20210429-01",
+          "Microsoft.TestPlatform.TestHost": "16.10.0-release-20210429-01"
         }
       },
       "Nerdbank.GitVersioning": {
@@ -162,13 +162,13 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.15.1",
-        "contentHash": "L/MDGN9az/cQAupHLIOWLWBYjqEXkxDl01M2mTWQOP83wzqJUH0/ZAaCYWJ+Lz4Ruimooe5CAGf5yIVbfjvUog=="
+        "resolved": "2.15.2",
+        "contentHash": "6kgcXpytp7RDu3lBoSS/3Rj2NchDrHfrKu9HVUc4DiyXic4PNXjaXv2EouZ7/I8827IaKOKhZmpXYk1flI7d4w=="
       },
       "Dapper": {
         "type": "Transitive",
-        "resolved": "2.0.78",
-        "contentHash": "vLPwL2HZXp/DN17Eu7sg6GMEj02alq7jcy6atn5Gv8i96b9Hu1UoxlCrhInUPfSFLQQiD8O7pdWAE1fdUEO/1Q=="
+        "resolved": "2.0.90",
+        "contentHash": "e4YjOLJptnpwHIbP8HxjaYf7So9lhUC43rvvGMEkH4Q4CiVlm4rOxYDo0HyuHlMQKj0U5Ob/nCMm52TUhTaZQg=="
       },
       "Fare": {
         "type": "Transitive",
@@ -180,8 +180,8 @@
       },
       "FluentValidation": {
         "type": "Transitive",
-        "resolved": "10.0.4",
-        "contentHash": "LqEYHuF5gXBJzG9/aUQS50TJP5cZgh/twvPLV7iTtFFGF6isGBkNXOhr9VwmSjlFRIVOqcMtkGuHwuPbU+XpoQ=="
+        "resolved": "10.1.0",
+        "contentHash": "RxhhfY9IcEY2qUMYjoUxegInbuE5Bwll7dVLsXpiJf25g0ztmzUK+HHqtPcub1caPemhMJsC+NwjHei+NgAkvA=="
       },
       "IdentityModel": {
         "type": "Transitive",
@@ -218,8 +218,8 @@
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
-        "resolved": "16.10.0-release-20210422-02",
-        "contentHash": "DpZRIUD/+u2uL1smV2b6GkCdvpxYiz5ordeh7s7S32DdusHdvuUJCeC/Y4GNaT4gckVFP3NhKTnDXDjypE2/iQ=="
+        "resolved": "16.10.0-release-20210429-01",
+        "contentHash": "lV0rqVNgTdOBAQJ+ciZJq/z3vyyKzm/ddvygSVN+42gqbFFyuGTlt1le+dQmbr3QeLt21d11UhV+RH2EatakRQ=="
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
@@ -482,8 +482,8 @@
       },
       "Microsoft.TestPlatform.ObjectModel": {
         "type": "Transitive",
-        "resolved": "16.10.0-release-20210422-02",
-        "contentHash": "reKhCpmM31cG7NkXwt5S6aa7yI8bLYK87HwQDBQczJdpVqHaIZN/KMr0L39HOitihN814qgyxPg1Y1MbmC6YAg==",
+        "resolved": "16.10.0-release-20210429-01",
+        "contentHash": "Q9Qy8DnZejfP69FMqQILkJ/t9ELg8H2+2+A/H8c/JvmFRNJEuQktYfYZfCTV3WlmUZ57kDsXDC4wqunhKmV6Yw==",
         "dependencies": {
           "NuGet.Frameworks": "5.0.0",
           "System.Reflection.Metadata": "1.6.0"
@@ -491,10 +491,10 @@
       },
       "Microsoft.TestPlatform.TestHost": {
         "type": "Transitive",
-        "resolved": "16.10.0-release-20210422-02",
-        "contentHash": "TDePQNHtPx5dhCHBEIpmqlQySQcAK3IQCwXmBqOlCm52xswb+jaeNswt0M6mAGavdJxtgY0hG2ZT+VxDHxOtZg==",
+        "resolved": "16.10.0-release-20210429-01",
+        "contentHash": "ytUmtQv39ntXmbfzaNqeKkDXEz9HJ24Bmew77nsxf1Bfl6hSwiuv28Lb6qNOtsWYX1/f1QiJyGiCMjh7kCMV5A==",
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "16.10.0-release-20210422-02",
+          "Microsoft.TestPlatform.ObjectModel": "16.10.0-release-20210429-01",
           "Newtonsoft.Json": "9.0.1"
         }
       },
@@ -1775,10 +1775,10 @@
         "dependencies": {
           "AutoMapper": "10.1.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "8.1.1",
-          "CSharpFunctionalExtensions": "2.15.1",
-          "Dapper": "2.0.78",
+          "CSharpFunctionalExtensions": "2.15.2",
+          "Dapper": "2.0.90",
           "FakeSurveyGenerator.Domain": "1.0.0",
-          "FluentValidation": "10.0.4",
+          "FluentValidation": "10.1.0",
           "JetBrains.Annotations": "2021.1.0",
           "MediatR": "9.0.0",
           "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
@@ -1800,7 +1800,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.15.1",
+          "CSharpFunctionalExtensions": "2.15.2",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.1.0"
         }

@@ -14,15 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
 {
-    public sealed record GetSurveyDetailQuery : IRequest<Result<SurveyModel, Error>>
-    {
-        public int Id { get; }
-
-        public GetSurveyDetailQuery(int id)
-        {
-            Id = id;
-        }
-    }
+    public sealed record GetSurveyDetailQuery(int Id) : IRequest<Result<SurveyModel, Error>>;
 
     public sealed class GetSurveyDetailQueryHandler : IRequestHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>>
     {
