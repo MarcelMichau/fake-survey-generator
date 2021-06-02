@@ -11,7 +11,7 @@ namespace FakeSurveyGenerator.API.Configuration
             builder.AddFluentValidation(fv =>
             {
                 fv.RegisterValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-                fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                fv.DisableDataAnnotationsValidation = true;
             });
 
             return builder;

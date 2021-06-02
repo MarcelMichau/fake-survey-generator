@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   fake-survey-generator-ui:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-ui:${TAG:-latest}
@@ -29,10 +27,10 @@ services:
       - fake-survey-generator-api
 
   sql-server:
-    image: mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-20.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
 
   redis:
-    image: redis:6.2.1-alpine
+    image: redis:6.2.4-alpine
