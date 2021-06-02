@@ -180,7 +180,7 @@ stages:
         steps:
           - task: HelmInstaller@1
             inputs:
-              helmVersionToInstall: "3.5.3"
+              helmVersionToInstall: "3.6.0"
             displayName: "Install Helm"
 
           - task: HelmDeploy@0
@@ -319,7 +319,7 @@ stages:
 
                 - task: HelmInstaller@1
                   inputs:
-                    helmVersionToInstall: "3.5.3"
+                    helmVersionToInstall: "3.6.0"
                   displayName: "Install Helm"
 
                 - task: HelmDeploy@0
