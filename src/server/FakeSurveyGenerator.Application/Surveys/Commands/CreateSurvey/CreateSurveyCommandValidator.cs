@@ -6,13 +6,13 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
     {
         public CreateSurveyCommandValidator()
         {
+            CascadeMode = CascadeMode.Stop;
+
             RuleFor(command => command.SurveyTopic)
-                .Cascade(CascadeMode.Stop)
                 .MaximumLength(250)
                 .NotEmpty();
 
             RuleFor(command => command.RespondentType)
-                .Cascade(CascadeMode.Stop)
                 .MaximumLength(250)
                 .NotEmpty();
 
@@ -31,8 +31,9 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
     {
         public SurveyOptionValidator()
         {
+            CascadeMode = CascadeMode.Stop;
+
             RuleFor(command => command.OptionText)
-                .Cascade(CascadeMode.Stop)
                 .MaximumLength(250)
                 .NotEmpty();
         }
