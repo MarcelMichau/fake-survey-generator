@@ -33,7 +33,7 @@ namespace FakeSurveyGenerator.Application.Users.Queries.GetUser
                 .ProjectTo<UserModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
 
-            return user is null ? Result.Failure<UserModel, Error>(Errors.General.NotFound(nameof(User), request.Id)) : Result.Success<UserModel, Error>(user);
+            return user is null ? Errors.General.NotFound(nameof(User), request.Id) : user;
         }
     }
 }

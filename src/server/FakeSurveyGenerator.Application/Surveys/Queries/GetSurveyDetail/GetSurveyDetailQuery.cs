@@ -36,7 +36,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
             var (isCached, cachedSurvey) = await _cache.TryGetValueAsync(cacheKey, cancellationToken);
 
             if (isCached)
-                return Result.Success<SurveyModel, Error>(cachedSurvey);
+                return cachedSurvey;
 
             var survey = await _surveyContext.Surveys
                 .Include(s => s.Options)
@@ -45,11 +45,11 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetSurveyDetail
                 .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
 
             if (survey is null)
-                return Result.Failure<SurveyModel, Error>(Errors.General.NotFound(nameof(Survey), request.Id));
+                return Errors.General.NotFound(nameof(Survey), request.Id);
 
             await _cache.SetAsync(cacheKey, survey, 60, cancellationToken);
 
-            return Result.Success<SurveyModel, Error>(survey);
+            return survey;
         }
     }
 }

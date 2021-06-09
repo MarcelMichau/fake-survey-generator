@@ -68,7 +68,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
                         ORDER BY s.CreatedOn DESC
                         ", new { ownerId = surveyOwner.Id });
 
-            return Result.Success<List<UserSurveyModel>, Error>(surveys.ToList());
+            return surveys.ToList();
         }
     }
 }

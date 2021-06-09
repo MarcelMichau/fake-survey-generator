@@ -83,11 +83,11 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 
                 await _surveyContext.SaveChangesAsync(cancellationToken);
 
-                return Result.Success<SurveyModel, Error>(_mapper.Map<SurveyModel>(survey));
+                return _mapper.Map<SurveyModel>(survey);
             }
             catch (SurveyDomainException e)
             {
-                return Result.Failure<SurveyModel, Error>(new Error("survey.domain.exception", e.Message));
+                return new Error("survey.domain.exception", e.Message);
             }
         }
     }

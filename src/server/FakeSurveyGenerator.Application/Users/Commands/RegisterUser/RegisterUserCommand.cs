@@ -36,7 +36,7 @@ namespace FakeSurveyGenerator.Application.Users.Commands.RegisterUser
             var userInfo = await _userService.GetUserInfo(cancellationToken);
 
             if (await _surveyContext.Users.AnyAsync(user => user.ExternalUserId == userInfo.Id, cancellationToken))
-                return Result.Failure<UserModel, Error>(Errors.General.UserAlreadyRegistered(userInfo.Id));
+                return Errors.General.UserAlreadyRegistered(userInfo.Id);
 
             var newUser = new User(NonEmptyString.Create(userInfo.DisplayName),
                 NonEmptyString.Create(userInfo.EmailAddress), NonEmptyString.Create(userInfo.Id));
@@ -45,7 +45,7 @@ namespace FakeSurveyGenerator.Application.Users.Commands.RegisterUser
 
             await _surveyContext.SaveChangesAsync(cancellationToken);
 
-            return Result.Success<UserModel, Error>(_mapper.Map<UserModel>(newUser));
+            return _mapper.Map<UserModel>(newUser);
         }
     }
 }

@@ -25,10 +25,10 @@ namespace FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered
                 await _surveyContext.Users.AsNoTracking()
                     .AnyAsync(user => user.ExternalUserId == request.UserId, cancellationToken);
 
-            return Result.Success(new UserRegistrationStatusModel
+            return new UserRegistrationStatusModel
             {
                 IsUserRegistered = isUserRegistered
-            });
+            };
         }
     }
 }
