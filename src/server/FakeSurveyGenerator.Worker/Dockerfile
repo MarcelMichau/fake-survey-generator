@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/runtime:6.0.0-preview.4-bullseye-slim AS base
+FROM mcr.microsoft.com/dotnet/runtime:6.0.0-preview.5-bullseye-slim AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.100-preview.4-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.100-preview.5-bullseye-slim AS build
 WORKDIR /src/server
 COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
 COPY src/server/FakeSurveyGenerator.Infrastructure/FakeSurveyGenerator.Infrastructure.csproj FakeSurveyGenerator.Infrastructure/

@@ -55,7 +55,7 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/server nbgv --version 3.4.205
+              arguments: install --tool-path ./src/server nbgv --version 3.4.216
             displayName: Install NBGV tool
 
           - script: ./nbgv cloud -a
@@ -180,7 +180,7 @@ stages:
         steps:
           - task: HelmInstaller@1
             inputs:
-              helmVersionToInstall: "3.6.0"
+              helmVersionToInstall: "3.6.1"
             displayName: "Install Helm"
 
           - task: HelmDeploy@0
@@ -319,7 +319,7 @@ stages:
 
                 - task: HelmInstaller@1
                   inputs:
-                    helmVersionToInstall: "3.6.0"
+                    helmVersionToInstall: "3.6.1"
                   displayName: "Install Helm"
 
                 - task: HelmDeploy@0
