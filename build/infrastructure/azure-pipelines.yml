@@ -351,10 +351,12 @@ stages:
               kubernetesCluster: "$(kubernetesClusterName)"
               namespace: "$(kubernetesInfrastructureNamespace)"
               command: "upgrade"
-              arguments: "--create-namespace"
               chartType: "Name"
               chartName: "csi-secrets-store-provider-azure/csi-secrets-store-provider-azure"
               releaseName: "csi-secrets-store-provider-azure"
+              arguments: >-
+                  --create-namespace
+                  --set secrets-store-csi-driver.syncSecret.enabled=true
 
           - task: HelmDeploy@0
             displayName: "Install cert-manager"
