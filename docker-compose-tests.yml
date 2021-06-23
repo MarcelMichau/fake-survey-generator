@@ -38,7 +38,7 @@ services:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   sql-server-test:
-    image: mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-20.04
+    image: mcr.microsoft.com/mssql/server:2019-CU11-ubuntu-20.04
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
