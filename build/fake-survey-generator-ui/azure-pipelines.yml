@@ -2,7 +2,7 @@ trigger:
   batch: true
   branches:
     include:
-      - master
+      - main
   paths:
     include:
       - src/client/ui/*
@@ -12,7 +12,7 @@ trigger:
 pr:
   branches:
     include:
-      - master
+      - main
       - feat/*
       - fix/*
       - chore/*
@@ -24,7 +24,7 @@ pr:
       - build/fake-survey-generator-ui/*
 
 variables:
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   projectName: fake-survey-generator-ui
   registryName: acrfakesurveygenerator
   imageRepository: "$(registryName).azurecr.io/$(projectName)"

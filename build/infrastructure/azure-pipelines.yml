@@ -1,7 +1,7 @@
 trigger: none
 
 variables:
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
 
 stages:
   - stage: Provisioning
@@ -355,8 +355,8 @@ stages:
               chartName: "csi-secrets-store-provider-azure/csi-secrets-store-provider-azure"
               releaseName: "csi-secrets-store-provider-azure"
               arguments: >-
-                  --create-namespace
-                  --set secrets-store-csi-driver.syncSecret.enabled=true
+                --create-namespace
+                --set secrets-store-csi-driver.syncSecret.enabled=true
 
           - task: HelmDeploy@0
             displayName: "Install cert-manager"

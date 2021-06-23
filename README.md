@@ -16,9 +16,9 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 
 | Component(s)              | Build Status                                                                                                                                                                                                                                     |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Fake Survey Generator API | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-api?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=10&branchName=master) |
-| Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-ui?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=11&branchName=master)  |
-| Azure Infrastructure      | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/azure-infrastructure?branchName=master)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=17&branchName=master)      |
+| Fake Survey Generator API | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-api?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=16&branchName=main) |
+| Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-ui?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=15&branchName=main)  |
+| Azure Infrastructure      | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/azure-infrastructure?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=17&branchName=main)      |
 
 ## Screenshot
 
