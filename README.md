@@ -20,6 +20,8 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 | Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-ui?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=15&branchName=main)  |
 | Azure Infrastructure      | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/azure-infrastructure?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=17&branchName=main)      |
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/MarcelMichau/fake-survey-generator)
+
 ## Screenshot
 
 ![Screenshot](images/screenshot.png "Screenshot of Fake Survey Generator UI")
