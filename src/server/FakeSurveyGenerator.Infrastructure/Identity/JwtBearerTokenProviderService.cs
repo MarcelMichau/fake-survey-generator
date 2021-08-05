@@ -1,32 +1,30 @@
 ﻿using System;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 
 namespace FakeSurveyGenerator.Infrastructure.Identity
 {
     internal sealed class JwtBearerTokenProviderService : ITokenProviderService
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public JwtBearerTokenProviderService(IServiceProvider serviceProvider)
+        public JwtBearerTokenProviderService(IHttpContextAccessor httpContextAccessor)
         {
-            _serviceProvider = serviceProvider;
+            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         public string GetToken()
         {
-            var httpContext = _serviceProvider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-
-            if (httpContext is null)
+            if (_httpContextAccessor.HttpContext is null)
                 throw new InvalidOperationException("Tried to get a JWT from outside an HttpContext");
 
-            if (httpContext.User.Identity is {IsAuthenticated: false})
+            if (_httpContextAccessor.HttpContext.User.Identity is {IsAuthenticated: false})
                 throw new InvalidOperationException("Cannot retrieve a token for an unauthorized user");
 
-            var accessToken = httpContext.Request.Headers[HeaderNames.Authorization].ToString().Substring(7);
+            var authenticationHeaderValue = AuthenticationHeaderValue.Parse(_httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization]);
 
-            return accessToken;
+            return authenticationHeaderValue.Parameter;
         }
     }
 }
