@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Application.Tests.Common.Mappings
         {
             _configuration.AssertConfigurationIsValid();
         }
-        
+
         [Theory]
         [InlineData(typeof(Survey), typeof(SurveyModel))]
         [InlineData(typeof(SurveyOption), typeof(SurveyOptionModel))]

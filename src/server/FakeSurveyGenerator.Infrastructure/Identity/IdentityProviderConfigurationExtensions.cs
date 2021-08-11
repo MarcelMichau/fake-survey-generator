@@ -14,7 +14,7 @@ namespace FakeSurveyGenerator.Infrastructure.Identity
         public static IServiceCollection AddOAuthConfiguration(this IServiceCollection services)
         {
             var commonResilience = Policy.WrapAsync(GetTimeoutPolicy(), GetRetryPolicy(), GetCircuitBreakerPolicy());
-            
+
             services
                 .AddHttpClient<IUserService, OAuthUserInfoService>()
                 .AddPolicyHandler(commonResilience);

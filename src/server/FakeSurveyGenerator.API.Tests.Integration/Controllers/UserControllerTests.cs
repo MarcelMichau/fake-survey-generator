@@ -77,7 +77,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
             var client = _factory.WithSpecificUser(expectedUser);
 
             var user = await RegisterNewUser(client);
-            
+
             user.Id.Should().BePositive();
             user.DisplayName.Should().Be(expectedUser.DisplayName);
             user.EmailAddress.Should().Be(expectedUser.EmailAddress);

@@ -86,7 +86,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
 
             using var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
-            var statusCode = (int) response.StatusCode;
+            var statusCode = (int)response.StatusCode;
 
             statusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
         }
@@ -113,7 +113,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers
 
             var response = await _authenticatedClient.GetAsync($"api/survey/{surveyId}");
 
-            var statusCode = (int) response.StatusCode;
+            var statusCode = (int)response.StatusCode;
 
             statusCode.Should().Be(StatusCodes.Status404NotFound);
         }

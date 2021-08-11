@@ -206,7 +206,7 @@ namespace FakeSurveyGenerator.Domain.Tests
 
             survey.DomainEvents.Should().AllBeOfType<SurveyCreatedDomainEvent>();
 
-            var surveyCreatedEvent = (SurveyCreatedDomainEvent) survey.DomainEvents.First();
+            var surveyCreatedEvent = (SurveyCreatedDomainEvent)survey.DomainEvents.First();
 
             surveyCreatedEvent.Survey.Should().Be(survey);
         }

@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate
 {
-    public sealed class User: AuditableEntity, IAggregateRoot
+    public sealed class User : AuditableEntity, IAggregateRoot
     {
         public NonEmptyString DisplayName { get; }
         public NonEmptyString EmailAddress { get; }

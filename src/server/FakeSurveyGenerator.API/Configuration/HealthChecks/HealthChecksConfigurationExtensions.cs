@@ -30,15 +30,15 @@ namespace FakeSurveyGenerator.API.Configuration.HealthChecks
             healthChecksBuilder
                 .AddRedis(redisConnectionString,
                     "RedisCache-check",
-                    tags: new[] {"redis-cache", "ready"},
+                    tags: new[] { "redis-cache", "ready" },
                     failureStatus: HealthStatus.Degraded);
 
             healthChecksBuilder.AddIdentityServer(
                 new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
                 "IdentityProvider-check",
-                tags: new[] {"identity-provider", "ready"},
+                tags: new[] { "identity-provider", "ready" },
                 failureStatus: HealthStatus.Unhealthy,
-                timeout: new TimeSpan(0,0,5));
+                timeout: new TimeSpan(0, 0, 5));
 
             return services;
         }

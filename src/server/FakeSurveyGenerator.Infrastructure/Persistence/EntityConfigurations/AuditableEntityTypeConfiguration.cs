@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 {
-    internal class AuditableEntityTypeConfiguration<T> : IEntityTypeConfiguration<T> where T: AuditableEntity
+    internal class AuditableEntityTypeConfiguration<T> : IEntityTypeConfiguration<T> where T : AuditableEntity
     {
         public virtual void Configure(EntityTypeBuilder<T> builder)
         {

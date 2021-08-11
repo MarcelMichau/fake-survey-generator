@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
 
         public CreateSurveyCommand()
         {
-             SurveyOptions = new List<SurveyOptionDto>();
+            SurveyOptions = new List<SurveyOptionDto>();
         }
 
         public CreateSurveyCommand(string surveyTopic, int numberOfRespondents, string respondentType, IEnumerable<SurveyOptionDto> surveyOptions) : this()
