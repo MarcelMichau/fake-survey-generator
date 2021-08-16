@@ -31,28 +31,28 @@
       },
       "FluentAssertions": {
         "type": "Direct",
-        "requested": "[6.0.0-beta0001, )",
-        "resolved": "6.0.0-beta0001",
-        "contentHash": "2VKcwKszoSdz//z+B9Ka5G10a27781CUUBuW4tZjlef1rLab3E5DuAO2ftvsnLUZXW0Ngyzp3Ep60UTlQDca4Q==",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "/nZSISO5mORW/z/MktODY6ncNuOjRF8OGf3gO3JWVoA293MC9ZQbdfPBDNKNMN/FcHghRQKyJakqABguBMtGQw==",
         "dependencies": {
           "System.Configuration.ConfigurationManager": "4.4.0"
         }
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
-        "requested": "[16.11.0-release-20210626-04, )",
-        "resolved": "16.11.0-release-20210626-04",
-        "contentHash": "Yp8gDX8rzlp77NOpNwEbfCy31+BXx2fd2ySTxwaKs8ixxZEMZX6W7eyjMFIpM9BLVv/7M6+aPcSOeqxF0LnafQ==",
+        "requested": "[16.11.0, )",
+        "resolved": "16.11.0",
+        "contentHash": "f4mbG1SUSkNWF5p7B3Y8ZxMsvKhxCmpZhdl+w6tMtLSUGE7Izi1syU6TkmKOvB2BV66pdbENConFAISOix4ohQ==",
         "dependencies": {
-          "Microsoft.CodeCoverage": "16.11.0-release-20210626-04",
-          "Microsoft.TestPlatform.TestHost": "16.11.0-release-20210626-04"
+          "Microsoft.CodeCoverage": "16.11.0",
+          "Microsoft.TestPlatform.TestHost": "16.11.0"
         }
       },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.4.220, )",
-        "resolved": "3.4.220",
-        "contentHash": "a4A8qKgM1OLmAEnP30qlA8AhVAutKfJtQbfhwXIeUE5QhWKlnGe6cThJik9aKAzZvhcdmUIaN4O0q+JSI6BU4A=="
+        "requested": "[3.4.231, )",
+        "resolved": "3.4.231",
+        "contentHash": "ifpSbv0sySgIVymTQQz0pjI6O7o/JxnIQMlj28JF5Ybr1LoUTcMfoKnAKwteRlhpQM9qJmONGy9M8BgrEcOteg=="
       },
       "xunit": {
         "type": "Direct",
@@ -78,8 +78,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.18.0",
-        "contentHash": "iRiHeBdZqWFxu4GVM2hAXBhTo32ZJ0ZFJgROY8r+PMc7/MWZZ/WjP/nDRp2hdJJhHD01eFmezsND/HMMj+V/mw=="
+        "resolved": "2.19.0",
+        "contentHash": "qRkwDqYmT8nfrPXwjKvvkHkk0VDeP710sqpMbvUfFfQMoZms78asIMs3yxYWpCv7NZDlFHN4ulEqzqb2Nv5isQ=="
       },
       "Fare": {
         "type": "Transitive",
@@ -96,8 +96,8 @@
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
-        "resolved": "16.11.0-release-20210626-04",
-        "contentHash": "z2rjxxZFkoWzNm+hMSldwrp+cLAnTuTunKni4lGON6FO/r8g+XaKNBZV8txjHX4FB2GWE68yoQSdSFOXBKIEgg=="
+        "resolved": "16.11.0",
+        "contentHash": "wf6lpAeCqP0KFfbDVtfL50lr7jY1gq0+0oSphyksfLOEygMDXqnaxHK5LPFtMEhYSEtgXdNyXNnEddOqQQUdlQ=="
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
@@ -134,8 +134,8 @@
       },
       "Microsoft.TestPlatform.ObjectModel": {
         "type": "Transitive",
-        "resolved": "16.11.0-release-20210626-04",
-        "contentHash": "CEJhUAWR5JlnFKeAqCBz/94tLJN+iAzqDHcQnZgzBlW52B6FSgJVbTQp78xKchLT2/Kfc/miGOIXIahJbCkUpQ==",
+        "resolved": "16.11.0",
+        "contentHash": "EiknJx9N9Z30gs7R+HHhki7fA8EiiM3pwD1vkw3bFsBC8kdVq/O7mHf1hrg5aJp+ASO6BoOzQueD2ysfTOy/Bg==",
         "dependencies": {
           "NuGet.Frameworks": "5.0.0",
           "System.Reflection.Metadata": "1.6.0"
@@ -143,10 +143,10 @@
       },
       "Microsoft.TestPlatform.TestHost": {
         "type": "Transitive",
-        "resolved": "16.11.0-release-20210626-04",
-        "contentHash": "lckcsWyjP8e+JmAVC+8reijD1mfzZN84bbzRoxkRofy4tnX3MLJ8ZmFN34YLdKpB1Vsuk0TPccfK40qnTZDFUg==",
+        "resolved": "16.11.0",
+        "contentHash": "/Q+R0EcCJE8JaYCk+bGReicw/xrB0HhecrYrUcLbn95BnAlaTJrZhoLkUhvtKTAVtqX/AIKWXYtutiU/Q6QUgg==",
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "16.11.0-release-20210626-04",
+          "Microsoft.TestPlatform.ObjectModel": "16.11.0",
           "Newtonsoft.Json": "9.0.1"
         }
       },
@@ -1195,7 +1195,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.18.0",
+          "CSharpFunctionalExtensions": "2.19.0",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.2.0"
         }
