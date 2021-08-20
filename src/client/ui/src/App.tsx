@@ -9,14 +9,10 @@ import Alert from "./components/Alert";
 import Footer from "./components/Footer";
 import * as Types from "./types";
 
-const App: React.FC = () => {
+const App = (): JSX.Element => {
     const [errorMessage, setErrorMessage] = useState("");
-    const {
-        getAccessTokenSilently,
-        user,
-        isAuthenticated,
-        isLoading,
-    } = useAuth0();
+    const { getAccessTokenSilently, user, isAuthenticated, isLoading } =
+        useAuth0();
 
     useEffect(() => {
         const registerUser = async () => {

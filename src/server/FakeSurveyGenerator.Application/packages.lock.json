@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    ".NETCoreApp,Version=v6.0": {
+    "net6.0": {
       "AutoMapper": {
         "type": "Direct",
         "requested": "[10.1.1, )",
@@ -25,9 +25,9 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Direct",
-        "requested": "[2.19.0, )",
-        "resolved": "2.19.0",
-        "contentHash": "qRkwDqYmT8nfrPXwjKvvkHkk0VDeP710sqpMbvUfFfQMoZms78asIMs3yxYWpCv7NZDlFHN4ulEqzqb2Nv5isQ=="
+        "requested": "[2.20.0, )",
+        "resolved": "2.20.0",
+        "contentHash": "43XIz4ny7Cyq9W6KNKHlfSje+52kns/9DBZ5IgjUgiXWJtUubwWBh7WC2lQhViuqEB5CfbNZvDEu3C/WjSovpw=="
       },
       "Dapper": {
         "type": "Direct",
@@ -37,9 +37,9 @@
       },
       "FluentValidation": {
         "type": "Direct",
-        "requested": "[10.3.0, )",
-        "resolved": "10.3.0",
-        "contentHash": "ujEB9UMBPDLib6dyhSRhl93IE6ko4ZU6Nz9MFqohaKcvyf06Hk0yDQUFJGF6RgAOsm27O7ZZHVDpXx7oU5vBcg=="
+        "requested": "[10.3.1, )",
+        "resolved": "10.3.1",
+        "contentHash": "aFy876EWQi/af5q+ZcxnNdDpNtzk4XlamFsGCbtsdUx3WILX7KIy5LVc5NAgK8XmkFvuRJx8QdCIgjW8B82LFQ=="
       },
       "JetBrains.Annotations": {
         "type": "Direct",
@@ -455,7 +455,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.19.0",
+          "CSharpFunctionalExtensions": "2.20.0",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.2.0"
         }

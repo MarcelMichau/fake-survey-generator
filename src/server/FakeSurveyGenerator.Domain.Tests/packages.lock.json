@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    ".NETCoreApp,Version=v6.0": {
+    "net6.0": {
       "AutoFixture": {
         "type": "Direct",
         "requested": "[4.17.0, )",
@@ -78,8 +78,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.19.0",
-        "contentHash": "qRkwDqYmT8nfrPXwjKvvkHkk0VDeP710sqpMbvUfFfQMoZms78asIMs3yxYWpCv7NZDlFHN4ulEqzqb2Nv5isQ=="
+        "resolved": "2.20.0",
+        "contentHash": "43XIz4ny7Cyq9W6KNKHlfSje+52kns/9DBZ5IgjUgiXWJtUubwWBh7WC2lQhViuqEB5CfbNZvDEu3C/WjSovpw=="
       },
       "Fare": {
         "type": "Transitive",
@@ -1195,7 +1195,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.19.0",
+          "CSharpFunctionalExtensions": "2.20.0",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.2.0"
         }

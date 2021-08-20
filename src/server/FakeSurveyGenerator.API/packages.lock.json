@@ -53,12 +53,12 @@
       },
       "FluentValidation.AspNetCore": {
         "type": "Direct",
-        "requested": "[10.3.0, )",
-        "resolved": "10.3.0",
-        "contentHash": "a0TgtOYjiMiLfmKz5SjMeTrATDP5O2PLAKOPVlmg0HkmqWOvP9jZ7ZFGjwUYfv5EDCnd/YWX92yfRMix2HJ5tQ==",
+        "requested": "[10.3.1, )",
+        "resolved": "10.3.1",
+        "contentHash": "DH9JkdkEqii5EYeTqfwxmjxvl7Ga07k+RjBLIP0QV8ULH5H0L/aJg7FE60VxmLIjgXz9aUVDDVSK9KOb9k5SBQ==",
         "dependencies": {
-          "FluentValidation": "10.3.0",
-          "FluentValidation.DependencyInjectionExtensions": "10.3.0"
+          "FluentValidation": "10.3.1",
+          "FluentValidation.DependencyInjectionExtensions": "10.3.1"
         }
       },
       "IdentityModel": {
@@ -283,8 +283,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.19.0",
-        "contentHash": "qRkwDqYmT8nfrPXwjKvvkHkk0VDeP710sqpMbvUfFfQMoZms78asIMs3yxYWpCv7NZDlFHN4ulEqzqb2Nv5isQ=="
+        "resolved": "2.20.0",
+        "contentHash": "43XIz4ny7Cyq9W6KNKHlfSje+52kns/9DBZ5IgjUgiXWJtUubwWBh7WC2lQhViuqEB5CfbNZvDEu3C/WjSovpw=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -293,15 +293,15 @@
       },
       "FluentValidation": {
         "type": "Transitive",
-        "resolved": "10.3.0",
-        "contentHash": "ujEB9UMBPDLib6dyhSRhl93IE6ko4ZU6Nz9MFqohaKcvyf06Hk0yDQUFJGF6RgAOsm27O7ZZHVDpXx7oU5vBcg=="
+        "resolved": "10.3.1",
+        "contentHash": "aFy876EWQi/af5q+ZcxnNdDpNtzk4XlamFsGCbtsdUx3WILX7KIy5LVc5NAgK8XmkFvuRJx8QdCIgjW8B82LFQ=="
       },
       "FluentValidation.DependencyInjectionExtensions": {
         "type": "Transitive",
-        "resolved": "10.3.0",
-        "contentHash": "d2QCRJivTfDGCVXKbsSIks2mI744TCUL8ZPrJccnxIIbmvuj51C8KfyomnyJSMBnxLIhigI4LrdsXHzW3uUIHw==",
+        "resolved": "10.3.1",
+        "contentHash": "KYd5K8Jws3GBb2HIw2LnWG830m4diKKYI/EQGsAd5D8vhdmZOIiVLINEjZk4qT9ahBNZ92jgPGsY8NI2XM09Yg==",
         "dependencies": {
-          "FluentValidation": "10.3.0",
+          "FluentValidation": "10.3.1",
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
       },
@@ -2020,10 +2020,10 @@
         "dependencies": {
           "AutoMapper": "10.1.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "8.1.1",
-          "CSharpFunctionalExtensions": "2.19.0",
+          "CSharpFunctionalExtensions": "2.20.0",
           "Dapper": "2.0.90",
           "FakeSurveyGenerator.Domain": "1.0.0",
-          "FluentValidation": "10.3.0",
+          "FluentValidation": "10.3.1",
           "JetBrains.Annotations": "2021.2.0",
           "MediatR": "9.0.0",
           "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
@@ -2038,7 +2038,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.19.0",
+          "CSharpFunctionalExtensions": "2.20.0",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.2.0"
         }
