@@ -9,7 +9,8 @@ const VersionInfo = () => {
         const getApiVersion = async () => {
             setIsLoading(true);
             const response = await fetch("api/admin/version");
-            const versionResponse: Types.ApiVersionResponse = await response.json();
+            const versionResponse: Types.ApiVersionResponse =
+                await response.json();
             setIsLoading(false);
 
             setApiVersion(versionResponse.result);
@@ -26,9 +27,11 @@ const VersionInfo = () => {
 
             <span className="block mt-4 lg:inline-block lg:mt-0 text-white">
                 {isLoading ? (
-                    <span>Loading API Version...</span>
+                    <span data-test="version-info">Loading API Version...</span>
                 ) : (
-                    <span>API Version: {apiVersion.assemblyFileVersion}</span>
+                    <span data-test="version-info">
+                        API Version: {apiVersion.assemblyFileVersion}
+                    </span>
                 )}
             </span>
         </>
