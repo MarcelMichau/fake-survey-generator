@@ -105,7 +105,7 @@ stages:
               arguments: '--no-restore --collect "XPlat Code Coverage" --filter FullyQualifiedName!~Acceptance.Tests'
               projects: |
                 FakeSurveyGenerator.sln
-            displayName: "Run All Tests"
+            displayName: "Run Unit + Integration Tests"
 
           - task: DotNetCoreCLI@2
             inputs:
@@ -113,7 +113,8 @@ stages:
               publishTestResults: true
               arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
-                FakeSurveyGenerator.Acceptance.Tests/FakeSurveyGenerator.Acceptance.Tests.csproj
+                FakeSurveyGenerator.Acceptance.Tests.csproj
+              workingDirectory: FakeSurveyGenerator.Acceptance.Tests
             displayName: "Run Acceptance Tests"
 
           - task: PublishCodeCoverageResults@1
