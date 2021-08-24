@@ -40,6 +40,7 @@ Here are some of the features incorporated into this project:
 
 - Unit & Integration tests for a CQRS/DDD project with [XUnit](https://xunit.net/)
 - Running Unit & Integration tests with [Docker Compose](https://docs.docker.com/compose/)
+- BDD-style acceptance/E2E tests using [SpecFlow](https://specflow.org/) & [Playwright for .NET](https://playwright.dev/dotnet/)
 - Using an in-memory database for testing
 - Implementing health checks for an ASP.NET Core Web API using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
 - Adding [Swagger](https://swagger.io/) to an ASP.NET Core Web API using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)

@@ -114,7 +114,7 @@ stages:
               arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
                 FakeSurveyGenerator.Acceptance.Tests.csproj
-              workingDirectory: FakeSurveyGenerator.Acceptance.Tests
+              workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
             displayName: "Run Acceptance Tests"
 
           - task: PublishCodeCoverageResults@1
