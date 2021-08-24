@@ -126,17 +126,23 @@ stages:
             displayName: "Publish Database Migration Script"
 
       - job: AcceptanceTest
-        displayName: "Acceptance Test"
+        displayName: "Acceptance Tests"
         dependsOn: Build
         pool:
           vmImage: "ubuntu-latest"
           container: mcr.microsoft.com/playwright:focal
         steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET Core SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--no-restore --collect "XPlat Code Coverage"'
+              arguments: '--collect "XPlat Code Coverage"'
               workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
             displayName: "Run Acceptance Tests"
 
