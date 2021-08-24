@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Linq;
+using System.Net;
 using Ductus.FluentDocker.Builders;
 using Ductus.FluentDocker.Services;
 using Microsoft.Extensions.Configuration;
@@ -17,8 +19,9 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
             var config = LoadConfiguration();
 
             var dockerComposeFileName = config.GetValue<string>("DockerComposeFileName");
+            var dockerComposeOverrideFileName = config.GetValue<string>("DockerComposeOverrideFileName");
             var dockerComposePath = GetDockerComposeFileLocation(dockerComposeFileName);
-            var dockerComposeOverridePath = GetDockerComposeOverrideFileLocation(dockerComposeFileName);
+            var dockerComposeOverridePath = GetDockerComposeFileLocation(dockerComposeOverrideFileName);
 
             var applicationUrl = config.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress");
 
@@ -52,12 +55,14 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
 
         private static string GetDockerComposeFileLocation(string dockerComposeFileName)
         {
-            return @"I:\Code\GitHub\fake-survey-generator\docker-compose.yml";
-        }
+            var directory = Directory.GetCurrentDirectory();
 
-        private static string GetDockerComposeOverrideFileLocation(string dockerComposeFileName)
-        {
-            return @"I:\Code\GitHub\fake-survey-generator\docker-compose.override.yml";
+            while (!Directory.EnumerateFiles(directory, "*.yml").Any(s => s.EndsWith(dockerComposeFileName)))
+            {
+                directory = directory.Substring(0, directory.LastIndexOf(Path.DirectorySeparatorChar));
+            }
+
+            return Path.Combine(directory, dockerComposeFileName);
         }
     }
 }
