@@ -16,6 +16,7 @@ services:
       dockerfile: src/server/FakeSurveyGenerator.API/Dockerfile
     depends_on:
       - sql-server
+      - redis
 
   fake-survey-generator-worker:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-worker:${TAG:-latest}

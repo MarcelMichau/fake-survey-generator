@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31512.422
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{438984B1-9FA7-45B5-8716-CDE285922F9B}"
 EndProject
@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Data", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Shared", "src\server\FakeSurveyGenerator.Shared\FakeSurveyGenerator.Shared.csproj", "{BCACA880-C288-4F91-A734-A0EA95599EC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.UI.Tests", "src\server\FakeSurveyGenerator.UI.Tests\FakeSurveyGenerator.UI.Tests.csproj", "{52453B39-8131-40FF-91B5-A94166DB0472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Acceptance.Tests", "src\server\FakeSurveyGenerator.Acceptance.Tests\FakeSurveyGenerator.Acceptance.Tests.csproj", "{0E9489B9-06B0-42FD-A119-78A9B8557E9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,10 +96,10 @@ Global
 		{BCACA880-C288-4F91-A734-A0EA95599EC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCACA880-C288-4F91-A734-A0EA95599EC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCACA880-C288-4F91-A734-A0EA95599EC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{52453B39-8131-40FF-91B5-A94166DB0472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52453B39-8131-40FF-91B5-A94166DB0472}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52453B39-8131-40FF-91B5-A94166DB0472}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52453B39-8131-40FF-91B5-A94166DB0472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
