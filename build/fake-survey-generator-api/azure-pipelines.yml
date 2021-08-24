@@ -107,6 +107,15 @@ stages:
                 FakeSurveyGenerator.sln
             displayName: "Run All Tests"
 
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              publishTestResults: true
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
+              projects: |
+                FakeSurveyGenerator.Acceptance.Tests/FakeSurveyGenerator.Acceptance.Tests.csproj
+            displayName: "Run Acceptance Tests"
+
           - task: PublishCodeCoverageResults@1
             inputs:
               codeCoverageTool: "cobertura"
