@@ -107,14 +107,6 @@ stages:
                 FakeSurveyGenerator.sln
             displayName: "Run Unit + Integration Tests"
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "test"
-              publishTestResults: true
-              arguments: '--no-restore --collect "XPlat Code Coverage"'
-              workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
-            displayName: "Run Acceptance Tests"
-
           - task: PublishCodeCoverageResults@1
             inputs:
               codeCoverageTool: "cobertura"
@@ -132,6 +124,21 @@ stages:
               targetPath: "src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql"
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
+
+      - job: AcceptanceTest
+        displayName: "Acceptance Test"
+        dependsOn: Build
+        pool:
+          vmImage: "ubuntu-latest"
+          container: mcr.microsoft.com/playwright:focal
+        steps:
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              publishTestResults: true
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
+              workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
+            displayName: "Run Acceptance Tests"
 
       - job: Docker
         displayName: "Docker Preparation"
