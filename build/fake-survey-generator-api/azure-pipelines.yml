@@ -127,7 +127,7 @@ stages:
 
       - job: AcceptanceTest
         displayName: "Acceptance Tests"
-        dependsOn: Build
+#         dependsOn: Build
         pool:
           vmImage: "ubuntu-latest"
 #           container: mcr.microsoft.com/playwright:focal
