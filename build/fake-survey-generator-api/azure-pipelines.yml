@@ -130,7 +130,7 @@ stages:
         dependsOn: Build
         pool:
           vmImage: "ubuntu-latest"
-          container: mcr.microsoft.com/playwright:focal
+#           container: mcr.microsoft.com/playwright:focal
         steps:
           - task: UseDotNet@2
             displayName: "Install .NET Core SDK from global.json"
