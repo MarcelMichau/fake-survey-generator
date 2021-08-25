@@ -5,7 +5,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.PageObjects
 {
     public class LandingPageObject : BasePageObject
     {
-        public override string PagePath => "https://localhost:3000";
+        public override string PagePath => "https://127.0.0.1:3000";
         public override IPage Page { get; set; }
         public override IBrowser Browser { get; }
 
