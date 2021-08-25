@@ -148,10 +148,12 @@ stages:
 
           - task: DotNetCoreCLI@2
             inputs:
-              command: "restore"
+              command: "build"
               arguments: "--configuration $(buildConfiguration)"
               workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
-            displayName: "Restore NuGet Packages"
+              projects: |
+                FakeSurveyGenerator.Acceptance.Tests/csproj
+            displayName: "Build Tests Project"
 
           - script: "playwright install"
             workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
