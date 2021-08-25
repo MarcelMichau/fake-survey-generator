@@ -138,11 +138,30 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
+          - task: Cache@2
+            displayName: Cache NuGet Packages
+            inputs:
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+              restoreKeys: |
+                nuget | "$(Agent.OS)"
+              path: $(NUGET_PACKAGES)
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "restore"
+              arguments: "--configuration $(buildConfiguration)"
+              workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
+            displayName: "Restore NuGet Packages"
+
+          - script: "playwright install"
+            workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
+            displayName: "Install Playwright Browsers"
+
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--collect "XPlat Code Coverage"'
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
               workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
             displayName: "Run Acceptance Tests"
 
