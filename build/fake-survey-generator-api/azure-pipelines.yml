@@ -133,10 +133,16 @@ stages:
           container: mcr.microsoft.com/playwright:focal
         steps:
           - task: UseDotNet@2
-            displayName: "Install .NET Core SDK"
+            displayName: "Install .NET Core SDK from global.json"
             inputs:
               packageType: "sdk"
               useGlobalJson: true
+              
+          - task: UseDotNet@2
+            displayName: "Install .NET Core 5 SDK"
+            inputs:
+              packageType: "sdk"
+              version: "5.0.x"
               
           - script: "dotnet tool install --global Microsoft.Playwright.CLI"
             displayName: "Install Playwright Global Tool"
