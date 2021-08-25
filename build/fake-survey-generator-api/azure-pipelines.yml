@@ -137,6 +137,9 @@ stages:
             inputs:
               packageType: "sdk"
               useGlobalJson: true
+              
+          - script: "dotnet tool install --global Microsoft.Playwright.CLI"
+            displayName: "Install Playwright Global Tool"
 
           - task: Cache@2
             displayName: Cache NuGet Packages
