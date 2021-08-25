@@ -149,10 +149,9 @@ stages:
           - task: DotNetCoreCLI@2
             inputs:
               command: "build"
-              arguments: "--configuration $(buildConfiguration)"
               workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
               projects: |
-                FakeSurveyGenerator.Acceptance.Tests/csproj
+                FakeSurveyGenerator.Acceptance.Tests.csproj
             displayName: "Build Tests Project"
 
           - script: "playwright install"
