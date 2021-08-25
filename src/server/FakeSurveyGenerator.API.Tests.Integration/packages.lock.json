@@ -189,8 +189,8 @@
       },
       "AutoWrapper.Core": {
         "type": "Transitive",
-        "resolved": "5.0.0-rc-02",
-        "contentHash": "Nsco4PRaNSY0HLLl4C8bX6yUjpnWh1KrWQvdzrTnrYNE0MXmBg9QcY3nTTDoiuP/VG62HH1dK3/T6JVAfA8Row==",
+        "resolved": "5.0.0-rc-03",
+        "contentHash": "jd3sn7PnrFMtMP1OX4SGst2TwcpGa2+t9v+97fo2yjqXq3Uwjjc2QHc5u+wRTug++DobtRGSHZK03A6OQdW/6A==",
         "dependencies": {
           "HelpMate.Core": "2.1.0"
         }
@@ -262,24 +262,24 @@
       },
       "FluentValidation": {
         "type": "Transitive",
-        "resolved": "10.3.1",
-        "contentHash": "aFy876EWQi/af5q+ZcxnNdDpNtzk4XlamFsGCbtsdUx3WILX7KIy5LVc5NAgK8XmkFvuRJx8QdCIgjW8B82LFQ=="
+        "resolved": "10.3.3",
+        "contentHash": "sgRC+7q4mnmDHE9ehk2cvb+FDTy/gtw5iBoKFY3FVp1ZwFsLS0kIcdSpNlCO3XyyNIzZI2ca8I/YiFG9pM6x0Q=="
       },
       "FluentValidation.AspNetCore": {
         "type": "Transitive",
-        "resolved": "10.3.1",
-        "contentHash": "DH9JkdkEqii5EYeTqfwxmjxvl7Ga07k+RjBLIP0QV8ULH5H0L/aJg7FE60VxmLIjgXz9aUVDDVSK9KOb9k5SBQ==",
+        "resolved": "10.3.3",
+        "contentHash": "DEh0ibCjH2kL5sk9yHcYMFrARUZ+/7iisW900odFUh3FV2zS5A/7hjNjnHSv2Imgq4gIQmpajamMm1uFDrBBWA==",
         "dependencies": {
-          "FluentValidation": "10.3.1",
-          "FluentValidation.DependencyInjectionExtensions": "10.3.1"
+          "FluentValidation": "10.3.3",
+          "FluentValidation.DependencyInjectionExtensions": "10.3.3"
         }
       },
       "FluentValidation.DependencyInjectionExtensions": {
         "type": "Transitive",
-        "resolved": "10.3.1",
-        "contentHash": "KYd5K8Jws3GBb2HIw2LnWG830m4diKKYI/EQGsAd5D8vhdmZOIiVLINEjZk4qT9ahBNZ92jgPGsY8NI2XM09Yg==",
+        "resolved": "10.3.3",
+        "contentHash": "kol9KlAn2pijRa0vLCzAPcp8Ql8yZdIRrO80eMVLswXQ0v6ai+ihOdqF/qPJCMXNWBnTcTGYjp1tZtizPWO+Cg==",
         "dependencies": {
-          "FluentValidation": "10.3.1",
+          "FluentValidation": "10.3.3",
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
       },
@@ -2822,10 +2822,10 @@
           "AspNetCore.HealthChecks.Redis": "5.0.2",
           "AspNetCore.HealthChecks.SqlServer": "5.0.3",
           "AspNetCore.HealthChecks.UI.Client": "5.0.1",
-          "AutoWrapper.Core": "5.0.0-rc-02",
+          "AutoWrapper.Core": "5.0.0-rc-03",
           "FakeSurveyGenerator.Domain": "1.0.0",
           "FakeSurveyGenerator.Infrastructure": "1.0.0",
-          "FluentValidation.AspNetCore": "10.3.1",
+          "FluentValidation.AspNetCore": "10.3.3",
           "IdentityModel": "5.1.0",
           "MediatR": "9.0.0",
           "Microsoft.ApplicationInsights.AspNetCore": "2.18.0",
@@ -2850,7 +2850,7 @@
           "CSharpFunctionalExtensions": "2.20.0",
           "Dapper": "2.0.90",
           "FakeSurveyGenerator.Domain": "1.0.0",
-          "FluentValidation": "10.3.1",
+          "FluentValidation": "10.3.3",
           "JetBrains.Annotations": "2021.2.0",
           "MediatR": "9.0.0",
           "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
