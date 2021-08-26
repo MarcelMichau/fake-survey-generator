@@ -157,8 +157,12 @@ stages:
               packageType: "sdk"
               version: "5.0.x"
               
-          - script: "sudo dotnet dev-certs https -ep /usr/local/share/ca-certificates/aspnet/aspnetcore.crt --format PEM"
-            displayName: "Run dotnet dev-certs"
+          - task: DotNetCoreCLI@2
+            displayName: 'Run dotnet dev-certs'
+            inputs:
+              command: custom
+              custom: dev-certs
+              arguments: 'https -ep /usr/local/share/ca-certificates/aspnet/aspnetcore.crt --format PEM'
             
           - script: "sudo update-ca-certificates"
             displayName: "Run update-ca-certificates"
