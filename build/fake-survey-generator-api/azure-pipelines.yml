@@ -166,7 +166,10 @@ stages:
             inputs:
               command: custom
               custom: dev-certs
-              arguments: 'https -ep "~/.aspnet/https/FakeSurveyGenerator.API.pfx" -p $(dockerComposeCertificatePassword)'
+              arguments: 'https -ep "/tmp/.aspnet/https/FakeSurveyGenerator.API.pfx" -p $(dockerComposeCertificatePassword)'
+              
+          - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https"
+            displayName: "Check .aspnet directory"
             
 #           - script: "sudo update-ca-certificates"
 #             displayName: "Run update-ca-certificates"
