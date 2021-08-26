@@ -12,7 +12,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ASPNETCORE_HTTPS_PORT=5001
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${DOCKER_COMPOSE_CERTIFICATE_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=onlyfortesting
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/FakeSurveyGenerator.API.pfx
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;Encrypt=false
       - REDIS_PASSWORD=testing
