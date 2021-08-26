@@ -166,7 +166,7 @@ stages:
             inputs:
               command: custom
               custom: dev-certs
-              arguments: 'https -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p $(dockerComposeCertificatePassword)'
+              arguments: 'https --trust -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p $(dockerComposeCertificatePassword)'
               
           - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https/"
             displayName: "Copy Cert"
