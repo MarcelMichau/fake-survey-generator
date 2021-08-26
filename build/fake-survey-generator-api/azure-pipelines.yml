@@ -140,7 +140,7 @@ stages:
 
           - script: "brew install mkcert"
             displayName: "Install mkcert"
-            
+
           - script: "mkcert -install localhost"
             workingDirectory: certs
             displayName: "Install localhost Certificate for tests"
@@ -156,40 +156,40 @@ stages:
             inputs:
               packageType: "sdk"
               version: "5.0.x"
-              
-          - script: > 
+
+          - script: >
               sudo mkdir -p ~/.aspnet/https
             displayName: "Create .aspnet/https directory"
-              
+
           - task: DotNetCoreCLI@2
-            displayName: 'Run dotnet dev-certs'
+            displayName: "Run dotnet dev-certs"
             inputs:
               command: custom
               custom: dev-certs
-              arguments: 'https --trust -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p onlyfortesting'
-              
+              arguments: "https --trust -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p onlyfortesting"
+
           - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https/"
             displayName: "Copy Cert"
-            
-#           - script: "sudo update-ca-certificates"
-#             displayName: "Run update-ca-certificates"
 
-#           - script: "ls -a ~/"
-#             displayName: "Check home directory"
-            
-#           - script: "ls -a ~/.dotnet/"
-#             displayName: "Check .dotnet directory"
-            
-#           - script: "ls -a ~/.aspnet/"
-#             displayName: "Check .aspnet directory"
+          #           - script: "sudo update-ca-certificates"
+          #             displayName: "Run update-ca-certificates"
+
+          #           - script: "ls -a ~/"
+          #             displayName: "Check home directory"
+
+          #           - script: "ls -a ~/.dotnet/"
+          #             displayName: "Check .dotnet directory"
+
+          #           - script: "ls -a ~/.aspnet/"
+          #             displayName: "Check .aspnet directory"
 
           - script: "ls -a ~/.aspnet/https"
             displayName: "Check .aspnet/https directory"
-                      
-#           - script: "docker-compose -f docker-compose.yml -f docker-compose.override.linux.yml up"
-#             displayName: "Docker Compose Up"
-#             env:
-#               DOCKER_COMPOSE_CERTIFICATE_PASSWORD: $(dockerComposeCertificatePassword)
+
+          #           - script: "docker-compose -f docker-compose.yml -f docker-compose.override.linux.yml up"
+          #             displayName: "Docker Compose Up"
+          #             env:
+          #               DOCKER_COMPOSE_CERTIFICATE_PASSWORD: $(dockerComposeCertificatePassword)
 
           - script: "dotnet tool install --global Microsoft.Playwright.CLI"
             displayName: "Install Playwright Global Tool"
@@ -207,6 +207,9 @@ stages:
               command: "build"
               workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
             displayName: "Build Tests Project"
+
+          - script: "docker-compose build"
+            displayName: "Docker Compose Build"
 
           - script: "playwright install"
             workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
