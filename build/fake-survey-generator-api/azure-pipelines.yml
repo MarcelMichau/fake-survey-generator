@@ -141,6 +141,17 @@ stages:
           - script: "brew install mkcert"
             displayName: "Install mkcert"
 
+          - script: "sudo dotnet dev-certs https -ep /usr/local/share/ca-certificates/aspnet/aspnetcore.crt --format PEM"
+            workingDirectory: certs
+            displayName: "Run dotnet dev-certs"
+            
+          - script: "sudo update-ca-certificates"
+            workingDirectory: certs
+            displayName: "Run update-ca-certificates"
+            
+          - script: "ls -a ~/.aspnet/https"
+            displayName: "Check .aspnet/https directory"
+            
           - script: "mkcert -install localhost"
             workingDirectory: certs
             displayName: "Install localhost Certificate for tests"
