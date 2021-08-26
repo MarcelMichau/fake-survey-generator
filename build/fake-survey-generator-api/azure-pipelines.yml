@@ -186,7 +186,7 @@ stages:
           - script: "ls -a ~/.aspnet/https"
             displayName: "Check .aspnet/https directory"
                       
-          - script: "docker compose -f docker-compose.yml -f docker-compose.override.linux.yml up"
+          - script: "docker-compose -f docker-compose.yml -f docker-compose.override.linux.yml up"
             displayName: "Docker Compose Up"
             env:
               DOCKER_COMPOSE_CERTIFICATE_PASSWORD: $(dockerComposeCertificatePassword)
