@@ -169,8 +169,14 @@ stages:
             
 #           - script: "sudo update-ca-certificates"
 #             displayName: "Run update-ca-certificates"
+
+          - script: "ls -a ~/"
+            displayName: "Check home directory"
             
-          - script: "ls -a ~/.aspnet/https"
+          - script: "ls -a ~/.aspnet/"
+            displayName: "Check .aspnet directory"
+
+          - script: "ls -a ~/.aspnet/https/"
             displayName: "Check .aspnet/https directory"
 
           - script: "dotnet tool install --global Microsoft.Playwright.CLI"
