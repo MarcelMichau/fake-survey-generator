@@ -163,7 +163,11 @@ stages:
 #               command: custom
 #               custom: dev-certs
 #               arguments: 'https -ep ~/.aspnet/https/FakeSurveyGenerator.API.crt --format PEM'
-              
+  
+          - script: "sudo mkdir ~/.aspnet/https"
+            workingDirectory: certs
+            displayName: "Create .aspnet/https directory"
+  
           - script: "sudo cp localhost.pem ~/.aspnet/https/localhost.crt"
             workingDirectory: certs
             displayName: "Copy localhost certificate to .aspnet"
