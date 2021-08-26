@@ -157,20 +157,15 @@ stages:
               packageType: "sdk"
               version: "5.0.x"
               
-#           - task: DotNetCoreCLI@2
-#             displayName: 'Run dotnet dev-certs'
-#             inputs:
-#               command: custom
-#               custom: dev-certs
-#               arguments: 'https -ep ~/.aspnet/https/FakeSurveyGenerator.API.crt --format PEM'
-  
           - script: "sudo mkdir -p ~/.aspnet/https"
-            workingDirectory: certs
             displayName: "Create .aspnet/https directory"
-  
-          - script: "sudo cp localhost.pem ~/.aspnet/https/localhost.crt"
-            workingDirectory: certs
-            displayName: "Copy localhost certificate to .aspnet"
+              
+          - task: DotNetCoreCLI@2
+            displayName: 'Run dotnet dev-certs'
+            inputs:
+              command: custom
+              custom: dev-certs
+              arguments: 'https -ep ~/.aspnet/https/FakeSurveyGenerator.API.pfx -p $(dockerComposeCertificatePassword)'
             
 #           - script: "sudo update-ca-certificates"
 #             displayName: "Run update-ca-certificates"
@@ -214,6 +209,8 @@ stages:
               publishTestResults: true
               arguments: "--no-restore"
               workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
+            env:
+              DOCKER_COMPOSE_CERTIFICATE_PASSWORD: $(dockerComposeCertificatePassword)
             displayName: "Run Acceptance Tests"
 
       - job: Docker
