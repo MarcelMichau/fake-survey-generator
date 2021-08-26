@@ -157,30 +157,31 @@ stages:
               packageType: "sdk"
               version: "5.0.x"
               
-          - task: DotNetCoreCLI@2
-            displayName: 'Run dotnet dev-certs'
-            inputs:
-              command: custom
-              custom: dev-certs
-              arguments: 'https -ep ~/.aspnet/https/FakeSurveyGenerator.API.crt --format PEM'
+#           - task: DotNetCoreCLI@2
+#             displayName: 'Run dotnet dev-certs'
+#             inputs:
+#               command: custom
+#               custom: dev-certs
+#               arguments: 'https -ep ~/.aspnet/https/FakeSurveyGenerator.API.crt --format PEM'
               
-#           - script: "sudo cp /tmp/aspnet/aspnetcore.crt /usr/share/ca-certificates/aspnet/"
-#             displayName: "Copy certificate to ca-certificates"
+          - script: "sudo cp localhost.pem ~/.aspnet/https/localhost.crt"
+            workingDirectory: certs
+            displayName: "Copy localhost certificate to .aspnet"
             
 #           - script: "sudo update-ca-certificates"
 #             displayName: "Run update-ca-certificates"
 
-          - script: "ls -a ~/"
-            displayName: "Check home directory"
+#           - script: "ls -a ~/"
+#             displayName: "Check home directory"
             
-          - script: "ls -a ~/.dotnet/"
-            displayName: "Check .dotnet directory"
+#           - script: "ls -a ~/.dotnet/"
+#             displayName: "Check .dotnet directory"
             
-          - script: "ls -a ~/.aspnet/"
-            displayName: "Check .aspnet directory"
+#           - script: "ls -a ~/.aspnet/"
+#             displayName: "Check .aspnet directory"
 
-          - script: "ls -a ~/.aspnet/https/"
-            displayName: "Check .aspnet/https directory"
+#           - script: "ls -a ~/.aspnet/https/"
+#             displayName: "Check .aspnet/https directory"
 
           - script: "dotnet tool install --global Microsoft.Playwright.CLI"
             displayName: "Install Playwright Global Tool"
