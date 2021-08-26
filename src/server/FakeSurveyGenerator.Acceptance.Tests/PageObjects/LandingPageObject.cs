@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
 namespace FakeSurveyGenerator.Acceptance.Tests.PageObjects
 {
     public class LandingPageObject : BasePageObject
     {
-        public override string PagePath => "https://127.0.0.1:3000";
+        public override string PagePath => $"{BaseAddress}";
         public override IPage Page { get; set; }
         public override IBrowser Browser { get; }
 
-        public LandingPageObject(IBrowser browser)
+        public LandingPageObject(IBrowser browser, IConfiguration configuration) : base(configuration)
         {
             Browser = browser;
         }

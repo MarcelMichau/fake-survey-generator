@@ -127,23 +127,32 @@ stages:
 
       - job: AcceptanceTest
         displayName: "Acceptance Tests"
-#         dependsOn: Build
+        #         dependsOn: Build
         pool:
-          vmImage: "ubuntu-latest"
-#           container: mcr.microsoft.com/playwright:focal
+          vmImage: "windows-latest"
         steps:
+          - script: "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
+            displayName: "Install Chocolatey"
+
+          - script: "brew install mkcert"
+            displayName: "Install mkcert"
+
+          - script: "mkcert localhost"
+            workingDirectory: certs
+            displayName: "Install localhost Certificate for tests"
+
           - task: UseDotNet@2
-            displayName: "Install .NET Core SDK from global.json"
+            displayName: "Install .NET SDK from global.json"
             inputs:
               packageType: "sdk"
               useGlobalJson: true
-              
+
           - task: UseDotNet@2
-            displayName: "Install .NET Core 5 SDK"
+            displayName: "Install .NET 5 SDK"
             inputs:
               packageType: "sdk"
               version: "5.0.x"
-              
+
           - script: "dotnet tool install --global Microsoft.Playwright.CLI"
             displayName: "Install Playwright Global Tool"
 
