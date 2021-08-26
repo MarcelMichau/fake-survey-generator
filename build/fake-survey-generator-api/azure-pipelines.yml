@@ -131,9 +131,8 @@ stages:
         pool:
           vmImage: "ubuntu-latest"
         steps:
-          - script: >
-              /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            displayName: "apt install libnss3-tools"
+          - script: sudo apt install libnss3-tools"
+            displayName: "Install certutil"
 
           - script: >
               /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
