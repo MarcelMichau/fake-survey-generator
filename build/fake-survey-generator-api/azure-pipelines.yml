@@ -173,6 +173,9 @@ stages:
           - script: "ls -a ~/"
             displayName: "Check home directory"
             
+          - script: "ls -a ~/.dotnet/"
+            displayName: "Check .dotnet directory"
+            
           - script: "ls -a ~/.aspnet/"
             displayName: "Check .aspnet directory"
 
