@@ -158,7 +158,7 @@ stages:
               version: "5.0.x"
               
           - script: > 
-              sudo mkdir -p "~/.aspnet/https"
+              sudo mkdir -p ~/.aspnet/https
             displayName: "Create .aspnet/https directory"
               
           - task: DotNetCoreCLI@2
@@ -166,10 +166,10 @@ stages:
             inputs:
               command: custom
               custom: dev-certs
-              arguments: 'https -ep "/tmp/.aspnet/https/FakeSurveyGenerator.API.pfx" -p $(dockerComposeCertificatePassword)'
+              arguments: 'https -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p $(dockerComposeCertificatePassword)'
               
-          - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https"
-            displayName: "Check .aspnet directory"
+          - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https/"
+            displayName: "Copy Cert"
             
 #           - script: "sudo update-ca-certificates"
 #             displayName: "Run update-ca-certificates"
