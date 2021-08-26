@@ -129,12 +129,17 @@ stages:
         displayName: "Acceptance Tests"
         #         dependsOn: Build
         pool:
-          vmImage: "windows-latest"
+          vmImage: "ubuntu-latest"
         steps:
-          - powershell: "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))"
-            displayName: "Install Chocolatey"
+          - script: >
+              /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            displayName: "apt install libnss3-tools"
 
-          - script: "choco install mkcert"
+          - script: >
+              /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            displayName: "Install Homebrew"
+
+          - script: "brew install mkcert"
             displayName: "Install mkcert"
 
           - script: "mkcert localhost"
