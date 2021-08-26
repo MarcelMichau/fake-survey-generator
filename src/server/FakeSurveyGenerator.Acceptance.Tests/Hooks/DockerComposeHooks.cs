@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using Ductus.FluentDocker.Builders;
 using Ductus.FluentDocker.Services;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
             var config = LoadConfiguration();
 
             var dockerComposeFileName = config.GetValue<string>("DockerComposeFileName");
-            var dockerComposeOverrideFileName = config.GetValue<string>("DockerComposeOverrideFileName");
+            var dockerComposeOverrideFileName = DetermineOverrideFileName(config);
             var dockerComposePath = GetDockerComposeFileLocation(dockerComposeFileName);
             var dockerComposeOverridePath = GetDockerComposeFileLocation(dockerComposeOverrideFileName);
 
@@ -51,6 +52,13 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
             return new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
+        }
+
+        private static string DetermineOverrideFileName(IConfiguration config)
+        {
+            return config.GetValue<string>(RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                ? "DockerComposeOverrideLinuxFileName"
+                : "DockerComposeOverrideWindowsFileName");
         }
 
         private static string GetDockerComposeFileLocation(string dockerComposeFileName)

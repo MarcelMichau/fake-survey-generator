@@ -141,7 +141,7 @@ stages:
           - script: "brew install mkcert"
             displayName: "Install mkcert"
 
-          - script: "mkcert localhost"
+          - script: "mkcert -install localhost"
             workingDirectory: certs
             displayName: "Install localhost Certificate for tests"
 
