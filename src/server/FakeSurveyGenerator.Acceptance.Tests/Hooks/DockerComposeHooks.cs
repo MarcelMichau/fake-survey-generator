@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -29,6 +30,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
             _compositeService = new Builder()
                 .UseContainer()
                 .UseCompose()
+                .WithEnvironment($"DOCKER_COMPOSE_CERTIFICATE_PASSWORD={Environment.GetEnvironmentVariable("DOCKER_COMPOSE_CERTIFICATE_PASSWORD")}")
                 .FromFile(dockerComposePath)
                 .FromFile(dockerComposeOverridePath)
                 .RemoveOrphans()
