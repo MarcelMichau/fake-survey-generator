@@ -131,7 +131,7 @@ stages:
         pool:
           vmImage: "ubuntu-latest"
         steps:
-          - script: apt install libnss3-tools
+          - script: sudo apt install libnss3-tools
             displayName: "Install certutil"
 
           - script: >
