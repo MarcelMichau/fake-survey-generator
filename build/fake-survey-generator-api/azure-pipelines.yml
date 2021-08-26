@@ -157,7 +157,7 @@ stages:
               packageType: "sdk"
               version: "5.0.x"
               
-          - script: "sudo mkdir -p ~/.aspnet/https"
+          - script: "sudo mkdir -p $HOME/.aspnet/https"
             displayName: "Create .aspnet/https directory"
               
           - task: DotNetCoreCLI@2
@@ -165,7 +165,7 @@ stages:
             inputs:
               command: custom
               custom: dev-certs
-              arguments: 'https -ep ~/.aspnet/https/FakeSurveyGenerator.API.pfx -p $(dockerComposeCertificatePassword)'
+              arguments: 'https -ep $HOME/.aspnet/https/FakeSurveyGenerator.API.pfx -p $(dockerComposeCertificatePassword)'
             
 #           - script: "sudo update-ca-certificates"
 #             displayName: "Run update-ca-certificates"
@@ -179,8 +179,8 @@ stages:
 #           - script: "ls -a ~/.aspnet/"
 #             displayName: "Check .aspnet directory"
 
-#           - script: "ls -a ~/.aspnet/https/"
-#             displayName: "Check .aspnet/https directory"
+          - script: "ls -a $HOME/.aspnet/https/"
+            displayName: "Check .aspnet/https directory"
 
           - script: "dotnet tool install --global Microsoft.Playwright.CLI"
             displayName: "Install Playwright Global Tool"
