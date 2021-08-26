@@ -164,7 +164,7 @@ stages:
               custom: dev-certs
               arguments: 'https -ep /tmp/aspnet/aspnetcore.crt --format PEM'
               
-          - script: "sudo cp /tmp/aspnet/aspnetcore.crt /usr/local/share/ca-certificates/aspnet/"
+          - script: "sudo cp /tmp/aspnet/aspnetcore.crt /usr/share/ca-certificates/aspnet/"
             displayName: "Copy certificate to ca-certificates"
             
           - script: "sudo update-ca-certificates"
