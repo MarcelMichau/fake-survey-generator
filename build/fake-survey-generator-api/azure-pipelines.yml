@@ -166,7 +166,7 @@ stages:
             inputs:
               command: custom
               custom: dev-certs
-              arguments: "https --trust -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p onlyfortesting"
+              arguments: "https -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p onlyfortesting"
 
           - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https/"
             displayName: "Copy Cert"
