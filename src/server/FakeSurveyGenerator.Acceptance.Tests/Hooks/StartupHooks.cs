@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,21 +10,30 @@ using TechTalk.SpecFlow;
 namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
 {
     [Binding]
-    public class DockerComposeHooks
+    public class StartupHooks
     {
         private static ICompositeService _compositeService;
+        private static readonly IConfiguration Configuration;
+        private static readonly bool IsRunningInDocker;
+
+        static StartupHooks()
+        {
+            Configuration = LoadConfiguration();
+            IsRunningInDocker = Configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress").Contains("localhost");
+        }
 
         [BeforeTestRun]
-        public static void DockerComposeUp()
+        public static void StartTestRun()
         {
-            var config = LoadConfiguration();
+            if (!IsRunningInDocker)
+                return;
 
-            var dockerComposeFileName = config.GetValue<string>("DockerComposeFileName");
-            var dockerComposeOverrideFileName = DetermineOverrideFileName(config);
+            var dockerComposeFileName = Configuration.GetValue<string>("DockerComposeFileName");
+            var dockerComposeOverrideFileName = DetermineOverrideFileName(Configuration);
             var dockerComposePath = GetDockerComposeFileLocation(dockerComposeFileName);
             var dockerComposeOverridePath = GetDockerComposeFileLocation(dockerComposeOverrideFileName);
 
-            var applicationUrl = config.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress");
+            var applicationUrl = Configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress");
 
             _compositeService = new Builder()
                 .UseContainer()
@@ -42,8 +50,11 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
         }
 
         [AfterTestRun]
-        public static void DockerComposeDown()
+        public static void StopTestRun()
         {
+            if (!IsRunningInDocker)
+                return;
+
             _compositeService.Stop();
             _compositeService.Dispose();
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
@@ -9,12 +10,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.PageObjects
         public string BaseAddress { get; }
         public abstract string PagePath { get; }
         public abstract IPage Page { get; set; }
-        public abstract IBrowser Browser { get; }
-
-        private readonly BrowserNewPageOptions _browserNewPageOptions = new()
-        {
-            IgnoreHTTPSErrors = true
-        };
+        public abstract IBrowserContext Context { get; }
 
         protected BasePageObject(IConfiguration configuration)
         {
@@ -23,8 +19,18 @@ namespace FakeSurveyGenerator.Acceptance.Tests.PageObjects
 
         public async Task NavigateAsync()
         {
-            Page = await Browser.NewPageAsync(_browserNewPageOptions);
+            Page = await Context.NewPageAsync();
             await Page.GotoAsync(PagePath);
+        }
+
+        public async Task NavigateAndWaitForResponseAsync(Func<IResponse, bool> responsePredicate)
+        {
+            Page = await Context.NewPageAsync();
+
+            await Page.RunAndWaitForResponseAsync(async () =>
+            {
+                await Page.GotoAsync(PagePath);
+            }, responsePredicate);
         }
     }
 }

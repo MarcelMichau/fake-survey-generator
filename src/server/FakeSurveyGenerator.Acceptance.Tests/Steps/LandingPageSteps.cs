@@ -18,7 +18,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Steps
         [When(@"navigating to the application URL")]
         public async Task WhenNavigatingToTheApplicationURL()
         {
-            await _pageObject.NavigateAsync();
+            await _pageObject.NavigateAndWaitForResponseAsync(r => r.Url.Contains("version"));
         }
         
         [Then(@"the name of the application is displayed")]
@@ -31,7 +31,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Steps
         [Then(@"the version number of the API is Displayed")]
         public async Task ThenTheVersionNumberOfTheAPIIsDisplayed()
         {
-            await _pageObject.WaitForApiCall();
+            //await _pageObject.WaitForApiCall();
 
             var content = await _pageObject.GetVersionInfo();
 
