@@ -3,31 +3,31 @@
   "version": "4.1.0",
   "private": true,
   "dependencies": {
-    "@auth0/auth0-react": "^1.6.0",
+    "@auth0/auth0-react": "^1.7.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.0.0",
+    "@testing-library/react": "^12.1.0",
     "@testing-library/user-event": "^13.2.1",
     "@types/history": "^4.7.9",
     "@types/jest": "^27.0.1",
-    "@types/node": "^16.6.2",
-    "@types/react": "^17.0.19",
+    "@types/node": "^16.9.1",
+    "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-loading-skeleton": "^2.2.0",
     "react-scripts": "4.0.3",
-    "typescript": "^4.3.5",
+    "typescript": "^4.4.3",
     "web-vitals": "^2.1.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.3.2",
+    "autoprefixer": "^10.3.4",
     "cross-env": "^7.0.3",
     "postcss": "^8.3.6",
     "postcss-cli": "^8.3.1",
-    "tailwindcss": "^2.2.7"
+    "tailwindcss": "^2.2.15"
   },
   "scripts": {
     "start": "npm run watch:css && cross-env HTTPS=true REACT_APP_VERSION=latest react-scripts start",
