@@ -20,6 +20,11 @@ namespace FakeSurveyGenerator.Acceptance.Tests.PageObjects
             return await Page.TextContentAsync("h1");
         }
 
+        public async Task WaitForApiCall()
+        {
+            await Task.Delay(10000);
+        }
+
         public async Task<string> GetVersionInfo()
         {
             return await Page.TextContentAsync("[data-test=version-info]");

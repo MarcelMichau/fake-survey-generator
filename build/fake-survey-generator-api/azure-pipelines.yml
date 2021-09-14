@@ -125,108 +125,108 @@ stages:
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
 
-      - job: AcceptanceTest
-        displayName: "Acceptance Tests"
-        #         dependsOn: Build
-        pool:
-          vmImage: "ubuntu-latest"
-        steps:
-          - script: openssl version
-            displayName: "Get openssl version"
+      # - job: AcceptanceTest
+      #   displayName: "Acceptance Tests"
+      #   #         dependsOn: Build
+      #   pool:
+      #     vmImage: "ubuntu-latest"
+      #   steps:
+      #     - script: openssl version
+      #       displayName: "Get openssl version"
 
-          - script: sudo apt install libnss3-tools
-            displayName: "Install certutil"
+      #     - script: sudo apt install libnss3-tools
+      #       displayName: "Install certutil"
 
-          - script: >
-              /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            displayName: "Install Homebrew"
+      #     - script: >
+      #         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      #       displayName: "Install Homebrew"
 
-          - script: "brew install mkcert"
-            displayName: "Install mkcert"
+      #     - script: "brew install mkcert"
+      #       displayName: "Install mkcert"
 
-          - script: "mkcert -install localhost"
-            workingDirectory: certs
-            displayName: "Install localhost Certificate for tests"
+      #     - script: "mkcert -install localhost"
+      #       workingDirectory: certs
+      #       displayName: "Install localhost Certificate for tests"
 
-          - task: UseDotNet@2
-            displayName: "Install .NET SDK from global.json"
-            inputs:
-              packageType: "sdk"
-              useGlobalJson: true
+      #     - task: UseDotNet@2
+      #       displayName: "Install .NET SDK from global.json"
+      #       inputs:
+      #         packageType: "sdk"
+      #         useGlobalJson: true
 
-          - task: UseDotNet@2
-            displayName: "Install .NET 5 SDK"
-            inputs:
-              packageType: "sdk"
-              version: "5.0.x"
+      #     - task: UseDotNet@2
+      #       displayName: "Install .NET 5 SDK"
+      #       inputs:
+      #         packageType: "sdk"
+      #         version: "5.0.x"
 
-          - script: >
-              sudo mkdir -p ~/.aspnet/https
-            displayName: "Create .aspnet/https directory"
+      #     - script: >
+      #         sudo mkdir -p ~/.aspnet/https
+      #       displayName: "Create .aspnet/https directory"
 
-          - task: DotNetCoreCLI@2
-            displayName: "Run dotnet dev-certs"
-            inputs:
-              command: custom
-              custom: dev-certs
-              arguments: "https -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p onlyfortesting"
+      #     - task: DotNetCoreCLI@2
+      #       displayName: "Run dotnet dev-certs"
+      #       inputs:
+      #         command: custom
+      #         custom: dev-certs
+      #         arguments: "https -ep /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx -p onlyfortesting"
 
-          - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https/"
-            displayName: "Copy Cert"
+      #     - script: "sudo cp /tmp/.aspnet/https/FakeSurveyGenerator.API.pfx ~/.aspnet/https/"
+      #       displayName: "Copy Cert"
 
-          #           - script: "sudo update-ca-certificates"
-          #             displayName: "Run update-ca-certificates"
+      #     #           - script: "sudo update-ca-certificates"
+      #     #             displayName: "Run update-ca-certificates"
 
-          #           - script: "ls -a ~/"
-          #             displayName: "Check home directory"
+      #     #           - script: "ls -a ~/"
+      #     #             displayName: "Check home directory"
 
-          #           - script: "ls -a ~/.dotnet/"
-          #             displayName: "Check .dotnet directory"
+      #     #           - script: "ls -a ~/.dotnet/"
+      #     #             displayName: "Check .dotnet directory"
 
-          #           - script: "ls -a ~/.aspnet/"
-          #             displayName: "Check .aspnet directory"
+      #     #           - script: "ls -a ~/.aspnet/"
+      #     #             displayName: "Check .aspnet directory"
 
-          - script: "ls -a ~/.aspnet/https"
-            displayName: "Check .aspnet/https directory"
+      #     - script: "ls -a ~/.aspnet/https"
+      #       displayName: "Check .aspnet/https directory"
 
-          #           - script: "docker-compose -f docker-compose.yml -f docker-compose.override.linux.yml up"
-          #             displayName: "Docker Compose Up"
-          #             env:
-          #               DOCKER_COMPOSE_CERTIFICATE_PASSWORD: $(dockerComposeCertificatePassword)
+      #     #           - script: "docker-compose -f docker-compose.yml -f docker-compose.override.linux.yml up"
+      #     #             displayName: "Docker Compose Up"
+      #     #             env:
+      #     #               DOCKER_COMPOSE_CERTIFICATE_PASSWORD: $(dockerComposeCertificatePassword)
 
-          - script: "dotnet tool install --global Microsoft.Playwright.CLI"
-            displayName: "Install Playwright Global Tool"
+      #     - script: "dotnet tool install --global Microsoft.Playwright.CLI"
+      #       displayName: "Install Playwright Global Tool"
 
-          - task: Cache@2
-            displayName: Cache NuGet Packages
-            inputs:
-              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
-              restoreKeys: |
-                nuget | "$(Agent.OS)"
-              path: $(NUGET_PACKAGES)
+      #     - task: Cache@2
+      #       displayName: Cache NuGet Packages
+      #       inputs:
+      #         key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+      #         restoreKeys: |
+      #           nuget | "$(Agent.OS)"
+      #         path: $(NUGET_PACKAGES)
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "build"
-              workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
-            displayName: "Build Tests Project"
+      #     - task: DotNetCoreCLI@2
+      #       inputs:
+      #         command: "build"
+      #         workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
+      #       displayName: "Build Tests Project"
 
-          - script: "docker-compose build"
-            displayName: "Docker Compose Build"
+      #     - script: "docker-compose build"
+      #       displayName: "Docker Compose Build"
 
-          - script: "playwright install"
-            workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
-            displayName: "Install Playwright Browsers"
+      #     - script: "playwright install"
+      #       workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
+      #       displayName: "Install Playwright Browsers"
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "test"
-              publishTestResults: true
-              arguments: "--no-restore"
-              workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
-            env:
-              DOCKER_COMPOSE_CERTIFICATE_PASSWORD: onlyfortesting
-            displayName: "Run Acceptance Tests"
+      #     - task: DotNetCoreCLI@2
+      #       inputs:
+      #         command: "test"
+      #         publishTestResults: true
+      #         arguments: "--no-restore"
+      #         workingDirectory: src/server/FakeSurveyGenerator.Acceptance.Tests
+      #       env:
+      #         DOCKER_COMPOSE_CERTIFICATE_PASSWORD: onlyfortesting
+      #       displayName: "Run Acceptance Tests"
 
       - job: Docker
         displayName: "Docker Preparation"

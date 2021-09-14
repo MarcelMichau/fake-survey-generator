@@ -41,9 +41,9 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks
                 .FromFile(dockerComposePath)
                 .FromFile(dockerComposeOverridePath)
                 .RemoveOrphans()
-                .WaitForHttp("api", $"{applicationUrl}/health/ready",
+                .WaitForHttp("fake-survey-generator-api", $"{applicationUrl}/health/ready",
                     continuation: (response, _) => response.Code != HttpStatusCode.OK ? 2000 : 0)
-                .WaitForHttp("ui", $"{applicationUrl}",
+                .WaitForHttp("fake-survey-generator-ui", $"{applicationUrl}",
                     continuation: (response, _) => response.Code != HttpStatusCode.OK ? 2000 : 0)
                 .Build()
                 .Start();
