@@ -102,9 +102,11 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--no-restore --collect "XPlat Code Coverage" --filter FullyQualifiedName!~Acceptance.Tests'
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
-                FakeSurveyGenerator.sln
+                src/server/FakeSurveyGenerator.Domain.Tests
+                src/server/FakeSurveyGenerator.Application.Tests
+                src/server/FakeSurveyGenerator.API.Tests.Integration
             displayName: "Run Unit + Integration Tests"
 
           - task: PublishCodeCoverageResults@1
