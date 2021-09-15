@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.0-preview.7-bullseye-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.0-rc.1-bullseye-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.100-preview.7-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.100-rc.1-bullseye-slim AS build
 WORKDIR /src/server
 COPY src/server/Directory.Build.props .
 COPY src/server/version.json .
@@ -18,7 +18,7 @@ COPY src/server/. .
 WORKDIR /
 COPY .git .git
 WORKDIR /src/server/FakeSurveyGenerator.API
-RUN dotnet build FakeSurveyGenerator.API.csproj --no-restore -c Release -o /app
+RUN dotnet build FakeSurveyGenerator.API.csproj --no-restore -c Release -o /app/build
 
 FROM build AS domaintest
 WORKDIR /src/server/FakeSurveyGenerator.Domain.Tests
@@ -33,10 +33,10 @@ WORKDIR /src/server/FakeSurveyGenerator.API.Tests.Integration
 RUN dotnet restore FakeSurveyGenerator.API.Tests.Integration.csproj
 
 FROM build AS publish
-RUN dotnet publish FakeSurveyGenerator.API.csproj -c Release -o /app
+RUN dotnet publish FakeSurveyGenerator.API.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app .
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "FakeSurveyGenerator.API.dll"]
 # ENV COMPlus_EnableDiagnostics=0 <-- Use this to allow .NET Core to run in a read-only filesystem

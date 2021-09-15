@@ -33,7 +33,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
       - USE_REAL_DEPENDENCIES=true
-      - ConnectionStrings__SurveyContext=Server=sql-server-test;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0
+      - ConnectionStrings__SurveyContext=Server=sql-server-test;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0;Encrypt=false
       - REDIS_PASSWORD=testing
       - REDIS_SSL=false
       - REDIS_URL=redis-test

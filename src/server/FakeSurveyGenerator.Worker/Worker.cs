@@ -24,9 +24,17 @@ namespace FakeSurveyGenerator.Worker
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await GetTotalSurveys(stoppingToken);
-                await Task.Delay(10000, stoppingToken);
+                try
+                {
+                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                    await GetTotalSurveys(stoppingToken);
+                    await Task.Delay(10000, stoppingToken);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Oh no! Something bad happened.");
+                    await Task.Delay(10000, stoppingToken);
+                }
             }
         }
 
