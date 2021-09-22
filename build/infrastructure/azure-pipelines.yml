@@ -54,6 +54,7 @@ stages:
                 az deployment sub create --template-file build/infrastructure/resource-group/azuredeploy.bicep
                 --location "$(location)"
                 --parameters
+                location="$(location)"
                 resourceGroupName="$(resourceGroupName)"
 
           # - task: AzureResourceManagerTemplateDeployment@3
