@@ -45,6 +45,7 @@ stages:
           #       -location "$(location)"
 
           - task: AzureCLI@2
+            displayName: "Create Resource Group"
             inputs:
               azureSubscription: "Azure Service Connection"
               scriptType: bash
