@@ -1,10 +1,7 @@
-@description('<USER ASSIGNED IDENTITY NAME>')
+@description('User Assigned Managed Identity Name')
 param identityName string
 
-@description('<KEY VAULT RESOURCE GROUP>')
-param keyVaultResourceGroup string
-
-@description('<KEY VAULT NAME>')
+@description('Key Vault Name')
 param keyVaultName string
 
 var keyVaultSecretsOfficer = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')

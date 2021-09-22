@@ -1,9 +1,9 @@
 targetScope = 'subscription'
 
-@description('Name of the Resource Group to create.')
+@description('Name of the Resource Group to create')
 param resourceGroupName string = 'rg-test'
 
-@description('Location in which to create the Resource Group.')
+@description('Location in which to create the Resource Group')
 param location string = 'location'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {

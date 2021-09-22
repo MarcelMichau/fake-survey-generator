@@ -1,13 +1,13 @@
-@description('The location of the Managed Identities.')
+@description('The location of the Managed Identities')
 param location string = resourceGroup().location
 
-@description('<USER ASSIGNED EXTERNAL DNS IDENTITY NAME>')
+@description('User Assigned External DNS Identity Name')
 param externalDnsIdentityName string
 
 @description('DNS Zone for which the externalDnsIdentity needs to have Contributor Role access')
 param dnsZoneName string
 
-@description('<USER ASSIGNED CERT MANAGER IDENTITY NAME>')
+@description('User Assigned Cert Manager Identity Name')
 param certManagerIdentityName string
 
 var readerRole = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'

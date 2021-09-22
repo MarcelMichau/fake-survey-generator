@@ -1,26 +1,26 @@
-@description('The name of the SQL logical server.')
+@description('The name of the SQL logical server')
 param serverName string = uniqueString('sql', resourceGroup().id)
 
-@description('The name of the SQL Database.')
+@description('The name of the SQL Database')
 param databaseName string = 'SampleDB'
 
-@description('Location for all resources.')
+@description('Location for all resources')
 param location string = resourceGroup().location
 
-@description('The administrator username of the SQL logical server.')
+@description('The administrator username of the SQL logical server')
 param administratorLogin string
 
-@description('The administrator password of the SQL logical server.')
+@description('The administrator password of the SQL logical server')
 @secure()
 param administratorLoginPassword string
 
-@description('The Azure AD administrator username of the SQL logical server.')
+@description('The Azure AD administrator username of the SQL logical server')
 param azureAdAdministratorLogin string
 
-@description('The Azure AD administrator Azure AD Object ID.')
+@description('The Azure AD administrator Azure AD Object ID')
 param azureAdAdministratorObjectId string
 
-@description('The Azure AD administrator Azure AD Tenant ID.')
+@description('The Azure AD administrator Azure AD Tenant ID')
 param azureAdAdministratorTenantId string
 
 resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
@@ -42,7 +42,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
   location: location
 }
 
-resource serverName_AllowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2021-02-01-preview' = {
+resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2021-02-01-preview' = {
   parent: sqlServer
   name: 'AllowAllAzureIps'
   properties: {
@@ -51,7 +51,7 @@ resource serverName_AllowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2021-0
   }
 }
 
-resource serverName_activeDirectory 'Microsoft.Sql/servers/administrators@2021-02-01-preview' = {
+resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/administrators@2021-02-01-preview' = {
   parent: sqlServer
   name: 'ActiveDirectory'
   properties: {

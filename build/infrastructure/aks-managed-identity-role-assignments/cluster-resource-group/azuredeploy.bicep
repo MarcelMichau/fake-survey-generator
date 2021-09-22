@@ -1,16 +1,16 @@
 @description('Managed Identity Name used by the AKS Cluster')
 param aksClusterManagedIdentityName string
 
-@description('Resource Group Name which contains all the nodes in the AKS Cluster.')
+@description('Resource Group Name which contains all the nodes in the AKS Cluster')
 param aksClusterNodeResourceGroupName string
 
-@description('Name of the Azure Container Registry for which the AKS Cluster Managed Identity requires AcrPull role.')
+@description('Name of the Azure Container Registry for which the AKS Cluster Managed Identity requires AcrPull role')
 param azureContainerRegistryName string
 
 var managedIdentityOperatorRole = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830'
 var acrPullRole = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/7f951dda-4ed3-4680-a7ca-43fe172d538d'
 
-resource id_aksClusterManagedIdentityName_Managed_Identity_Operator 'Microsoft.Authorization/roleAssignments@2017-09-01' = {
+resource managedIdentityOperatorRoleAssignment 'Microsoft.Authorization/roleAssignments@2017-09-01' = {
   name: guid('${resourceGroup().id}${aksClusterManagedIdentityName}Managed Identity Operator')
   properties: {
     roleDefinitionId: managedIdentityOperatorRole
@@ -19,7 +19,7 @@ resource id_aksClusterManagedIdentityName_Managed_Identity_Operator 'Microsoft.A
   }
 }
 
-resource azureContainerRegistryName_Microsoft_Authorization_aksClusterManagedIdentityName_acrPullRole 'Microsoft.ContainerRegistry/registries/providers/roleAssignments@2018-09-01-preview' = {
+resource acrPullRoleAssignment 'Microsoft.ContainerRegistry/registries/providers/roleAssignments@2018-09-01-preview' = {
   name: '${azureContainerRegistryName}/Microsoft.Authorization/${guid(uniqueString('${aksClusterManagedIdentityName}${acrPullRole}'))}'
   properties: {
     roleDefinitionId: acrPullRole

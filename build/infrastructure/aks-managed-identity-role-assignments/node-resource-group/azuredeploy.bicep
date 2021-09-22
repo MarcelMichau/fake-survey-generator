@@ -4,7 +4,7 @@ param aksClusterManagedIdentityName string
 var managedIdentityOperatorRole = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830'
 var virtualMachineContributorRole = '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
 
-resource id_aksClusterManagedIdentityName_Managed_Identity_Operator 'Microsoft.Authorization/roleAssignments@2017-09-01' = {
+resource managedIdentityOperatorRoleAssignment 'Microsoft.Authorization/roleAssignments@2017-09-01' = {
   name: guid('${resourceGroup().id}${aksClusterManagedIdentityName}Managed Identity Operator')
   properties: {
     roleDefinitionId: managedIdentityOperatorRole
@@ -13,7 +13,7 @@ resource id_aksClusterManagedIdentityName_Managed_Identity_Operator 'Microsoft.A
   }
 }
 
-resource id_aksClusterManagedIdentityName_Virtual_Machine_Contributor 'Microsoft.Authorization/roleAssignments@2017-09-01' = {
+resource virtualMachineContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2017-09-01' = {
   name: guid('${resourceGroup().id}${aksClusterManagedIdentityName}Virtual Machine Contributor')
   properties: {
     roleDefinitionId: virtualMachineContributorRole
