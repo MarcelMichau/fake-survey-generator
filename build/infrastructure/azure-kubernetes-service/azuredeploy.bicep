@@ -31,7 +31,7 @@ param agentVMSize string = 'Standard_B2s'
   'azure'
   'kubenet'
 ])
-param networkPlugin string
+param networkPlugin string = 'kubenet'
 
 @description('Boolean flag to turn on and off of RBAC.')
 param enableRBAC bool = true
