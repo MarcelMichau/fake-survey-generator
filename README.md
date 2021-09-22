@@ -71,7 +71,7 @@ Here are some of the features incorporated into this project:
 - Integrating [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/) with AKS to protect sensitive application configuration using [Azure Key Vault Provider for Secrets Store CSI Driver](https://github.com/Azure/secrets-store-csi-driver-provider-azure)
 - Configuring Kubernetes [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) with [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview) for custom domain names in AKS
 - Configuring [Cert Manager](https://cert-manager.io/) with AKS & Azure DNS for automatic TLS certificates using [Let's Encrypt](https://letsencrypt.org/)
-- Infrastructure as Code for Azure resources using [Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview) (ARM) templates
+- Infrastructure as Code for Azure resources using [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview)
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
 
