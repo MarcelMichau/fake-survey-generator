@@ -330,6 +330,18 @@ stages:
           #       -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
           #     deploymentMode: "Incremental"
 
+          - task: AzureCLI@2
+            displayName: "Create AKS Managed Identity Role Assignments on Node Resource Group"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                aksClusterManagedIdentityName="$(kubernetesClusterName)-agentpool"
+
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: Create AKS Managed Identity Role Assignments on Cluster Resource Group
           #   inputs:
@@ -347,6 +359,20 @@ stages:
           #       -aksClusterNodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
           #       -azureContainerRegistryName "$(azureContainerRegistryName)"
           #     deploymentMode: "Incremental"
+
+          - task: AzureCLI@2
+            displayName: "Create AKS Managed Identity Role Assignments on Cluster Resource Group"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                aksClusterManagedIdentityName="$(kubernetesClusterName)-agentpool"
+                aksClusterNodeResourceGroupName="$(kubernetesNodeResourceGroupName)"
+                azureContainerRegistryName="$(azureContainerRegistryName)"
 
           # - task: HelmInstaller@1
           #   inputs:
