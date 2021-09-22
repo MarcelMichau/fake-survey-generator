@@ -135,18 +135,20 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/azure-key-vault/azuredeploy.bicep
-                --resource-group $(resourceGroupName)
-                --parameters
-                name="kv-fake-survey-generator"
-                secretsObject="{
+                secrets='{
                   "secrets": [
                     {
                       "secretName": "HealthCheckSecret",
                       "secretValue": "healthy"
                     }
                   ]
-                }"
+                }'
+
+                az deployment group create --template-file build/infrastructure/azure-key-vault/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="kv-fake-survey-generator"
+                secretsObject="$secrets"
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create Container Registry"
