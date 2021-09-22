@@ -71,6 +71,18 @@ stages:
           #     csmParametersFile: "build/infrastructure/azure-application-insights/azuredeploy.parameters.json"
           #     deploymentMode: "Incremental"
 
+          - task: AzureCLI@2
+            displayName: "Create Application Insights"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-application-insights/azuredeploy.bicep
+                --parameters
+                location="$(location)"
+                name="appi-fake-survey-generator"
+
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create DNS Zone"
           #   inputs:
