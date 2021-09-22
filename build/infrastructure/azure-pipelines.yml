@@ -27,26 +27,26 @@ stages:
           kubernetesInfrastructureNamespace: "infrastructure"
 
         steps:
-          - script: az bicep build --file build/infrastructure/resource-group/azuredeploy.bicep
-            displayName: "Compile Bicep to ARM"
+          # - script: az bicep build --file build/infrastructure/resource-group/azuredeploy.bicep
+          #   displayName: "Compile Bicep to ARM"
 
-          - task: AzureResourceManagerTemplateDeployment@3
-            displayName: "Create Resource Group"
-            inputs:
-              deploymentScope: "Subscription"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: "$(subscriptionId)"
-              location: "$(location)"
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/resource-group/azuredeploy.json"
-              deploymentMode: "Incremental"
-              overrideParameters: >-
-                -resourceGroupName "$(resourceGroupName)"
-                -location "$(location)"
+          # - task: AzureResourceManagerTemplateDeployment@3
+          #   displayName: "Create Resource Group"
+          #   inputs:
+          #     deploymentScope: "Subscription"
+          #     azureResourceManagerConnection: $(azureResourceManagerConnection)
+          #     subscriptionId: "$(subscriptionId)"
+          #     location: "$(location)"
+          #     templateLocation: "Linked artifact"
+          #     csmFile: "build/infrastructure/resource-group/azuredeploy.json"
+          #     deploymentMode: "Incremental"
+          #     overrideParameters: >-
+          #       -resourceGroupName "$(resourceGroupName)"
+          #       -location "$(location)"
 
           - task: AzureCLI@2
             inputs:
-              azureSubscription: $(subscriptionId)
+              azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
