@@ -139,14 +139,14 @@ stages:
                 --resource-group $(resourceGroupName)
                 --parameters
                 name="kv-fake-survey-generator"
-                secretsObject={
+                secretsObject="{
                   "secrets": [
                     {
                       "secretName": "HealthCheckSecret",
                       "secretValue": "healthy"
                     }
                   ]
-                }
+                }"
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create Container Registry"
