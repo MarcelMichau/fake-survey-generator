@@ -382,7 +382,6 @@ stages:
               overrideParameters: >-
                 -identityName "$(managedIdentityName)"
                 -keyVaultName "$(azureKeyVaultName)"
-                -keyVaultResourceGroup "$(azureKeyVaultResourceGroup)"
               deploymentOutputs: createManagedIdentityArmOutput
 
           - task: PowerShell@2
