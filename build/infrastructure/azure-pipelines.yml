@@ -50,9 +50,10 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment sub create --template-file build/infrastructure/resource-group/azuredeploy.bicep --parameters
+                az deployment sub create --template-file build/infrastructure/resource-group/azuredeploy.bicep
+                --location "$(location)"
+                --parameters
                 resourceGroupName "$(resourceGroupName)"
-                location "$(location)"
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create Application Insights"
