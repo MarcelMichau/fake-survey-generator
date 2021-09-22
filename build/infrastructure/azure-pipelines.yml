@@ -2,10 +2,11 @@ trigger: none
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  isBicepFeatBranch: $[eq(variables['Build.SourceBranch'], 'refs/heads/feat/bicep')]
 
 stages:
   - stage: Provisioning
-    condition: and(succeeded(), eq(variables.isMain, true))
+    condition: and(succeeded(), or(eq(variables.isMain, true), eq(variables.isBicepFeatBranch, true)))
     displayName: "Provisioning"
     jobs:
       - job: Provisioning
