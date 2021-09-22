@@ -23,7 +23,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     enabledForTemplateDeployment: false
     enableRbacAuthorization: false
     enableSoftDelete: true
-    softDeleteRetentionInDays: 7
+    softDeleteRetentionInDays: 90
     networkAcls: {
       defaultAction: 'Allow'
     }
