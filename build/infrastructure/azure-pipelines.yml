@@ -79,6 +79,7 @@ stages:
               scriptLocation: inlineScript
               inlineScript: >-
                 az deployment group create --template-file build/infrastructure/azure-application-insights/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
                 --parameters
                 location="$(location)"
                 name="appi-fake-survey-generator"
