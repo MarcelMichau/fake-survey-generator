@@ -224,6 +224,26 @@ stages:
           #       -azureAdAdministratorTenantId "$(tenantId)"
           #     deploymentMode: "Incremental"
 
+          - task: AzureCLI@2
+            displayName: "Create SQL Server & Database"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-sql/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                serverName="sql-marcel-michau"
+                databaseName="sqldb-fake-survey-generator"
+                administratorLogin="sql-marcel-michau"
+                serverName="sql-marcel-michau"
+                administratorLogin="$(sqlDatabaseAdminLogin)"
+                administratorLoginPassword="$(sqlDatabaseAdminLoginPassword)"
+                azureAdAdministratorLogin="$(sqlDatabaseAzureAdAdminLogin)"
+                azureAdAdministratorObjectId="$(sqlDatabaseAzureAdAdminObjectId)"
+                azureAdAdministratorTenantId="$(tenantId)"
+
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create AKS Managed Identities"
           #   inputs:
