@@ -54,7 +54,7 @@ stages:
                 az deployment sub create --template-file build/infrastructure/resource-group/azuredeploy.bicep
                 --location "$(location)"
                 --parameters
-                resourceGroupName "$(resourceGroupName)"
+                resourceGroupName="$(resourceGroupName)"
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create Application Insights"
