@@ -39,11 +39,20 @@ stages:
               location: "$(location)"
               templateLocation: "Linked artifact"
               csmFile: "build/infrastructure/resource-group/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/resource-group/azuredeploy.parameters.json"
               deploymentMode: "Incremental"
               overrideParameters: >-
                 -resourceGroupName "$(resourceGroupName)"
                 -location "$(location)"
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: $(subscriptionId)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment sub create --template-file build/infrastructure/resource-group/azuredeploy.bicep --parameters
+                resourceGroupName "$(resourceGroupName)"
+                location "$(location)"
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create Application Insights"
