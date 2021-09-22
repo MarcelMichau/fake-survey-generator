@@ -27,6 +27,7 @@ pr:
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  isBicepFeatBranch: $[eq(variables['Build.SourceBranch'], 'refs/heads/feat/bicep')]
   projectName: fake-survey-generator-api
   registryName: acrfakesurveygenerator
   imageRepository: "$(registryName).azurecr.io/$(projectName)"
@@ -299,7 +300,7 @@ stages:
               azureContainerRegistry: "$(registryName).azurecr.io"
 
   - stage: Database_Deployment
-    condition: and(succeeded(), eq(variables.isMain, true))
+    condition: and(succeeded(), or(eq(variables.isMain, true), eq(variables.isBicepFeatBranch, true)))
     displayName: "Database Deployment"
     jobs:
       - deployment: Deployment_Job
@@ -330,7 +331,7 @@ stages:
       - BuildTest
       - Publish
       - Database_Deployment
-    condition: and(succeeded(), eq(variables.isMain, true))
+    condition: and(succeeded(), or(eq(variables.isMain, true), eq(variables.isBicepFeatBranch, true)))
     displayName: "Application Deployment"
     variables:
       environmentSuffix: prod
