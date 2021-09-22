@@ -166,6 +166,18 @@ stages:
           #       -registryName "$(azureContainerRegistryName)"
           #     deploymentMode: "Incremental"
 
+          - task: AzureCLI@2
+            displayName: "Create Container Registry"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-container-registry/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="$(azureContainerRegistryName)"
+
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create Redis Cache"
           #   inputs:
@@ -179,6 +191,18 @@ stages:
           #     csmFile: "build/infrastructure/azure-redis-cache/azuredeploy.json"
           #     csmParametersFile: "build/infrastructure/azure-redis-cache/azuredeploy.parameters.json"
           #     deploymentMode: "Incremental"
+
+          - task: AzureCLI@2
+            displayName: "Create Redis Cache"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-redis-cache/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="redis-fake-survey-generator"
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create SQL Server & Database"
