@@ -244,43 +244,45 @@ stages:
                 azureAdAdministratorObjectId="$(sqlDatabaseAzureAdAdminObjectId)"
                 azureAdAdministratorTenantId="$(tenantId)"
 
-          # - task: AzureResourceManagerTemplateDeployment@3
-          #   displayName: "Create AKS Managed Identities"
-          #   inputs:
-          #     deploymentScope: "Resource Group"
-          #     azureResourceManagerConnection: "Azure Service Connection"
-          #     subscriptionId: $(subscriptionId)
-          #     action: "Create Or Update Resource Group"
-          #     resourceGroupName: $(resourceGroupName)
-          #     location: $(location)
-          #     templateLocation: "Linked artifact"
-          #     csmFile: "build/infrastructure/aks-managed-identities/azuredeploy.json"
-          #     csmParametersFile: "build/infrastructure/aks-managed-identities/azuredeploy.parameters.json"
-          #     overrideParameters: >-
-          #       -dnsZoneName "$(dnsZoneName)"
-          #       -externalDnsIdentityName "$(externalDnsIdentityName)"
-          #       -certManagerIdentityName "$(certManagerIdentityName)"
-          #     deploymentMode: "Incremental"
-          #     deploymentOutputs: createManagedIdentitiesArmOutput
+          - script: az bicep build --file build/infrastructure/aks-managed-identities/azuredeploy.bicep
+            displayName: "Compile AKS Managed Identities Bicep to ARM"
 
-          # - task: PowerShell@2
-          #   name: "SetOutputVariables"
-          #   displayName: "Set Output Variables"
-          #   inputs:
-          #     targetType: "inline"
-          #     script: |
-          #       $armOutputObj = '$(createManagedIdentitiesArmOutput)' | ConvertFrom-Json
-          #       $armOutputObj.PSObject.Properties | ForEach-Object {
-          #         $keyname = $_.Name
-          #         $value = $_.Value.value
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: "Create AKS Managed Identities"
+            inputs:
+              deploymentScope: "Resource Group"
+              azureResourceManagerConnection: "Azure Service Connection"
+              subscriptionId: $(subscriptionId)
+              action: "Create Or Update Resource Group"
+              resourceGroupName: $(resourceGroupName)
+              location: $(location)
+              templateLocation: "Linked artifact"
+              csmFile: "build/infrastructure/aks-managed-identities/azuredeploy.json"
+              overrideParameters: >-
+                -dnsZoneName "$(dnsZoneName)"
+                -externalDnsIdentityName "$(externalDnsIdentityName)"
+                -certManagerIdentityName "$(certManagerIdentityName)"
+              deploymentMode: "Incremental"
+              deploymentOutputs: createManagedIdentitiesArmOutput
 
-          #         ## Creates a standard pipeline variable
-          #         Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+          - task: PowerShell@2
+            name: "SetOutputVariables"
+            displayName: "Set Output Variables"
+            inputs:
+              targetType: "inline"
+              script: |
+                $armOutputObj = '$(createManagedIdentitiesArmOutput)' | ConvertFrom-Json
+                $armOutputObj.PSObject.Properties | ForEach-Object {
+                  $keyname = $_.Name
+                  $value = $_.Value.value
 
-          #         ## Creates an output variable
-          #         Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
-          #       }
-          #     pwsh: true
+                  ## Creates a standard pipeline variable
+                  Write-Output "##vso[task.setvariable variable=$keyName;]$value"
+
+                  ## Creates an output variable
+                  Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+                }
+              pwsh: true
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create AKS Cluster"
@@ -298,6 +300,19 @@ stages:
           #       -clusterName "$(kubernetesClusterName)"
           #       -nodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
           #     deploymentMode: "Incremental"
+
+          - task: AzureCLI@2
+            displayName: "Create AKS Cluster"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-kubernetes-service/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                clusterName="$(kubernetesClusterName)"
+                nodeResourceGroupName="$(kubernetesNodeResourceGroupName)"
 
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: Create AKS Managed Identity Role Assignments on Node Resource Group
