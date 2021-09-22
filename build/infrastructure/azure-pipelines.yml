@@ -100,6 +100,18 @@ stages:
           #       -dnsZoneName "$(dnsZoneName)"
           #     deploymentMode: "Incremental"
 
+          - task: AzureCLI@2
+            displayName: "Create DNS Zone"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/dns-zone/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="$(dnsZoneName)"
+
           # - task: AzureResourceManagerTemplateDeployment@3
           #   displayName: "Create Key Vault"
           #   inputs:
