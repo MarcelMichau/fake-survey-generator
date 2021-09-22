@@ -26,116 +26,112 @@ stages:
           kubernetesInfrastructureNamespace: "infrastructure"
 
         steps:
-          - task: AzureResourceManagerTemplateDeployment@3
+          - task: AzureCLI@2
             displayName: "Create Resource Group"
             inputs:
-              deploymentScope: "Subscription"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: "$(subscriptionId)"
-              location: "$(location)"
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/resource-group/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/resource-group/azuredeploy.parameters.json"
-              deploymentMode: "Incremental"
-              overrideParameters: >-
-                -resourceGroupName "$(resourceGroupName)"
-                -location "$(location)"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment sub create --template-file build/infrastructure/resource-group/azuredeploy.bicep
+                --location "$(location)"
+                --parameters
+                location="$(location)"
+                resourceGroupName="$(resourceGroupName)"
 
-          - task: AzureResourceManagerTemplateDeployment@3
+          - task: AzureCLI@2
             displayName: "Create Application Insights"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(resourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/azure-application-insights/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/azure-application-insights/azuredeploy.parameters.json"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-application-insights/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                location="$(location)"
+                name="appi-fake-survey-generator"
 
-          - task: AzureResourceManagerTemplateDeployment@3
+          - task: AzureCLI@2
             displayName: "Create DNS Zone"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(resourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/dns-zone/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/dns-zone/azuredeploy.parameters.json"
-              overrideParameters: >-
-                -dnsZoneName "$(dnsZoneName)"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/dns-zone/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="$(dnsZoneName)"
 
-          - task: AzureResourceManagerTemplateDeployment@3
+          - task: AzureCLI@2
             displayName: "Create Key Vault"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(resourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/azure-key-vault/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/azure-key-vault/azuredeploy.parameters.json"
-              overrideParameters: >-
-                -tenantId "$(tenantId)"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                secrets='{
+                  "secrets": [
+                    {
+                      "secretName": "HealthCheckSecret",
+                      "secretValue": "healthy"
+                    }
+                  ]
+                }'
 
-          - task: AzureResourceManagerTemplateDeployment@3
+                az deployment group create --template-file build/infrastructure/azure-key-vault/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="kv-fake-survey-generator"
+                secretsObject="$secrets"
+
+          - task: AzureCLI@2
             displayName: "Create Container Registry"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(resourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/azure-container-registry/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/azure-container-registry/azuredeploy.parameters.json"
-              overrideParameters: >-
-                -registryName "$(azureContainerRegistryName)"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-container-registry/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="$(azureContainerRegistryName)"
 
-          - task: AzureResourceManagerTemplateDeployment@3
+          - task: AzureCLI@2
             displayName: "Create Redis Cache"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(resourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/azure-redis-cache/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/azure-redis-cache/azuredeploy.parameters.json"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-redis-cache/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                name="redis-fake-survey-generator"
 
-          - task: AzureResourceManagerTemplateDeployment@3
+          - task: AzureCLI@2
             displayName: "Create SQL Server & Database"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(resourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/azure-sql/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/azure-sql/azuredeploy.parameters.json"
-              overrideParameters: >-
-                -administratorLogin "$(sqlDatabaseAdminLogin)"
-                -administratorLoginPassword "$(sqlDatabaseAdminLoginPassword)"
-                -azureAdAdministratorLogin "$(sqlDatabaseAzureAdAdminLogin)"
-                -azureAdAdministratorObjectId "$(sqlDatabaseAzureAdAdminObjectId)"
-                -azureAdAdministratorTenantId "$(tenantId)"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-sql/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                serverName="sql-marcel-michau"
+                databaseName="sqldb-fake-survey-generator"
+                administratorLogin="sql-marcel-michau"
+                serverName="sql-marcel-michau"
+                administratorLogin="$(sqlDatabaseAdminLogin)"
+                administratorLoginPassword="$(sqlDatabaseAdminLoginPassword)"
+                azureAdAdministratorLogin="$(sqlDatabaseAzureAdAdminLogin)"
+                azureAdAdministratorObjectId="$(sqlDatabaseAzureAdAdminObjectId)"
+                azureAdAdministratorTenantId="$(tenantId)"
+
+          - script: az bicep build --file build/infrastructure/aks-managed-identities/azuredeploy.bicep
+            displayName: "Compile AKS Managed Identities Bicep to ARM"
 
           - task: AzureResourceManagerTemplateDeployment@3
             displayName: "Create AKS Managed Identities"
@@ -148,7 +144,6 @@ stages:
               location: $(location)
               templateLocation: "Linked artifact"
               csmFile: "build/infrastructure/aks-managed-identities/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/aks-managed-identities/azuredeploy.parameters.json"
               overrideParameters: >-
                 -dnsZoneName "$(dnsZoneName)"
                 -externalDnsIdentityName "$(externalDnsIdentityName)"
@@ -169,62 +164,50 @@ stages:
 
                   ## Creates a standard pipeline variable
                   Write-Output "##vso[task.setvariable variable=$keyName;]$value"
-                  
+
                   ## Creates an output variable
                   Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
                 }
               pwsh: true
 
-          - task: AzureResourceManagerTemplateDeployment@3
+          - task: AzureCLI@2
             displayName: "Create AKS Cluster"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: "$(subscriptionId)"
-              action: "Create Or Update Resource Group"
-              resourceGroupName: "$(resourceGroupName)"
-              location: "$(location)"
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/azure-kubernetes-service/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/azure-kubernetes-service/azuredeploy.parameters.json"
-              overrideParameters: >-
-                -clusterName "$(kubernetesClusterName)"
-                -nodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/azure-kubernetes-service/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                clusterName="$(kubernetesClusterName)"
+                nodeResourceGroupName="$(kubernetesNodeResourceGroupName)"
 
-          - task: AzureResourceManagerTemplateDeployment@3
-            displayName: Create AKS Managed Identity Role Assignments on Node Resource Group
+          - task: AzureCLI@2
+            displayName: "Create AKS Managed Identity Role Assignments on Node Resource Group"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(kubernetesNodeResourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.parameters.json"
-              overrideParameters: >-
-                -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.bicep
+                --resource-group $(kubernetesNodeResourceGroupName)
+                --parameters
+                aksClusterManagedIdentityName="$(kubernetesClusterName)-agentpool"
 
-          - task: AzureResourceManagerTemplateDeployment@3
-            displayName: Create AKS Managed Identity Role Assignments on Cluster Resource Group
+          - task: AzureCLI@2
+            displayName: "Create AKS Managed Identity Role Assignments on Cluster Resource Group"
             inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: $(subscriptionId)
-              action: "Create Or Update Resource Group"
-              resourceGroupName: $(resourceGroupName)
-              location: $(location)
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.json"
-              csmParametersFile: "build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.parameters.json"
-              overrideParameters: >-
-                -aksClusterManagedIdentityName "$(kubernetesClusterName)-agentpool"
-                -aksClusterNodeResourceGroupName "$(kubernetesNodeResourceGroupName)"
-                -azureContainerRegistryName "$(azureContainerRegistryName)"
-              deploymentMode: "Incremental"
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment group create --template-file build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.bicep
+                --resource-group $(resourceGroupName)
+                --parameters
+                aksClusterManagedIdentityName="$(kubernetesClusterName)-agentpool"
+                aksClusterNodeResourceGroupName="$(kubernetesNodeResourceGroupName)"
+                azureContainerRegistryName="$(azureContainerRegistryName)"
 
           - task: HelmInstaller@1
             inputs:
