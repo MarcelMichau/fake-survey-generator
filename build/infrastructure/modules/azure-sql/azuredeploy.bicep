@@ -21,7 +21,7 @@ param azureAdAdministratorLogin string
 param azureAdAdministratorObjectId string
 
 @description('The Azure AD administrator Azure AD Tenant ID')
-param azureAdAdministratorTenantId string
+param azureAdAdministratorTenantId string = subscription().tenantId
 
 resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
   name: serverName

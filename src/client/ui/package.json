@@ -8,26 +8,26 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.1.0",
-    "@testing-library/user-event": "^13.2.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.3.0",
     "@types/history": "^4.7.9",
     "@types/jest": "^27.0.2",
-    "@types/node": "^16.9.6",
-    "@types/react": "^17.0.24",
+    "@types/node": "^16.10.4",
+    "@types/react": "^17.0.29",
     "@types/react-dom": "^17.0.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-loading-skeleton": "^2.2.0",
     "react-scripts": "4.0.3",
-    "typescript": "^4.4.3",
-    "web-vitals": "^2.1.0"
+    "typescript": "^4.4.4",
+    "web-vitals": "^2.1.2"
   },
   "devDependencies": {
-    "autoprefixer": "^10.3.4",
+    "autoprefixer": "^10.3.7",
     "cross-env": "^7.0.3",
-    "postcss": "^8.3.6",
-    "postcss-cli": "^8.3.1",
-    "tailwindcss": "^2.2.15"
+    "postcss": "^8.3.9",
+    "postcss-cli": "^9.0.1",
+    "tailwindcss": "^2.2.16"
   },
   "scripts": {
     "start": "npm run watch:css && cross-env HTTPS=true REACT_APP_VERSION=latest react-scripts start",

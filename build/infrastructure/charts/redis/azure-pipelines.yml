@@ -9,7 +9,7 @@ trigger:
   paths:
     include:
       - charts/redis/*
-      - build/infrastructure/redis/*
+      - build/infrastructure/charts/redis/*
 
 stages:
   - stage: Publish
