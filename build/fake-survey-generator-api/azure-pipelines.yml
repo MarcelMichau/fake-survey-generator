@@ -8,7 +8,7 @@ trigger:
       - src/server/*
       - charts/fake-survey-generator-api/*
       - build/fake-survey-generator-api/*
-      - build/infrastructure/fake-survey-generator-managed-identity/*
+      - build/infrastructure/modules/fake-survey-generator-managed-identity/*
 
 pr:
   branches:
@@ -23,7 +23,7 @@ pr:
       - src/server/*
       - charts/fake-survey-generator-api/*
       - build/fake-survey-generator-api/*
-      - build/infrastructure/fake-survey-generator-managed-identity/*
+      - build/infrastructure/modules/fake-survey-generator-managed-identity/*
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
@@ -364,7 +364,7 @@ stages:
           vmImage: "ubuntu-latest"
 
         steps:
-          - script: az bicep build --file build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.bicep
+          - script: az bicep build --file build/infrastructure/modules/fake-survey-generator-managed-identity/azuredeploy.bicep
             displayName: "Compile Fake Survey Generator Managed Identity Bicep to ARM"
 
           - task: AzureResourceManagerTemplateDeployment@3
@@ -377,7 +377,7 @@ stages:
               resourceGroupName: "$(resourceGroupName)"
               location: "South Africa North"
               templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/fake-survey-generator-managed-identity/azuredeploy.json"
+              csmFile: "build/infrastructure/modules/fake-survey-generator-managed-identity/azuredeploy.json"
               deploymentMode: "Incremental"
               overrideParameters: >-
                 -identityName "$(managedIdentityName)"
