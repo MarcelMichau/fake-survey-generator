@@ -33,7 +33,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment sub create --template-file build/infrastructure/resource-group/azuredeploy.bicep
+                az deployment sub create --template-file build/infrastructure/modules/resource-group/azuredeploy.bicep
                 --location "$(location)"
                 --parameters
                 location="$(location)"
@@ -46,7 +46,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/azure-application-insights/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/azure-application-insights/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 location="$(location)"
@@ -59,7 +59,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/dns-zone/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/dns-zone/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 name="$(dnsZoneName)"
@@ -80,7 +80,7 @@ stages:
                   ]
                 }'
 
-                az deployment group create --template-file build/infrastructure/azure-key-vault/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/azure-key-vault/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 name="kv-fake-survey-generator"
@@ -93,7 +93,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/azure-container-registry/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/azure-container-registry/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 name="$(azureContainerRegistryName)"
@@ -105,7 +105,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/azure-redis-cache/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/azure-redis-cache/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 name="redis-fake-survey-generator"
@@ -117,7 +117,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/azure-sql/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/azure-sql/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 serverName="sql-marcel-michau"
@@ -130,7 +130,7 @@ stages:
                 azureAdAdministratorObjectId="$(sqlDatabaseAzureAdAdminObjectId)"
                 azureAdAdministratorTenantId="$(tenantId)"
 
-          - script: az bicep build --file build/infrastructure/aks-managed-identities/azuredeploy.bicep
+          - script: az bicep build --file build/infrastructure/modules/aks-managed-identities/azuredeploy.bicep
             displayName: "Compile AKS Managed Identities Bicep to ARM"
 
           - task: AzureResourceManagerTemplateDeployment@3
@@ -143,7 +143,7 @@ stages:
               resourceGroupName: $(resourceGroupName)
               location: $(location)
               templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/aks-managed-identities/azuredeploy.json"
+              csmFile: "build/infrastructure/modules/aks-managed-identities/azuredeploy.json"
               overrideParameters: >-
                 -dnsZoneName "$(dnsZoneName)"
                 -externalDnsIdentityName "$(externalDnsIdentityName)"
@@ -177,7 +177,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/azure-kubernetes-service/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/azure-kubernetes-service/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 clusterName="$(kubernetesClusterName)"
@@ -190,7 +190,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/aks-managed-identity-role-assignments/node-resource-group/azuredeploy.bicep
                 --resource-group $(kubernetesNodeResourceGroupName)
                 --parameters
                 aksClusterManagedIdentityName="$(kubernetesClusterName)-agentpool"
@@ -202,7 +202,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create --template-file build/infrastructure/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.bicep
+                az deployment group create --template-file build/infrastructure/modules/aks-managed-identity-role-assignments/cluster-resource-group/azuredeploy.bicep
                 --resource-group $(resourceGroupName)
                 --parameters
                 aksClusterManagedIdentityName="$(kubernetesClusterName)-agentpool"
@@ -368,7 +368,7 @@ stages:
               namespace: "$(kubernetesInfrastructureNamespace)"
               command: "upgrade"
               chartType: "FilePath"
-              chartPath: "build/infrastructure/azure-kubernetes-service/charts/cluster-issuer-chart"
+              chartPath: "build/infrastructure/modules/azure-kubernetes-service/charts/cluster-issuer-chart"
               releaseName: "letsencrypt-cluster-issuer"
               arguments: >-
                 --create-namespace
@@ -390,7 +390,7 @@ stages:
               namespace: "$(kubernetesInfrastructureNamespace)"
               command: "upgrade"
               chartType: "FilePath"
-              chartPath: "build/infrastructure/azure-kubernetes-service/charts/external-dns-chart"
+              chartPath: "build/infrastructure/modules/azure-kubernetes-service/charts/external-dns-chart"
               releaseName: "external-dns-identity"
               arguments: >-
                 --create-namespace

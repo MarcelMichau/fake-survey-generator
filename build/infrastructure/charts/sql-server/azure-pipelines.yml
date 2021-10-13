@@ -9,7 +9,7 @@ trigger:
   paths:
     include:
       - charts/sql-server/*
-      - build/infrastructure/sql-server/*
+      - build/infrastructure/charts/sql-server/*
 
 stages:
   - stage: Publish
