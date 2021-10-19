@@ -9,7 +9,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
         public override void Configure(EntityTypeBuilder<User> builder)
         {
             const string tableName = "User";
-            var sequenceName = $"{tableName}Seq";
+            const string sequenceName = $"{tableName}Seq";
 
             builder
                 .ToTable(tableName, SurveyContext.DefaultSchema);
@@ -26,21 +26,15 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 
             builder
                 .Property(u => u.DisplayName)
-                .HasMaxLength(250)
-                .IsRequired()
-                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
+                .IsRequired();
 
             builder
                 .Property(u => u.EmailAddress)
-                .HasMaxLength(250)
-                .IsRequired()
-                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
+                .IsRequired();
 
             builder
                 .Property(u => u.ExternalUserId)
-                .HasMaxLength(250)
-                .IsRequired()
-                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
+                .IsRequired();
 
             builder
                 .HasIndex(u => u.ExternalUserId)

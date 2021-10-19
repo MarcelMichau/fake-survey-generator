@@ -9,7 +9,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
         public override void Configure(EntityTypeBuilder<SurveyOption> builder)
         {
             const string tableName = "SurveyOption";
-            var sequenceName = $"{tableName}Seq";
+            const string sequenceName = $"{tableName}Seq";
 
             builder
                 .ToTable(tableName, SurveyContext.DefaultSchema);
@@ -26,9 +26,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 
             builder
                 .Property(o => o.OptionText)
-                .HasMaxLength(250)
-                .IsRequired()
-                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
+                .IsRequired();
 
             builder
                 .Property(o => o.NumberOfVotes)

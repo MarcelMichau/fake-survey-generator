@@ -9,8 +9,8 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
         public override void Configure(EntityTypeBuilder<Survey> builder)
         {
             const string tableName = "Survey";
-            var sequenceName = $"{tableName}Seq";
-            var foreignKeyName = $"{tableName}Id";
+            const string sequenceName = $"{tableName}Seq";
+            const string foreignKeyName = $"{tableName}Id";
 
             builder
                 .ToTable(tableName, SurveyContext.DefaultSchema);
@@ -27,15 +27,11 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
 
             builder
                 .Property(s => s.Topic)
-                .HasMaxLength(250)
-                .IsRequired()
-                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
+                .IsRequired();
 
             builder
                 .Property(s => s.RespondentType)
-                .HasMaxLength(250)
-                .IsRequired()
-                .HasConversion(DomainConversionProviders.NonEmptyStringToString, DomainConversionProviders.StringToNonEmptyString);
+                .IsRequired();
 
             builder
                 .Property(s => s.NumberOfRespondents)
@@ -48,7 +44,7 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence.EntityConfigurations
                 .IsRequired();
 
             var navigation = builder.Metadata.FindNavigation(nameof(Survey.Options));
-            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+            navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
 
             base.Configure(builder);
         }

@@ -8,6 +8,7 @@ using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
+using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Shared.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -50,6 +51,14 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            configurationBuilder
+                .Properties<NonEmptyString>()
+                .HaveMaxLength(250)
+                .HaveConversion<NonEmptyStringValueConverter>();
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
