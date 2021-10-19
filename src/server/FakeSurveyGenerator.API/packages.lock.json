@@ -198,23 +198,23 @@
       },
       "Swashbuckle.AspNetCore": {
         "type": "Direct",
-        "requested": "[6.2.2, )",
-        "resolved": "6.2.2",
-        "contentHash": "Irw1OHu06kN3KOpLLQvy4pb/K7AjphnaNFWa9AZCEh0CNZ+3Eesqr/WfNzhX6w6om0Y4LEhVmbub83aGAZoguQ==",
+        "requested": "[6.2.3, )",
+        "resolved": "6.2.3",
+        "contentHash": "cnzQDn0Le+hInsw2SYwlOhOCPXpYi/szcvnyqZJ12v+QyrLBwAmWXBg6RIyHB18s/mLeywC+Rg2O9ndz0IUNYQ==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "3.0.0",
-          "Swashbuckle.AspNetCore.Swagger": "6.2.2",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.2.2",
-          "Swashbuckle.AspNetCore.SwaggerUI": "6.2.2"
+          "Swashbuckle.AspNetCore.Swagger": "6.2.3",
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.2.3",
+          "Swashbuckle.AspNetCore.SwaggerUI": "6.2.3"
         }
       },
       "Swashbuckle.AspNetCore.Annotations": {
         "type": "Direct",
-        "requested": "[6.2.2, )",
-        "resolved": "6.2.2",
-        "contentHash": "d9SQVXrUa3ZfM9kaayJ2ac3h9/tptXdYzwCyFlTReH9Rfwv7sO083aXX3QcHoVgfn7AbmNK7T37MlHpObsBl3g==",
+        "requested": "[6.2.3, )",
+        "resolved": "6.2.3",
+        "contentHash": "I8rcqNo+60+zJl5TpRF9JZSnGYPGJmgtlK+ZyTDsG+0lRDjMCPTPndcSSgeUpUh1XsMPuCx38hNu78Xf+xvjeg==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.2.2"
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.2.3"
         }
       },
       "AspNetCore.HealthChecks.UI.Core": {
@@ -277,8 +277,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.23.0",
-        "contentHash": "lP1nApiMd+hL0m1tlKhLZ8B3M6X2dXQ9/gF6s3YRrvcJlMQGcCYHP2vOS5jmkqPViG3aWqs2Xyc9Guk7aq0Bug=="
+        "resolved": "2.24.0",
+        "contentHash": "beui99bZQ60j/m9zhGNJgmyJT3TWZr2dBvtRe+Qn9GN/4RsSRBkqxCTzbLwDnymIWScOmxgz/OOrxVule6vLBA=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -1604,24 +1604,24 @@
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
-        "resolved": "6.2.2",
-        "contentHash": "o8UV8yecriMfHTFx1elrltamuSv36g5KtofKtsb1VZ/xHuFADUSBvNzdTZzSy4igBf06+dmimh3oM/JeMPkL3g==",
+        "resolved": "6.2.3",
+        "contentHash": "qOF7j1sL0bWm8g/qqHVPCvkO3JlVvUIB8WfC98kSh6BT5y5DAnBNctfac7XR5EZf+eD7/WasvANncTqwZYfmWQ==",
         "dependencies": {
           "Microsoft.OpenApi": "1.2.3"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Transitive",
-        "resolved": "6.2.2",
-        "contentHash": "GktBI7JHN4XFYwDM5ZTD5IbBYxVYZ7y7lFs6F3PgESwn2SPLyoLxJsWSi3ozDK3fB6aKcHgY90gHtezbbfW2iw==",
+        "resolved": "6.2.3",
+        "contentHash": "+Xq7WdMCCfcXlnbLJVFNgY8ITdP2TRYIlpbt6IKzDw5FwFxdi9lBfNDtcT+/wkKwX70iBBFmXldnnd02/VO72A==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "6.2.2"
+          "Swashbuckle.AspNetCore.Swagger": "6.2.3"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerUI": {
         "type": "Transitive",
-        "resolved": "6.2.2",
-        "contentHash": "wGrglgunEydAGuUvETBRytvFvhEhwFRuY0Qu1rK+axZfFNfRSFRdlqg+vhT4OLOCJpfReSX47jLCYu56c5RsFg=="
+        "resolved": "6.2.3",
+        "contentHash": "bCRI87uKJVb4G+KURWm8LQrL64St04dEFZcF6gIM67Zc0Sr/N47EO83ybLMYOvfNdO1DCv8xwPcrz9J/VEhQ5g=="
       },
       "System.AppContext": {
         "type": "Transitive",
@@ -2725,7 +2725,7 @@
         "dependencies": {
           "AutoMapper": "10.1.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "8.1.1",
-          "CSharpFunctionalExtensions": "2.23.0",
+          "CSharpFunctionalExtensions": "2.24.0",
           "Dapper": "2.0.90",
           "FakeSurveyGenerator.Domain": "1.0.0",
           "FluentValidation": "10.3.3",
@@ -2743,7 +2743,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.23.0",
+          "CSharpFunctionalExtensions": "2.24.0",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.3.0-eap4"
         }
