@@ -53,7 +53,7 @@ const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
     };
 
     return (
-        <SkeletonTheme color="#2d3748" highlightColor="#667eea">
+        <SkeletonTheme baseColor="#2d3748" highlightColor="#667eea">
             <div className="dark:bg-gray-800 rounded px-8 pt-6 pb-8 mb-4">
                 <h2 className="dark:text-indigo-500 text-xl font-semibold tracking-tight mb-2">
                     {loading ? (

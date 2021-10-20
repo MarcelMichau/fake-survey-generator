@@ -41,7 +41,7 @@ const SkeletonButton: React.FC<SkeletonButtonProps> = ({
     const hexColour = colourMap[actionType].hexValue;
 
     return (
-        <SkeletonTheme color="#2d3748" highlightColor={hexColour}>
+        <SkeletonTheme baseColor="#2d3748" highlightColor={hexColour}>
             {loading ? (
                 <Skeleton height={40} width={150} className="px-4 py-2" />
             ) : (
