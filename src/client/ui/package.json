@@ -30,10 +30,10 @@
     "tailwindcss": "^2.2.17"
   },
   "scripts": {
-    "start": "npm run watch:css && cross-env HTTPS=true REACT_APP_VERSION=latest react-scripts start",
-    "build": "cross-env NODE_ENV=production npm run build:css && react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "SET NODE_OPTIONS=--openssl-legacy-provider && npm run watch:css && cross-env HTTPS=true REACT_APP_VERSION=latest react-scripts start",
+    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production npm run build:css && react-scripts build",
+    "test": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts test",
+    "eject": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts eject",
     "build:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
     "watch:css": "postcss src/assets/tailwind.css -o src/assets/main.css"
   },
