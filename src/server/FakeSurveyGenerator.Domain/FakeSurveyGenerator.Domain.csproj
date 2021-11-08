@@ -6,12 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="2.24.1" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.24.3" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FakeSurveyGenerator.Shared\FakeSurveyGenerator.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Nerdbank.GitVersioning" Version="3.4.244" />
   </ItemGroup>
 
 </Project>

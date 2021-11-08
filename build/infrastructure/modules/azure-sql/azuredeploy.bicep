@@ -29,6 +29,14 @@ resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' = {
   properties: {
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    administrators: {
+      administratorType: 'ActiveDirectory'
+      azureADOnlyAuthentication: true
+      login: azureAdAdministratorLogin
+      principalType: 'Group'
+      sid: azureAdAdministratorObjectId
+      tenantId: azureAdAdministratorTenantId
+    }
   }
 }
 
@@ -51,13 +59,13 @@ resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2021-02-01-previe
   }
 }
 
-resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/administrators@2021-02-01-preview' = {
-  parent: sqlServer
-  name: 'ActiveDirectory'
-  properties: {
-    administratorType: 'ActiveDirectory'
-    login: azureAdAdministratorLogin
-    sid: azureAdAdministratorObjectId
-    tenantId: azureAdAdministratorTenantId
-  }
-}
+// resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/administrators@2021-02-01-preview' = {
+//   parent: sqlServer
+//   name: 'ActiveDirectory'
+//   properties: {
+//     administratorType: 'ActiveDirectory'
+//     login: azureAdAdministratorLogin
+//     sid: azureAdAdministratorObjectId
+//     tenantId: azureAdAdministratorTenantId
+//   }
+// }
