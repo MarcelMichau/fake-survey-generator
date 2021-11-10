@@ -6,50 +6,49 @@ using Microsoft.Extensions.DependencyInjection;
 using Respawn;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration
+namespace FakeSurveyGenerator.API.Tests.Integration;
+
+[CollectionDefinition(nameof(IntegrationTestFixture))]
+public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
+
+public class IntegrationTestFixture : IAsyncLifetime
 {
-    [CollectionDefinition(nameof(IntegrationTestFixture))]
-    public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
+    public readonly IntegrationTestWebApplicationFactory<Startup> Factory;
 
-    public class IntegrationTestFixture : IAsyncLifetime
+    private readonly Checkpoint _checkpoint;
+    private readonly IConfiguration _configuration;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+
+    public IntegrationTestFixture()
     {
-        public readonly IntegrationTestWebApplicationFactory<Startup> Factory;
+        Factory = new IntegrationTestWebApplicationFactory<Startup>();
+        _checkpoint = new Checkpoint();
+        _configuration = Factory.Services.GetRequiredService<IConfiguration>();
+        _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
+    }
 
-        private readonly Checkpoint _checkpoint;
-        private readonly IConfiguration _configuration;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+    public async Task InitializeAsync()
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
 
-        public IntegrationTestFixture()
+        var scopedServiceProvider = scope.ServiceProvider;
+
+        var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
+        await context.Database.EnsureCreatedAsync();
+
+        var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
+        await cache.RemoveAsync("FakeSurveyGenerator");
+
+        if (_configuration.GetValue<bool>("USE_REAL_DEPENDENCIES"))
         {
-            Factory = new IntegrationTestWebApplicationFactory<Startup>();
-            _checkpoint = new Checkpoint();
-            _configuration = Factory.Services.GetRequiredService<IConfiguration>();
-            _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
+            var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
+            await _checkpoint.Reset(connectionString);
         }
+    }
 
-        public async Task InitializeAsync()
-        {
-            using var scope = _serviceScopeFactory.CreateScope();
-
-            var scopedServiceProvider = scope.ServiceProvider;
-
-            var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
-            await context.Database.EnsureCreatedAsync();
-
-            var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
-            await cache.RemoveAsync("FakeSurveyGenerator");
-
-            if (_configuration.GetValue<bool>("USE_REAL_DEPENDENCIES"))
-            {
-                var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
-                await _checkpoint.Reset(connectionString);
-            }
-        }
-
-        public Task DisposeAsync()
-        {
-            Factory?.Dispose();
-            return Task.CompletedTask;
-        }
+    public Task DisposeAsync()
+    {
+        Factory?.Dispose();
+        return Task.CompletedTask;
     }
 }

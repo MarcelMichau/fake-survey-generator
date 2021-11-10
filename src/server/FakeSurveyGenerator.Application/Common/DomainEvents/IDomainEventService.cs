@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Shared.SeedWork;
 
-namespace FakeSurveyGenerator.Application.Common.DomainEvents
+namespace FakeSurveyGenerator.Application.Common.DomainEvents;
+
+public interface IDomainEventService
 {
-    public interface IDomainEventService
-    {
-        Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken);
-    }
+    Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken);
 }

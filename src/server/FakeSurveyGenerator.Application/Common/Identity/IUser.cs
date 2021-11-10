@@ -1,9 +1,8 @@
-﻿namespace FakeSurveyGenerator.Application.Common.Identity
+﻿namespace FakeSurveyGenerator.Application.Common.Identity;
+
+public interface IUser
 {
-    public interface IUser
-    {
-        string Id { get; }
-        string DisplayName { get; }
-        string EmailAddress { get; }
-    }
+    string Id { get; }
+    string DisplayName { get; }
+    string EmailAddress { get; }
 }

@@ -4,19 +4,18 @@ using FakeSurveyGenerator.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.API.Configuration
+namespace FakeSurveyGenerator.API.Configuration;
+
+internal static class ApplicationServicesServiceCollectionExtensions
 {
-    internal static class ApplicationServicesServiceCollectionExtensions
+    public static IServiceCollection AddApplicationServicesConfiguration(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddApplicationServicesConfiguration(this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddInfrastructureForApi(configuration);
-            services.AddApplication();
+        services.AddInfrastructureForApi(configuration);
+        services.AddApplication();
 
-            services.AddHostedService<DatabaseCreationHostedService>();
+        services.AddHostedService<DatabaseCreationHostedService>();
 
-            return services;
-        }
+        return services;
     }
 }

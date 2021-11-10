@@ -3,31 +3,30 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FakeSurveyGenerator.API.Configuration
+namespace FakeSurveyGenerator.API.Configuration;
+
+internal static class AuthenticationServiceCollectionExtensions
 {
-    internal static class AuthenticationServiceCollectionExtensions
+    public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            var identityProviderUrl = configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
+        var identityProviderUrl = configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.Authority = identityProviderUrl;
+                options.Audience = "fake-survey-generator-api";
+
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.Authority = identityProviderUrl;
-                    options.Audience = "fake-survey-generator-api";
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = identityProviderUrl
+                };
+            });
 
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = identityProviderUrl
-                    };
-                });
-
-            return services;
-        }
+        return services;
     }
 }

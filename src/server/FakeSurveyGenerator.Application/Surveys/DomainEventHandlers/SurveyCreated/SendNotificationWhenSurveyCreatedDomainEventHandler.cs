@@ -6,25 +6,24 @@ using FakeSurveyGenerator.Application.Notifications.Models;
 using FakeSurveyGenerator.Domain.DomainEvents;
 using MediatR;
 
-namespace FakeSurveyGenerator.Application.Surveys.DomainEventHandlers.SurveyCreated
+namespace FakeSurveyGenerator.Application.Surveys.DomainEventHandlers.SurveyCreated;
+
+public sealed class
+    SendNotificationWhenSurveyCreatedDomainEventHandler : INotificationHandler<
+        DomainEventNotification<SurveyCreatedDomainEvent>>
 {
-    public sealed class
-        SendNotificationWhenSurveyCreatedDomainEventHandler : INotificationHandler<
-            DomainEventNotification<SurveyCreatedDomainEvent>>
+    private readonly INotificationService _notificationService;
+
+    public SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
     {
-        private readonly INotificationService _notificationService;
+        _notificationService = notificationService;
+    }
 
-        public SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
-        {
-            _notificationService = notificationService;
-        }
-
-        public async Task Handle(DomainEventNotification<SurveyCreatedDomainEvent> notification,
-            CancellationToken cancellationToken)
-        {
-            await _notificationService.SendMessage(
-                new MessageDto("System", "Whom It May Concern", "New Survey Created",
-                    $"Survey with ID: {notification.DomainEvent.Survey.Id} created"), cancellationToken);
-        }
+    public async Task Handle(DomainEventNotification<SurveyCreatedDomainEvent> notification,
+        CancellationToken cancellationToken)
+    {
+        await _notificationService.SendMessage(
+            new MessageDto("System", "Whom It May Concern", "New Survey Created",
+                $"Survey with ID: {notification.DomainEvent.Survey.Id} created"), cancellationToken);
     }
 }

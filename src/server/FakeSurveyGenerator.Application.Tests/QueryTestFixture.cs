@@ -5,41 +5,40 @@ using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Xunit;
 
-namespace FakeSurveyGenerator.Application.Tests
+namespace FakeSurveyGenerator.Application.Tests;
+
+public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
 {
-    public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
+    public SurveyContext Context { get; }
+    public IMapper Mapper { get; }
+
+    public QueryTestFixture()
     {
-        public SurveyContext Context { get; }
-        public IMapper Mapper { get; }
+        Context = SurveyContextFactory.Create();
 
-        public QueryTestFixture()
+        var configurationProvider = new MapperConfiguration(cfg =>
         {
-            Context = SurveyContextFactory.Create();
+            cfg.AddProfile<MappingProfile>();
+        });
 
-            var configurationProvider = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
-
-            Mapper = configurationProvider.CreateMapper();
-        }
-
-        public void Dispose()
-        {
-            SurveyContextFactory.Destroy(Context);
-        }
-
-        public async Task InitializeAsync()
-        {
-            await SurveyContextFactory.SeedSampleData(Context);
-        }
-
-        public Task DisposeAsync()
-        {
-            return Task.CompletedTask;
-        }
+        Mapper = configurationProvider.CreateMapper();
     }
 
-    [CollectionDefinition(nameof(QueryTestFixture))]
-    public class QueryCollection : ICollectionFixture<QueryTestFixture> { }
+    public void Dispose()
+    {
+        SurveyContextFactory.Destroy(Context);
+    }
+
+    public async Task InitializeAsync()
+    {
+        await SurveyContextFactory.SeedSampleData(Context);
+    }
+
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
+    }
 }
+
+[CollectionDefinition(nameof(QueryTestFixture))]
+public class QueryCollection : ICollectionFixture<QueryTestFixture> { }

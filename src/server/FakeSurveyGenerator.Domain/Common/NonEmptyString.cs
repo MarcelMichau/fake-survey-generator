@@ -2,39 +2,38 @@
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
-namespace FakeSurveyGenerator.Domain.Common
+namespace FakeSurveyGenerator.Domain.Common;
+
+public sealed class NonEmptyString : ValueObject
 {
-    public sealed class NonEmptyString : ValueObject
+    public string Value { get; }
+
+    private NonEmptyString(string value)
     {
-        public string Value { get; }
+        if (string.IsNullOrWhiteSpace(value))
+            throw new InvalidOperationException(
+                $"Cannot assign an empty string value to a {nameof(NonEmptyString)}");
 
-        private NonEmptyString(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new InvalidOperationException(
-                    $"Cannot assign an empty string value to a {nameof(NonEmptyString)}");
+        Value = value;
+    }
 
-            Value = value;
-        }
+    public static NonEmptyString Create(string value)
+    {
+        return new(value);
+    }
 
-        public static NonEmptyString Create(string value)
-        {
-            return new(value);
-        }
+    public static explicit operator NonEmptyString(string value)
+    {
+        return new(value);
+    }
 
-        public static explicit operator NonEmptyString(string value)
-        {
-            return new(value);
-        }
+    public static implicit operator string(NonEmptyString value)
+    {
+        return value.Value;
+    }
 
-        public static implicit operator string(NonEmptyString value)
-        {
-            return value.Value;
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Value;
-        }
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

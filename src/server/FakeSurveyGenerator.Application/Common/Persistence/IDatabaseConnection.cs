@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
-namespace FakeSurveyGenerator.Application.Common.Persistence
+namespace FakeSurveyGenerator.Application.Common.Persistence;
+
+public interface IDatabaseConnection
 {
-    public interface IDatabaseConnection
-    {
-        Task<SqlConnection> GetDbConnection();
-    }
+    Task<SqlConnection> GetDbConnection();
 }

@@ -9,84 +9,83 @@ using FakeSurveyGenerator.Data;
 using NSubstitute;
 using Xunit;
 
-namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey
+namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey;
+
+public sealed class CreateSurveyCommandTests : CommandTestBase
 {
-    public sealed class CreateSurveyCommandTests : CommandTestBase
+    private readonly Fixture _fixture = new();
+    private readonly IUserService _mockUserService = Substitute.For<IUserService>();
+
+    public CreateSurveyCommandTests()
     {
-        private readonly Fixture _fixture = new();
-        private readonly IUserService _mockUserService = Substitute.For<IUserService>();
+        _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
+    }
 
-        public CreateSurveyCommandTests()
+    [Fact]
+    public async Task GivenValidCreateSurveyCommand_WhenCallingHandle_ThenNewSurveyShouldBeReturned()
+    {
+        var topic = _fixture.Create<string>();
+        var numberOfRespondents = _fixture.Create<int>();
+        var respondentType = _fixture.Create<string>();
+
+        var options = new List<SurveyOptionDto>
         {
-            _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
-        }
-
-        [Fact]
-        public async Task GivenValidCreateSurveyCommand_WhenCallingHandle_ThenNewSurveyShouldBeReturned()
-        {
-            var topic = _fixture.Create<string>();
-            var numberOfRespondents = _fixture.Create<int>();
-            var respondentType = _fixture.Create<string>();
-
-            var options = new List<SurveyOptionDto>
+            new()
             {
-                new()
-                {
-                    OptionText = _fixture.Create<string>()
-                },
-                new()
-                {
-                    OptionText = _fixture.Create<string>()
-                }
-            };
-
-            var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
-
-            var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
-
-            var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
-
-            var survey = result.Value;
-
-            Assert.Equal(topic, survey.Topic);
-            Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
-            Assert.Equal(respondentType, survey.RespondentType);
-        }
-
-        [Fact]
-        public async Task GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
-        {
-            var topic = _fixture.Create<string>();
-            const int numberOfRespondents = 500;
-            var respondentType = _fixture.Create<string>();
-
-            var options = new List<SurveyOptionDto>
+                OptionText = _fixture.Create<string>()
+            },
+            new()
             {
-                new()
-                {
-                    OptionText = _fixture.Create<string>(),
-                    PreferredNumberOfVotes = 100
-                },
-                new()
-                {
-                    OptionText = _fixture.Create<string>(),
-                    PreferredNumberOfVotes = 400
-                }
-            };
+                OptionText = _fixture.Create<string>()
+            }
+        };
 
-            var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
+        var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-            var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
+        var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
 
-            var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
+        var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
-            var survey = result.Value;
+        var survey = result.Value;
 
-            Assert.Equal(topic, survey.Topic);
-            Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
-            Assert.Equal(respondentType, survey.RespondentType);
-            Assert.Equal(100, survey.Options.First().NumberOfVotes);
-            Assert.Equal(400, survey.Options.Last().NumberOfVotes);
-        }
+        Assert.Equal(topic, survey.Topic);
+        Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
+        Assert.Equal(respondentType, survey.RespondentType);
+    }
+
+    [Fact]
+    public async Task GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
+    {
+        var topic = _fixture.Create<string>();
+        const int numberOfRespondents = 500;
+        var respondentType = _fixture.Create<string>();
+
+        var options = new List<SurveyOptionDto>
+        {
+            new()
+            {
+                OptionText = _fixture.Create<string>(),
+                PreferredNumberOfVotes = 100
+            },
+            new()
+            {
+                OptionText = _fixture.Create<string>(),
+                PreferredNumberOfVotes = 400
+            }
+        };
+
+        var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
+
+        var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
+
+        var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
+
+        var survey = result.Value;
+
+        Assert.Equal(topic, survey.Topic);
+        Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
+        Assert.Equal(respondentType, survey.RespondentType);
+        Assert.Equal(100, survey.Options.First().NumberOfVotes);
+        Assert.Equal(400, survey.Options.Last().NumberOfVotes);
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace FakeSurveyGenerator.Infrastructure.Identity
+﻿namespace FakeSurveyGenerator.Infrastructure.Identity;
+
+public interface ITokenProviderService
 {
-    public interface ITokenProviderService
-    {
-        string GetToken();
-    }
+    string GetToken();
 }

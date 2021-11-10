@@ -1,7 +1,6 @@
-﻿namespace FakeSurveyGenerator.Application.Common.Caching
+﻿namespace FakeSurveyGenerator.Application.Common.Caching;
+
+public interface ICacheFactory
 {
-    public interface ICacheFactory
-    {
-        ICache<T> GetCache<T>();
-    }
+    ICache<T> GetCache<T>();
 }

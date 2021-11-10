@@ -4,28 +4,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using StackExchange.Redis;
 
-namespace FakeSurveyGenerator.Infrastructure.Caching
+namespace FakeSurveyGenerator.Infrastructure.Caching;
+
+internal static class CacheServiceCollectionExtensions
 {
-    internal static class CacheServiceCollectionExtensions
+    public static IServiceCollection AddCacheConfiguration(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddCacheConfiguration(this IServiceCollection services,
-            IConfiguration configuration)
+        services.TryAddSingleton(typeof(ICache<>), typeof(Cache<>));
+        services.TryAddSingleton<ICacheFactory, CacheFactory>();
+
+        services.AddStackExchangeRedisCache(options =>
         {
-            services.TryAddSingleton(typeof(ICache<>), typeof(Cache<>));
-            services.TryAddSingleton<ICacheFactory, CacheFactory>();
-
-            services.AddStackExchangeRedisCache(options =>
+            options.ConfigurationOptions = new ConfigurationOptions
             {
-                options.ConfigurationOptions = new ConfigurationOptions
-                {
-                    EndPoints = { configuration.GetValue<string>("REDIS_URL") },
-                    Password = configuration.GetValue<string>("REDIS_PASSWORD"),
-                    Ssl = configuration.GetValue<bool>("REDIS_SSL"),
-                    DefaultDatabase = configuration.GetValue<int>("REDIS_DEFAULT_DATABASE")
-                };
-            });
+                EndPoints = { configuration.GetValue<string>("REDIS_URL") },
+                Password = configuration.GetValue<string>("REDIS_PASSWORD"),
+                Ssl = configuration.GetValue<bool>("REDIS_SSL"),
+                DefaultDatabase = configuration.GetValue<int>("REDIS_DEFAULT_DATABASE")
+            };
+        });
 
-            return services;
-        }
+        return services;
     }
 }

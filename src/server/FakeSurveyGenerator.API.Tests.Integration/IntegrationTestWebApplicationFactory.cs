@@ -13,88 +13,87 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
-namespace FakeSurveyGenerator.API.Tests.Integration
+namespace FakeSurveyGenerator.API.Tests.Integration;
+
+public sealed class IntegrationTestWebApplicationFactory<TStartup>
+    : WebApplicationFactory<TStartup> where TStartup : class
 {
-    public sealed class IntegrationTestWebApplicationFactory<TStartup>
-        : WebApplicationFactory<TStartup> where TStartup : class
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        // When running the integration tests with Docker Compose, the USE_ENVIRONMENT_VARIABLES_ONLY is set to true & the environment variables used
+        // in the docker-compose-tests.override.yml file are used.
+        // Integration tests can be run with Docker Compose by running the following in a terminal:
+        // docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up --build fake-survey-generator-api-integration-test
+
+        // When running the integration tests with `dotnet test` or through Visual Studio, the USE_ENVIRONMENT_VARIABLES_ONLY is not set, therefore
+        // any necessary config is set by using builder.ConfigureAppConfiguration().
+
+        if (!Convert.ToBoolean(Environment.GetEnvironmentVariable("USE_ENVIRONMENT_VARIABLES_ONLY")))
         {
-            // When running the integration tests with Docker Compose, the USE_ENVIRONMENT_VARIABLES_ONLY is set to true & the environment variables used
-            // in the docker-compose-tests.override.yml file are used.
-            // Integration tests can be run with Docker Compose by running the following in a terminal:
-            // docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up --build fake-survey-generator-api-integration-test
-
-            // When running the integration tests with `dotnet test` or through Visual Studio, the USE_ENVIRONMENT_VARIABLES_ONLY is not set, therefore
-            // any necessary config is set by using builder.ConfigureAppConfiguration().
-
-            if (!Convert.ToBoolean(Environment.GetEnvironmentVariable("USE_ENVIRONMENT_VARIABLES_ONLY")))
+            builder.ConfigureAppConfiguration(config =>
             {
-                builder.ConfigureAppConfiguration(config =>
+                config.AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    config.AddInMemoryCollection(new Dictionary<string, string>
+                    // To test with real dependencies for SQL Server & Redis outside of Docker Compose, the USE_REAL_DEPENDENCIES setting can be set to true here.
+                    // Ensure that the SQL Server & Redis Docker containers are running before starting the test run by running the following in a terminal:
+                    // docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build sql-server redis
+
+                    // When running with USE_REAL_DEPENDENCIES set to false, an in-memory database & an in-memory distributed cache will be used instead.
+
+                    {"ASPNETCORE_ENVIRONMENT", "Production" }, // Run integration tests as close as possible to how code will be run in Production
+                    {"USE_REAL_DEPENDENCIES", "false" },
                     {
-                        // To test with real dependencies for SQL Server & Redis outside of Docker Compose, the USE_REAL_DEPENDENCIES setting can be set to true here.
-                        // Ensure that the SQL Server & Redis Docker containers are running before starting the test run by running the following in a terminal:
-                        // docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build sql-server redis
-
-                        // When running with USE_REAL_DEPENDENCIES set to false, an in-memory database & an in-memory distributed cache will be used instead.
-
-                        {"ASPNETCORE_ENVIRONMENT", "Production" }, // Run integration tests as close as possible to how code will be run in Production
-                        {"USE_REAL_DEPENDENCIES", "false" },
-                        {
-                            "ConnectionStrings:SurveyContext",
-                            "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0"
-                        },
-                        {"REDIS_PASSWORD", "testing"},
-                        {"REDIS_SSL", "false"},
-                        {"REDIS_URL", "127.0.0.1"},
-                        {"REDIS_DEFAULT_DATABASE", "0"},
-                        {"IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com"}
-                    });
+                        "ConnectionStrings:SurveyContext",
+                        "Server=127.0.0.1;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0"
+                    },
+                    {"REDIS_PASSWORD", "testing"},
+                    {"REDIS_SSL", "false"},
+                    {"REDIS_URL", "127.0.0.1"},
+                    {"REDIS_DEFAULT_DATABASE", "0"},
+                    {"IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com"}
                 });
-            }
-
-            builder.ConfigureServices((hostBuilderContext, services) =>
-            {
-                if (!hostBuilderContext.Configuration.GetValue<bool>("USE_REAL_DEPENDENCIES"))
-                {
-                    RemoveDefaultDbContextFromServiceCollection(services);
-                    RemoveDefaultDistributedCacheFromServiceCollection(services);
-
-                    services.AddDistributedMemoryCache();
-
-                    services.AddDbContext<SurveyContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("InMemoryDbForTesting");
-                    });
-                }
-
-                ConfigureMockServices(services);
             });
         }
 
-        private static void ConfigureMockServices(IServiceCollection services)
+        builder.ConfigureServices((hostBuilderContext, services) =>
         {
-            var mockUserService = Substitute.For<IUserService>();
-            mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
-            mockUserService.GetUserIdentity().Returns(new TestUser().Id);
+            if (!hostBuilderContext.Configuration.GetValue<bool>("USE_REAL_DEPENDENCIES"))
+            {
+                RemoveDefaultDbContextFromServiceCollection(services);
+                RemoveDefaultDistributedCacheFromServiceCollection(services);
 
-            services.AddScoped(_ => mockUserService);
-        }
+                services.AddDistributedMemoryCache();
 
-        private static void RemoveDefaultDbContextFromServiceCollection(IServiceCollection services)
-        {
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SurveyContext>));
-            if (descriptor is null) return;
-            services.Remove(descriptor);
-        }
+                services.AddDbContext<SurveyContext>(options =>
+                {
+                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                });
+            }
 
-        private static void RemoveDefaultDistributedCacheFromServiceCollection(IServiceCollection services)
-        {
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDistributedCache));
-            if (descriptor is null) return;
-            services.Remove(descriptor);
-        }
+            ConfigureMockServices(services);
+        });
+    }
+
+    private static void ConfigureMockServices(IServiceCollection services)
+    {
+        var mockUserService = Substitute.For<IUserService>();
+        mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
+        mockUserService.GetUserIdentity().Returns(new TestUser().Id);
+
+        services.AddScoped(_ => mockUserService);
+    }
+
+    private static void RemoveDefaultDbContextFromServiceCollection(IServiceCollection services)
+    {
+        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SurveyContext>));
+        if (descriptor is null) return;
+        services.Remove(descriptor);
+    }
+
+    private static void RemoveDefaultDistributedCacheFromServiceCollection(IServiceCollection services)
+    {
+        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDistributedCache));
+        if (descriptor is null) return;
+        services.Remove(descriptor);
     }
 }

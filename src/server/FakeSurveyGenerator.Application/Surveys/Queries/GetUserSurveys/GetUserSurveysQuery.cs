@@ -11,38 +11,38 @@ using FakeSurveyGenerator.Application.Common.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
+namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys;
+
+public sealed record GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>;
+
+public sealed class
+    GetUserSurveysQueryHandler : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
 {
-    public sealed record GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>;
+    private readonly IUserService _userService;
+    private readonly ISurveyContext _surveyContext;
+    private readonly IDatabaseConnection _databaseConnection;
 
-    public sealed class
-        GetUserSurveysQueryHandler : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
+    public GetUserSurveysQueryHandler(IDatabaseConnection databaseConnection, IUserService userService,
+        ISurveyContext surveyContext)
     {
-        private readonly IUserService _userService;
-        private readonly ISurveyContext _surveyContext;
-        private readonly IDatabaseConnection _databaseConnection;
+        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+        _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
+        _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
+    }
 
-        public GetUserSurveysQueryHandler(IDatabaseConnection databaseConnection, IUserService userService,
-            ISurveyContext surveyContext)
-        {
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
-            _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
-        }
+    public async Task<Result<List<UserSurveyModel>, Error>> Handle(GetUserSurveysQuery request,
+        CancellationToken cancellationToken)
+    {
+        var userInfo = await _userService.GetUserInfo(cancellationToken);
 
-        public async Task<Result<List<UserSurveyModel>, Error>> Handle(GetUserSurveysQuery request,
-            CancellationToken cancellationToken)
-        {
-            var userInfo = await _userService.GetUserInfo(cancellationToken);
+        var surveyOwner =
+            await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
+                cancellationToken);
 
-            var surveyOwner =
-                await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
-                    cancellationToken);
+        await using var connection = await _databaseConnection.GetDbConnection();
+        await connection.OpenAsync(cancellationToken);
 
-            await using var connection = await _databaseConnection.GetDbConnection();
-            await connection.OpenAsync(cancellationToken);
-
-            var surveys = await connection.QueryAsync<UserSurveyModel>(@"
+        var surveys = await connection.QueryAsync<UserSurveyModel>(@"
                         SELECT s.Id,
                                s.Topic,
                                s.RespondentType,
@@ -68,7 +68,6 @@ namespace FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys
                         ORDER BY s.CreatedOn DESC
                         ", new { ownerId = surveyOwner.Id });
 
-            return surveys.ToList();
-        }
+        return surveys.ToList();
     }
 }

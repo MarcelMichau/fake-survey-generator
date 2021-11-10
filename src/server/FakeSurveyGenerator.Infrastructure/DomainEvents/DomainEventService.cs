@@ -6,29 +6,28 @@ using FakeSurveyGenerator.Shared.SeedWork;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace FakeSurveyGenerator.Infrastructure.DomainEvents
+namespace FakeSurveyGenerator.Infrastructure.DomainEvents;
+
+internal sealed class DomainEventService : IDomainEventService
 {
-    internal sealed class DomainEventService : IDomainEventService
+    private readonly ILogger<DomainEventService> _logger;
+    private readonly IMediator _mediator;
+
+    public DomainEventService(ILogger<DomainEventService> logger, IMediator mediator)
     {
-        private readonly ILogger<DomainEventService> _logger;
-        private readonly IMediator _mediator;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+    }
 
-        public DomainEventService(ILogger<DomainEventService> logger, IMediator mediator)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        }
+    public async Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Publishing Domain Event. Event - {event}", domainEvent.GetType().Name);
+        await _mediator.Publish(GetNotificationCorrespondingToDomainEvent(domainEvent), cancellationToken);
+    }
 
-        public async Task Publish(DomainEvent domainEvent, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Publishing Domain Event. Event - {event}", domainEvent.GetType().Name);
-            await _mediator.Publish(GetNotificationCorrespondingToDomainEvent(domainEvent), cancellationToken);
-        }
-
-        private static INotification GetNotificationCorrespondingToDomainEvent(DomainEvent domainEvent)
-        {
-            return (INotification)Activator.CreateInstance(
-                typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
-        }
+    private static INotification GetNotificationCorrespondingToDomainEvent(DomainEvent domainEvent)
+    {
+        return (INotification)Activator.CreateInstance(
+            typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
     }
 }

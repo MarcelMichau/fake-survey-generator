@@ -1,4 +1,3 @@
-﻿namespace FakeSurveyGenerator.Shared.SeedWork
-{
-    public interface IAggregateRoot { }
-}
+﻿namespace FakeSurveyGenerator.Shared.SeedWork;
+
+public interface IAggregateRoot { }
