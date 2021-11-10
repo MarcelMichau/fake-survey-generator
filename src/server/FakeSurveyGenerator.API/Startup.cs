@@ -10,71 +10,70 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Serilog;
 
-namespace FakeSurveyGenerator.API
+namespace FakeSurveyGenerator.API;
+
+public sealed class Startup
 {
-    public sealed class Startup
+    private readonly IConfiguration _configuration;
+
+    public Startup(IConfiguration configuration)
     {
-        private readonly IConfiguration _configuration;
+        _configuration = configuration;
+    }
 
-        public Startup(IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddAuthorization()
+            .AddHealthChecksConfiguration(_configuration)
+            .AddSwaggerConfiguration(_configuration)
+            .AddAuthenticationConfiguration(_configuration)
+            .AddForwardedHeadersConfiguration()
+            .AddApplicationInsightsConfiguration(_configuration)
+            .AddApplicationServicesConfiguration(_configuration)
+            .AddApiBehaviourConfiguration()
+            .AddControllers()
+            .AddJsonConfiguration()
+            .AddValidationConfiguration()
+            .AddExceptionHandlingConfiguration();
+    }
+
+    public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseSecurityHeaders();
+
+        app.UseForwardedHeaders();
+
+        app.UseDefaultFiles();
+        app.UseStaticFiles();
+
+        if (env.IsDevelopment())
         {
-            _configuration = configuration;
+            app.UseDeveloperExceptionPage();
+            IdentityModelEventSource.ShowPII = true;
+        }
+        else
+        {
+            app.UseHsts();
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        app.UseSerilogRequestLogging();
+
+        app.UseAutoWrapper();
+
+        app.UseHttpsRedirection();
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
         {
-            services.AddAuthorization()
-                .AddHealthChecksConfiguration(_configuration)
-                .AddSwaggerConfiguration(_configuration)
-                .AddAuthenticationConfiguration(_configuration)
-                .AddForwardedHeadersConfiguration()
-                .AddApplicationInsightsConfiguration(_configuration)
-                .AddApplicationServicesConfiguration(_configuration)
-                .AddApiBehaviourConfiguration()
-                .AddControllers()
-                    .AddJsonConfiguration()
-                    .AddValidationConfiguration()
-                    .AddExceptionHandlingConfiguration();
-        }
+            endpoints.MapControllers();
 
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            app.UseSecurityHeaders();
+            endpoints.UseHealthChecksConfiguration();
+        });
 
-            app.UseForwardedHeaders();
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                IdentityModelEventSource.ShowPII = true;
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
-            app.UseSerilogRequestLogging();
-
-            app.UseAutoWrapper();
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-
-                endpoints.UseHealthChecksConfiguration();
-            });
-
-            app.UseSwaggerConfiguration();
-        }
+        app.UseSwaggerConfiguration();
     }
 }

@@ -1,70 +1,69 @@
 ﻿using System.Collections.Generic;
 
-namespace FakeSurveyGenerator.Shared.SeedWork
+namespace FakeSurveyGenerator.Shared.SeedWork;
+
+public abstract class Entity : IHasDomainEvents
 {
-    public abstract class Entity : IHasDomainEvents
+    private int? _requestedHashCode;
+    public virtual int Id { get; protected set; }
+
+    private List<DomainEvent> _domainEvents = new();
+    public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+    public void AddDomainEvent(DomainEvent eventItem)
     {
-        private int? _requestedHashCode;
-        public virtual int Id { get; protected set; }
+        _domainEvents ??= new List<DomainEvent>();
+        _domainEvents.Add(eventItem);
+    }
 
-        private List<DomainEvent> _domainEvents = new();
-        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public void RemoveDomainEvent(DomainEvent eventItem)
+    {
+        _domainEvents?.Remove(eventItem);
+    }
 
-        public void AddDomainEvent(DomainEvent eventItem)
-        {
-            _domainEvents ??= new List<DomainEvent>();
-            _domainEvents.Add(eventItem);
-        }
+    public void ClearDomainEvents()
+    {
+        _domainEvents?.Clear();
+    }
 
-        public void RemoveDomainEvent(DomainEvent eventItem)
-        {
-            _domainEvents?.Remove(eventItem);
-        }
+    private bool IsTransient()
+    {
+        return Id == default;
+    }
 
-        public void ClearDomainEvents()
-        {
-            _domainEvents?.Clear();
-        }
+    public override bool Equals(object obj)
+    {
+        if (obj is not Entity)
+            return false;
 
-        private bool IsTransient()
-        {
-            return Id == default;
-        }
+        if (ReferenceEquals(this, obj))
+            return true;
 
-        public override bool Equals(object obj)
-        {
-            if (obj is not Entity)
-                return false;
+        if (GetType() != obj.GetType())
+            return false;
 
-            if (ReferenceEquals(this, obj))
-                return true;
+        var item = (Entity)obj;
 
-            if (GetType() != obj.GetType())
-                return false;
+        if (item.IsTransient() || IsTransient())
+            return false;
+        return item.Id == Id;
+    }
 
-            var item = (Entity)obj;
+    public override int GetHashCode()
+    {
+        if (IsTransient()) return base.GetHashCode();
+        _requestedHashCode ??= Id.GetHashCode() ^ 31;
 
-            if (item.IsTransient() || IsTransient())
-                return false;
-            return item.Id == Id;
-        }
+        return _requestedHashCode.Value;
+    }
 
-        public override int GetHashCode()
-        {
-            if (IsTransient()) return base.GetHashCode();
-            _requestedHashCode ??= Id.GetHashCode() ^ 31;
+    public static bool operator ==(Entity left, Entity right)
+    {
+        return left?.Equals(right) ?? Equals(right, null);
+    }
 
-            return _requestedHashCode.Value;
-        }
-
-        public static bool operator ==(Entity left, Entity right)
-        {
-            return left?.Equals(right) ?? Equals(right, null);
-        }
-
-        public static bool operator !=(Entity left, Entity right)
-        {
-            return !(left == right);
-        }
+    public static bool operator !=(Entity left, Entity right)
+    {
+        return !(left == right);
     }
 }

@@ -15,80 +15,74 @@ using FakeSurveyGenerator.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey
+namespace FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
+
+public sealed record CreateSurveyCommand() : IRequest<Result<SurveyModel, Error>>
 {
-    public sealed record CreateSurveyCommand : IRequest<Result<SurveyModel, Error>>
+    public string SurveyTopic { get; init; }
+
+    public int NumberOfRespondents { get; init; }
+
+    public string RespondentType { get; init; }
+
+    public IEnumerable<SurveyOptionDto> SurveyOptions { get; init; } = new List<SurveyOptionDto>();
+
+    public CreateSurveyCommand(string surveyTopic, int numberOfRespondents, string respondentType, IEnumerable<SurveyOptionDto> surveyOptions) : this()
     {
-        public string SurveyTopic { get; init; }
+        SurveyTopic = surveyTopic;
+        NumberOfRespondents = numberOfRespondents;
+        RespondentType = respondentType;
+        SurveyOptions = surveyOptions;
+    }
+}
 
-        public int NumberOfRespondents { get; init; }
+public sealed record SurveyOptionDto
+{
+    public string OptionText { get; init; }
+    public int PreferredNumberOfVotes { get; init; }
+}
 
-        public string RespondentType { get; init; }
+public sealed class CreateSurveyCommandHandler : IRequestHandler<CreateSurveyCommand, Result<SurveyModel, Error>>
+{
+    private readonly ISurveyContext _surveyContext;
+    private readonly IMapper _mapper;
+    private readonly IUserService _userService;
 
-        public IEnumerable<SurveyOptionDto> SurveyOptions { get; init; }
-
-        public CreateSurveyCommand()
-        {
-            SurveyOptions = new List<SurveyOptionDto>();
-        }
-
-        public CreateSurveyCommand(string surveyTopic, int numberOfRespondents, string respondentType, IEnumerable<SurveyOptionDto> surveyOptions) : this()
-        {
-            SurveyTopic = surveyTopic;
-            NumberOfRespondents = numberOfRespondents;
-            RespondentType = respondentType;
-            SurveyOptions = surveyOptions;
-        }
+    public CreateSurveyCommandHandler(ISurveyContext surveyContext, IMapper mapper, IUserService userService)
+    {
+        _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
     }
 
-    public sealed record SurveyOptionDto
+    public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request,
+        CancellationToken cancellationToken)
     {
-        public string OptionText { get; init; }
-        public int PreferredNumberOfVotes { get; init; }
-    }
-
-    public sealed class CreateSurveyCommandHandler : IRequestHandler<CreateSurveyCommand, Result<SurveyModel, Error>>
-    {
-        private readonly ISurveyContext _surveyContext;
-        private readonly IMapper _mapper;
-        private readonly IUserService _userService;
-
-        public CreateSurveyCommandHandler(ISurveyContext surveyContext, IMapper mapper, IUserService userService)
+        try
         {
-            _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            var userInfo = await _userService.GetUserInfo(cancellationToken);
+
+            var surveyOwner =
+                await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
+                    cancellationToken);
+
+            var survey = new Survey(surveyOwner, NonEmptyString.Create(request.SurveyTopic),
+                request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
+
+            survey.AddSurveyOptions(request.SurveyOptions.Select(option =>
+                new SurveyOption(NonEmptyString.Create(option.OptionText), option.PreferredNumberOfVotes)));
+
+            survey.CalculateOutcome();
+
+            await _surveyContext.Surveys.AddAsync(survey, cancellationToken);
+
+            await _surveyContext.SaveChangesAsync(cancellationToken);
+
+            return _mapper.Map<SurveyModel>(survey);
         }
-
-        public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request,
-            CancellationToken cancellationToken)
+        catch (SurveyDomainException e)
         {
-            try
-            {
-                var userInfo = await _userService.GetUserInfo(cancellationToken);
-
-                var surveyOwner =
-                    await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
-                        cancellationToken);
-
-                var survey = new Survey(surveyOwner, NonEmptyString.Create(request.SurveyTopic),
-                    request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));
-
-                survey.AddSurveyOptions(request.SurveyOptions.Select(option =>
-                    new SurveyOption(NonEmptyString.Create(option.OptionText), option.PreferredNumberOfVotes)));
-
-                survey.CalculateOutcome();
-
-                await _surveyContext.Surveys.AddAsync(survey, cancellationToken);
-
-                await _surveyContext.SaveChangesAsync(cancellationToken);
-
-                return _mapper.Map<SurveyModel>(survey);
-            }
-            catch (SurveyDomainException e)
-            {
-                return new Error("survey.domain.exception", e.Message);
-            }
+            return new Error("survey.domain.exception", e.Message);
         }
     }
 }

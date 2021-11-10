@@ -4,31 +4,30 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace FakeSurveyGenerator.Application.Common.Behaviours
+namespace FakeSurveyGenerator.Application.Common.Behaviours;
+
+public sealed class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-    public sealed class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    private readonly ILogger<TRequest> _logger;
+
+    public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
     {
-        private readonly ILogger<TRequest> _logger;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    {
+        try
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            return await next();
         }
-
-        public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        catch (Exception ex)
         {
-            try
-            {
-                return await next();
-            }
-            catch (Exception ex)
-            {
-                var requestName = typeof(TRequest).Name;
+            var requestName = typeof(TRequest).Name;
 
-                _logger.LogError(ex, "Fake Survey Generator Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+            _logger.LogError(ex, "Fake Survey Generator Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
-                throw;
-            }
+            throw;
         }
     }
 }

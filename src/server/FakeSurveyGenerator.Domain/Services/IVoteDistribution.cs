@@ -1,9 +1,8 @@
 ﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
-namespace FakeSurveyGenerator.Domain.Services
+namespace FakeSurveyGenerator.Domain.Services;
+
+internal interface IVoteDistribution
 {
-    internal interface IVoteDistribution
-    {
-        void DistributeVotes(Survey survey);
-    }
+    void DistributeVotes(Survey survey);
 }

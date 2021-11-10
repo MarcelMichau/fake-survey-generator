@@ -2,12 +2,11 @@
 using System.Threading.Tasks;
 using FakeSurveyGenerator.Application.Common.Identity;
 
-namespace FakeSurveyGenerator.Infrastructure.Identity
-{
-    internal sealed class SystemUserInfoService : IUserService
-    {
-        public string GetUserIdentity() => new SystemUser().Id;
+namespace FakeSurveyGenerator.Infrastructure.Identity;
 
-        public Task<IUser> GetUserInfo(CancellationToken cancellationToken = default) => Task.FromResult<IUser>(new SystemUser());
-    }
+internal sealed class SystemUserInfoService : IUserService
+{
+    public string GetUserIdentity() => new SystemUser().Id;
+
+    public Task<IUser> GetUserInfo(CancellationToken cancellationToken = default) => Task.FromResult<IUser>(new SystemUser());
 }

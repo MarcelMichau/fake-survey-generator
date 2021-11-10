@@ -2,19 +2,18 @@
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FakeSurveyGenerator.API.Configuration
-{
-    internal static class ValidationMvcBuilderExtensions
-    {
-        public static IMvcBuilder AddValidationConfiguration(this IMvcBuilder builder)
-        {
-            builder.AddFluentValidation(fv =>
-            {
-                fv.RegisterValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
-                fv.DisableDataAnnotationsValidation = true;
-            });
+namespace FakeSurveyGenerator.API.Configuration;
 
-            return builder;
-        }
+internal static class ValidationMvcBuilderExtensions
+{
+    public static IMvcBuilder AddValidationConfiguration(this IMvcBuilder builder)
+    {
+        builder.AddFluentValidation(fv =>
+        {
+            fv.RegisterValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+            fv.DisableDataAnnotationsValidation = true;
+        });
+
+        return builder;
     }
 }

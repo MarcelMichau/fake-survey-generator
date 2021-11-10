@@ -5,22 +5,21 @@ using FakeSurveyGenerator.Application.Common.Notifications;
 using FakeSurveyGenerator.Application.Notifications.Models;
 using Microsoft.Extensions.Logging;
 
-namespace FakeSurveyGenerator.Infrastructure.Notifications
+namespace FakeSurveyGenerator.Infrastructure.Notifications;
+
+internal sealed class NotificationService : INotificationService
 {
-    internal sealed class NotificationService : INotificationService
+    private readonly ILogger<NotificationService> _logger;
+
+    public NotificationService(ILogger<NotificationService> logger)
     {
-        private readonly ILogger<NotificationService> _logger;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public NotificationService(ILogger<NotificationService> logger)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+    public Task SendMessage(MessageDto message, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Simulating sending a notification somewhere... Message: {@message}", message);
 
-        public Task SendMessage(MessageDto message, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Simulating sending a notification somewhere... Message: {@message}", message);
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

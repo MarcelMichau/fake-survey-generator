@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace FakeSurveyGenerator.EF.Design
+namespace FakeSurveyGenerator.EF.Design;
+
+internal static class Program
 {
-    internal static class Program
+    private static void Main()
     {
-        private static void Main()
-        {
-            Console.WriteLine("This project exists for the sole purpose of EF Core Design-Time tooling");
-        }
+        Console.WriteLine("This project exists for the sole purpose of EF Core Design-Time tooling");
     }
 }

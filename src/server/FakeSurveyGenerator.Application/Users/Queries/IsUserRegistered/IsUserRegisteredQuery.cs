@@ -6,29 +6,28 @@ using FakeSurveyGenerator.Application.Common.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered
+namespace FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered;
+
+public sealed record IsUserRegisteredQuery(string UserId) : IRequest<Result<UserRegistrationStatusModel>>;
+
+public sealed class IsUserRegisteredQueryHandler : IRequestHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel>>
 {
-    public sealed record IsUserRegisteredQuery(string UserId) : IRequest<Result<UserRegistrationStatusModel>>;
+    private readonly ISurveyContext _surveyContext;
 
-    public sealed class IsUserRegisteredQueryHandler : IRequestHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel>>
+    public IsUserRegisteredQueryHandler(ISurveyContext context)
     {
-        private readonly ISurveyContext _surveyContext;
+        _surveyContext = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
-        public IsUserRegisteredQueryHandler(ISurveyContext context)
+    public async Task<Result<UserRegistrationStatusModel>> Handle(IsUserRegisteredQuery request, CancellationToken cancellationToken)
+    {
+        var isUserRegistered =
+            await _surveyContext.Users.AsNoTracking()
+                .AnyAsync(user => user.ExternalUserId == request.UserId, cancellationToken);
+
+        return new UserRegistrationStatusModel
         {
-            _surveyContext = context ?? throw new ArgumentNullException(nameof(context));
-        }
-
-        public async Task<Result<UserRegistrationStatusModel>> Handle(IsUserRegisteredQuery request, CancellationToken cancellationToken)
-        {
-            var isUserRegistered =
-                await _surveyContext.Users.AsNoTracking()
-                    .AnyAsync(user => user.ExternalUserId == request.UserId, cancellationToken);
-
-            return new UserRegistrationStatusModel
-            {
-                IsUserRegistered = isUserRegistered
-            };
-        }
+            IsUserRegistered = isUserRegistered
+        };
     }
 }
