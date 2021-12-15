@@ -2,6 +2,7 @@
 using AutoFixture;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FluentAssertions;
+using FluentValidation.TestHelper;
 using Xunit;
 
 namespace FakeSurveyGenerator.Application.Tests.Surveys.Commands.CreateSurvey;
@@ -24,7 +25,7 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var validator = new CreateSurveyCommandValidator();
 
-        var result = validator.Validate(command);
+        var result = validator.TestValidate(command);
 
         result.IsValid.Should().BeTrue();
     }
@@ -43,10 +44,10 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var validator = new CreateSurveyCommandValidator();
 
-        var result = validator.Validate(command);
+        var result = validator.TestValidate(command);
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyTopic));
+        result.ShouldHaveValidationErrorFor(c => c.SurveyTopic);
     }
 
     [Fact]
@@ -63,10 +64,10 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var validator = new CreateSurveyCommandValidator();
 
-        var result = validator.Validate(command);
+        var result = validator.TestValidate(command);
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.NumberOfRespondents));
+        result.ShouldHaveValidationErrorFor(c => c.NumberOfRespondents);
     }
 
     [Fact]
@@ -83,10 +84,10 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var validator = new CreateSurveyCommandValidator();
 
-        var result = validator.Validate(command);
+        var result = validator.TestValidate(command);
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.RespondentType));
+        result.ShouldHaveValidationErrorFor(c => c.RespondentType);
     }
 
     [Fact]
@@ -96,10 +97,10 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var validator = new CreateSurveyCommandValidator();
 
-        var result = validator.Validate(command);
+        var result = validator.TestValidate(command);
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyOptions));
+        result.ShouldHaveValidationErrorFor(c => c.SurveyOptions);
     }
 
     [Fact]
@@ -109,10 +110,10 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var validator = new CreateSurveyCommandValidator();
 
-        var result = validator.Validate(command);
+        var result = validator.TestValidate(command);
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.PropertyName == nameof(CreateSurveyCommand.SurveyOptions));
+        result.ShouldHaveValidationErrorFor(c => c.SurveyOptions);
     }
 
     [Fact]
@@ -128,9 +129,9 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var validator = new CreateSurveyCommandValidator();
 
-        var result = validator.Validate(command);
+        var result = validator.TestValidate(command);
 
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.PropertyName == "SurveyOptions[0].OptionText");
+        result.ShouldHaveValidationErrorFor("SurveyOptions[0].OptionText");
     }
 }
