@@ -40,12 +40,12 @@
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
-        "requested": "[17.0.0, )",
-        "resolved": "17.0.0",
-        "contentHash": "fJcnMY3jX1MzJvhGvUWauRhU5eQsOaHdwlrcnI3NabBhbi8WLAkMFI8d0YnewA/+b9q/U7vbhp8Xmh1vJ05FYQ==",
+        "requested": "[17.1.0-preview-20211130-02, )",
+        "resolved": "17.1.0-preview-20211130-02",
+        "contentHash": "JJjwIOtFcOAj7nxHSK/vJd9Eo4mAxqhA+wuIIQ++GOSCJls+Qj+MfpmBwJ4DqkwkVpKHQOBD4E3WRFNJ6/E02Q==",
         "dependencies": {
-          "Microsoft.CodeCoverage": "17.0.0",
-          "Microsoft.TestPlatform.TestHost": "17.0.0"
+          "Microsoft.CodeCoverage": "17.1.0-preview-20211130-02",
+          "Microsoft.TestPlatform.TestHost": "17.1.0-preview-20211130-02"
         }
       },
       "Nerdbank.GitVersioning": {
@@ -78,8 +78,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.24.3",
-        "contentHash": "7Oi04Pmr82zkq3dxw7N81JZ0m5qiYq2RwUE0SKuUnaHi5My4NseDyIt6ik2tu+u6I48WBsx1JJTOFyH9dxsuZw=="
+        "resolved": "2.26.1",
+        "contentHash": "J+N1gttYoRPB8F2ceecgzo+oEId39GzcyK+LE2S6MROzAhfnj1l9Qv6j9mOIczZJWaW40P10qlzFyZCEkLKZxA=="
       },
       "Fare": {
         "type": "Transitive",
@@ -96,8 +96,8 @@
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
-        "resolved": "17.0.0",
-        "contentHash": "+B+09FPYBtf+cXfZOPIgpnP5mzLq5QdlBo+JEFy9CdqBaWHWE/YMY0Mos9uDsZhcgFegJm9GigAgMyqBZyfq+Q=="
+        "resolved": "17.1.0-preview-20211130-02",
+        "contentHash": "/5TfcA9hVvMubJgqHhTEox+AFqHpbbsoQb1BDvvyepangOuQGufpkF73bv2Y15vFrVjphOgDASzrGLyzWVm/yA=="
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
@@ -134,19 +134,19 @@
       },
       "Microsoft.TestPlatform.ObjectModel": {
         "type": "Transitive",
-        "resolved": "17.0.0",
-        "contentHash": "WMugCdPkA8U/BsSRc+3RN+DXcaYSDvp/s0MofVld08iF1O5fek4iKecygk6NruNf1rgJsv4LK71mrwbyeqhzHA==",
+        "resolved": "17.1.0-preview-20211130-02",
+        "contentHash": "uLHpSFv5F1Rk//4FZCJZVCDSLj75/7SYRCJ7+iqZI8//Dmk7iXsKdmbdjUKpFqXzIY5ert9YHD9PnV1mUtf1aQ==",
         "dependencies": {
-          "NuGet.Frameworks": "5.0.0",
+          "NuGet.Frameworks": "5.11.0",
           "System.Reflection.Metadata": "1.6.0"
         }
       },
       "Microsoft.TestPlatform.TestHost": {
         "type": "Transitive",
-        "resolved": "17.0.0",
-        "contentHash": "xkKFzm0hylHF0SlDj78ACYMJC/i8fQ3i16sDDNYoKnjTsstGSQfuSBJ+QT4nqRXk/fOiYTh+iY0KIX5N7HTLuQ==",
+        "resolved": "17.1.0-preview-20211130-02",
+        "contentHash": "3uwe0blITI5w9EPXcVfVcKOr+XQ2A9sBbE81HoxLHVGB5QgHpymhUPqTVzRxzUa1uMLdnoT0jwQUNnX6HR0exQ==",
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "17.0.0",
+          "Microsoft.TestPlatform.ObjectModel": "17.1.0-preview-20211130-02",
           "Newtonsoft.Json": "9.0.1"
         }
       },
@@ -242,8 +242,8 @@
       },
       "NuGet.Frameworks": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "c5JVjuVAm4f7E9Vj+v09Z9s2ZsqFDjBpcsyS3M9xRo0bEdm/LVZSzLxxNvfvAwRiiE8nwe1h2G4OwiwlzFKXlA=="
+        "resolved": "5.11.0",
+        "contentHash": "eaiXkUjC4NPcquGWzAGMXjuxvLwc6XGKMptSyOGQeT0X70BUZObuybJFZLA0OfTdueLd3US23NBPTBb6iF3V1Q=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -1195,7 +1195,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.24.3",
+          "CSharpFunctionalExtensions": "2.26.1",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.3.0"
         }
