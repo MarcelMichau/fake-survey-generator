@@ -14,20 +14,20 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" Version="6.0.1-rc1.3" />
-    <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="6.0.1-rc1.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.1-rc1.6" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="5.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="6.0.1-rc2.2" />
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.1-rc2.7" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="6.0.1-rc2.4" />
     <PackageReference Include="AutoWrapper.Core" Version="5.0.0-rc-03" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
-    <PackageReference Include="IdentityModel" Version="5.2.0" />
+    <PackageReference Include="IdentityModel" Version="6.0.0-preview.2" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0-beta1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Kubernetes.Tools.Targets" Version="1.1.0" />
