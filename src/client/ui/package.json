@@ -27,7 +27,7 @@
     "cross-env": "^7.0.3",
     "postcss": "^8.4.5",
     "postcss-cli": "^9.1.0",
-    "tailwindcss": "^3.0.5"
+    "tailwindcss": "^3.0.6"
   },
   "scripts": {
     "start": "npm run watch:css && cross-env HTTPS=true REACT_APP_VERSION=latest NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
