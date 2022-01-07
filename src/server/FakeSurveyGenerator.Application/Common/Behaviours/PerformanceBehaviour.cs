@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Application.Common.Behaviours;
 
-public sealed class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public sealed class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     private readonly Stopwatch _timer;
     private readonly ILogger<TRequest> _logger;

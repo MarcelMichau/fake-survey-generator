@@ -69,9 +69,12 @@
       },
       "MediatR": {
         "type": "Direct",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "8b3UYNxegHVYcJMG2zH8wn+YqxLvXG+eMfj0cMCq/jTW72p6O3PCKMkrIv0mqyxdW7bA4gblsocw7n+/9Akg5g=="
+        "requested": "[10.0.0, )",
+        "resolved": "10.0.0",
+        "contentHash": "4/oUEQEtDbJ9OIwsHux0sNsU9+/GRWFTrsDNXnt18JyPnZQyIisN7CmrieXbzJeG7oDSoY2SOw8frOz/mB6rrA==",
+        "dependencies": {
+          "MediatR.Contracts": "1.0.0"
+        }
       },
       "Microsoft.ApplicationInsights.AspNetCore": {
         "type": "Direct",
@@ -316,13 +319,18 @@
         "resolved": "2021.3.0",
         "contentHash": "Ddxjs5RRjf+c8m9m++WvhW1lz1bqNhsTjWvCLbQN9bvKbkJeR9MhtfNwKgBRRdG2yLHcXFr5Lf7fsvvkiPaDRg=="
       },
+      "MediatR.Contracts": {
+        "type": "Transitive",
+        "resolved": "1.0.0",
+        "contentHash": "9IyK5yfH/ASk97FNs1cigFdAbXPbBCyoophoO0XXvua18EqHfrNWmRfy+ry2n5O0rNAwIVgI4KpDwDXO2M8VYg=="
+      },
       "MediatR.Extensions.Microsoft.DependencyInjection": {
         "type": "Transitive",
-        "resolved": "9.0.0",
-        "contentHash": "msreY4ogiPdIRWiCQVHQDytIQpsZCLWsixWPZ+Xs86KZrvtuiV8BDHbIT0kBmogynVYWNpspb3caw+86YU8L6w==",
+        "resolved": "10.0.0",
+        "contentHash": "IZvcm6MeGSX1AyIYx4+KdYjcqQgtXRIt07dxyWqjGgP3aGazuACAuIrp/czQ7hbxOVSnXqTJCPCjsn98jM/zAw==",
         "dependencies": {
-          "MediatR": "9.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0"
+          "MediatR": "10.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0"
         }
       },
       "MessagePack": {
@@ -2599,8 +2607,8 @@
           "FakeSurveyGenerator.Domain": "1.0.0",
           "FluentValidation": "10.3.6",
           "JetBrains.Annotations": "2021.3.0",
-          "MediatR": "9.0.0",
-          "MediatR.Extensions.Microsoft.DependencyInjection": "9.0.0",
+          "MediatR": "10.0.0",
+          "MediatR.Extensions.Microsoft.DependencyInjection": "10.0.0",
           "Microsoft.Data.SqlClient": "4.0.0",
           "Microsoft.EntityFrameworkCore": "6.0.1",
           "Microsoft.Extensions.Caching.Abstractions": "6.0.0",
