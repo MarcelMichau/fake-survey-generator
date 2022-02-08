@@ -45,8 +45,8 @@
       },
       "AutoMapper": {
         "type": "Transitive",
-        "resolved": "11.0.0",
-        "contentHash": "+596AnKykYCk9RxXCEF4GYuapSebQtFVvIA1oVG1rrRkCLAC7AkWehJ0brCfYUbdDW3v1H/p0W3hob7JoXGjMw==",
+        "resolved": "11.0.1",
+        "contentHash": "WIadGC1pIwbnyTubvI577p3F++Bsj9q2Q3OaAc1I0QS+JhupN1xkdrPBhI9bPIeg63zM81tZplUNYkqU1HE5jQ==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0"
         }
@@ -90,8 +90,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.27.0",
-        "contentHash": "UDEyXhav5Vacw5MKXvHGjk2F6Yh9sF/i3ndRRCFsIzNTdCdLquNzuaL0MEbQ5jndYiI4YUOJEulJ+Xff96RP5w=="
+        "resolved": "2.28.0",
+        "contentHash": "0JlefncY6u6CRfcAJGa7fAHvsE+Rf1XhZIqWurnwyXltTgr838lKh2K6aeUCX0cj7RfUPmWY+T/+LYr1bapN6w=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -147,8 +147,8 @@
       },
       "Microsoft.Data.SqlClient": {
         "type": "Transitive",
-        "resolved": "4.0.0",
-        "contentHash": "YGYfWg3Xth2EXAy8TBN4Fgj0FY6BnGgCtT6ypKuqKojiGAtLsRtRbP8KOXNy8+SMK6AVzAguvl8K5zX9uqg8yA==",
+        "resolved": "4.1.0",
+        "contentHash": "o/sIRlcKEcI9vg5z9USqJ/VCxtUUBYEOXYr4TrkMNu+gGBh0KfUi06Jqpe+xZgeoxcqYruV9dLOn046uFA4vHQ==",
         "dependencies": {
           "Azure.Identity": "1.3.0",
           "Microsoft.Data.SqlClient.SNI.runtime": "4.0.0",
@@ -894,16 +894,16 @@
       "fakesurveygenerator.application": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper": "11.0.0",
+          "AutoMapper": "11.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "11.0.0",
-          "CSharpFunctionalExtensions": "2.27.0",
+          "CSharpFunctionalExtensions": "2.28.0",
           "Dapper": "2.0.123",
           "FakeSurveyGenerator.Domain": "1.0.0",
           "FluentValidation": "10.3.6",
           "JetBrains.Annotations": "2021.3.0",
           "MediatR": "10.0.1",
           "MediatR.Extensions.Microsoft.DependencyInjection": "10.0.1",
-          "Microsoft.Data.SqlClient": "4.0.0",
+          "Microsoft.Data.SqlClient": "4.1.0",
           "Microsoft.EntityFrameworkCore": "6.0.1",
           "Microsoft.Extensions.Caching.Abstractions": "6.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
@@ -914,7 +914,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.27.0",
+          "CSharpFunctionalExtensions": "2.28.0",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2021.3.0"
         }
