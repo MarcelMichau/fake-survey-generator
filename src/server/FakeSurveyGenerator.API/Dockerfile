@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.102-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.200-bullseye-slim AS build
 WORKDIR /src/server
 COPY src/server/Directory.Build.props .
 COPY src/server/version.json .
