@@ -13,7 +13,7 @@ export type GetSurveyProps = {
     loading: boolean;
 };
 
-const GetSurvey: React.FC<GetSurveyProps> = ({ loading }) => {
+const GetSurvey = ({ loading }: GetSurveyProps) => {
     const { getAccessTokenSilently } = useAuth0();
     const [surveyId, setSurveyId] = useState(0);
     const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);

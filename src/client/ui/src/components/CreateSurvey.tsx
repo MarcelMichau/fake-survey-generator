@@ -17,9 +17,7 @@ type CreateSurveyProps = {
     loading: boolean;
 };
 
-const CreateSurvey: React.FC<CreateSurveyProps> = ({
-    loading,
-}): React.ReactElement => {
+const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
     const { getAccessTokenSilently } = useAuth0();
     const [respondentType, setRespondentType] = useState("");
     const [topic, setTopic] = useState("");

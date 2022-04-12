@@ -7,7 +7,7 @@ type SurveyResultProps = {
     surveyDetail: SurveyModel;
 };
 
-const SurveyResult: React.FC<SurveyResultProps> = ({ surveyDetail }) => {
+const SurveyResult = ({ surveyDetail }: SurveyResultProps) => {
     return (
         <div className="max-w-sm w-full lg:max-w-full lg:flex my-5">
             <div className="dark:bg-gray-900 border dark:border-gray-600 bg-white rounded p-4 flex flex-col justify-between leading-normal shadow-md">

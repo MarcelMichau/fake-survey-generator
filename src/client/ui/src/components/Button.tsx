@@ -12,13 +12,13 @@ type ButtonProps = {
     children: React.ReactNode;
 };
 
-const Button: React.FC<ButtonProps> = ({
+const Button = ({
     type = "button",
     onClick,
     actionType = "primary",
     additionalClasses = [],
     children,
-}) => {
+}: ButtonProps) => {
     const colourMap = {
         primary: {
             classes: "bg-green-500 hover:bg-green-400 active:bg-green-600",

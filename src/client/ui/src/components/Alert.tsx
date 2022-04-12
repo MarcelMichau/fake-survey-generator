@@ -8,7 +8,7 @@ type AlertProps = {
     type?: AlertType;
 };
 
-const Alert: React.FC<AlertProps> = ({ title, message, type = "success" }) => {
+const Alert = ({ title, message, type = "success" }: AlertProps) => {
     const classes =
         type === "success"
             ? "bg-green-800 border-green-500"

@@ -11,7 +11,7 @@ export type MySurveysProps = {
     loading: boolean;
 };
 
-const MySurveys: React.FC<MySurveysProps> = ({ loading }) => {
+const MySurveys = ({ loading }: MySurveysProps) => {
     const { getAccessTokenSilently } = useAuth0();
     const [userSurveysResponse, setUserSurveysResponse] = useState(
         {} as Types.UserSurveysResponse
@@ -39,11 +39,13 @@ const MySurveys: React.FC<MySurveysProps> = ({ loading }) => {
     const tablePadding = "px-4 py-2";
     const tableBorder = "border border-gray-700";
 
-    const TableHeader = ({ children }: JSX.ElementChildrenAttribute) => (
+    type TableHeaderProps = { children: React.ReactNode; };
+    const TableHeader = ({ children } : TableHeaderProps) => (
         <th className={`${tablePadding}`}>{children}</th>
     );
 
-    const TableData = ({ children }: JSX.ElementChildrenAttribute) => (
+    type TableDataProps = { children: React.ReactNode; }
+    const TableData = ({ children }: TableDataProps) => (
         <td className={`${tableBorder} ${tablePadding}`}>{children}</td>
     );
 
