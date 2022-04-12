@@ -15,14 +15,14 @@ type SkeletonButtonProps = {
     children: React.ReactNode;
 };
 
-const SkeletonButton: React.FC<SkeletonButtonProps> = ({
+const SkeletonButton = ({
     loading,
     type = "button",
     onClick,
     actionType = "primary",
     additionalClasses = [],
     children,
-}) => {
+}: SkeletonButtonProps) => {
     const colourMap = {
         primary: {
             classes: "bg-green-500 hover:bg-green-400 active:bg-green-600",
