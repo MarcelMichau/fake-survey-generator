@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.3-bullseye-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.5-bullseye-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.201-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.300-bullseye-slim AS build
 WORKDIR /src/server
 COPY src/server/Directory.Build.props .
 COPY src/server/version.json .
