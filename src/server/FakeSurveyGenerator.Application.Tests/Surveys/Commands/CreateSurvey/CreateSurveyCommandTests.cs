@@ -6,6 +6,7 @@ using AutoFixture;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Data;
+using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
@@ -48,9 +49,9 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
 
         var survey = result.Value;
 
-        Assert.Equal(topic, survey.Topic);
-        Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
-        Assert.Equal(respondentType, survey.RespondentType);
+        survey.Topic.Should().Be(topic);
+        survey.NumberOfRespondents.Should().Be(numberOfRespondents);
+        survey.RespondentType.Should().Be(respondentType);
     }
 
     [Fact]
@@ -82,10 +83,12 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
 
         var survey = result.Value;
 
-        Assert.Equal(topic, survey.Topic);
-        Assert.Equal(numberOfRespondents, survey.NumberOfRespondents);
-        Assert.Equal(respondentType, survey.RespondentType);
-        Assert.Equal(100, survey.Options.First().NumberOfVotes);
-        Assert.Equal(400, survey.Options.Last().NumberOfVotes);
+        survey.Topic.Should().Be(topic);
+        survey.NumberOfRespondents.Should().Be(numberOfRespondents);
+        survey.RespondentType.Should().Be(respondentType);
+
+        survey.Options.Should().HaveCount(2);
+        survey.Options.First().NumberOfVotes.Should().Be(100);
+        survey.Options.Last().NumberOfVotes.Should().Be(400);
     }
 }
