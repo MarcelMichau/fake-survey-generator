@@ -11,26 +11,27 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace FakeSurveyGenerator.API.Tests.Integration;
 
-public sealed class IntegrationTestWebApplicationFactory<TStartup>
-    : WebApplicationFactory<TStartup> where TStartup : class
+public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory<IApiMarker>
 {
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    protected override IHost CreateHost(IHostBuilder builder)
     {
-        // When running the integration tests with Docker Compose, the USE_ENVIRONMENT_VARIABLES_ONLY is set to true & the environment variables used
-        // in the docker-compose-tests.override.yml file are used.
-        // Integration tests can be run with Docker Compose by running the following in a terminal:
-        // docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up --build fake-survey-generator-api-integration-test
-
-        // When running the integration tests with `dotnet test` or through Visual Studio, the USE_ENVIRONMENT_VARIABLES_ONLY is not set, therefore
-        // any necessary config is set by using builder.ConfigureAppConfiguration().
-
-        if (!Convert.ToBoolean(Environment.GetEnvironmentVariable("USE_ENVIRONMENT_VARIABLES_ONLY")))
+        builder.ConfigureHostConfiguration(config =>
         {
-            builder.ConfigureAppConfiguration(config =>
+            // When running the integration tests with Docker Compose, the USE_ENVIRONMENT_VARIABLES_ONLY is set to true & the environment variables used
+            // in the docker-compose-tests.override.yml file are used.
+            // Integration tests can be run with Docker Compose by running the following in a terminal:
+            // docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up --build fake-survey-generator-api-integration-test
+
+            // When running the integration tests with `dotnet test` or through Visual Studio, the USE_ENVIRONMENT_VARIABLES_ONLY is not set, therefore
+            // any necessary config is set by using builder.ConfigureAppConfiguration().
+
+            if (!Convert.ToBoolean(Environment.GetEnvironmentVariable("USE_ENVIRONMENT_VARIABLES_ONLY")))
             {
                 config.AddInMemoryCollection(new Dictionary<string, string>
                 {
@@ -52,8 +53,18 @@ public sealed class IntegrationTestWebApplicationFactory<TStartup>
                     {"REDIS_DEFAULT_DATABASE", "0"},
                     {"IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com"}
                 });
-            });
-        }
+            }
+        });
+
+        return base.CreateHost(builder);
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+        });
 
         builder.ConfigureServices((hostBuilderContext, services) =>
         {

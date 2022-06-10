@@ -1,59 +1,90 @@
 ﻿using System;
+using AutoWrapper;
+using FakeSurveyGenerator.API.Configuration;
+using FakeSurveyGenerator.API.Configuration.HealthChecks;
+using FakeSurveyGenerator.API.Configuration.Swagger;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
-namespace FakeSurveyGenerator.API;
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-internal static class Program
+try
 {
-    internal static int Main(string[] args)
-    {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .CreateLogger();
+    Log.Information("Starting web host");
 
-        try
+    var builder = WebApplication.CreateBuilder(args);
+    
+    builder.Host
+        .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
         {
-            Log.Information("Starting web host");
-            CreateHostBuilder(args).Build().Run();
-            return 0;
-        }
-        catch (Exception ex)
-        {
-            Log.Fatal(ex, "Host terminated unexpectedly");
-            return 1;
-        }
-        finally
-        {
-            Log.CloseAndFlush();
-        }
-    }
+            loggerConfiguration
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console();
 
-    private static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
+            if (!string.IsNullOrWhiteSpace(
+                    hostBuilderContext.Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY")))
             {
-                loggerConfiguration
-                    .MinimumLevel.Debug()
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console();
+                loggerConfiguration.WriteTo.ApplicationInsights(
+                    services.GetRequiredService<TelemetryConfiguration>(),
+                    TelemetryConverter.Traces);
+            }
+        });
 
-                if (!string.IsNullOrWhiteSpace(hostBuilderContext.Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY")))
-                {
-                    loggerConfiguration.WriteTo.ApplicationInsights(
-                        services.GetRequiredService<TelemetryConfiguration>(),
-                        TelemetryConverter.Traces);
-                }
-            })
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-                webBuilder.UseKestrel(options => options.AddServerHeader = false);
-            });
+    builder.WebHost
+        .ConfigureKestrel(options => { options.AddServerHeader = false; });
+
+    builder.Services
+            .AddAuthorization()
+            .AddHealthChecksConfiguration(builder.Configuration)
+            .AddSwaggerConfiguration(builder.Configuration)
+            .AddAuthenticationConfiguration(builder.Configuration)
+            .AddForwardedHeadersConfiguration()
+            .AddApplicationInsightsConfiguration(builder.Configuration)
+            .AddApplicationServicesConfiguration(builder.Configuration)
+            .AddApiBehaviourConfiguration()
+            .AddControllers()
+            .AddJsonConfiguration()
+            .AddValidationConfiguration()
+            .AddExceptionHandlingConfiguration();
+
+    var app = builder.Build();
+
+    app.UseSecurityHeaders();
+    app.UseForwardedHeaders();
+
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+
+    app.UseSerilogRequestLogging();
+
+    app.UseAutoWrapper();
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+    app.UseHealthChecksConfiguration();
+
+    app.UseSwaggerConfiguration();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
 }

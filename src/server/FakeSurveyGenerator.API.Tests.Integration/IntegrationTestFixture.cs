@@ -13,7 +13,7 @@ public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTe
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    public readonly IntegrationTestWebApplicationFactory<Startup> Factory;
+    public readonly IntegrationTestWebApplicationFactory Factory;
 
     private readonly Checkpoint _checkpoint;
     private readonly IConfiguration _configuration;
@@ -21,7 +21,7 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     public IntegrationTestFixture()
     {
-        Factory = new IntegrationTestWebApplicationFactory<Startup>();
+        Factory = new IntegrationTestWebApplicationFactory();
         _checkpoint = new Checkpoint();
         _configuration = Factory.Services.GetRequiredService<IConfiguration>();
         _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();

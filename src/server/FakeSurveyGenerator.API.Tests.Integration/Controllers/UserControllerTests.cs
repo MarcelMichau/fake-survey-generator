@@ -16,7 +16,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers;
 [Collection(nameof(IntegrationTestFixture))]
 public sealed class UserControllerTests
 {
-    private readonly IntegrationTestWebApplicationFactory<Startup> _factory;
+    private readonly IntegrationTestWebApplicationFactory _factory;
     private readonly IFixture _fixture;
 
     private static readonly JsonSerializerOptions Options = new()
