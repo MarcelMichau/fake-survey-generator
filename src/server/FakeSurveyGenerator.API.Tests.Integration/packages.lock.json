@@ -242,8 +242,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.29.1",
-        "contentHash": "+cyqRtWnPC+XStMaujqK39RmDhjwBdzA4sKyT31bdLOfX/a3j5jYyqAIGTxOKFBhVW0ANTUKrd5MuZy7aSlPAA=="
+        "resolved": "2.29.2",
+        "contentHash": "Jil7We022D7hqHLVBZ3J1YHLO3KFJ+jKBwYJ8PDrlYdwJeNM2z91Uuh4n0xc+E/OBN0zja0NGfZtUJjoyIEJMA=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -260,24 +260,24 @@
       },
       "FluentValidation": {
         "type": "Transitive",
-        "resolved": "11.0.1",
-        "contentHash": "fcL5zF/glDwskUtpL0IfBupVWTChxOOvVs+dAA7Gme5NjIeJBiFKWq3eZV1O+AigucnBTr8SWG7wRRn+PgFnTw=="
+        "resolved": "11.0.2",
+        "contentHash": "ik/xogKqBmZWIURMXNEbugJlKka6iV9a4qckmKDp7sHSwIfgkZ/ewzCuAeUTkFdVZujfDW6mCLMjrrR6GG4xLQ=="
       },
       "FluentValidation.AspNetCore": {
         "type": "Transitive",
-        "resolved": "11.0.1",
-        "contentHash": "fF7GiMrRJB1ZDQeSTI3pfAXO8eJDKlWs4rhzx8DIuEQKodgvo5QiMtMEfIbLnkZX2+GmofwDm64LZ8Qw+9zubg==",
+        "resolved": "11.0.2",
+        "contentHash": "KTxapk15F+NT/nxzu72NonCgDtsiKQP9KALbjqxOvW+DtJGIF45XcIOSzpc4eEBA/I0BoDkmLODsO98DchBq5A==",
         "dependencies": {
-          "FluentValidation": "11.0.1",
-          "FluentValidation.DependencyInjectionExtensions": "11.0.1"
+          "FluentValidation": "11.0.2",
+          "FluentValidation.DependencyInjectionExtensions": "11.0.2"
         }
       },
       "FluentValidation.DependencyInjectionExtensions": {
         "type": "Transitive",
-        "resolved": "11.0.1",
-        "contentHash": "B+jlYk4L6Ucj1yvpo0R9uelKjtC48CJDDPHF4ct/zBMwkrZoDDvBAqRwuNDChnjsjCr3NgJHyuETh4t2VTGUzQ==",
+        "resolved": "11.0.2",
+        "contentHash": "ChfGHFGoLSN97MKZcippJ2qJskWuv6I3E0ngV5OTp3FhaPfFC+KcUMqaE72HtT13B8hkP/XmHlQfgSTzsmsdZw==",
         "dependencies": {
-          "FluentValidation": "11.0.1",
+          "FluentValidation": "11.0.2",
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
       },
@@ -3025,7 +3025,7 @@
           "AutoWrapper.Core": "5.0.0-rc-03",
           "FakeSurveyGenerator.Domain": "1.0.0",
           "FakeSurveyGenerator.Infrastructure": "1.0.0",
-          "FluentValidation.AspNetCore": "11.0.1",
+          "FluentValidation.AspNetCore": "11.0.2",
           "IdentityModel": "6.0.0",
           "MediatR": "10.0.1",
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
@@ -3047,10 +3047,10 @@
         "dependencies": {
           "AutoMapper": "11.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "11.0.0",
-          "CSharpFunctionalExtensions": "2.29.1",
+          "CSharpFunctionalExtensions": "2.29.2",
           "Dapper": "2.0.123",
           "FakeSurveyGenerator.Domain": "1.0.0",
-          "FluentValidation": "11.0.1",
+          "FluentValidation": "11.0.2",
           "JetBrains.Annotations": "2022.1.0",
           "MediatR": "10.0.1",
           "MediatR.Extensions.Microsoft.DependencyInjection": "10.0.1",
@@ -3072,7 +3072,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "2.29.1",
+          "CSharpFunctionalExtensions": "2.29.2",
           "FakeSurveyGenerator.Shared": "1.0.0",
           "JetBrains.Annotations": "2022.1.0"
         }

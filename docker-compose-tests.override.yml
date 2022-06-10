@@ -49,9 +49,9 @@ services:
       - --results-directory
       - /tests/fake-survey-generator-api-integration
       - --collect:"XPlat Code Coverage"
-  sql-server-test:
+  #sql-server-test:
     # ports:
     #   - "1433:1433"
-  redis-test:
+  #redis-test:
     # ports:
     #   - "6379:6379"

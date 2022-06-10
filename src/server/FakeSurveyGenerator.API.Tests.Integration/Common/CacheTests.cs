@@ -10,7 +10,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Common;
 [Collection(nameof(IntegrationTestFixture))]
 public sealed class CacheTests
 {
-    private readonly IntegrationTestWebApplicationFactory<Startup> _clientFactory;
+    private readonly IntegrationTestWebApplicationFactory _clientFactory;
 
     public CacheTests(IntegrationTestFixture testFixture)
     {
