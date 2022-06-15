@@ -5,7 +5,7 @@ using Xunit;
 namespace FakeSurveyGenerator.API.Tests.Integration.Controllers;
 
 [Collection(nameof(IntegrationTestFixture))]
-public sealed class AdminControllerTests : IClassFixture<IntegrationTestWebApplicationFactory>
+public sealed class AdminControllerTests
 {
     private readonly HttpClient _client;
 

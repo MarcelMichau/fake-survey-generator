@@ -25,7 +25,7 @@ internal static class HealthChecksConfigurationExtensions
                 failureStatus: HealthStatus.Unhealthy);
 
         var redisConnectionString =
-            $"{configuration.GetValue<string>("REDIS_URL")},ssl={configuration.GetValue<string>("REDIS_SSL")},password={configuration.GetValue<string>("REDIS_PASSWORD")},defaultDatabase={configuration.GetValue<string>("REDIS_DEFAULT_DATABASE")}";
+            $"{configuration.GetValue<string>("Cache:RedisUrl")},ssl={configuration.GetValue<string>("Cache:RedisSsl")},password={configuration.GetValue<string>("Cache:RedisPassword")},defaultDatabase={configuration.GetValue<string>("Cache:RedisDefaultDatabase")}";
 
         healthChecksBuilder
             .AddRedis(redisConnectionString,

@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Respawn;
 using Xunit;
@@ -13,22 +14,44 @@ public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTe
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    public readonly IntegrationTestWebApplicationFactory Factory;
+    public IntegrationTestWebApplicationFactory Factory;
 
     private readonly Checkpoint _checkpoint;
-    private readonly IConfiguration _configuration;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private IServiceScopeFactory _serviceScopeFactory;
+
+    private readonly TestcontainersContainer _dbContainer =
+        new TestcontainersBuilder<TestcontainersContainer>()
+            .WithImage("mcr.microsoft.com/mssql/server:latest")
+            .WithEnvironment("ACCEPT_EULA", "Y")
+            .WithEnvironment("SA_PASSWORD", "<YourStrong!Passw0rd>")
+            .WithPortBinding(1433, 1433)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+            .Build();
+
+    private readonly TestcontainersContainer _cacheContainer =
+        new TestcontainersBuilder<TestcontainersContainer>()
+            .WithImage("redis:latest")
+            .WithPortBinding(6379, 6379)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6379))
+            .Build();
 
     public IntegrationTestFixture()
     {
-        Factory = new IntegrationTestWebApplicationFactory();
         _checkpoint = new Checkpoint();
-        _configuration = Factory.Services.GetRequiredService<IConfiguration>();
-        _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
     }
 
     public async Task InitializeAsync()
     {
+        await _dbContainer.StartAsync();
+        await _cacheContainer.StartAsync();
+
+        var connectionString =
+            $"Server={_dbContainer.Hostname};Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0;Encrypt=false";
+
+        Factory = new IntegrationTestWebApplicationFactory(new TestContainerSettings(connectionString, _cacheContainer.Hostname));
+        
+        _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
+
         using var scope = _serviceScopeFactory.CreateScope();
 
         var scopedServiceProvider = scope.ServiceProvider;
@@ -39,16 +62,14 @@ public class IntegrationTestFixture : IAsyncLifetime
         var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
         await cache.RemoveAsync("FakeSurveyGenerator");
 
-        if (_configuration.GetValue<bool>("USE_REAL_DEPENDENCIES"))
-        {
-            var connectionString = _configuration.GetConnectionString(nameof(SurveyContext));
-            await _checkpoint.Reset(connectionString);
-        }
+        await _checkpoint.Reset(connectionString);
     }
 
-    public Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        Factory?.Dispose();
-        return Task.CompletedTask;
+        await _dbContainer.DisposeAsync();
+        await _cacheContainer.DisposeAsync();
+
+        await Factory.DisposeAsync();
     }
 }
