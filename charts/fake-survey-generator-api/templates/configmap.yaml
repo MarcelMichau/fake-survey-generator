@@ -15,12 +15,12 @@ data:
   ConnectionStrings__SurveyContext: Server={{ .Values.databaseServer }};Database={{ .Values.database }};user id={{ .Values.user }};pwd={{ .Values.password }};ConnectRetryCount=0
   ASPNETCORE_ENVIRONMENT: Development
   {{- end }}
-  REDIS_URL: {{ .Values.redisUrl }}
-  REDIS_PASSWORD: {{ .Values.redisPassword }}
-  REDIS_DEFAULT_DATABASE: "{{ .Values.redisDefaultDatabase }}"
+  Cache__RedisUrl: {{ .Values.redisUrl }}
+  Cache__RedisPassword: {{ .Values.redisPassword }}
+  Cache__RedisDefaultDatabase: "{{ .Values.redisDefaultDatabase }}"
   {{- if .Values.azureRedisCacheEnabled }}
-  REDIS_SSL: "true"
+  Cache__RedisSsl: "true"
   {{- else }}
-  REDIS_SSL: "false"
+  Cache__RedisSsl: "false"
   {{- end }}
   IDENTITY_PROVIDER_URL: {{ .Values.identityProviderUrl }}

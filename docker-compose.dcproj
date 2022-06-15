@@ -9,12 +9,8 @@
     <DockerServiceName>fakesurveygenerator.ui</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose-tests.yml" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
-    </None>
-    <None Include="docker-compose-tests.override.yml">
-      <DependentUpon>docker-compose-tests.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />

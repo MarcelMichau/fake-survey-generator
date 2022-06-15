@@ -13,6 +13,19 @@ namespace FakeSurveyGenerator.Infrastructure;
 
 public static class DependencyInjection
 {
+    private static IServiceCollection AddBaseInfrastructure(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddScoped<INotificationService, NotificationService>();
+
+        services.AddDatabaseConfiguration(configuration);
+        services.AddCacheConfiguration(configuration.GetSection(CacheOptions.Cache).Get<CacheOptions>());
+
+        services.AddScoped<IDomainEventService, DomainEventService>();
+
+        return services;
+    }
+
     // There are two different extension methods to add the Infrastructure dependencies to the service collection.
     // This is because the services for OAuthUserInfo depend on a Token Provider which, in turn, depend on an HttpContext.
     // The AddInfrastructure method registers a SystemUserInfoService - this is intended to be used by long-running worker processes which do not have an HttpContext.
@@ -21,24 +34,16 @@ public static class DependencyInjection
 
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<INotificationService, NotificationService>();
-
-        services.AddDatabaseConfiguration(configuration);
-        services.AddCacheConfiguration(configuration);
+        services.AddBaseInfrastructure(configuration);
         services.AddSingleton<IUserService, SystemUserInfoService>();
-        services.AddScoped<IDomainEventService, DomainEventService>();
 
         return services;
     }
 
     public static IServiceCollection AddInfrastructureForApi(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<INotificationService, NotificationService>();
-
-        services.AddDatabaseConfiguration(configuration);
-        services.AddCacheConfiguration(configuration);
+        services.AddBaseInfrastructure(configuration);
         services.AddOAuthConfiguration();
-        services.AddScoped<IDomainEventService, DomainEventService>();
 
         return services;
     }
