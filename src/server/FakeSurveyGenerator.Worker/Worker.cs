@@ -13,6 +13,7 @@ internal sealed class Worker : BackgroundService
 {
     private readonly ILogger _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(10));
 
     public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
     {
@@ -22,18 +23,16 @@ internal sealed class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        while (await _timer.WaitForNextTickAsync(stoppingToken))
         {
             try
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 await GetTotalSurveys(stoppingToken);
-                await Task.Delay(10000, stoppingToken);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Oh no! Something bad happened.");
-                await Task.Delay(10000, stoppingToken);
             }
         }
     }
