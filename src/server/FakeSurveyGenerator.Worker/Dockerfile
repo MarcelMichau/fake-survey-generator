@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.6-bullseye-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.7-bullseye-slim AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.301-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.302-bullseye-slim AS build
 WORKDIR /src/server
 COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj FakeSurveyGenerator.Application/
 COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
