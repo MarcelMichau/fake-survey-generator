@@ -51,9 +51,9 @@ try
             .AddApplicationInsightsConfiguration(builder.Configuration)
             .AddApplicationServicesConfiguration(builder.Configuration)
             .AddApiBehaviourConfiguration()
+            .AddValidationConfiguration()
             .AddControllers()
             .AddJsonConfiguration()
-            .AddValidationConfiguration()
             .AddExceptionHandlingConfiguration();
 
     var app = builder.Build();
