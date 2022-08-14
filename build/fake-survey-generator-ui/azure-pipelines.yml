@@ -114,81 +114,81 @@ stages:
   #             azureContainerRegistry: "$(registryName).azurecr.io"
 
   # - stage: Application_Deployment
-    dependsOn:
-      - Build
-      - Publish
-    condition: and(succeeded(), eq(variables.isMain, true))
-    displayName: "Application Deployment"
-    jobs:
-      - deployment: Deployment_Job
-        displayName: Deploy Fake Survey Generator UI
-        pool:
-          vmImage: "ubuntu-latest"
-        variables:
-          semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
-          helmChartPath: $(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)
-          HELM_EXPERIMENTAL_OCI: 1
-          environmentSuffix: prod
-          ingressClusterIssuerName: letsencrypt
-          ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
-          ingressTlsSecretName: marcelmichau-dev-tls-secret
-          replicaCount: 1
-          targetNamespace: prod-env
-        environment: "aks"
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: KubectlInstaller@0
-                  displayName: "Install Kubectl latest"
+  #   dependsOn:
+  #     - Build
+  #     - Publish
+  #   condition: and(succeeded(), eq(variables.isMain, true))
+  #   displayName: "Application Deployment"
+  #   jobs:
+  #     - deployment: Deployment_Job
+  #       displayName: Deploy Fake Survey Generator UI
+  #       pool:
+  #         vmImage: "ubuntu-latest"
+  #       variables:
+  #         semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
+  #         helmChartPath: $(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)
+  #         HELM_EXPERIMENTAL_OCI: 1
+  #         environmentSuffix: prod
+  #         ingressClusterIssuerName: letsencrypt
+  #         ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
+  #         ingressTlsSecretName: marcelmichau-dev-tls-secret
+  #         replicaCount: 1
+  #         targetNamespace: prod-env
+  #       environment: "aks"
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - task: KubectlInstaller@0
+  #                 displayName: "Install Kubectl latest"
 
-                - task: HelmInstaller@1
-                  inputs:
-                    helmVersionToInstall: "3.9.3"
-                  displayName: "Install Helm"
+  #               - task: HelmInstaller@1
+  #                 inputs:
+  #                   helmVersionToInstall: "3.9.3"
+  #                 displayName: "Install Helm"
 
-                - task: HelmDeploy@0
-                  displayName: Log in to Azure Container Registry
-                  inputs:
-                    command: registry
-                    connectionType: "None"
-                    azureSubscriptionEndpointForACR: "Azure Service Connection"
-                    azureResourceGroupForACR: "$(resourceGroupName)"
-                    azureContainerRegistry: "$(registryName).azurecr.io"
-                    arguments: login
+  #               - task: HelmDeploy@0
+  #                 displayName: Log in to Azure Container Registry
+  #                 inputs:
+  #                   command: registry
+  #                   connectionType: "None"
+  #                   azureSubscriptionEndpointForACR: "Azure Service Connection"
+  #                   azureResourceGroupForACR: "$(resourceGroupName)"
+  #                   azureContainerRegistry: "$(registryName).azurecr.io"
+  #                   arguments: login
 
-                - task: AzureCLI@1
-                  inputs:
-                    azureSubscription: "Azure Service Connection"
-                    scriptLocation: "inlineScript"
-                    inlineScript: |
-                      helm chart pull $(helmChartPath)
-                  displayName: "Pull Helm Chart into Local Cache"
+  #               - task: AzureCLI@1
+  #                 inputs:
+  #                   azureSubscription: "Azure Service Connection"
+  #                   scriptLocation: "inlineScript"
+  #                   inlineScript: |
+  #                     helm chart pull $(helmChartPath)
+  #                 displayName: "Pull Helm Chart into Local Cache"
 
-                - script: |
-                    helm chart export $(helmChartPath) --destination ./charts
-                  displayName: "Export Helm Chart to Folder"
+  #               - script: |
+  #                   helm chart export $(helmChartPath) --destination ./charts
+  #                 displayName: "Export Helm Chart to Folder"
 
-                - task: HelmDeploy@0
-                  displayName: "Deploy Fake Survey Generator UI using Helm"
-                  inputs:
-                    connectionType: "Azure Resource Manager"
-                    azureSubscription: "Azure Service Connection"
-                    azureResourceGroup: "$(resourceGroupName)"
-                    kubernetesCluster: "$(kubernetesClusterName)"
-                    namespace: "$(targetNamespace)"
-                    command: "upgrade"
-                    chartType: "FilePath"
-                    chartPath: "./charts/$(projectName)"
-                    chartVersion: "$(semVerVersionTag)"
-                    releaseName: "$(projectName)-$(environmentSuffix)"
-                    arguments: >-
-                      --create-namespace
-                      --set image.repository=$(imageRepository)
-                      --set image.tag=$(semVerVersionTag)
-                      --set ingress.hosts[0].host=$(ingressHost)
-                      --set ingress.hosts[0].paths[0]=/
-                      --set ingress.tls[0].secretName=$(ingressTlsSecretName)
-                      --set ingress.tls[0].hosts={$(ingressHost)}
-                      --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
-                      --set replicaCount=$(replicaCount)
+  #               - task: HelmDeploy@0
+  #                 displayName: "Deploy Fake Survey Generator UI using Helm"
+  #                 inputs:
+  #                   connectionType: "Azure Resource Manager"
+  #                   azureSubscription: "Azure Service Connection"
+  #                   azureResourceGroup: "$(resourceGroupName)"
+  #                   kubernetesCluster: "$(kubernetesClusterName)"
+  #                   namespace: "$(targetNamespace)"
+  #                   command: "upgrade"
+  #                   chartType: "FilePath"
+  #                   chartPath: "./charts/$(projectName)"
+  #                   chartVersion: "$(semVerVersionTag)"
+  #                   releaseName: "$(projectName)-$(environmentSuffix)"
+  #                   arguments: >-
+  #                     --create-namespace
+  #                     --set image.repository=$(imageRepository)
+  #                     --set image.tag=$(semVerVersionTag)
+  #                     --set ingress.hosts[0].host=$(ingressHost)
+  #                     --set ingress.hosts[0].paths[0]=/
+  #                     --set ingress.tls[0].secretName=$(ingressTlsSecretName)
+  #                     --set ingress.tls[0].hosts={$(ingressHost)}
+  #                     --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
+  #                     --set replicaCount=$(replicaCount)
