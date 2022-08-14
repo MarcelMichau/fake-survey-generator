@@ -79,6 +79,7 @@ stages:
 
           - task: Docker@2
             displayName: "Push Image to Azure Container Registry"
+            condition: and(succeeded(), eq(variables.isMain, 'true'))
             inputs:
               containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
               repository: "$(projectName)"
@@ -87,32 +88,32 @@ stages:
                 $(SetVersionTag.VersionTag)
                 latest
 
-  - stage: Publish
-    displayName: "Publish"
-    jobs:
-      - job: Publish_Chart
-        displayName: "Publish Fake Survey Generator UI Chart"
-        pool:
-          vmImage: "ubuntu-latest"
-        variables:
-          semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
-        steps:
-          - task: HelmInstaller@1
-            inputs:
-              helmVersionToInstall: "3.9.3"
-            displayName: "Install Helm"
+  # - stage: Publish
+  #   displayName: "Publish"
+  #   jobs:
+  #     - job: Publish_Chart
+  #       displayName: "Publish Fake Survey Generator UI Chart"
+  #       pool:
+  #         vmImage: "ubuntu-latest"
+  #       variables:
+  #         semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
+  #       steps:
+  #         - task: HelmInstaller@1
+  #           inputs:
+  #             helmVersionToInstall: "3.9.3"
+  #           displayName: "Install Helm"
 
-          - task: HelmDeploy@0
-            displayName: Save Helm Chart
-            inputs:
-              command: save
-              chartNameForACR: "charts/$(projectName):$(semVerVersionTag)"
-              chartPathForACR: "charts/$(projectName)"
-              azureSubscriptionEndpointForACR: "Azure Service Connection"
-              azureResourceGroupForACR: "$(resourceGroupName)"
-              azureContainerRegistry: "$(registryName).azurecr.io"
+  #         - task: HelmDeploy@0
+  #           displayName: Save Helm Chart
+  #           inputs:
+  #             command: save
+  #             chartNameForACR: "charts/$(projectName):$(semVerVersionTag)"
+  #             chartPathForACR: "charts/$(projectName)"
+  #             azureSubscriptionEndpointForACR: "Azure Service Connection"
+  #             azureResourceGroupForACR: "$(resourceGroupName)"
+  #             azureContainerRegistry: "$(registryName).azurecr.io"
 
-  - stage: Application_Deployment
+  # - stage: Application_Deployment
     dependsOn:
       - Build
       - Publish

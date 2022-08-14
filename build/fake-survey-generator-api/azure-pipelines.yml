@@ -253,6 +253,7 @@ stages:
 
           - task: Docker@2
             displayName: "Push Image to Azure Container Registry"
+            condition: and(succeeded(), eq(variables.isMain, 'true'))
             inputs:
               containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
               repository: "$(projectName)"
@@ -261,225 +262,225 @@ stages:
                 $(semVerVersionTag)
                 latest
 
-  - stage: Publish
-    displayName: "Publish"
-    jobs:
-      - job: Publish_Chart
-        displayName: "Publish Fake Survey Generator API Chart"
-        pool:
-          vmImage: "ubuntu-latest"
-        variables:
-          semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
-        steps:
-          - task: HelmInstaller@1
-            inputs:
-              helmVersionToInstall: "3.9.3"
-            displayName: "Install Helm"
+  # - stage: Publish
+  #   displayName: "Publish"
+  #   jobs:
+  #     - job: Publish_Chart
+  #       displayName: "Publish Fake Survey Generator API Chart"
+  #       pool:
+  #         vmImage: "ubuntu-latest"
+  #       variables:
+  #         semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
+  #       steps:
+  #         - task: HelmInstaller@1
+  #           inputs:
+  #             helmVersionToInstall: "3.9.3"
+  #           displayName: "Install Helm"
 
-          - task: HelmDeploy@0
-            displayName: Save Helm Chart
-            inputs:
-              command: save
-              chartNameForACR: "charts/$(projectName):$(semVerVersionTag)"
-              chartPathForACR: "charts/$(projectName)"
-              azureSubscriptionEndpointForACR: "Azure Service Connection"
-              azureResourceGroupForACR: "$(resourceGroupName)"
-              azureContainerRegistry: "$(registryName).azurecr.io"
+  #         - task: HelmDeploy@0
+  #           displayName: Save Helm Chart
+  #           inputs:
+  #             command: save
+  #             chartNameForACR: "charts/$(projectName):$(semVerVersionTag)"
+  #             chartPathForACR: "charts/$(projectName)"
+  #             azureSubscriptionEndpointForACR: "Azure Service Connection"
+  #             azureResourceGroupForACR: "$(resourceGroupName)"
+  #             azureContainerRegistry: "$(registryName).azurecr.io"
 
-  - stage: Database_Deployment
-    condition: and(succeeded(), eq(variables.isMain, true))
-    displayName: "Database Deployment"
-    jobs:
-      - deployment: Deployment_Job
-        displayName: Deploy Fake Survey Generator Database
-        pool:
-          vmImage: "windows-2019"
-        variables:
-          sqlServerName: "sql-marcel-michau.database.windows.net"
-          sqlDatabaseName: sqldb-fake-survey-generator
-        environment: "azure-sql"
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: SqlAzureDacpacDeployment@1
-                  displayName: "Execute SQL Migration Script"
-                  inputs:
-                    azureSubscription: "Azure Service Connection"
-                    AuthenticationType: "servicePrincipal"
-                    ServerName: "$(sqlServerName)"
-                    DatabaseName: "$(sqlDatabaseName)"
-                    deployType: "SqlTask"
-                    SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
-                    IpDetectionMethod: "AutoDetect"
+  # - stage: Database_Deployment
+  #   condition: and(succeeded(), eq(variables.isMain, true))
+  #   displayName: "Database Deployment"
+  #   jobs:
+  #     - deployment: Deployment_Job
+  #       displayName: Deploy Fake Survey Generator Database
+  #       pool:
+  #         vmImage: "windows-latest"
+  #       variables:
+  #         sqlServerName: "sql-marcel-michau.database.windows.net"
+  #         sqlDatabaseName: sqldb-fake-survey-generator
+  #       environment: "azure-sql"
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - task: SqlAzureDacpacDeployment@1
+  #                 displayName: "Execute SQL Migration Script"
+  #                 inputs:
+  #                   azureSubscription: "Azure Service Connection"
+  #                   AuthenticationType: "servicePrincipal"
+  #                   ServerName: "$(sqlServerName)"
+  #                   DatabaseName: "$(sqlDatabaseName)"
+  #                   deployType: "SqlTask"
+  #                   SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
+  #                   IpDetectionMethod: "AutoDetect"
 
-  - stage: Application_Deployment
-    dependsOn:
-      - BuildTest
-      - Publish
-      - Database_Deployment
-    condition: and(succeeded(), eq(variables.isMain, true))
-    displayName: "Application Deployment"
-    variables:
-      environmentSuffix: prod
-      ingressClusterIssuerName: letsencrypt
-      ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
-      ingressTlsSecretName: marcelmichau-dev-tls-secret
-      targetNamespace: prod-env
-      identityProviderUrl: https://marcelmichau.eu.auth0.com/
-      azureDatabaseEnabled: true
-      azureDatabaseUseActiveDirectoryAuthentication: true
-      databaseServer: tcp:sql-marcel-michau.database.windows.net\,1433
-      databaseName: sqldb-fake-survey-generator
-      databaseUser: "azure-ad-enabled"
-      databasePassword: "azure-ad-enabled"
-      azureRedisCacheEnabled: true
-      redisServer: redis-fake-survey-generator.redis.cache.windows.net:6380
-      redisPassword: "$(prodEnvRedisPassword)"
-      redisDefaultDatabase: 0
-      azureApplicationInsightsEnabled: false
-      azureKeyVaultEnabled: true
-      azureKeyVaultName: kv-fake-survey-generator
-      azureKeyVaultResourceGroup: "$(resourceGroupName)"
-      azureKeyVaultSubscriptionId: "$(subscriptionId)"
-      azureKeyVaultTenantId: "$(tenantId)"
-      managedIdentityName: mi-fake-survey-generator
-      replicaCount: 1
-    jobs:
-      - job: CreateIdentities
-        displayName: Create Identities
-        pool:
-          vmImage: "ubuntu-latest"
+  # - stage: Application_Deployment
+  #   dependsOn:
+  #     - BuildTest
+  #     - Publish
+  #     - Database_Deployment
+  #   condition: and(succeeded(), eq(variables.isMain, true))
+  #   displayName: "Application Deployment"
+  #   variables:
+  #     environmentSuffix: prod
+  #     ingressClusterIssuerName: letsencrypt
+  #     ingressHost: aks.fakesurveygenerator.mysecondarydomain.com
+  #     ingressTlsSecretName: marcelmichau-dev-tls-secret
+  #     targetNamespace: prod-env
+  #     identityProviderUrl: https://marcelmichau.eu.auth0.com/
+  #     azureDatabaseEnabled: true
+  #     azureDatabaseUseActiveDirectoryAuthentication: true
+  #     databaseServer: tcp:sql-marcel-michau.database.windows.net\,1433
+  #     databaseName: sqldb-fake-survey-generator
+  #     databaseUser: "azure-ad-enabled"
+  #     databasePassword: "azure-ad-enabled"
+  #     azureRedisCacheEnabled: true
+  #     redisServer: redis-fake-survey-generator.redis.cache.windows.net:6380
+  #     redisPassword: "$(prodEnvRedisPassword)"
+  #     redisDefaultDatabase: 0
+  #     azureApplicationInsightsEnabled: false
+  #     azureKeyVaultEnabled: true
+  #     azureKeyVaultName: kv-fake-survey-generator
+  #     azureKeyVaultResourceGroup: "$(resourceGroupName)"
+  #     azureKeyVaultSubscriptionId: "$(subscriptionId)"
+  #     azureKeyVaultTenantId: "$(tenantId)"
+  #     managedIdentityName: mi-fake-survey-generator
+  #     replicaCount: 1
+  #   jobs:
+  #     - job: CreateIdentities
+  #       displayName: Create Identities
+  #       pool:
+  #         vmImage: "ubuntu-latest"
 
-        steps:
-          - script: az bicep build --file build/infrastructure/modules/fake-survey-generator-managed-identity/azuredeploy.bicep
-            displayName: "Compile Fake Survey Generator Managed Identity Bicep to ARM"
+  #       steps:
+  #         - script: az bicep build --file build/infrastructure/modules/fake-survey-generator-managed-identity/azuredeploy.bicep
+  #           displayName: "Compile Fake Survey Generator Managed Identity Bicep to ARM"
 
-          - task: AzureResourceManagerTemplateDeployment@3
-            displayName: "Deploy Fake Survey Generator Managed Identity ARM Template"
-            inputs:
-              deploymentScope: "Resource Group"
-              azureResourceManagerConnection: "Azure Service Connection"
-              subscriptionId: "$(subscriptionId)"
-              action: "Create Or Update Resource Group"
-              resourceGroupName: "$(resourceGroupName)"
-              location: "South Africa North"
-              templateLocation: "Linked artifact"
-              csmFile: "build/infrastructure/modules/fake-survey-generator-managed-identity/azuredeploy.json"
-              deploymentMode: "Incremental"
-              overrideParameters: >-
-                -identityName "$(managedIdentityName)"
-                -keyVaultName "$(azureKeyVaultName)"
-              deploymentOutputs: createManagedIdentityArmOutput
+  #         - task: AzureResourceManagerTemplateDeployment@3
+  #           displayName: "Deploy Fake Survey Generator Managed Identity ARM Template"
+  #           inputs:
+  #             deploymentScope: "Resource Group"
+  #             azureResourceManagerConnection: "Azure Service Connection"
+  #             subscriptionId: "$(subscriptionId)"
+  #             action: "Create Or Update Resource Group"
+  #             resourceGroupName: "$(resourceGroupName)"
+  #             location: "South Africa North"
+  #             templateLocation: "Linked artifact"
+  #             csmFile: "build/infrastructure/modules/fake-survey-generator-managed-identity/azuredeploy.json"
+  #             deploymentMode: "Incremental"
+  #             overrideParameters: >-
+  #               -identityName "$(managedIdentityName)"
+  #               -keyVaultName "$(azureKeyVaultName)"
+  #             deploymentOutputs: createManagedIdentityArmOutput
 
-          - task: PowerShell@2
-            name: "SetOutputVariables"
-            displayName: "Set Output Variables"
-            inputs:
-              targetType: "inline"
-              script: |
-                $armOutputObj = '$(createManagedIdentityArmOutput)' | ConvertFrom-Json
-                $armOutputObj.PSObject.Properties | ForEach-Object {
-                  $keyname = $_.Name
-                  $value = $_.Value.value
+  #         - task: PowerShell@2
+  #           name: "SetOutputVariables"
+  #           displayName: "Set Output Variables"
+  #           inputs:
+  #             targetType: "inline"
+  #             script: |
+  #               $armOutputObj = '$(createManagedIdentityArmOutput)' | ConvertFrom-Json
+  #               $armOutputObj.PSObject.Properties | ForEach-Object {
+  #                 $keyname = $_.Name
+  #                 $value = $_.Value.value
 
-                  ## Creates a standard pipeline variable
-                  Write-Output "##vso[task.setvariable variable=$keyName;]$value"
-                  
-                  ## Creates an output variable
-                  Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
-                }
-              pwsh: true
+  #                 ## Creates a standard pipeline variable
+  #                 Write-Output "##vso[task.setvariable variable=$keyName;]$value"
 
-      - deployment: Deployment_Job
-        displayName: Deploy Fake Survey Generator API
-        dependsOn:
-          - CreateIdentities
-        pool:
-          vmImage: "ubuntu-latest"
-        environment: "aks"
-        variables:
-          semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
-          helmChartPath: $(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)
-          HELM_EXPERIMENTAL_OCI: 1
-          identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
-          identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: KubectlInstaller@0
-                  displayName: "Install Kubectl latest"
+  #                 ## Creates an output variable
+  #                 Write-Output "##vso[task.setvariable variable=$keyName;isOutput=true]$value"
+  #               }
+  #             pwsh: true
 
-                - task: HelmInstaller@1
-                  inputs:
-                    helmVersionToInstall: "3.9.3"
-                  displayName: "Install Helm"
+  #     - deployment: Deployment_Job
+  #       displayName: Deploy Fake Survey Generator API
+  #       dependsOn:
+  #         - CreateIdentities
+  #       pool:
+  #         vmImage: "ubuntu-latest"
+  #       environment: "aks"
+  #       variables:
+  #         semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
+  #         helmChartPath: $(registryName).azurecr.io/helm/charts/$(projectName):$(semVerVersionTag)
+  #         HELM_EXPERIMENTAL_OCI: 1
+  #         identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
+  #         identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
+  #       strategy:
+  #         runOnce:
+  #           deploy:
+  #             steps:
+  #               - task: KubectlInstaller@0
+  #                 displayName: "Install Kubectl latest"
 
-                - task: HelmDeploy@0
-                  displayName: Log in to Azure Container Registry
-                  inputs:
-                    command: registry
-                    connectionType: "None"
-                    azureSubscriptionEndpointForACR: "Azure Service Connection"
-                    azureResourceGroupForACR: "$(resourceGroupName)"
-                    azureContainerRegistry: "$(registryName).azurecr.io"
-                    arguments: login
+  #               - task: HelmInstaller@1
+  #                 inputs:
+  #                   helmVersionToInstall: "3.9.3"
+  #                 displayName: "Install Helm"
 
-                - task: AzureCLI@1
-                  inputs:
-                    azureSubscription: "Azure Service Connection"
-                    scriptLocation: "inlineScript"
-                    inlineScript: |
-                      helm chart pull $(helmChartPath)
-                  displayName: "Pull Helm Chart into Local Cache"
+  #               - task: HelmDeploy@0
+  #                 displayName: Log in to Azure Container Registry
+  #                 inputs:
+  #                   command: registry
+  #                   connectionType: "None"
+  #                   azureSubscriptionEndpointForACR: "Azure Service Connection"
+  #                   azureResourceGroupForACR: "$(resourceGroupName)"
+  #                   azureContainerRegistry: "$(registryName).azurecr.io"
+  #                   arguments: login
 
-                - script: |
-                    helm chart export $(helmChartPath) --destination ./charts
-                  displayName: "Export Helm Chart to Folder"
+  #               - task: AzureCLI@1
+  #                 inputs:
+  #                   azureSubscription: "Azure Service Connection"
+  #                   scriptLocation: "inlineScript"
+  #                   inlineScript: |
+  #                     helm chart pull $(helmChartPath)
+  #                 displayName: "Pull Helm Chart into Local Cache"
 
-                - task: HelmDeploy@0
-                  displayName: "Deploy Fake Survey Generator API using Helm"
-                  inputs:
-                    connectionType: "Azure Resource Manager"
-                    azureSubscription: "Azure Service Connection"
-                    azureResourceGroup: "$(resourceGroupName)"
-                    kubernetesCluster: "$(kubernetesClusterName)"
-                    namespace: "$(targetNamespace)"
-                    command: "upgrade"
-                    chartType: "FilePath"
-                    chartPath: "./charts/$(projectName)"
-                    chartVersion: "$(semVerVersionTag)"
-                    releaseName: "$(projectName)-$(environmentSuffix)"
-                    arguments: >-
-                      --create-namespace
-                      --set identityProviderUrl=$(identityProviderUrl)
-                      --set azureDatabaseEnabled=$(azureDatabaseEnabled)
-                      --set azureDatabaseUseActiveDirectoryAuthentication=$(azureDatabaseUseActiveDirectoryAuthentication)
-                      --set databaseServer=$(databaseServer)
-                      --set azureRedisCacheEnabled=$(azureRedisCacheEnabled)
-                      --set redisUrl=$(redisServer)
-                      --set redisPassword=$(redisPassword)
-                      --set redisDefaultDatabase=$(redisDefaultDatabase)
-                      --set azureApplicationInsightsEnabled=$(azureApplicationInsightsEnabled)
-                      --set azureKeyVaultEnabled=$(azureKeyVaultEnabled)
-                      --set azureKeyVaultName=$(azureKeyVaultName)
-                      --set azureKeyVaultResourceGroup=$(azureKeyVaultResourceGroup)
-                      --set azureKeyVaultSubscriptionId=$(azureKeyVaultSubscriptionId)
-                      --set azureKeyVaultTenantId=$(azureKeyVaultTenantId)
-                      --set azurePodIdentityClientId=$(identityClientId)
-                      --set azurePodIdentityResourceId=$(identityResourceId)
-                      --set azurePodIdentityName=$(managedIdentityName)
-                      --set image.repository=$(imageRepository)
-                      --set image.tag=$(semVerVersionTag)
-                      --set database=$(databaseName)
-                      --set user=$(databaseUser)
-                      --set password=$(databasePassword)
-                      --set ingress.hosts[0].host=$(ingressHost)
-                      --set ingress.hosts[0].paths[0]=/api
-                      --set ingress.hosts[0].paths[1]=/swagger
-                      --set ingress.hosts[0].paths[2]=/health
-                      --set ingress.tls[0].secretName=$(ingressTlsSecretName)
-                      --set ingress.tls[0].hosts={$(ingressHost)}
-                      --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
-                      --set replicaCount=$(replicaCount)
+  #               - script: |
+  #                   helm chart export $(helmChartPath) --destination ./charts
+  #                 displayName: "Export Helm Chart to Folder"
+
+  #               - task: HelmDeploy@0
+  #                 displayName: "Deploy Fake Survey Generator API using Helm"
+  #                 inputs:
+  #                   connectionType: "Azure Resource Manager"
+  #                   azureSubscription: "Azure Service Connection"
+  #                   azureResourceGroup: "$(resourceGroupName)"
+  #                   kubernetesCluster: "$(kubernetesClusterName)"
+  #                   namespace: "$(targetNamespace)"
+  #                   command: "upgrade"
+  #                   chartType: "FilePath"
+  #                   chartPath: "./charts/$(projectName)"
+  #                   chartVersion: "$(semVerVersionTag)"
+  #                   releaseName: "$(projectName)-$(environmentSuffix)"
+  #                   arguments: >-
+  #                     --create-namespace
+  #                     --set identityProviderUrl=$(identityProviderUrl)
+  #                     --set azureDatabaseEnabled=$(azureDatabaseEnabled)
+  #                     --set azureDatabaseUseActiveDirectoryAuthentication=$(azureDatabaseUseActiveDirectoryAuthentication)
+  #                     --set databaseServer=$(databaseServer)
+  #                     --set azureRedisCacheEnabled=$(azureRedisCacheEnabled)
+  #                     --set redisUrl=$(redisServer)
+  #                     --set redisPassword=$(redisPassword)
+  #                     --set redisDefaultDatabase=$(redisDefaultDatabase)
+  #                     --set azureApplicationInsightsEnabled=$(azureApplicationInsightsEnabled)
+  #                     --set azureKeyVaultEnabled=$(azureKeyVaultEnabled)
+  #                     --set azureKeyVaultName=$(azureKeyVaultName)
+  #                     --set azureKeyVaultResourceGroup=$(azureKeyVaultResourceGroup)
+  #                     --set azureKeyVaultSubscriptionId=$(azureKeyVaultSubscriptionId)
+  #                     --set azureKeyVaultTenantId=$(azureKeyVaultTenantId)
+  #                     --set azurePodIdentityClientId=$(identityClientId)
+  #                     --set azurePodIdentityResourceId=$(identityResourceId)
+  #                     --set azurePodIdentityName=$(managedIdentityName)
+  #                     --set image.repository=$(imageRepository)
+  #                     --set image.tag=$(semVerVersionTag)
+  #                     --set database=$(databaseName)
+  #                     --set user=$(databaseUser)
+  #                     --set password=$(databasePassword)
+  #                     --set ingress.hosts[0].host=$(ingressHost)
+  #                     --set ingress.hosts[0].paths[0]=/api
+  #                     --set ingress.hosts[0].paths[1]=/swagger
+  #                     --set ingress.hosts[0].paths[2]=/health
+  #                     --set ingress.tls[0].secretName=$(ingressTlsSecretName)
+  #                     --set ingress.tls[0].hosts={$(ingressHost)}
+  #                     --set ingress.annotations."cert-manager\.io/cluster-issuer"=$(ingressClusterIssuerName)
+  #                     --set replicaCount=$(replicaCount)
