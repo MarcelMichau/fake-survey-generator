@@ -33,7 +33,6 @@ variables:
 
 stages:
   - stage: Build
-    displayName: "Build"
     jobs:
       - job: Build
         pool:
@@ -83,10 +82,10 @@ stages:
               repository: "$(projectName)"
               command: "push"
               tags: |
-                $(semVerVersionTag)
+                $(SetVersionTag.VersionTag)
                 latest
 
-  - stage: Application_Deployment
+  - stage: Deploy
     dependsOn:
       - Build
     condition: and(succeeded(), eq(variables.isMain, true))
