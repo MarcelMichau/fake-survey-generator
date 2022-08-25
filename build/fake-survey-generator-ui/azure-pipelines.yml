@@ -89,7 +89,6 @@ stages:
   - stage: Application_Deployment
     dependsOn:
       - Build
-      - Publish
     condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Application Deployment"
     jobs:
