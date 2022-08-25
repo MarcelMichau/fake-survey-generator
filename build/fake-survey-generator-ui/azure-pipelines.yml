@@ -75,16 +75,6 @@ stages:
                 $(SetVersionTag.VersionTag)
                 latest
 
-  - stage: Publish
-    displayName: "Publish"
-    jobs:
-      - job: Push_Image
-        displayName: "Push Fake Survey Generator UI Image"
-        pool:
-          vmImage: "ubuntu-latest"
-        variables:
-          semVerVersionTag: $[stageDependencies.Build.Build.outputs['SetVersionTag.VersionTag']]
-        steps:
           - task: Docker@2
             displayName: "Push Image to Azure Container Registry"
             condition: and(succeeded(), eq(variables.isMain, 'true'))
