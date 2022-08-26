@@ -14,8 +14,8 @@
 This is an app. That generates surveys. Fake ones. For fun. That is all.
 </p>
 
-| Component(s)              | Build Status                                                                                                                                                                                                                                     |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Component(s)              | Build Status                                                                                                                                                                                                                                 |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Fake Survey Generator API | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-api?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=16&branchName=main) |
 | Fake Survey Generator UI  | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator-ui?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=15&branchName=main)  |
 | Azure Infrastructure      | [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/azure-infrastructure?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=17&branchName=main)      |
@@ -64,13 +64,7 @@ Here are some of the features incorporated into this project:
 - Deploying Entity Framework Core Code-First Migrations to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops)
 - Using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework Core
 - Running a microservice application locally using [Docker Compose](https://docs.docker.com/compose/)
-- Deploying a microservice application to [Kubernetes](https://kubernetes.io/) using [Helm](https://helm.sh/) charts
-- Local [Kubernetes](https://kubernetes.io/) development using [Skaffold](https://skaffold.dev/)
-- Using Azure Pipelines to build & deploy a microservice application to [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/)
-- Using [AAD Pod Identity](https://github.com/Azure/aad-pod-identity) in AKS to associate an Azure Active Directory identity to pods
-- Integrating [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/) with AKS to protect sensitive application configuration using [Azure Key Vault Provider for Secrets Store CSI Driver](https://github.com/Azure/secrets-store-csi-driver-provider-azure)
-- Configuring Kubernetes [ExternalDNS](https://github.com/kubernetes-sigs/external-dns) with [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview) for custom domain names in AKS
-- Configuring [Cert Manager](https://cert-manager.io/) with AKS & Azure DNS for automatic TLS certificates using [Let's Encrypt](https://letsencrypt.org/)
+- Using Azure Pipelines to build & deploy a microservice application to [Azure Container Apps](https://azure.microsoft.com/en-us/services/container-apps/#overview)
 - Infrastructure as Code for Azure resources using [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview)
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
@@ -149,24 +143,26 @@ The client side makes use of the following tools, libraries & frameworks:
 
 ### Common
 
-The application is built for Docker, Docker Compose & Kubernetes with Helm. For local development, Docker Compose is used when debugging the application with Visual Studio, and [Skaffold](https://skaffold.dev/) is used to package the application into a Helm chart to deploy to a local Kubernetes cluster for running locally.
+The application is built for Docker, Docker Compose. For local development, Docker Compose is used when debugging the application with Visual Studio/Rider.
 
-The hosted version of the application is deployed here: https://aks.fakesurveygenerator.mysecondarydomain.com
+The hosted version of the application is deployed here: https://fakesurveygenerator.mysecondarydomain.com
 
 The following endpoints are accessible:
 
-- [/swagger](https://aks.fakesurveygenerator.mysecondarydomain.com/swagger/index.html) - The Swagger documentation page for the API
-- [/health/live](https://aks.fakesurveygenerator.mysecondarydomain.com/health/live) - Health Checks endpoint used by Kubernetes liveness probe
-- [/health/ready](https://aks.fakesurveygenerator.mysecondarydomain.com/health/ready) - Health Checks endpoint used by Kubernetes readiness probe
+- [/swagger](https://fakesurveygenerator.mysecondarydomain.com/swagger/index.html) - The Swagger documentation page for the API
+- [/health/live](https://fakesurveygenerator.mysecondarydomain.com/health/live) - Health Checks endpoint used by Azure Front Door health probe
+- [/health/ready](https://fakesurveygenerator.mysecondarydomain.com/health/ready) - Health Checks endpoint used by Azure Front Door health probe
 
 The hosted version utilizes the following infrastructure:
 
-- [Azure Kubernetes Service](https://azure.microsoft.com/en-us/services/kubernetes-service/)
+- [Azure Container Apps](https://azure.microsoft.com/en-us/services/container-apps/#overview)
 - [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/)
 - [Azure Cache for Redis](https://azure.microsoft.com/en-us/services/cache/)
 - [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/)
 - [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/)
+- [Azure Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview)
 - [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview)
+- [Azure Front Door](https://azure.microsoft.com/en-in/pricing/details/frontdoor/#overview)
 - [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview)
 - [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) (for CI/CD)
 
@@ -177,8 +173,6 @@ The application makes use of [OpenID Connect](https://openid.net/connect/) for a
 - Auth0
 - Google
 - Microsoft
-
-Initially, this project used [IdentityServer](https://identityserver.io/) for authentication, but I didn't feel like maintaining the separate IdentityServer project as well as the Fake Survey Generator, so I switched it out for Auth0 because authn/authz is hard and I prefer to delegate that responsibility to the people who know how to do it properly. 😁
 
 ## How do I run this thing?
 
@@ -209,24 +203,6 @@ or
 3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
 
 4. In a browser, navigate to https://localhost:3000 to open up the Fake Survey Generator UI
-
-To run on local Kubernetes:
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) with Kubernetes enabled (Ensure that at least 2048 MB of Memory is allocated to Docker Engine)
-- [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/#contents) installed on the Kubernetes cluster
-- [Skaffold](https://skaffold.dev/)
-
-To deploy to a local Kubernetes cluster:
-
-1. Create an entry in your `hosts` file as follows:
-
-   `127.0.0.1 k8s.local`
-
-2. In a Terminal/Command Prompt/PowerShell window in the project root, run:
-
-   `skaffold run`
-
-3. In a browser, navigate to https://k8s.local to open up the Fake Survey Generator UI
 
 ## How do I contribute?
 

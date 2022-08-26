@@ -20,7 +20,7 @@ param dnsZoneName string
 @description('The name of the CNAME record to create within the DNS zone. The record will be an alias to your Front Door endpoint.')
 param cnameRecordName string = 'www'
 
-var profileName = 'DefaultProfile'
+var profileName = endpointName
 
 // Create a valid resource name for the custom domain. Resource names don't include periods.
 var customDomainResourceName = replace('${cnameRecordName}.${dnsZoneName}', '.', '-')
