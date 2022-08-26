@@ -84,7 +84,7 @@ resource uiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' = {
     healthProbeSettings: {
       probePath: '/'
       probeRequestType: 'HEAD'
-      probeProtocol: 'Https'
+      probeProtocol: 'Http' // The UI needs http for some reason
       probeIntervalInSeconds: 100
     }
   }
