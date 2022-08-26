@@ -1,7 +1,0 @@
-apiVersion: aadpodidentity.k8s.io/v1
-kind: AzureIdentityBinding
-metadata:
-  name: {{ .Values.certManagerIdentityName }}-binding
-spec:
-  azureIdentity: {{ .Values.certManagerIdentityName }}
-  selector: {{ .Values.certManagerIdentityName }}
