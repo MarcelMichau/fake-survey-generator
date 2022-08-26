@@ -380,11 +380,11 @@ stages:
                       --resource-group $(resourceGroupName)
                       --image $(imageRepository):$(semVerVersionTag)
                       --set-env-vars
-                      ASPNETCORE_ENVIRONMENT=Production
-                      Cache__RedisDefaultDatabase=$(redisDefaultDatabase)
-                      Cache__RedisPassword=$(redisPassword)
-                      Cache__RedisSsl=true
-                      Cache__RedisUrl=$(redisServer)
-                      ConnectionStrings__SurveyContext=Server=$(databaseServer);Initial Catalog=$(databaseName);Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Managed Identity;User Id=$(identityClientId);
-                      IDENTITY_PROVIDER_URL=$(identityProviderUrl)
+                      ASPNETCORE_ENVIRONMENT="Production"
+                      Cache__RedisDefaultDatabase="$(redisDefaultDatabase)"
+                      Cache__RedisPassword="$(redisPassword)"
+                      Cache__RedisSsl="true"
+                      Cache__RedisUrl="$(redisServer)"
+                      ConnectionStrings__SurveyContext=Server="$(databaseServer);Initial Catalog=$(databaseName);Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Managed Identity;User Id=$(identityClientId);"
+                      IDENTITY_PROVIDER_URL="$(identityProviderUrl)"
                   displayName: "Update Container App"
