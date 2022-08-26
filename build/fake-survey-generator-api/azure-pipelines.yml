@@ -366,6 +366,14 @@ stages:
                   inputs:
                     azureSubscription: "Azure Service Connection"
                     scriptLocation: "inlineScript"
+                    inlineScript: |
+                      az extension add --name containerapp
+                  displayName: "Install Azure CLI containerapp Extension"
+
+                - task: AzureCLI@1
+                  inputs:
+                    azureSubscription: "Azure Service Connection"
+                    scriptLocation: "inlineScript"
                     inlineScript: >-
                       az containerapp update
                         --name ca-$(projectName)
