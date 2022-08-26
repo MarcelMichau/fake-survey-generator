@@ -19,3 +19,4 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-02-01-pr
 }
 
 output url string = containerRegistry.properties.loginServer
+output containerRegistryName string = containerRegistry.name

@@ -1,10 +1,10 @@
-@description('Specifies the name of the container app.')
+@description('Specifies the name of the Container App')
 param containerAppName string
 
-@description('Specifies the name of the container app environment.')
+@description('Specifies the name of the Container App Environment')
 param containerAppEnvName string
 
-@description('Specifies the name of the log analytics workspace.')
+@description('Specifies the name of the log analytics workspace')
 param logAnalyticsName string
 
 @description('Specifies the location for all resources.')
@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 @description('Whether or not traffic is allowed from outside the Container App Environment')
 param externalIngressEnabled bool = true
 
-@description('Specifies the container port.')
+@description('Specifies the container port')
 param targetPort int = 80
 
 @description('Azure Container Registry Url')

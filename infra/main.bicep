@@ -100,6 +100,7 @@ module managedIdentity 'modules/managedIdentity.bicep' = {
   params: {
     location: location
     keyVaultName: keyVault.outputs.keyVaultName
+    containerRegistryName: containerRegistry.outputs.containerRegistryName
     identityName: managedIdentityName
   }
   scope: fakeSurveyGeneratorResourceGroup
@@ -118,12 +119,6 @@ module uiContainerApp 'modules/containerApp.bicep' = {
       '${managedIdentity.outputs.identityResourceId}': {}
     }
     containerRegistryIdentity: managedIdentity.outputs.identityResourceId
-    containers: [
-      {
-        name: 'fake-survey-generator-ui'
-        image: '${containerRegistry.outputs.url}/fake-survey-generator-ui:4.3.728'
-      }
-    ]
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -141,12 +136,6 @@ module apiContainerApp 'modules/containerApp.bicep' = {
       '${managedIdentity.outputs.identityResourceId}': {}
     }
     containerRegistryIdentity: managedIdentity.outputs.identityResourceId
-    containers: [
-      {
-        name: 'fake-survey-generator-api'
-        image: '${containerRegistry.outputs.url}/fake-survey-generator-api:3.5.327'
-      }
-    ]
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
