@@ -357,7 +357,6 @@ stages:
         variables:
           semVerVersionTag: $[stageDependencies.BuildTest.VersionSetup.outputs['SetVersionTag.VersionTag']]
           identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
-          identityResourceId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityResourceId']]
         strategy:
           runOnce:
             deploy:
