@@ -35,5 +35,5 @@ stages:
                 --parameters
                 location="$(location)"
                 resourceGroupName="$(resourceGroupName)"
-                sqlAzureAdAdministratorLogin=$(sqlAzureAdAdministratorLogin)
-                sqlAzureAdAdministratorObjectId=$(sqlAzureAdAdministratorObjectId)
+                sqlAzureAdAdministratorLogin="$(sqlAzureAdAdministratorLogin)"
+                sqlAzureAdAdministratorObjectId="$(sqlAzureAdAdministratorObjectId)"
