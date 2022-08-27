@@ -5,6 +5,7 @@ trigger:
       - main
   paths:
     include:
+      - .azuredevops/*
       - src/server/*
       - build/fake-survey-generator-api/*
       - src/client/ui/*
@@ -21,6 +22,7 @@ pr:
       - refactor/*
   paths:
     include:
+      - .azuredevops/*
       - src/server/*
       - build/fake-survey-generator-api/*
       - src/client/ui/*
