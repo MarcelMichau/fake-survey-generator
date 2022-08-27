@@ -288,8 +288,6 @@ stages:
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator API
-        dependsOn:
-          - CreateIdentities
         pool:
           vmImage: "ubuntu-latest"
         environment: "aca"
