@@ -302,7 +302,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                $apiEnvVars="[
+                apiEnvVars="[
                   {
                     "name": "ASPNETCORE_ENVIRONMENT",
                     "value": "Production"
