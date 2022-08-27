@@ -216,10 +216,9 @@ stages:
 
   - stage: ProvisionBaseInfrastructure
     condition: and(succeeded(), eq(variables.isMain, true))
-    dependsOn: [
-        BuildTestApi
-        BuildUi,
-      ]
+    dependsOn:
+      - BuildTestApi
+      - BuildUi
     displayName: "Provision Base Infrastructure"
     jobs:
       - job: Deploy
