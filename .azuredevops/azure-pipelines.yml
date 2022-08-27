@@ -166,6 +166,7 @@ stages:
 
   - stage: BuildUi
     displayName: "Build UI"
+    dependsOn: []
     jobs:
       - job: Build
         pool:
@@ -278,55 +279,51 @@ stages:
     dependsOn:
       - BuildUi
       - BuildTestApi
-      - Database_Deployment
+      - ProvisionBaseInfrastructure
     condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Application Deployment"
     variables:
       identityProviderUrl: https://marcelmichau.eu.auth0.com/
       redisDefaultDatabase: 0
     jobs:
-      - deployment: Deployment_Job
-        displayName: Deploy Fake Survey Generator API
+      - job: DeployAppInfra
+        displayName: Deploy Fake Survey Generator
         pool:
           vmImage: "ubuntu-latest"
-        environment: "aca"
         variables:
           apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
           uiSemVerVersionTag: $[stageDependencies.BuildUi.Build.outputs['SetVersionTag.VersionTag']]
           identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: AzureCLI@2
-                  displayName: "Deploy Bicep Template"
-                  inputs:
-                    azureSubscription: $(azureResourceManagerConnection)
-                    scriptType: bash
-                    scriptLocation: inlineScript
-                    inlineScript: >-
-                      az deployment group create 
-                      --resource-group $(resourceGroupName) 
-                      --template-file infra/containerApps.bicep
-                      --parameters
-                      location="$(location)"
-                      uiContainerVersion="$(uiSemVerVersionTag)"
-                      apiContainerVersion="$(apiSemVerVersionTag)"
-                      apiEnvVars=[
-                        {
-                          "name": "ASPNETCORE_ENVIRONMENT",
-                          "value": "Production"
-                        },
-                        {
-                          "name": "Cache__RedisDefaultDatabase",
-                          "value": "$(redisDefaultDatabase)"
-                        },
-                        {
-                          "name": "Cache__RedisSsl",
-                          "value": "true"
-                        },
-                        {
-                          "name": "IDENTITY_PROVIDER_URL",
-                          "value": "$(identityProviderUrl)"
-                        }
-                      ]
+          steps:
+            - task: AzureCLI@2
+              displayName: "Deploy Bicep Template"
+              inputs:
+                azureSubscription: $(azureResourceManagerConnection)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: >-
+                  az deployment group create 
+                  --resource-group $(resourceGroupName) 
+                  --template-file infra/containerApps.bicep
+                  --parameters
+                  location="$(location)"
+                  uiContainerVersion="$(uiSemVerVersionTag)"
+                  apiContainerVersion="$(apiSemVerVersionTag)"
+                  apiEnvVars=[
+                    {
+                      "name": "ASPNETCORE_ENVIRONMENT",
+                      "value": "Production"
+                    },
+                    {
+                      "name": "Cache__RedisDefaultDatabase",
+                      "value": "$(redisDefaultDatabase)"
+                    },
+                    {
+                      "name": "Cache__RedisSsl",
+                      "value": "true"
+                    },
+                    {
+                      "name": "IDENTITY_PROVIDER_URL",
+                      "value": "$(identityProviderUrl)"
+                    }
+                  ]
