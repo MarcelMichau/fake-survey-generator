@@ -302,14 +302,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                az deployment group create 
-                --resource-group $(resourceGroupName) 
-                --template-file infra/containerApps.bicep
-                --parameters
-                location="$(location)"
-                uiContainerVersion="$(uiSemVerVersionTag)"
-                apiContainerVersion="$(apiSemVerVersionTag)"
-                apiEnvVars=[
+                $apiEnvVars="[
                   {
                     "name": "ASPNETCORE_ENVIRONMENT",
                     "value": "Production"
@@ -326,4 +319,13 @@ stages:
                     "name": "IDENTITY_PROVIDER_URL",
                     "value": "$(identityProviderUrl)"
                   }
-                ]
+                ]"
+
+                az deployment group create 
+                --resource-group $(resourceGroupName) 
+                --template-file infra/containerApps.bicep
+                --parameters
+                location="$(location)"
+                uiContainerVersion="$(uiSemVerVersionTag)"
+                apiContainerVersion="$(apiSemVerVersionTag)"
+                apiEnvVars=$apiEnvVars
