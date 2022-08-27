@@ -12,10 +12,8 @@ param sqlServerName string = 'sql-marcel-michau'
 param sqlDatabaseName string = 'sqldb-fake-survey-generator'
 param managedIdentityName string = 'mi-fake-survey-generator'
 param containerAppEnvironmentName string = 'cae-fake-survey-generator'
-param uiContainerAppName string = 'ca-fake-survey-generator-ui'
-param apiContainerAppName string = 'ca-fake-survey-generator-api'
-param sqlAzureAdAdministratorLogin string
-param sqlAzureAdAdministratorObjectId string
+param sqlAzureAdAdministratorLogin string = 'SQL Server Administrators'
+param sqlAzureAdAdministratorObjectId string = '7accb81c-4513-4df6-9eb7-791ac78e8fdb'
 
 resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
@@ -106,60 +104,12 @@ module managedIdentity 'modules/managedIdentity.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
-module uiContainerApp 'modules/containerApp.bicep' = {
-  name: 'uiContainerApp'
+module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
+  name: 'containerAppEnvironment'
   params: {
     location: location
-    containerAppEnvName: containerAppEnvironmentName
-    containerAppName: uiContainerAppName
-    containerRegistryUrl: containerRegistry.outputs.url
     logAnalyticsName: logAnalytics.outputs.name
-    identityType: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.outputs.identityResourceId}': {}
-    }
-    containerRegistryIdentity: managedIdentity.outputs.identityResourceId
-    containers: [
-      {
-        name: 'fake-survey-generator-ui'
-        image: '${containerRegistry.outputs.url}/fake-survey-generator-ui:4.3.728'
-      }
-    ]
-  }
-  scope: fakeSurveyGeneratorResourceGroup
-}
-
-module apiContainerApp 'modules/containerApp.bicep' = {
-  name: 'apiContainerApp'
-  params: {
-    location: location
     containerAppEnvName: containerAppEnvironmentName
-    containerAppName: apiContainerAppName
-    containerRegistryUrl: containerRegistry.outputs.url
-    logAnalyticsName: logAnalytics.outputs.name
-    identityType: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.outputs.identityResourceId}': {}
-    }
-    containerRegistryIdentity: managedIdentity.outputs.identityResourceId
-    containers: [
-      {
-        name: 'fake-survey-generator-api'
-        image: '${containerRegistry.outputs.url}/fake-survey-generator-api:3.5.327'
-      }
-    ]
-  }
-  scope: fakeSurveyGeneratorResourceGroup
-}
-
-module frontDoor 'modules/frontDoor.bicep' = {
-  name: 'frontDoor'
-  params: {
-    dnsZoneName: dnsZoneName
-    uiOriginHostName: uiContainerApp.outputs.containerAppFqdn
-    apiOriginHostName: apiContainerApp.outputs.containerAppFqdn
-    cnameRecordName: 'fakesurveygenerator'
-    endpointName: 'afd-fake-survey-generator'
   }
   scope: fakeSurveyGeneratorResourceGroup
 }

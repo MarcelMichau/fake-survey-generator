@@ -1,0 +1,336 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - src/server/*
+      - build/fake-survey-generator-api/*
+      - src/client/ui/*
+      - build/fake-survey-generator-ui/*
+      - infra/*
+
+pr:
+  branches:
+    include:
+      - main
+      - feat/*
+      - fix/*
+      - chore/*
+      - refactor/*
+  paths:
+    include:
+      - src/server/*
+      - build/fake-survey-generator-api/*
+      - src/client/ui/*
+      - build/fake-survey-generator-ui/*
+      - infra/*
+
+variables:
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  projectName: fake-survey-generator-api
+  registryName: acrfakesurveygenerator
+  imageRepository: "$(registryName).azurecr.io/$(projectName)"
+  resourceGroupName: rg-fake-survey-generator
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+
+stages:
+  - stage: BuildTestApi
+    displayName: "Build + Test API"
+    jobs:
+      - job: VersionSetup
+        displayName: "Set Version Tags"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET Core SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: custom
+              custom: tool
+              arguments: install --tool-path ./src/server nbgv --version 3.5.109
+            displayName: Install NBGV tool
+
+          - script: ./nbgv cloud -a
+            workingDirectory: src/server
+            displayName: Set Build Number & Version Variables
+
+          - script: |
+              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
+            name: "SetVersionTag"
+            displayName: "Set SemVer Version Tag from NBGV"
+
+      - job: Build
+        displayName: "Build + Test API"
+        pool:
+          vmImage: "ubuntu-latest"
+
+        variables:
+          buildConfiguration: "Release"
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET Core SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+
+          - task: Cache@2
+            displayName: Cache NuGet Packages
+            inputs:
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+              restoreKeys: |
+                nuget | "$(Agent.OS)"
+              path: $(NUGET_PACKAGES)
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "build"
+              arguments: "--configuration $(buildConfiguration)"
+              projects: |
+                FakeSurveyGenerator.sln
+            displayName: "Build Solution"
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              publishTestResults: true
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
+              projects: |
+                src/server/FakeSurveyGenerator.Domain.Tests
+                src/server/FakeSurveyGenerator.Application.Tests
+                src/server/FakeSurveyGenerator.API.Tests.Integration
+            displayName: "Run Unit + Integration Tests"
+
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: "cobertura"
+              summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
+            displayName: "Publish Code Coverage Results"
+
+          - script: |
+              dotnet tool restore
+              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
+            workingDirectory: src/server/FakeSurveyGenerator.EF.Design
+            displayName: "Create Database Migration Script"
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: "src/server/FakeSurveyGenerator.EF.Design/DbMigrationScript.sql"
+              artifact: "DbMigrationScript"
+            displayName: "Publish Database Migration Script"
+
+      - job: Docker
+        displayName: "Docker Preparation"
+        dependsOn: VersionSetup
+        pool:
+          vmImage: "ubuntu-latest"
+        variables:
+          semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
+        steps:
+          - task: Docker@2
+            displayName: "Build Docker Image"
+            inputs:
+              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+              repository: "$(projectName)"
+              command: "build"
+              Dockerfile: "src/server/FakeSurveyGenerator.API/Dockerfile"
+              buildContext: "."
+              arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
+              tags: |
+                $(semVerVersionTag)
+                latest
+
+          - task: Docker@2
+            displayName: "Push Image to Azure Container Registry"
+            condition: and(succeeded(), eq(variables.isMain, 'true'))
+            inputs:
+              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+              repository: "$(projectName)"
+              command: "push"
+              tags: |
+                $(semVerVersionTag)
+                latest
+
+  - stage: BuildUi
+    displayName: "Build UI"
+    jobs:
+      - job: Build
+        pool:
+          vmImage: "ubuntu-latest"
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET Core SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+
+          - task: DotNetCoreCLI@2
+            displayName: Install NBGV tool
+            inputs:
+              command: custom
+              custom: tool
+              arguments: install --tool-path ./src/client/ui nbgv --version 3.5.109
+
+          - script: ./nbgv cloud -a
+            workingDirectory: src/client/ui
+            displayName: Set Build Number & Version Variables
+
+          - script: |
+              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
+            name: "SetVersionTag"
+            displayName: "Set SemVer Version Tag from NBGV"
+
+          - task: Docker@2
+            displayName: "Build Docker Image"
+            inputs:
+              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+              repository: "$(projectName)"
+              command: "build"
+              Dockerfile: "src/client/ui/Dockerfile"
+              buildContext: .
+              arguments: "--build-arg REACT_APP_VERSION=$(SetVersionTag.VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
+              tags: |
+                $(SetVersionTag.VersionTag)
+                latest
+
+          - task: Docker@2
+            displayName: "Push Image to Azure Container Registry"
+            condition: and(succeeded(), eq(variables.isMain, 'true'))
+            inputs:
+              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+              repository: "$(projectName)"
+              command: "push"
+              tags: |
+                $(SetVersionTag.VersionTag)
+                latest
+
+  - stage: ProvisionBaseInfrastructure
+    condition: and(succeeded(), eq(variables.isMain, true))
+    dependsOn: [
+        BuildTestApi
+        BuildUi,
+      ]
+    displayName: "Provision Base Infrastructure"
+    jobs:
+      - job: Deploy
+        displayName: "Deploy Base Infrastructure"
+        pool:
+          vmImage: "ubuntu-latest"
+
+        variables:
+          azureResourceManagerConnection: "Azure Service Connection"
+          location: "South Africa North"
+
+        steps:
+          - task: AzureCLI@2
+            displayName: "Deploy Bicep Template"
+            inputs:
+              azureSubscription: "Azure Service Connection"
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: >-
+                az deployment sub create 
+                --template-file infra/baseInfra.bicep
+                --location "$(location)"
+                --parameters
+                location="$(location)"
+                resourceGroupName="$(resourceGroupName)"
+
+  - stage: Database_Deployment
+    condition: and(succeeded(), eq(variables.isMain, true))
+    dependsOn:
+      - ProvisionBaseInfrastructure
+    displayName: "Database Deployment"
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator Database
+        pool:
+          vmImage: "windows-latest"
+        variables:
+          sqlServerName: "sql-marcel-michau.database.windows.net"
+          sqlDatabaseName: sqldb-fake-survey-generator
+        environment: "azure-sql"
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: SqlAzureDacpacDeployment@1
+                  displayName: "Execute SQL Migration Script"
+                  inputs:
+                    azureSubscription: "Azure Service Connection"
+                    AuthenticationType: "servicePrincipal"
+                    ServerName: "$(sqlServerName)"
+                    DatabaseName: "$(sqlDatabaseName)"
+                    deployType: "SqlTask"
+                    SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
+                    IpDetectionMethod: "AutoDetect"
+
+  - stage: DeployApps
+    dependsOn:
+      - BuildUi
+      - BuildTestApi
+      - Database_Deployment
+    condition: and(succeeded(), eq(variables.isMain, true))
+    displayName: "Application Deployment"
+    variables:
+      identityProviderUrl: https://marcelmichau.eu.auth0.com/
+      redisDefaultDatabase: 0
+    jobs:
+      - deployment: Deployment_Job
+        displayName: Deploy Fake Survey Generator API
+        dependsOn:
+          - CreateIdentities
+        pool:
+          vmImage: "ubuntu-latest"
+        environment: "aca"
+        variables:
+          apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
+          uiSemVerVersionTag: $[stageDependencies.BuildUi.Build.outputs['SetVersionTag.VersionTag']]
+          identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureCLI@2
+                  displayName: "Deploy Bicep Template"
+                  inputs:
+                    azureSubscription: "Azure Service Connection"
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: >-
+                      az deployment group create 
+                      --resource-group $(resourceGroupName) 
+                      --template-file infra/containerApps.bicep
+                      --location "$(location)"
+                      --parameters
+                      location="$(location)"
+                      uiContainerVersion="$(uiSemVerVersionTag)"
+                      apiContainerVersion="$(apiSemVerVersionTag)"
+                      apiEnvVars=[
+                        {
+                          "name": "ASPNETCORE_ENVIRONMENT",
+                          "value": "Production"
+                        },
+                        {
+                          "name": "Cache__RedisDefaultDatabase",
+                          "value": "$(redisDefaultDatabase)"
+                        },
+                        {
+                          "name": "Cache__RedisSsl",
+                          "value": "true"
+                        },
+                        {
+                          "name": "IDENTITY_PROVIDER_URL",
+                          "value": "$(identityProviderUrl)"
+                        }
+                      ]
