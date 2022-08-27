@@ -33,6 +33,8 @@ variables:
   registryName: acrfakesurveygenerator
   imageRepository: "$(registryName).azurecr.io/$(projectName)"
   resourceGroupName: rg-fake-survey-generator
+  azureResourceManagerConnection: "Azure Service Connection"
+  location: "South Africa North"
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
@@ -226,15 +228,11 @@ stages:
         pool:
           vmImage: "ubuntu-latest"
 
-        variables:
-          azureResourceManagerConnection: "Azure Service Connection"
-          location: "South Africa North"
-
         steps:
           - task: AzureCLI@2
             displayName: "Deploy Bicep Template"
             inputs:
-              azureSubscription: "Azure Service Connection"
+              azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
@@ -266,7 +264,7 @@ stages:
                 - task: SqlAzureDacpacDeployment@1
                   displayName: "Execute SQL Migration Script"
                   inputs:
-                    azureSubscription: "Azure Service Connection"
+                    azureSubscription: $(azureResourceManagerConnection)
                     AuthenticationType: "servicePrincipal"
                     ServerName: "$(sqlServerName)"
                     DatabaseName: "$(sqlDatabaseName)"
@@ -301,14 +299,13 @@ stages:
                 - task: AzureCLI@2
                   displayName: "Deploy Bicep Template"
                   inputs:
-                    azureSubscription: "Azure Service Connection"
+                    azureSubscription: $(azureResourceManagerConnection)
                     scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: >-
                       az deployment group create 
                       --resource-group $(resourceGroupName) 
                       --template-file infra/containerApps.bicep
-                      --location "$(location)"
                       --parameters
                       location="$(location)"
                       uiContainerVersion="$(uiSemVerVersionTag)"
