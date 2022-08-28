@@ -16,7 +16,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration.Controllers;
 [Collection(nameof(IntegrationTestFixture))]
 public sealed class UserControllerTests
 {
-    private readonly IntegrationTestWebApplicationFactory _factory;
+    private readonly IntegrationTestWebApplicationFactory? _factory;
     private readonly IFixture _fixture;
 
     private static readonly JsonSerializerOptions Options = new()
@@ -39,7 +39,7 @@ public sealed class UserControllerTests
 
         var user = await client.GetFromJsonAsync<UserModel>($"api/user/{newUser.Id}");
 
-        user.Id.Should().Be(newUser.Id);
+        user!.Id.Should().Be(newUser.Id);
         user.DisplayName.Should().Be(newUser.DisplayName);
         user.EmailAddress.Should().Be(newUser.EmailAddress);
         user.ExternalUserId.Should().Be(newUser.ExternalUserId);
@@ -54,7 +54,7 @@ public sealed class UserControllerTests
 
         var result = await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={newUser.ExternalUserId}");
 
-        result.IsUserRegistered.Should().BeTrue();
+        result!.IsUserRegistered.Should().BeTrue();
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public sealed class UserControllerTests
 
         var result = await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
 
-        result.IsUserRegistered.Should().BeFalse();
+        result!.IsUserRegistered.Should().BeFalse();
     }
 
     [Fact]
@@ -108,6 +108,6 @@ public sealed class UserControllerTests
         await using var content = await response.Content.ReadAsStreamAsync();
 
         var user = await JsonSerializer.DeserializeAsync<UserModel>(content, Options);
-        return user;
+        return user!;
     }
 }

@@ -14,10 +14,10 @@ public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTe
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    public IntegrationTestWebApplicationFactory Factory;
+    public IntegrationTestWebApplicationFactory? Factory;
 
     private readonly Checkpoint _checkpoint;
-    private IServiceScopeFactory _serviceScopeFactory;
+    private IServiceScopeFactory? _serviceScopeFactory;
 
     private readonly TestcontainersContainer _dbContainer =
         new TestcontainersBuilder<TestcontainersContainer>()
@@ -70,6 +70,6 @@ public class IntegrationTestFixture : IAsyncLifetime
         await _dbContainer.DisposeAsync();
         await _cacheContainer.DisposeAsync();
 
-        await Factory.DisposeAsync();
+        if (Factory != null) await Factory.DisposeAsync();
     }
 }

@@ -11,7 +11,7 @@ namespace FakeSurveyGenerator.API.Tests.Integration;
 
 public static class WebApplicationFactoryExtensions
 {
-    public static HttpClient WithSpecificUser(this IntegrationTestWebApplicationFactory factory, IUser user)
+    public static HttpClient WithSpecificUser(this IntegrationTestWebApplicationFactory? factory, IUser user)
     {
         return factory.WithWebHostBuilder(builder =>
         {

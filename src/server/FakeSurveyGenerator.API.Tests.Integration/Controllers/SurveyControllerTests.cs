@@ -35,7 +35,7 @@ public sealed class SurveyControllerTests
         _authenticatedClient = testFixture.Factory
             .WithSpecificUser(fixture.Create<TestUser>());
 
-        _unauthenticatedClient = testFixture.Factory.CreateClient();
+        _unauthenticatedClient = testFixture.Factory!.CreateClient();
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public sealed class SurveyControllerTests
 
         var survey = await _authenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{newSurvey.Id}");
 
-        survey.Id.Should().Be(newSurvey.Id);
+        survey!.Id.Should().Be(newSurvey.Id);
         survey.Topic.Should().Be(newSurvey.Topic);
         survey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
         survey.RespondentType.Should().Be(newSurvey.RespondentType);
@@ -129,7 +129,7 @@ public sealed class SurveyControllerTests
         await using var content = await response.Content.ReadAsStreamAsync();
 
         var user = await JsonSerializer.DeserializeAsync<UserModel>(content, Options);
-        return user;
+        return user!;
     }
 
     private async Task<SurveyModel> CreateSurvey()
@@ -154,6 +154,6 @@ public sealed class SurveyControllerTests
         await using var content = await response.Content.ReadAsStreamAsync();
 
         var survey = await JsonSerializer.DeserializeAsync<SurveyModel>(content, Options);
-        return survey;
+        return survey!;
     }
 }
