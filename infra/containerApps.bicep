@@ -63,7 +63,7 @@ var apiEnvironmentVariables = [
   }
   {
     name: 'Cache__RedisPassword'
-    value: redisCache.properties.accessKeys.primaryKey
+    value: redisCache.listKeys().primaryKey
   }
   {
     name: 'Cache__RedisDefaultDatabase'
