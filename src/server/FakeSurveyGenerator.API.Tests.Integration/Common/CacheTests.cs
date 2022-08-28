@@ -20,7 +20,7 @@ public sealed class CacheTests
     [Fact]
     public async Task GivenADistributedCache_WhenGettingAnItemThatIsNotCached_ThenCachedValueShouldBeNull()
     {
-        var cache = _clientFactory.Services.GetRequiredService<ICache<string>>();
+        var cache = _clientFactory!.Services.GetRequiredService<ICache<string>>();
 
         const string cacheKey = "brand-new-key";
 
@@ -32,7 +32,7 @@ public sealed class CacheTests
     [Fact]
     public async Task GivenADistributedCache_WhenGettingAnItemThatIsCached_ThenCachedValueShouldBeReturned()
     {
-        var cache = _clientFactory.Services.GetRequiredService<ICache<string>>();
+        var cache = _clientFactory!.Services.GetRequiredService<ICache<string>>();
 
         const string cacheKey = "test-key";
         const string expectedValue = "test-value";
@@ -47,7 +47,7 @@ public sealed class CacheTests
     [Fact]
     public async Task GivenADistributedCache_WhenRemovingAnItemFromCache_ThenItemShouldNoLongerBeInCache()
     {
-        var cache = _clientFactory.Services.GetRequiredService<ICache<string>>();
+        var cache = _clientFactory!.Services.GetRequiredService<ICache<string>>();
 
         const string cacheKey = "test-key";
 

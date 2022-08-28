@@ -13,7 +13,7 @@ public static class WebApplicationFactoryExtensions
 {
     public static HttpClient WithSpecificUser(this IntegrationTestWebApplicationFactory? factory, IUser user)
     {
-        return factory.WithWebHostBuilder(builder =>
+        return factory!.WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(ConfigureAuthenticationHandler)
                 .ConfigureServices(services => ConfigureNewUserUserService(services, user));

@@ -11,7 +11,7 @@ public sealed class AdminControllerTests
 
     public AdminControllerTests(IntegrationTestFixture testFixture)
     {
-        _client = testFixture.Factory.CreateClient();
+        _client = testFixture.Factory!.CreateClient();
     }
 
     [Fact]
