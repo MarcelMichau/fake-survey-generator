@@ -67,11 +67,11 @@ var apiEnvironmentVariables = [
   }
   {
     name: 'Cache__RedisDefaultDatabase'
-    value: 0
+    value: '0'
   }
   {
     name: 'Cache__RedisSsl'
-    value: true
+    value: 'true'
   }
   {
     name: 'ConnectionStrings__SurveyContext'
