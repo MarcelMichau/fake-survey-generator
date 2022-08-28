@@ -282,9 +282,6 @@ stages:
       - ProvisionBaseInfrastructure
     condition: and(succeeded(), eq(variables.isMain, true))
     displayName: "Application Deployment"
-    variables:
-      identityProviderUrl: https://marcelmichau.eu.auth0.com/
-      redisDefaultDatabase: 0
     jobs:
       - job: DeployAppInfra
         displayName: Deploy Fake Survey Generator
@@ -293,7 +290,6 @@ stages:
         variables:
           apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
           uiSemVerVersionTag: $[stageDependencies.BuildUi.Build.outputs['SetVersionTag.VersionTag']]
-          identityClientId: $[dependencies.CreateIdentities.outputs['SetOutputVariables.identityClientId']]
         steps:
           - task: AzureCLI@2
             displayName: "Deploy Bicep Template"
@@ -302,25 +298,6 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: >-
-                apiEnvVars="[
-                  {
-                    "name": "ASPNETCORE_ENVIRONMENT",
-                    "value": "Production"
-                  },
-                  {
-                    "name": "Cache__RedisDefaultDatabase",
-                    "value": "$(redisDefaultDatabase)"
-                  },
-                  {
-                    "name": "Cache__RedisSsl",
-                    "value": "true"
-                  },
-                  {
-                    "name": "IDENTITY_PROVIDER_URL",
-                    "value": "$(identityProviderUrl)"
-                  }
-                ]"
-
                 az deployment group create 
                 --resource-group $(resourceGroupName) 
                 --template-file infra/containerApps.bicep
@@ -328,4 +305,3 @@ stages:
                 location="$(location)"
                 uiContainerVersion="$(uiSemVerVersionTag)"
                 apiContainerVersion="$(apiSemVerVersionTag)"
-                apiEnvVars=$apiEnvVars

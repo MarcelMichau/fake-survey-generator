@@ -11,8 +11,6 @@ param dnsZoneName string = 'mysecondarydomain.com'
 param uiContainerVersion string
 param apiContainerVersion string
 
-param apiEnvVars array = []
-
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' existing = {
   name: containerRegistryName
 }
@@ -54,20 +52,36 @@ module uiContainerApp 'modules/containerApp.bicep' = {
   }
 }
 
-var apiEnvironmentVariables = concat(apiEnvVars, [
-    {
-      name: 'Cache__RedisUrl'
-      value: redisCache.properties.hostName
-    }
-    {
-      name: 'Cache__RedisPassword'
-      value: redisCache.properties.accessKeys.primaryKey
-    }
-    {
-      name: 'ConnectionStrings__SurveyContext'
-      value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabase.name};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Managed Identity;User Id=${managedIdentity.properties.clientId};'
-    }
-  ])
+var apiEnvironmentVariables = [
+  {
+    name: 'ASPNETCORE_ENVIRONMENT'
+    value: 'Production'
+  }
+  {
+    name: 'Cache__RedisUrl'
+    value: redisCache.properties.hostName
+  }
+  {
+    name: 'Cache__RedisPassword'
+    value: redisCache.properties.accessKeys.primaryKey
+  }
+  {
+    name: 'Cache__RedisDefaultDatabase'
+    value: 0
+  }
+  {
+    name: 'Cache__RedisSsl'
+    value: true
+  }
+  {
+    name: 'ConnectionStrings__SurveyContext'
+    value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabase.name};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Managed Identity;User Id=${managedIdentity.properties.clientId};'
+  }
+  {
+    name: 'IDENTITY_PROVIDER_URL'
+    value: 'https://marcelmichau.eu.auth0.com/'
+  }
+]
 
 module apiContainerApp 'modules/containerApp.bicep' = {
   name: 'apiContainerApp'
