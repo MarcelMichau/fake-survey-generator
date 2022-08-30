@@ -31,9 +31,7 @@ pr:
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
-  projectName: fake-survey-generator-api
   registryName: acrfakesurveygenerator
-  imageRepository: "$(registryName).azurecr.io/$(projectName)"
   resourceGroupName: rg-fake-survey-generator
   azureResourceManagerConnection: "Azure Service Connection"
   location: "South Africa North"
@@ -138,6 +136,8 @@ stages:
         pool:
           vmImage: "ubuntu-latest"
         variables:
+          projectName: fake-survey-generator-api
+          imageRepository: "$(registryName).azurecr.io/$(projectName)"
           semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
         steps:
           - task: Docker@2
@@ -171,7 +171,9 @@ stages:
       - job: Build
         pool:
           vmImage: "ubuntu-latest"
-
+        variables:
+          projectName: fake-survey-generator-ui
+          imageRepository: "$(registryName).azurecr.io/$(projectName)"
         steps:
           - task: UseDotNet@2
             displayName: "Install .NET Core SDK"
