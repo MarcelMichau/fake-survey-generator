@@ -51,7 +51,6 @@ try
             .AddApplicationInsightsConfiguration(builder.Configuration)
             .AddApplicationServicesConfiguration(builder.Configuration)
             .AddApiBehaviourConfiguration()
-            .AddValidationConfiguration()
             .AddControllers()
             .AddJsonConfiguration()
             .AddExceptionHandlingConfiguration();

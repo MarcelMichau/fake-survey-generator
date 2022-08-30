@@ -108,8 +108,17 @@
       },
       "FluentValidation": {
         "type": "Transitive",
-        "resolved": "11.2.0",
-        "contentHash": "KV1YBM8T4plLKmShjxfmHMF6X1lDuXgyqE+t8NYNxb7jmMbPnA3u30RsuXAf2NYMv0TBCUQguI2Z6W17c/Dh1A=="
+        "resolved": "11.2.1",
+        "contentHash": "ZrQD0TGd0mHqf/zErZOEaba8cBeInaJj02nqinO+0La3uE08sJ5ScTYqsCbdx9fLHsX8rh+5KH5RtL2eOUS+OA=="
+      },
+      "FluentValidation.DependencyInjectionExtensions": {
+        "type": "Transitive",
+        "resolved": "11.2.1",
+        "contentHash": "WqR2kt0OidUCg9xS+YOoiDmdCu7EnYLLgQb/bX+5fTTVor+90dWmr1OdJaWlLZvg2nbwV9EfxA9FZp91+JmQtg==",
+        "dependencies": {
+          "FluentValidation": "11.2.1",
+          "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
+        }
       },
       "Humanizer.Core": {
         "type": "Transitive",
@@ -749,7 +758,8 @@
           "CSharpFunctionalExtensions": "2.33.2",
           "Dapper": "2.0.123",
           "FakeSurveyGenerator.Domain": "1.0.0",
-          "FluentValidation": "11.2.0",
+          "FluentValidation": "11.2.1",
+          "FluentValidation.DependencyInjectionExtensions": "11.2.1",
           "JetBrains.Annotations": "2022.1.0",
           "MediatR": "10.0.1",
           "MediatR.Extensions.Microsoft.DependencyInjection": "10.0.1",
