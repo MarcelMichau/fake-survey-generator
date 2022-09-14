@@ -1,5 +1,4 @@
 ﻿using FakeSurveyGenerator.API.Filters;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Configuration;
 

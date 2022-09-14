@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Configuration;
 

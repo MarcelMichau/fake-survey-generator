@@ -1,8 +1,6 @@
 ﻿using FakeSurveyGenerator.API.HostedServices;
 using FakeSurveyGenerator.Application;
 using FakeSurveyGenerator.Infrastructure;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Configuration;
 

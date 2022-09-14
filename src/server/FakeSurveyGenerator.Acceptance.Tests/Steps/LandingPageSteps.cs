@@ -31,7 +31,7 @@ public class LandingPageSteps
     [Then(@"the version number of the API is Displayed")]
     public async Task ThenTheVersionNumberOfTheAPIIsDisplayed()
     {
-        await _pageObject.WaitForApiCall();
+        //await _pageObject.WaitForApiCall();
 
         var content = await _pageObject.GetVersionInfo();
 

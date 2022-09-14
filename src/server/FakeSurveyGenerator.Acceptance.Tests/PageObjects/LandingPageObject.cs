@@ -22,7 +22,9 @@ public class LandingPageObject : BasePageObject
 
     public async Task WaitForApiCall()
     {
-        await Task.Delay(10000);
+        await Page.WaitForRequestAsync(r => r.Url.Contains("version"));
+
+        //await Task.Delay(10000);
     }
 
     public async Task<string> GetVersionInfo()

@@ -1,13 +1,8 @@
-﻿using System;
-using AutoWrapper;
+﻿using AutoWrapper;
 using FakeSurveyGenerator.API.Configuration;
 using FakeSurveyGenerator.API.Configuration.HealthChecks;
 using FakeSurveyGenerator.API.Configuration.Swagger;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
 

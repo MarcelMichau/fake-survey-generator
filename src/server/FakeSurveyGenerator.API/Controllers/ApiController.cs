@@ -1,9 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Errors;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Controllers;
 

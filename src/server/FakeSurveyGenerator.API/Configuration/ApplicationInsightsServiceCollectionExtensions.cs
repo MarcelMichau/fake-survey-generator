@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace FakeSurveyGenerator.API.Configuration;
+﻿namespace FakeSurveyGenerator.API.Configuration;
 
 internal static class ApplicationInsightsServiceCollectionExtensions
 {

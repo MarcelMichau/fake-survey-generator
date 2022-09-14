@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace FakeSurveyGenerator.API.Controllers;

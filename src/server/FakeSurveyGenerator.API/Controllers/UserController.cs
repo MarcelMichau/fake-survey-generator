@@ -1,12 +1,9 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoWrapper.Models.ResponseTypes;
+﻿using AutoWrapper.Models.ResponseTypes;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
 using FakeSurveyGenerator.Application.Users.Queries.GetUser;
 using FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 

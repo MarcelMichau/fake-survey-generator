@@ -33,7 +33,8 @@ public class StartupHooks
         var dockerComposePath = GetDockerComposeFileLocation(dockerComposeFileName);
         var dockerComposeOverridePath = GetDockerComposeFileLocation(dockerComposeOverrideFileName);
 
-        var applicationUrl = Configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress");
+        var uiContainerUrl = Configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress");
+        var apiContainerUrl = Configuration.GetValue<string>("FakeSurveyGeneratorAPI:BaseAddress");
 
         _compositeService = new Builder()
             .UseContainer()
@@ -41,10 +42,10 @@ public class StartupHooks
             .FromFile(dockerComposePath)
             .FromFile(dockerComposeOverridePath)
             .RemoveOrphans()
-            .WaitForHttp("fake-survey-generator-api", $"{applicationUrl}/health/ready",
-                continuation: (response, _) => response.Code != HttpStatusCode.OK ? 2000 : 0)
-            .WaitForHttp("fake-survey-generator-ui", $"{applicationUrl}",
-                continuation: (response, _) => response.Code != HttpStatusCode.OK ? 2000 : 0)
+            .WaitForHttp("fake-survey-generator-api", $"{apiContainerUrl}/health/ready",
+                continuation: (response, _) => response.Code == HttpStatusCode.OK ? 0 : 2000)
+            .WaitForHttp("fake-survey-generator-ui", $"{uiContainerUrl}",
+                continuation: (response, _) => response.Code == HttpStatusCode.OK ? 0 : 2000)
             .Build()
             .Start();
     }

@@ -1,8 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 using FakeSurveyGenerator.API.Networking;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.API.Configuration;
 
