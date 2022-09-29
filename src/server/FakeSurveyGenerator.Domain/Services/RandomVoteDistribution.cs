@@ -10,11 +10,9 @@ internal sealed class RandomVoteDistribution : IVoteDistribution
         if (survey is null)
             throw new ArgumentNullException(nameof(survey));
 
-        var random = new Random();
-
         for (var i = 0; i < survey.NumberOfRespondents; i++)
         {
-            var randomIndex = random.Next(0, survey.Options.Count);
+            var randomIndex = Random.Shared.Next(0, survey.Options.Count);
             survey.Options[randomIndex].AddVote();
         }
     }

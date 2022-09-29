@@ -10,9 +10,7 @@ internal sealed class OneSidedVoteDistribution : IVoteDistribution
         if (survey is null)
             throw new ArgumentNullException(nameof(survey));
 
-        var random = new Random();
-
-        var winningOptionIndex = random.Next(0, survey.Options.Count);
+        var winningOptionIndex = Random.Shared.Next(0, survey.Options.Count);
 
         for (var i = 0; i < survey.NumberOfRespondents; i++)
         {

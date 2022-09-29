@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Domain.DomainEvents;
@@ -98,6 +99,6 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public override string ToString()
     {
-        return System.Text.Json.JsonSerializer.Serialize(this);
+        return JsonSerializer.Serialize(this);
     }
 }
