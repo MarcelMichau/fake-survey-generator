@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
 using AutoFixture;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
@@ -12,7 +6,6 @@ using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
 using FakeSurveyGenerator.Data;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration.Controllers;

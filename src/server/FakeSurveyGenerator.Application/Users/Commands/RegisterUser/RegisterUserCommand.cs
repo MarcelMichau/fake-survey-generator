@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Common.Identity;

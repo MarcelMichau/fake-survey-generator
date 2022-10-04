@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Xunit;

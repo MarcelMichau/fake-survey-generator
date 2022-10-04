@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 
 namespace FakeSurveyGenerator.Domain.Common;
 

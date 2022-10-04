@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-using DotNet.Testcontainers.Builders;
+﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.DependencyInjection;
 using Respawn;
 using Xunit;
 
@@ -16,7 +14,6 @@ public class IntegrationTestFixture : IAsyncLifetime
 {
     public IntegrationTestWebApplicationFactory? Factory;
 
-    private readonly Checkpoint _checkpoint;
     private IServiceScopeFactory? _serviceScopeFactory;
 
     private readonly TestcontainersContainer _dbContainer =
@@ -34,11 +31,6 @@ public class IntegrationTestFixture : IAsyncLifetime
             .WithPortBinding(6379, 6379)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6379))
             .Build();
-
-    public IntegrationTestFixture()
-    {
-        _checkpoint = new Checkpoint();
-    }
 
     public async Task InitializeAsync()
     {
@@ -59,10 +51,12 @@ public class IntegrationTestFixture : IAsyncLifetime
         var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
         await context.Database.EnsureCreatedAsync();
 
+        var respawner = await Respawner.CreateAsync(connectionString);
+
         var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
         await cache.RemoveAsync("FakeSurveyGenerator");
 
-        await _checkpoint.Reset(connectionString);
+        await respawner.ResetAsync(connectionString);
     }
 
     public async Task DisposeAsync()

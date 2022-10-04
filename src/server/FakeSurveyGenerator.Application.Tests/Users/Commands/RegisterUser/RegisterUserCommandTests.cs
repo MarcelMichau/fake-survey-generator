@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.Xunit2;
 using FakeSurveyGenerator.Application.Common.Errors;
 using FakeSurveyGenerator.Application.Common.Identity;

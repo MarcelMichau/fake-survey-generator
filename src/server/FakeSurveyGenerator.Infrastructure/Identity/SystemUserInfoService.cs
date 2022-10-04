@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Identity;
+﻿using FakeSurveyGenerator.Application.Common.Identity;
 
 namespace FakeSurveyGenerator.Infrastructure.Identity;
 

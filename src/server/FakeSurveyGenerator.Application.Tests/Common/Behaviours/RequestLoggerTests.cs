@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Behaviours;
+﻿using FakeSurveyGenerator.Application.Common.Behaviours;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using Microsoft.Extensions.Logging;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

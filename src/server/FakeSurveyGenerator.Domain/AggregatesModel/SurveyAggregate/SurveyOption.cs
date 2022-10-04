@@ -1,5 +1,4 @@
-﻿using System;
-using FakeSurveyGenerator.Domain.Common;
+﻿using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Shared.SeedWork;
 using JetBrains.Annotations;
 

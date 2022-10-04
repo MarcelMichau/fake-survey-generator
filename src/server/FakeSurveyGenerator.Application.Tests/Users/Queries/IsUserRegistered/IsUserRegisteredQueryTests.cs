@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 using FluentAssertions;

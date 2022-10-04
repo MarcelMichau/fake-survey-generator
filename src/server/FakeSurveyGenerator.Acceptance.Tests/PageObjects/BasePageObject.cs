@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 
 namespace FakeSurveyGenerator.Acceptance.Tests.PageObjects;

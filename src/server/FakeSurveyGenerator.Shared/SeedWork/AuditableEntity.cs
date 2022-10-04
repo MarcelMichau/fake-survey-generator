@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FakeSurveyGenerator.Shared.SeedWork;
+﻿namespace FakeSurveyGenerator.Shared.SeedWork;
 
 public class AuditableEntity : Entity
 {

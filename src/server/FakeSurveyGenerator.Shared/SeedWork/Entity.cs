@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace FakeSurveyGenerator.Shared.SeedWork;
+﻿namespace FakeSurveyGenerator.Shared.SeedWork;
 
 public abstract class Entity : IHasDomainEvents
 {

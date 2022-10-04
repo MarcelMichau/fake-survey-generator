@@ -1,7 +1,5 @@
 using FakeSurveyGenerator.Application;
 using FakeSurveyGenerator.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Worker;
 

@@ -1,10 +1,7 @@
-﻿using System.Net.Http;
-using System.Threading;
-using AutoWrapper.Server;
+﻿using AutoWrapper.Server;
 using FakeSurveyGenerator.Application.Common.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 
 namespace FakeSurveyGenerator.API.Tests.Integration;

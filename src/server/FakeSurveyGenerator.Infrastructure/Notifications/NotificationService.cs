@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Notifications;
+﻿using FakeSurveyGenerator.Application.Common.Notifications;
 using FakeSurveyGenerator.Application.Notifications.Models;
 using Microsoft.Extensions.Logging;
 

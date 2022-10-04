@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FakeSurveyGenerator.Application.Common.Exceptions;
+﻿using FakeSurveyGenerator.Application.Common.Exceptions;
 using FluentValidation.Results;
 using FluentAssertions;
 using Xunit;

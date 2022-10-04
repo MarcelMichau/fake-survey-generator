@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace FakeSurveyGenerator.Application.Common.Caching;
+﻿namespace FakeSurveyGenerator.Application.Common.Caching;
 
 public interface ICache<T>
 {

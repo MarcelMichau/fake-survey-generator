@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using FakeSurveyGenerator.Acceptance.Tests.PageObjects;
+﻿using FakeSurveyGenerator.Acceptance.Tests.PageObjects;
 using FluentAssertions;
 using TechTalk.SpecFlow;
 

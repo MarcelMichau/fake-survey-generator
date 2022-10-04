@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FakeSurveyGenerator.Domain.Exceptions;
+﻿namespace FakeSurveyGenerator.Domain.Exceptions;
 
 public sealed class SurveyDomainException : Exception
 {

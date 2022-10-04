@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FakeSurveyGenerator.Application.Common.Auditing;
+﻿namespace FakeSurveyGenerator.Application.Common.Auditing;
 
 public record AuditableModel
 {

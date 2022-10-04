@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Infrastructure.Persistence;

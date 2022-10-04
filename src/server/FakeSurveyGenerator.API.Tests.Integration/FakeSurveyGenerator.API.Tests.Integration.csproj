@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <Nullable>enable</Nullable>
@@ -16,7 +17,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="NSubstitute" Version="4.4.0" />
     <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.15" />
-    <PackageReference Include="Respawn" Version="5.0.1" />
+    <PackageReference Include="Respawn" Version="6.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
     <PackageReference Include="Testcontainers" Version="2.1.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
@@ -34,5 +35,7 @@
     <ProjectReference Include="..\FakeSurveyGenerator.API\FakeSurveyGenerator.API.csproj" />
     <ProjectReference Include="..\FakeSurveyGenerator.Data\FakeSurveyGenerator.Data.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties packages_1lock_1json__JsonSchema="https://gitlab.com/fdroid/fdroiddata/-/raw/master/schemas/metadata.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

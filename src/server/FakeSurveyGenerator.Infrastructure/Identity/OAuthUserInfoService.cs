@@ -1,9 +1,4 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.IdentityModel.Tokens.Jwt;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Common.Caching;
 using FakeSurveyGenerator.Application.Common.Identity;

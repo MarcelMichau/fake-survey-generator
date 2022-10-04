@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using FakeSurveyGenerator.Application.Common.Mappings;
 using FakeSurveyGenerator.Infrastructure.Persistence;
 

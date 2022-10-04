@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Notifications.Models;
+﻿using FakeSurveyGenerator.Application.Notifications.Models;
 
 namespace FakeSurveyGenerator.Application.Common.Notifications;
 

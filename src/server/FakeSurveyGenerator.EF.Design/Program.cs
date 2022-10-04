@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FakeSurveyGenerator.EF.Design;
+﻿namespace FakeSurveyGenerator.EF.Design;
 
 internal static class Program
 {

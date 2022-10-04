@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.Common;
 using FakeSurveyGenerator.Shared.SeedWork;
 using JetBrains.Annotations;

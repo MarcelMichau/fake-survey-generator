@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Identity;
+﻿using FakeSurveyGenerator.Application.Common.Identity;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 

@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using AutoFixture;
 using AutoFixture.Idioms;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.DomainEvents;
+﻿using FakeSurveyGenerator.Application.Common.DomainEvents;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Data;
 using FakeSurveyGenerator.Infrastructure.Persistence;

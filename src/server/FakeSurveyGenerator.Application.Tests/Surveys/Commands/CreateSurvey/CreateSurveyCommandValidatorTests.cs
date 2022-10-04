@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoFixture;
+﻿using AutoFixture;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FluentAssertions;
 using FluentValidation.TestHelper;

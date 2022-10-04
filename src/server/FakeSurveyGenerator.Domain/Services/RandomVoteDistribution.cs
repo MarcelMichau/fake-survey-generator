@@ -1,5 +1,4 @@
-﻿using System;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 namespace FakeSurveyGenerator.Domain.Services;
 

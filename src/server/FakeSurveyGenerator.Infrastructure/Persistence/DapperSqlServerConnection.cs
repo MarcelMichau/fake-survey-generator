@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Persistence;
+﻿using FakeSurveyGenerator.Application.Common.Persistence;
 using Microsoft.Data.SqlClient;
 
 namespace FakeSurveyGenerator.Infrastructure.Persistence;

@@ -1,5 +1,4 @@
-﻿using System;
-using FakeSurveyGenerator.Application.Common.Persistence;
+﻿using FakeSurveyGenerator.Application.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

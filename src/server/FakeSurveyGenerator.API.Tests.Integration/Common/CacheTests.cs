@@ -1,8 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using FakeSurveyGenerator.Application.Common.Caching;
+﻿using FakeSurveyGenerator.Application.Common.Caching;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace FakeSurveyGenerator.API.Tests.Integration.Common;

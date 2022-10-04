@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using BoDi;
+﻿using BoDi;
 using FakeSurveyGenerator.Acceptance.Tests.PageObjects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;

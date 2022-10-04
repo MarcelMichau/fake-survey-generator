@@ -1,5 +1,3 @@
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using Ductus.FluentDocker.Builders;

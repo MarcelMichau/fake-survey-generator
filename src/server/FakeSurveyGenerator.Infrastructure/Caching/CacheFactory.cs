@@ -1,5 +1,4 @@
-﻿using System;
-using FakeSurveyGenerator.Application.Common.Caching;
+﻿using FakeSurveyGenerator.Application.Common.Caching;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.Infrastructure.Caching;
