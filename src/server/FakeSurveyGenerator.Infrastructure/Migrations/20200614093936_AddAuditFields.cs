@@ -20,7 +20,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                 schema: "Survey",
                 table: "User",
                 nullable: false,
-                defaultValue: new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
+                defaultValue: new DateTimeOffset(new System.DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
 
             migrationBuilder.AddColumn<string>(
                 name: "ModifiedBy",
@@ -48,7 +48,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                 schema: "Survey",
                 table: "SurveyOption",
                 nullable: false,
-                defaultValue: new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
+                defaultValue: new DateTimeOffset(new System.DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)));
 
             migrationBuilder.AddColumn<string>(
                 name: "ModifiedBy",
@@ -68,7 +68,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                 schema: "Survey",
                 table: "Survey",
                 nullable: false,
-                oldClrType: typeof(DateTime),
+                oldClrType: typeof(System.DateTime),
                 oldType: "datetime2");
 
             migrationBuilder.AddColumn<string>(
@@ -150,7 +150,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                 schema: "Survey",
                 table: "Survey");
 
-            migrationBuilder.AlterColumn<DateTime>(
+            migrationBuilder.AlterColumn<System.DateTime>(
                 name: "CreatedOn",
                 schema: "Survey",
                 table: "Survey",

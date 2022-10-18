@@ -1,4 +1,5 @@
 ﻿using FakeSurveyGenerator.Application.Common.Persistence;
+using FakeSurveyGenerator.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,8 @@ internal static class DatabaseServiceCollectionExtensions
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString(nameof(SurveyContext));
+
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
         services.AddDbContext<SurveyContext>
         (options =>

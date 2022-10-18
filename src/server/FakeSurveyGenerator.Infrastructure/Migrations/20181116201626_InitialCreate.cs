@@ -29,7 +29,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                     Topic = table.Column<string>(nullable: false),
                     RespondentType = table.Column<string>(nullable: false),
                     NumberOfRespondents = table.Column<int>(nullable: false),
-                    CreatedOn = table.Column<DateTime>(nullable: false)
+                    CreatedOn = table.Column<System.DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

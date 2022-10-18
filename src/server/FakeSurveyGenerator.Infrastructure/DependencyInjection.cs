@@ -1,7 +1,9 @@
-﻿using FakeSurveyGenerator.Application.Common.DomainEvents;
+﻿using FakeSurveyGenerator.Application.Common.DateTime;
+using FakeSurveyGenerator.Application.Common.DomainEvents;
 using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Notifications;
 using FakeSurveyGenerator.Infrastructure.Caching;
+using FakeSurveyGenerator.Infrastructure.DateTime;
 using FakeSurveyGenerator.Infrastructure.DomainEvents;
 using FakeSurveyGenerator.Infrastructure.Identity;
 using FakeSurveyGenerator.Infrastructure.Notifications;
@@ -22,6 +24,7 @@ public static class DependencyInjection
         services.AddCacheConfiguration(configuration.GetSection(CacheOptions.Cache).Get<CacheOptions>());
 
         services.AddScoped<IDomainEventService, DomainEventService>();
+        services.AddTransient<IDateTime, DateTimeService>();
 
         return services;
     }

@@ -43,8 +43,8 @@ internal sealed class SurveyEntityTypeConfiguration : AuditableEntityTypeConfigu
             .HasForeignKey(foreignKeyName)
             .IsRequired();
 
-        var navigation = builder.Metadata.FindNavigation(nameof(Survey.Options));
-        navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
+        builder.Navigation(s => s.Options)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         base.Configure(builder);
     }

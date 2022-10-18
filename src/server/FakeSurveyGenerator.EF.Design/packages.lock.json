@@ -28,21 +28,6 @@
         "resolved": "3.5.113",
         "contentHash": "4fBSMkqhi410qlkjPm+Mxfk8iO3C7dmgdVS7ljsfVO21WEzZCHP1VCOqB6rlOPfPidR/oxX+/Do/I7meCAz+Jg=="
       },
-      "NSubstitute": {
-        "type": "Direct",
-        "requested": "[4.4.0, )",
-        "resolved": "4.4.0",
-        "contentHash": "aArWp0M9n/3IZHCNSb3QIHy0tkPLSft8l3KFeUa54GbznKiv0FE687TBfPhZbXf0/zGtc4EsHLEUqEEf0Bf4HQ==",
-        "dependencies": {
-          "Castle.Core": "5.0.0"
-        }
-      },
-      "NSubstitute.Analyzers.CSharp": {
-        "type": "Direct",
-        "requested": "[1.0.15, )",
-        "resolved": "1.0.15",
-        "contentHash": "z3x/YxqxYNx+epVAQ22brgn8aijD93dQjL/xczf2NSY77qQaqFSGFtzrKwq1r+5RPq+JdQ8BtDLDYUfjtxafHw=="
-      },
       "AutoMapper": {
         "type": "Transitive",
         "resolved": "12.0.0",
@@ -88,18 +73,10 @@
           "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
-      "Castle.Core": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "edc8jjyXqzzy8jFdhs36FZdwmlDDTgqPb2Zy1Q5F/f2uAc88bu/VS/0Tpvgupmpl9zJOvOo5ZizVANb0ltN1NQ==",
-        "dependencies": {
-          "System.Diagnostics.EventLog": "6.0.0"
-        }
-      },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.34.3",
-        "contentHash": "lAA+JdPBNn9VM1Q6pz7Q1O2P2w2/u3EhRQdVOoLbl6aTQ9GmvlvHttigXMjPPT1tHT3DqUMU4l9PjdL+h0YD3Q=="
+        "resolved": "2.35.0",
+        "contentHash": "UAcu1xWx45mCFaXm3yXt8jOoHs5U2cP/QVhH72/rq//nuNC+BY1WnipKinrf6LVh41KdQ9dokmCgxvR285an2g=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -516,11 +493,6 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
-      "System.Diagnostics.EventLog": {
-        "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw=="
-      },
       "System.Diagnostics.PerformanceCounter": {
         "type": "Transitive",
         "resolved": "5.0.0",
@@ -755,7 +727,7 @@
         "dependencies": {
           "AutoMapper": "[12.0.0, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.0, )",
-          "CSharpFunctionalExtensions": "[2.34.3, )",
+          "CSharpFunctionalExtensions": "[2.35.0, )",
           "Dapper": "[2.0.123, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.2.2, )",
@@ -774,7 +746,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "[2.34.3, )",
+          "CSharpFunctionalExtensions": "[2.35.0, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
           "JetBrains.Annotations": "[2022.1.0, )"
         }

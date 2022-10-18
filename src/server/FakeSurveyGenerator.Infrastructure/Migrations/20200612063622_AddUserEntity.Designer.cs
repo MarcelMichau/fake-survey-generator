@@ -33,7 +33,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:HiLoSequenceSchema", "Survey")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.SequenceHiLo);
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<System.DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("NumberOfRespondents")

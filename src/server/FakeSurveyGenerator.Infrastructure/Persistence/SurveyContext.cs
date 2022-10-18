@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using FakeSurveyGenerator.Application.Common.DomainEvents;
-using FakeSurveyGenerator.Application.Common.Identity;
 using FakeSurveyGenerator.Application.Common.Persistence;
 using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using FakeSurveyGenerator.Domain.Common;
+using FakeSurveyGenerator.Infrastructure.Persistence.Interceptors;
 using FakeSurveyGenerator.Shared.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,33 +13,32 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence;
 
 public sealed class SurveyContext : DbContext, ISurveyContext
 {
-    private readonly IUserService _userService;
     private readonly IDomainEventService _domainEventService;
+    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
     private readonly ILogger _logger;
 
     public const string DefaultSchema = "Survey";
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Survey> Surveys { get; set; }
-    public DbSet<SurveyOption> SurveyOptions { get; set; }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Survey> Surveys => Set<Survey>();
+    public DbSet<SurveyOption> SurveyOptions => Set<SurveyOption>();
 
-    public SurveyContext(DbContextOptions options, IUserService userService, ILogger<SurveyContext> logger) : base(options)
+    public SurveyContext(DbContextOptions options, ILogger<SurveyContext> logger) : base(options)
     {
         if (options is null)
             throw new ArgumentNullException(nameof(options));
 
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public SurveyContext(DbContextOptions options, IDomainEventService domainEventService, IUserService userService, ILogger<SurveyContext> logger) : base(options)
+    public SurveyContext(DbContextOptions options, IDomainEventService domainEventService, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor, ILogger<SurveyContext> logger) : base(options)
     {
         if (options is null)
             throw new ArgumentNullException(nameof(options));
 
-        _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _domainEventService = domainEventService ?? throw new ArgumentNullException(nameof(domainEventService));
+        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,6 +46,11 @@ public sealed class SurveyContext : DbContext, ISurveyContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -61,11 +65,7 @@ public sealed class SurveyContext : DbContext, ISurveyContext
     {
         try
         {
-            SetAuditProperties();
-
             await DispatchEvents(cancellationToken);
-
-            SetAuditProperties(); // This needs to be run again to set the audit properties of any entities that were added/modified in any Domain Event Handlers after dispatch
 
             var recordsAffected = await base.SaveChangesAsync(cancellationToken);
 
@@ -80,43 +80,21 @@ public sealed class SurveyContext : DbContext, ISurveyContext
 
     private async Task DispatchEvents(CancellationToken cancellationToken)
     {
-        var domainEventEntities = ChangeTracker.Entries<IHasDomainEvents>()
+        var entities = ChangeTracker
+            .Entries<IHasDomainEvents>()
+            .Where(e => e.Entity.DomainEvents.Any())
+            .Select(e => e.Entity)
             .ToList();
 
-        foreach (var domainEventEntity in domainEventEntities)
-        {
-            domainEventEntity.Entity.ClearDomainEvents();
+        var domainEvents = entities
+            .SelectMany(e => e.DomainEvents)
+            .ToList();
 
-            foreach (var domainEvent in domainEventEntity.Entity.DomainEvents)
-            {
-                await _domainEventService.Publish(domainEvent, cancellationToken);
-            }
-        }
-    }
+        entities.ToList().ForEach(e => e.ClearDomainEvents());
 
-    private void SetAuditProperties()
-    {
-        foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+        foreach (var domainEvent in domainEvents)
         {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedBy = _userService.GetUserIdentity();
-                    entry.Entity.CreatedOn = DateTimeOffset.Now;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.ModifiedBy = _userService.GetUserIdentity();
-                    entry.Entity.ModifiedOn = DateTimeOffset.Now;
-                    break;
-                case EntityState.Detached:
-                    break;
-                case EntityState.Unchanged:
-                    break;
-                case EntityState.Deleted:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            await _domainEventService.Publish(domainEvent, cancellationToken);
         }
     }
 }
