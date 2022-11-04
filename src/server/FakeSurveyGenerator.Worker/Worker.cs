@@ -39,7 +39,7 @@ internal sealed class Worker : BackgroundService
 
         var surveyCount = await surveyContext.Surveys.CountAsync(stoppingToken);
 
-        _logger.LogInformation($"Current Number of Surveys in Database: {surveyCount}");
+        _logger.LogInformation("Current Number of Surveys in Database: {SurveyCount}", {surveyCount});
     }
     
     public override void Dispose()
