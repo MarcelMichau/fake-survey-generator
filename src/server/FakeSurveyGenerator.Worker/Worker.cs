@@ -41,4 +41,10 @@ internal sealed class Worker : BackgroundService
 
         _logger.LogInformation($"Current Number of Surveys in Database: {surveyCount}");
     }
+    
+    public override void Dispose()
+    {
+        _timer.Dispose();
+        base.Dispose();
+    }
 }
