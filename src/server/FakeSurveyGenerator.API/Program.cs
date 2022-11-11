@@ -36,6 +36,9 @@ try
             }
         }).ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
         {
+            if (hostBuilderContext.Configuration.GetValue<bool>("SKIP_DAPR"))
+                return;
+
             var configStoreName =
                 hostBuilderContext.HostingEnvironment.IsDevelopment() ? "local-file" : "azure-key-vault";
 

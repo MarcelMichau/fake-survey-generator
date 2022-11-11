@@ -26,6 +26,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
                 {"ASPNETCORE_ENVIRONMENT", "Production"}, // Run integration tests as close as possible to how code will be run in Production
+                {"SKIP_DAPR", "true"}, // Do not configure Dapr components for integration tests
                 
                 // The below settings are the minimum required config to "bootstrap" the host so that services which reference these config values don't throw errors
                 // They are dummy values & will get overridden in the call to builder.ConfigureTestServices() below
