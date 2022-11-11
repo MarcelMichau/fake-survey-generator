@@ -124,15 +124,15 @@ resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprCompone
     metadata: [
       {
         name: 'vaultName'
-        secretRef: 'kv-fake-survey-generator'
+        value: 'kv-fake-survey-generator'
       }
       {
         name: 'azureTenantId'
-        secretRef: subscription().tenantId
+        value: subscription().tenantId
       }
       {
         name: 'azureClientId'
-        secretRef: managedIdentity.properties.clientId
+        value: managedIdentity.properties.clientId
       }
     ]
     scopes: [
