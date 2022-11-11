@@ -42,7 +42,7 @@ public sealed class AdminController : ApiController
     [HttpGet("keyvaulttest")]
     public IActionResult KeyVaultTest()
     {
-        var secretValue = _configuration.GetValue<string>("AZURE_KEY_VAULT_TEST_SECRET");
+        var secretValue = _configuration.GetValue<string>("HealthCheckSecret");
 
         return Ok(new
         {
