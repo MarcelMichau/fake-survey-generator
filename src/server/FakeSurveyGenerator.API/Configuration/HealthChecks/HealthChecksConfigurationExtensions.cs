@@ -14,7 +14,7 @@ internal static class HealthChecksConfigurationExtensions
 
         healthChecksBuilder
             .AddSqlServer(
-                configuration.GetConnectionString(nameof(SurveyContext)) ?? throw new InvalidOperationException(),
+                configuration.GetConnectionString(nameof(SurveyContext)),
                 name: "FakeSurveyGeneratorDB-check",
                 tags: new[] { "fake-survey-generator-db", "ready" },
                 failureStatus: HealthStatus.Unhealthy);
