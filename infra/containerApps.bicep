@@ -121,7 +121,6 @@ resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprCompone
   properties: {
     componentType: 'secretstores.azure.keyvault'
     version: 'v1'
-    secretStoreComponent: 'azure-key-vault'
     metadata: [
       {
         name: 'vaultName'
