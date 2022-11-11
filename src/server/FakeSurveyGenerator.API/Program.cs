@@ -43,7 +43,7 @@ try
                 hostBuilderContext.HostingEnvironment.IsDevelopment() ? "local-file" : "azure-key-vault";
 
             var daprClient = new DaprClientBuilder().Build();
-            configurationBuilder.AddDaprSecretStore(configStoreName, daprClient);
+            configurationBuilder.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
         });
 
     builder.WebHost
