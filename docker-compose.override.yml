@@ -28,7 +28,7 @@ services:
   fake-survey-generator-api-dapr:
     command: ["./daprd",
      "-app-id", "fake-survey-generator-api",
-     "-app-port", "443",
+     "-app-port", "80",
      "-placement-host-address", "placement:50006",
      "-components-path", "/components"]
     volumes:
