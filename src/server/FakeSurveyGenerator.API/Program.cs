@@ -1,4 +1,6 @@
 ﻿using AutoWrapper;
+using Dapr.Client;
+using Dapr.Extensions.Configuration;
 using FakeSurveyGenerator.API.Configuration;
 using FakeSurveyGenerator.API.Configuration.HealthChecks;
 using FakeSurveyGenerator.API.Configuration.Swagger;
@@ -15,7 +17,7 @@ try
     Log.Information("Starting web host");
 
     var builder = WebApplication.CreateBuilder(args);
-    
+
     builder.Host
         .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
         {
@@ -32,6 +34,16 @@ try
                     services.GetRequiredService<TelemetryConfiguration>(),
                     TelemetryConverter.Traces);
             }
+        }).ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
+        {
+            if (hostBuilderContext.Configuration.GetValue<bool>("SKIP_DAPR"))
+                return;
+
+            var configStoreName =
+                hostBuilderContext.HostingEnvironment.IsDevelopment() ? "local-file" : "azure-key-vault";
+
+            var daprClient = new DaprClientBuilder().Build();
+            configurationBuilder.AddDaprSecretStore(configStoreName, daprClient);
         });
 
     builder.WebHost
@@ -39,6 +51,7 @@ try
 
     builder.Services
             .AddAuthorization()
+            .AddDaprConfiguration(builder.Configuration)
             .AddHealthChecksConfiguration(builder.Configuration)
             .AddSwaggerConfiguration(builder.Configuration)
             .AddAuthenticationConfiguration(builder.Configuration)

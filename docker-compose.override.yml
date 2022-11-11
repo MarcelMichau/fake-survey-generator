@@ -25,6 +25,15 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
+  fake-survey-generator-api-dapr:
+    command: ["./daprd",
+     "-app-id", "fake-survey-generator-api",
+     "-app-port", "443",
+     "-placement-host-address", "placement:50006",
+     "-components-path", "/components"]
+    volumes:
+      - "./dapr/components/:/components"
+
   fake-survey-generator-worker:
     environment:
       - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;Encrypt=false
@@ -40,3 +49,8 @@ services:
   redis:
     ports:
       - "6379:6379"
+
+  placement:
+    command: ["./placement", "-port", "50006"]
+    ports:
+      - "50006:50006"

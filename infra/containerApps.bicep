@@ -35,7 +35,7 @@ module uiContainerApp 'modules/containerApp.bicep' = {
   name: 'uiContainerApp'
   params: {
     location: location
-    containerAppEnvName: containerAppEnvironmentName
+    containerAppEnvId: containerAppEnvironment.id
     containerAppName: uiContainerAppName
     containerRegistryUrl: containerRegistry.properties.loginServer
     identityType: 'UserAssigned'
@@ -83,11 +83,15 @@ var apiEnvironmentVariables = [
   }
 ]
 
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
+  name: containerAppEnvironmentName
+}
+
 module apiContainerApp 'modules/containerApp.bicep' = {
   name: 'apiContainerApp'
   params: {
     location: location
-    containerAppEnvName: containerAppEnvironmentName
+    containerAppEnvId: containerAppEnvironment.id
     containerAppName: apiContainerAppName
     containerRegistryUrl: containerRegistry.properties.loginServer
     identityType: 'UserAssigned'
@@ -101,6 +105,39 @@ module apiContainerApp 'modules/containerApp.bicep' = {
         image: '${containerRegistry.properties.loginServer}/fake-survey-generator-api:${apiContainerVersion}'
         env: apiEnvironmentVariables
       }
+    ]
+    daprConfig: {
+      enabled: true
+      appId: 'fake-survey-generator-api'
+      appProtocol: 'http'
+      appPort: 80
+    }
+  }
+}
+
+resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview' = {
+  name: 'dapr-secret-store'
+  parent: containerAppEnvironment
+  properties: {
+    componentType: 'secretstores.azure.keyvault'
+    version: 'v1'
+    secretStoreComponent: 'azure-key-vault'
+    metadata: [
+      {
+        name: 'vaultName'
+        secretRef: 'kv-fake-survey-generator'
+      }
+      {
+        name: 'azureTenantId'
+        secretRef: subscription().tenantId
+      }
+      {
+        name: 'azureClientId'
+        secretRef: managedIdentity.properties.clientId
+      }
+    ]
+    scopes: [
+      'fake-survey-generator-api'
     ]
   }
 }

@@ -1,8 +1,8 @@
 @description('Specifies the name of the Container App')
 param containerAppName string
 
-@description('Specifies the name of the Container App Environment')
-param containerAppEnvName string
+@description('Specifies the ID of the Container App Environment')
+param containerAppEnvId string
 
 @description('Specifies the location for all resources.')
 param location string = resourceGroup().location
@@ -37,9 +37,8 @@ param userAssignedIdentities object = {}
 @description('Identity to use to authenticate with Azure Container Registry')
 param containerRegistryIdentity string = 'system'
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppEnvName
-}
+@description('Dapr configuration for the Container App')
+param daprConfig object = {}
 
 resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
   name: containerAppName
@@ -49,7 +48,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
     userAssignedIdentities: empty(userAssignedIdentities) ? null : userAssignedIdentities
   }
   properties: {
-    managedEnvironmentId: containerAppEnvironment.id
+    managedEnvironmentId: containerAppEnvId
     configuration: {
       registries: [
         {
@@ -68,6 +67,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
           }
         ]
       }
+      dapr: daprConfig
     }
     template: {
       containers: empty(containers) ? null : containers

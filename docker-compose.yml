@@ -8,6 +8,8 @@ services:
         REACT_APP_VERSION: latest
     depends_on:
       - fake-survey-generator-api
+    networks:
+      - fsg
 
   fake-survey-generator-api:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-api:${TAG:-latest}
@@ -17,6 +19,14 @@ services:
     depends_on:
       - sql-server
       - redis
+      - placement
+    networks:
+      - fsg
+  fake-survey-generator-api-dapr:
+    image: daprio/daprd:edge
+    depends_on:
+      - fake-survey-generator-api
+    network_mode: "service:fake-survey-generator-api"
 
   fake-survey-generator-worker:
     image: ${DOCKER_REGISTRY-}fake-survey-generator-worker:${TAG:-latest}
@@ -26,12 +36,26 @@ services:
     depends_on:
       - sql-server
       - fake-survey-generator-api
+    networks:
+      - fsg
 
   sql-server:
     image: mcr.microsoft.com/mssql/server
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=<YourStrong!Passw0rd>
+    networks:
+      - fsg
 
   redis:
     image: redis
+    networks:
+      - fsg
+
+  placement:
+    image: "daprio/dapr"
+    networks:
+      - fsg
+
+networks:
+  fsg:
