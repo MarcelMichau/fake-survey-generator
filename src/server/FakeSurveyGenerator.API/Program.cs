@@ -34,16 +34,6 @@ try
                     services.GetRequiredService<TelemetryConfiguration>(),
                     TelemetryConverter.Traces);
             }
-        }).ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
-        {
-            if (hostBuilderContext.Configuration.GetValue<bool>("SKIP_DAPR"))
-                return;
-
-            var configStoreName =
-                hostBuilderContext.HostingEnvironment.IsDevelopment() ? "local-file" : "azure-key-vault";
-
-            var daprClient = new DaprClientBuilder().Build();
-            configurationBuilder.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
         });
 
     builder.WebHost
