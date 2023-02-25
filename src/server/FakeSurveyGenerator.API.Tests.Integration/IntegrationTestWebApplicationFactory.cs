@@ -35,7 +35,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
                 {"Cache:RedisUrl", "127.0.0.1"},
                 {"Cache:RedisDefaultDatabase", "0"},
                 {"IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com"}
-            });
+            }!);
         });
 
         return base.CreateHost(builder);

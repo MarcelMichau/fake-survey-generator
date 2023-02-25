@@ -6,18 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ductus.FluentDocker" Version="2.10.57" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+    <PackageReference Include="Ductus.FluentDocker" Version="2.10.59" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-    <PackageReference Include="Microsoft.Playwright" Version="1.28.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="Microsoft.Playwright" Version="1.31.0" />
     <PackageReference Include="SpecFlow.xUnit" Version="3.9.74" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="FluentAssertions" Version="6.8.0" />
+    <PackageReference Include="FluentAssertions" Version="6.10.0" />
   </ItemGroup>
 
   <ItemGroup>

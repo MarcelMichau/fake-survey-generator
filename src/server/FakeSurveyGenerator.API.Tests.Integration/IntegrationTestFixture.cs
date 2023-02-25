@@ -16,8 +16,8 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     private IServiceScopeFactory? _serviceScopeFactory;
 
-    private readonly TestcontainersContainer _dbContainer =
-        new TestcontainersBuilder<TestcontainersContainer>()
+    private readonly DockerContainer _dbContainer =
+        new ContainerBuilder<DockerContainer>()
             .WithImage("mcr.microsoft.com/mssql/server:latest")
             .WithEnvironment("ACCEPT_EULA", "Y")
             .WithEnvironment("SA_PASSWORD", "<YourStrong!Passw0rd>")
@@ -25,8 +25,8 @@ public class IntegrationTestFixture : IAsyncLifetime
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
 
-    private readonly TestcontainersContainer _cacheContainer =
-        new TestcontainersBuilder<TestcontainersContainer>()
+    private readonly DockerContainer _cacheContainer =
+        new ContainerBuilder<DockerContainer>()
             .WithImage("redis:latest")
             .WithPortBinding(6379, 6379)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6379))
