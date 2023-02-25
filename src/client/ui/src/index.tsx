@@ -12,8 +12,10 @@ ReactDOM.render(
         <Auth0Provider
             domain={config.domain}
             clientId={config.clientId}
-            redirectUri={window.location.origin}
-            audience={config.audience}
+            authorizationParams={{
+                redirect_uri: window.location.origin,
+                audience: config.audience,
+            }}
             useRefreshTokens={true}
             cacheLocation="localstorage"
         >

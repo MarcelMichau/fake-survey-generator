@@ -4,13 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignInAlt, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 const AuthButton = () => {
-    const {
-        isAuthenticated,
-        loginWithRedirect,
-        logout,
-        isLoading,
-        user,
-    } = useAuth0();
+    const { isAuthenticated, loginWithRedirect, logout, isLoading, user } =
+        useAuth0();
 
     const commonClasses =
         "inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-600 hover:bg-white mt-4 lg:mt-0";
@@ -43,7 +38,11 @@ const AuthButton = () => {
                 <button
                     className={commonClasses}
                     type="button"
-                    onClick={() => logout({ returnTo: window.location.origin })}
+                    onClick={() =>
+                        logout({
+                            logoutParams: { returnTo: window.location.origin },
+                        })
+                    }
                 >
                     Log out ({user?.name}){" "}
                     <FontAwesomeIcon icon={faSignOutAlt} className="ml-2" />
