@@ -30,7 +30,7 @@ public sealed class NonEmptyString : ValueObject
         return value.Value;
     }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return Value;
     }

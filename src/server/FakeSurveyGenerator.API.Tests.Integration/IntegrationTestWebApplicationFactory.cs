@@ -60,10 +60,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
 
             services.AddStackExchangeRedisCache(options =>
             {
-                options.ConfigurationOptions = new ConfigurationOptions
-                {
-                    EndPoints = {_settings.RedisConnectionString}
-                };
+                options.ConfigurationOptions = ConfigurationOptions.Parse(_settings.RedisConnectionString);
             });
 
             ConfigureMockServices(services);
