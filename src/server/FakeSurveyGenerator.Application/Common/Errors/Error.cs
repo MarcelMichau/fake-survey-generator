@@ -13,7 +13,7 @@ public sealed class Error : ValueObject
         Message = message;
     }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return Code;
     }
