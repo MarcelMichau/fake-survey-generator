@@ -31,13 +31,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource secrets 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for i in range(0, length(secretsObject.secrets)): {
-  name: '${name}/${secretsObject.secrets[i].secretName}'
+  parent: keyVault
+  name: secretsObject.secrets[i].secretName
   properties: {
     value: secretsObject.secrets[i].secretValue
   }
-  dependsOn: [
-    keyVault
-  ]
 }]
 
 output keyVaultName string = keyVault.name
