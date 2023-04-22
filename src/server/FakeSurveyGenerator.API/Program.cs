@@ -1,6 +1,4 @@
 ﻿using AutoWrapper;
-using Dapr.Client;
-using Dapr.Extensions.Configuration;
 using FakeSurveyGenerator.API.Configuration;
 using FakeSurveyGenerator.API.Configuration.HealthChecks;
 using FakeSurveyGenerator.API.Configuration.Swagger;
@@ -28,7 +26,7 @@ try
                 .WriteTo.Console();
 
             if (!string.IsNullOrWhiteSpace(
-                    hostBuilderContext.Configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY")))
+                    hostBuilderContext.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING")))
             {
                 loggerConfiguration.WriteTo.ApplicationInsights(
                     services.GetRequiredService<TelemetryConfiguration>(),

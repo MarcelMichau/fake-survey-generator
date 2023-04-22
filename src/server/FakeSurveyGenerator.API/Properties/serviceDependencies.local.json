@@ -3,7 +3,7 @@
     "appInsights1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroup')]/providers/microsoft.insights/components/appi-fake-survey-generator",
       "type": "appInsights.azure",
-      "connectionId": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "connectionId": "APPLICATIONINSIGHTS_CONNECTION_STRING",
       "secretStore": "LocalSecretsFile"
     },
     "secrets1": {

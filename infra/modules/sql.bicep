@@ -16,7 +16,7 @@ param azureAdAdministratorObjectId string
 @description('The Azure AD administrator Azure AD Tenant ID')
 param azureAdAdministratorTenantId string = subscription().tenantId
 
-resource sqlServer 'Microsoft.Sql/servers@2022-02-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2022-08-01-preview' = {
   name: serverName
   location: location
   properties: {
@@ -31,7 +31,7 @@ resource sqlServer 'Microsoft.Sql/servers@2022-02-01-preview' = {
   }
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-02-01-preview' = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-08-01-preview' = {
   parent: sqlServer
   name: databaseName
   sku: {
@@ -41,7 +41,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-02-01-preview' = {
   location: location
 }
 
-resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2022-02-01-preview' = {
+resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2022-08-01-preview' = {
   parent: sqlServer
   name: 'AllowAllAzureIps'
   properties: {
@@ -50,13 +50,13 @@ resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2022-02-01-previe
   }
 }
 
-// resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/administrators@2021-02-01-preview' = {
-//   parent: sqlServer
-//   name: 'ActiveDirectory'
-//   properties: {
-//     administratorType: 'ActiveDirectory'
-//     login: azureAdAdministratorLogin
-//     sid: azureAdAdministratorObjectId
-//     tenantId: azureAdAdministratorTenantId
-//   }
-// }
+resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/administrators@2022-08-01-preview' = {
+  parent: sqlServer
+  name: 'ActiveDirectory'
+  properties: {
+    administratorType: 'ActiveDirectory'
+    login: azureAdAdministratorLogin
+    sid: azureAdAdministratorObjectId
+    tenantId: azureAdAdministratorTenantId
+  }
+}

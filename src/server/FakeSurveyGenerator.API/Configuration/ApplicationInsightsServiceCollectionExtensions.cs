@@ -5,12 +5,15 @@ internal static class ApplicationInsightsServiceCollectionExtensions
     public static IServiceCollection AddApplicationInsightsConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var instrumentationKey = configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
+        var connectionString = configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
 
-        if (string.IsNullOrWhiteSpace(instrumentationKey))
+        if (string.IsNullOrWhiteSpace(connectionString))
             return services;
 
-        services.AddApplicationInsightsTelemetry(instrumentationKey);
+        services.AddApplicationInsightsTelemetry(options =>
+        {
+            options.ConnectionString = connectionString;
+        });
 
         return services;
     }

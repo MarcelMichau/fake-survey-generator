@@ -56,7 +56,7 @@ resource validationTxtRecord 'Microsoft.Network/dnsZones/TXT@2018-05-01' = {
   }
 }
 
-resource profile 'Microsoft.Cdn/profiles@2021-06-01' = {
+resource profile 'Microsoft.Cdn/profiles@2022-11-01-preview' = {
   name: profileName
   location: 'global'
   sku: {
@@ -64,7 +64,7 @@ resource profile 'Microsoft.Cdn/profiles@2021-06-01' = {
   }
 }
 
-resource endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2021-06-01' = {
+resource endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2022-11-01-preview' = {
   name: endpointName
   parent: profile
   location: 'global'
@@ -73,7 +73,7 @@ resource endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2021-06-01' = {
   }
 }
 
-resource uiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' = {
+resource uiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2022-11-01-preview' = {
   name: 'ui-origin-group'
   parent: profile
   properties: {
@@ -90,7 +90,7 @@ resource uiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' = {
   }
 }
 
-resource apiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' = {
+resource apiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2022-11-01-preview' = {
   name: 'api-origin-group'
   parent: profile
   properties: {
@@ -107,7 +107,7 @@ resource apiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' = {
   }
 }
 
-resource customDomain 'Microsoft.Cdn/profiles/customDomains@2021-06-01' = {
+resource customDomain 'Microsoft.Cdn/profiles/customDomains@2022-11-01-preview' = {
   name: customDomainResourceName
   parent: profile
   properties: {
@@ -119,7 +119,7 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2021-06-01' = {
   }
 }
 
-resource uiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01' = {
+resource uiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2022-11-01-preview' = {
   name: 'ui-origin'
   parent: uiOriginGroup
   properties: {
@@ -132,7 +132,7 @@ resource uiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01' = {
   }
 }
 
-resource apiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01' = {
+resource apiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2022-11-01-preview' = {
   name: 'api-origin'
   parent: apiOriginGroup
   properties: {
@@ -145,7 +145,7 @@ resource apiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01' = {
   }
 }
 
-resource uiRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = {
+resource uiRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2022-11-01-preview' = {
   name: 'ui-route'
   parent: endpoint
   dependsOn: [
@@ -173,7 +173,7 @@ resource uiRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = {
   }
 }
 
-resource apiRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = {
+resource apiRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2022-11-01-preview' = {
   name: 'api-route'
   parent: endpoint
   dependsOn: [

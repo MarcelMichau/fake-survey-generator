@@ -7,6 +7,7 @@ param managedIdentityName string = 'mi-fake-survey-generator'
 param redisCacheName string = 'redis-fake-survey-generator'
 param sqlServerName string = 'sql-marcel-michau'
 param sqlDatabaseName string = 'sqldb-fake-survey-generator'
+param applicationInsightsName string = 'appi-fake-survey-generator'
 param dnsZoneName string = 'mysecondarydomain.com'
 param uiContainerVersion string
 param apiContainerVersion string
@@ -29,6 +30,10 @@ resource sqlServer 'Microsoft.Sql/servers@2022-02-01-preview' existing = {
 
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-02-01-preview' existing = {
   name: sqlDatabaseName
+}
+
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: applicationInsightsName
 }
 
 module uiContainerApp 'modules/containerApp.bicep' = {
@@ -80,6 +85,10 @@ var apiEnvironmentVariables = [
   {
     name: 'IDENTITY_PROVIDER_URL'
     value: 'https://marcelmichau.eu.auth0.com/'
+  }
+  {
+    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+    value: applicationInsights.properties.ConnectionString
   }
 ]
 

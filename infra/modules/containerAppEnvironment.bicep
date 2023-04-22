@@ -7,11 +7,11 @@ param containerAppEnvName string
 @description('Specifies the name of the log analytics workspace')
 param logAnalyticsName string
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' existing = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: logAnalyticsName
 }
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' = {
   name: containerAppEnvName
   location: location
   properties: {

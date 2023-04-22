@@ -11,7 +11,7 @@ param name string
 @secure()
 param secretsObject object
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
   name: name
   location: location
   properties: {
@@ -30,7 +30,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource secrets 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for i in range(0, length(secretsObject.secrets)): {
+resource secrets 'Microsoft.KeyVault/vaults/secrets@2023-02-01' = [for i in range(0, length(secretsObject.secrets)): {
   parent: keyVault
   name: secretsObject.secrets[i].secretName
   properties: {
