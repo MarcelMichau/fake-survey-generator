@@ -50,13 +50,10 @@ resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2022-08-01-previe
   }
 }
 
-resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/administrators@2022-08-01-preview' = {
+resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/azureADOnlyAuthentications@2022-08-01-preview' = {
+  name: 'ActiveDirectoryOnlyAuth'
   parent: sqlServer
-  name: 'ActiveDirectory'
   properties: {
-    administratorType: 'ActiveDirectory'
-    login: azureAdAdministratorLogin
-    sid: azureAdAdministratorObjectId
-    tenantId: azureAdAdministratorTenantId
+    azureADOnlyAuthentication: true
   }
 }
