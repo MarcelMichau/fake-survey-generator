@@ -34,6 +34,7 @@ module applicationInsights 'modules/appInsights.bicep' = {
   params: {
     location: location
     name: applicationInsightsName
+    logAnalyticsWorkspaceId: logAnalytics.outputs.id
   }
   scope: fakeSurveyGeneratorResourceGroup
 }

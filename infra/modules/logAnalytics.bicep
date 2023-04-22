@@ -15,3 +15,4 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
 }
 
 output name string = logAnalytics.name
+output id string = logAnalytics.id
