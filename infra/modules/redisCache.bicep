@@ -17,5 +17,6 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
     sku: sku
     redisConfiguration: {}
     enableNonSslPort: false
+    redisVersion: '6.0'
   }
 }
