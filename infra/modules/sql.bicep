@@ -49,11 +49,3 @@ resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2022-08-01-previe
     startIpAddress: '0.0.0.0'
   }
 }
-
-resource enableActiveDirectoryAuth 'Microsoft.Sql/servers/azureADOnlyAuthentications@2022-08-01-preview' = {
-  name: 'ActiveDirectoryOnlyAuth'
-  parent: sqlServer
-  properties: {
-    azureADOnlyAuthentication: true
-  }
-}
