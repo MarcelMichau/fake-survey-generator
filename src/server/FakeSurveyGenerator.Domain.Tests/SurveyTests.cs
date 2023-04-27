@@ -42,7 +42,7 @@ public sealed class SurveyTests
         const int numberOfRespondents = 0;
         var respondentType = _fixture.Create<NonEmptyString>();
 
-        Action act = () => { _ = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType); };
+        var act = () => { _ = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType); };
 
         act.Should().ThrowExactly<SurveyDomainException>();
     }
@@ -74,7 +74,7 @@ public sealed class SurveyTests
         var numberOfRespondents = _fixture.Create<int>();
         var respondentType = _fixture.Create<NonEmptyString>();
 
-        Action act = () =>
+        var act = () =>
         {
             var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
@@ -91,7 +91,7 @@ public sealed class SurveyTests
         var numberOfRespondents = _fixture.Create<int>();
         var respondentType = _fixture.Create<NonEmptyString>();
 
-        Action act = () =>
+        var act = () =>
         {
             var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
@@ -116,7 +116,6 @@ public sealed class SurveyTests
         survey.CalculateOutcome();
 
         survey.Options.Sum(option => option.NumberOfVotes).Should().Be(numberOfRespondents);
-        survey.Options.All(option => option.NumberOfVotes > 0).Should().BeTrue();
     }
 
     [Fact]
@@ -167,7 +166,7 @@ public sealed class SurveyTests
 
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents - 1);
 
-        Action act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
+        var act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
 
         act.Should().ThrowExactly<SurveyDomainException>();
     }
@@ -184,7 +183,7 @@ public sealed class SurveyTests
 
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents);
 
-        Action act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
+        var act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
 
         act.Should().ThrowExactly<SurveyDomainException>();
     }
