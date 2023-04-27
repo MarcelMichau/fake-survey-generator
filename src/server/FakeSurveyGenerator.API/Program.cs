@@ -1,4 +1,6 @@
 ﻿using AutoWrapper;
+using Dapr.Client;
+using Dapr.Extensions.Configuration;
 using FakeSurveyGenerator.API.Configuration;
 using FakeSurveyGenerator.API.Configuration.HealthChecks;
 using FakeSurveyGenerator.API.Configuration.Swagger;
@@ -32,24 +34,34 @@ try
                     services.GetRequiredService<TelemetryConfiguration>(),
                     TelemetryConverter.Traces);
             }
+        }).ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
+        {
+            if (hostBuilderContext.Configuration.GetValue<bool>("SKIP_DAPR"))
+                return;
+
+            var configStoreName =
+                hostBuilderContext.HostingEnvironment.IsDevelopment() ? "local-file" : "azure-key-vault";
+
+            var daprClient = new DaprClientBuilder().Build();
+            configurationBuilder.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
         });
 
     builder.WebHost
         .ConfigureKestrel(options => { options.AddServerHeader = false; });
 
     builder.Services
-            .AddAuthorization()
-            .AddDaprConfiguration(builder.Configuration)
-            .AddHealthChecksConfiguration(builder.Configuration)
-            .AddSwaggerConfiguration(builder.Configuration)
-            .AddAuthenticationConfiguration(builder.Configuration)
-            .AddForwardedHeadersConfiguration()
-            .AddApplicationInsightsConfiguration(builder.Configuration)
-            .AddApplicationServicesConfiguration(builder.Configuration)
-            .AddApiBehaviourConfiguration()
-            .AddControllers()
-            .AddJsonConfiguration()
-            .AddExceptionHandlingConfiguration();
+        .AddAuthorization()
+        .AddDaprConfiguration(builder.Configuration)
+        .AddHealthChecksConfiguration(builder.Configuration)
+        .AddSwaggerConfiguration(builder.Configuration)
+        .AddAuthenticationConfiguration(builder.Configuration)
+        .AddForwardedHeadersConfiguration()
+        .AddApplicationInsightsConfiguration(builder.Configuration)
+        .AddApplicationServicesConfiguration(builder.Configuration)
+        .AddApiBehaviourConfiguration()
+        .AddControllers()
+        .AddJsonConfiguration()
+        .AddExceptionHandlingConfiguration();
 
     var app = builder.Build();
 

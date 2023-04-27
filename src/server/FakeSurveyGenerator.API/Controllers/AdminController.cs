@@ -1,6 +1,4 @@
-﻿using Dapr.Client;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace FakeSurveyGenerator.API.Controllers;
@@ -9,12 +7,10 @@ namespace FakeSurveyGenerator.API.Controllers;
 public sealed class AdminController : ApiController
 {
     private readonly IConfiguration _configuration;
-    private readonly DaprClient _client;
 
-    public AdminController(IConfiguration configuration, DaprClient client)
+    public AdminController(IConfiguration configuration)
     {
         _configuration = configuration;
-        _client = client;
     }
 
     [SwaggerOperation("Returns API version information")]
@@ -42,13 +38,11 @@ public sealed class AdminController : ApiController
         return Ok();
     }
 
-    [SwaggerOperation("Retrieves a test secret from Azure Key Vault. Used for debugging connection to Azure Key Vault")]
-    [HttpGet("keyvaulttest")]
-    public async Task<IActionResult> KeyVaultTest()
+    [SwaggerOperation("Retrieves a test secret from Dapr Secret Store. Uses local file in Development & Azure Key Vault in Production")]
+    [HttpGet("secret-test")]
+    public async Task<IActionResult> SecretTest()
     {
-        var secrets = await _client.GetSecretAsync("azure-key-vault", "HealthCheckSecret");
-
-        var secretValue = string.Join(", ", secrets);
+        var secretValue = _configuration.GetValue<string>("HealthCheckSecret");
 
         return Ok(new
         {
