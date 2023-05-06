@@ -15,7 +15,7 @@ public class LandingPageSteps
     }
 
     [When(@"navigating to the application URL")]
-    public async Task WhenNavigatingToTheApplicationURL()
+    public async Task WhenNavigatingToTheApplicationUrl()
     {
         await _pageObject.NavigateAsync();
     }
@@ -28,7 +28,7 @@ public class LandingPageSteps
     }
 
     [Then(@"the version number of the API is Displayed")]
-    public async Task ThenTheVersionNumberOfTheAPIIsDisplayed()
+    public async Task ThenTheVersionNumberOfTheApiIsDisplayed()
     {
         //await _pageObject.WaitForApiCall();
 

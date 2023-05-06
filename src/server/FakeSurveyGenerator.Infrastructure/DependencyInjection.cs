@@ -21,7 +21,7 @@ public static class DependencyInjection
         services.AddScoped<INotificationService, NotificationService>();
 
         services.AddDatabaseConfiguration(configuration);
-        services.AddCacheConfiguration(configuration.GetSection(CacheOptions.Cache).Get<CacheOptions>());
+        services.AddCacheConfiguration(configuration.GetSection(CacheOptions.Cache).Get<CacheOptions>() ?? throw new InvalidOperationException("Cache config section not found"));
 
         services.AddScoped<IDomainEventService, DomainEventService>();
         services.AddTransient<IDateTime, DateTimeService>();

@@ -31,7 +31,7 @@ internal static class SwaggerServiceCollectionExtensions
 
             options.OperationFilter<AuthorizeOperationFilter>();
 
-            var identityProviderBaseUrl = configuration.GetValue<string>("IDENTITY_PROVIDER_URL").TrimEnd('/');
+            var identityProviderBaseUrl = configuration.GetValue<string>("IDENTITY_PROVIDER_URL")?.TrimEnd('/');
 
             options.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
             {

@@ -8,9 +8,9 @@ namespace FakeSurveyGenerator.Application.Users.Models;
 public sealed record UserModel : AuditableModel, IMapFrom<User>
 {
     public int Id { get; init; }
-    public string DisplayName { get; init; }
-    public string EmailAddress { get; init; }
-    public string ExternalUserId { get; init; }
+    public string DisplayName { get; init; } = null!;
+    public string EmailAddress { get; init; } = null!;
+    public string ExternalUserId { get; init; } = null!;
 
     public void Mapping(Profile profile)
     {

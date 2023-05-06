@@ -9,7 +9,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks;
 [Binding]
 public class ScenarioHooks
 {
-    private static IConfiguration _configuration;
+    private readonly IConfiguration _configuration;
 
     public ScenarioHooks()
     {

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
+﻿using FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 using FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -12,5 +11,5 @@ public interface ISurveyContext
     DbSet<Survey> Surveys { get; }
     DbSet<SurveyOption> SurveyOptions { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    EntityEntry<TEntity> Entry<TEntity>([NotNull] TEntity entity) where TEntity : class;
+    EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
 }

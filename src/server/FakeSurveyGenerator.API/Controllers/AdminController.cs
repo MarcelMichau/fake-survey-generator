@@ -40,7 +40,7 @@ public sealed class AdminController : ApiController
 
     [SwaggerOperation("Retrieves a test secret from Dapr Secret Store. Uses local file in Development & Azure Key Vault in Production")]
     [HttpGet("secret-test")]
-    public async Task<IActionResult> SecretTest()
+    public IActionResult SecretTest()
     {
         var secretValue = _configuration.GetValue<string>("HealthCheckSecret");
 

@@ -105,7 +105,7 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenNullSurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
-        var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), null);
+        var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), new List<SurveyOptionDto>());
 
         var validator = new CreateSurveyCommandValidator();
 

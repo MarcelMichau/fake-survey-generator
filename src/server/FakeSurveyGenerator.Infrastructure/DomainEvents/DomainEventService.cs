@@ -24,7 +24,10 @@ internal sealed class DomainEventService : IDomainEventService
 
     private static INotification GetNotificationCorrespondingToDomainEvent(DomainEvent domainEvent)
     {
-        return (INotification)Activator.CreateInstance(
-            typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);
+        return Activator.CreateInstance(
+                   typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent) as
+               INotification ??
+               throw new InvalidOperationException(
+                   $"Could not create instance of GenericType: {domainEvent.GetType()}");
     }
 }

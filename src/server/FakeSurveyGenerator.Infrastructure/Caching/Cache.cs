@@ -21,23 +21,29 @@ internal sealed class Cache<T> : ICache<T>
         _cacheKeyPrefix = $"{ApplicationName}:{typeof(T).Namespace}:{typeof(T).Name}:";
     }
 
-    public async Task<(bool Found, T Value)> TryGetValueAsync(string key, CancellationToken cancellationToken)
+    public async Task<(bool, T? value)> TryGetValueAsync(string key, CancellationToken cancellationToken)
     {
         var value = await GetAsync(key, cancellationToken);
 
         return (value is not null, value);
     }
 
-    public async Task<T> GetAsync(string key, CancellationToken cancellationToken)
+    public async Task<T?> GetAsync(string key, CancellationToken cancellationToken)
     {
         try
         {
             var cachedResult = await _distributedCache.GetAsync(CacheKey(key), cancellationToken);
 
-            _logger.LogInformation(
-                cachedResult is null
-                    ? "Cache miss for cache key: {CacheKey}"
-                    : "Cache hit for cache key: {CacheKey}", CacheKey(key));
+            if (cachedResult is null)
+            {
+                _logger.LogInformation(
+                "Cache miss for cache key: {CacheKey}", CacheKey(key));
+            }
+            else
+            {
+                _logger.LogInformation(
+                "Cache hit for cache key: {CacheKey}", CacheKey(key));
+            }
 
             return cachedResult is null ? default : await DeserialiseCacheResult(cachedResult, cancellationToken);
         }
@@ -57,8 +63,9 @@ internal sealed class Cache<T> : ICache<T>
 
             var serialisedItemToCache = SerialiseForCaching(item);
 
-            await _distributedCache.SetStringAsync(CacheKey(key), serialisedItemToCache, cacheEntryOptions,
-                cancellationToken);
+            if (serialisedItemToCache != null)
+                await _distributedCache.SetStringAsync(CacheKey(key), serialisedItemToCache, cacheEntryOptions,
+                    cancellationToken);
         }
         catch (Exception e)
         {
@@ -80,7 +87,7 @@ internal sealed class Cache<T> : ICache<T>
 
     private string CacheKey(string key) => $"{_cacheKeyPrefix}{key}";
 
-    private async Task<T> DeserialiseCacheResult(byte[] cachedResult, CancellationToken cancellationToken)
+    private async Task<T?> DeserialiseCacheResult(byte[] cachedResult, CancellationToken cancellationToken)
     {
         try
         {
@@ -95,7 +102,7 @@ internal sealed class Cache<T> : ICache<T>
         }
     }
 
-    private string SerialiseForCaching(T item)
+    private string? SerialiseForCaching(T item)
     {
         if (item is null) return null;
 

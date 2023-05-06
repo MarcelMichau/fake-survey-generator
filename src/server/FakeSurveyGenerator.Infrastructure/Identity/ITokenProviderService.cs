@@ -2,5 +2,5 @@
 
 public interface ITokenProviderService
 {
-    string GetToken();
+    string? GetToken();
 }

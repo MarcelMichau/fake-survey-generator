@@ -5,12 +5,11 @@ public abstract class Entity : IHasDomainEvents
     private int? _requestedHashCode;
     public virtual int Id { get; protected set; }
 
-    private List<DomainEvent> _domainEvents = new();
+    private readonly List<DomainEvent> _domainEvents = new();
     public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     public void AddDomainEvent(DomainEvent eventItem)
     {
-        _domainEvents ??= new List<DomainEvent>();
         _domainEvents.Add(eventItem);
     }
 
@@ -29,18 +28,16 @@ public abstract class Entity : IHasDomainEvents
         return Id == default;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
-        if (obj is not Entity)
+        if (obj is not Entity item)
             return false;
 
-        if (ReferenceEquals(this, obj))
+        if (ReferenceEquals(this, item))
             return true;
 
-        if (GetType() != obj.GetType())
+        if (GetType() != item.GetType())
             return false;
-
-        var item = (Entity)obj;
 
         if (item.IsTransient() || IsTransient())
             return false;

@@ -27,9 +27,9 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     private void HandleException(ExceptionContext context)
     {
         var type = context.Exception.GetType();
-        if (_exceptionHandlers.ContainsKey(type))
+        if (_exceptionHandlers.TryGetValue(type, out var handler))
         {
-            _exceptionHandlers[type].Invoke(context);
+            handler.Invoke(context);
             return;
         }
 
@@ -63,7 +63,7 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
         var exception = context.Exception as ValidationException;
 
-        var details = new ValidationProblemDetails(exception.Errors)
+        var details = new ValidationProblemDetails(exception?.Errors ?? throw new InvalidOperationException($"Errors property on {nameof(ValidationException)} was not set"))
         {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
         };

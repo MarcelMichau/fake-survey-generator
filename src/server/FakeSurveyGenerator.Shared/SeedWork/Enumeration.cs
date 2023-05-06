@@ -8,10 +8,6 @@ public abstract class Enumeration : IComparable
 
     public int Id { get; }
 
-    protected Enumeration()
-    {
-    }
-
     protected Enumeration(int id, string name)
     {
         Id = id;
@@ -39,7 +35,7 @@ public abstract class Enumeration : IComparable
         }
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is not Enumeration otherValue)
         {
@@ -87,8 +83,11 @@ public abstract class Enumeration : IComparable
 
     }
 
-    public int CompareTo(object other)
+    public int CompareTo(object? other)
     {
+        if (other is null)
+            throw new InvalidOperationException($"Tried to compare a null {nameof(Enumeration)} to another");
+
         return Id.CompareTo(((Enumeration)other).Id);
     }
 }

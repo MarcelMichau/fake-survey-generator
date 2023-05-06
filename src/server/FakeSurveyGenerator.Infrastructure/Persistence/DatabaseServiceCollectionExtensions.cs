@@ -11,7 +11,9 @@ internal static class DatabaseServiceCollectionExtensions
     public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString(nameof(SurveyContext));
+        var connectionString = configuration.GetConnectionString(nameof(SurveyContext)) ??
+                               throw new InvalidOperationException(
+                                   $"Connection String for {nameof(SurveyContext)} was not found in config");
 
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
@@ -25,7 +27,9 @@ internal static class DatabaseServiceCollectionExtensions
             }
         );
 
-        services.AddScoped<ISurveyContext>(provider => provider.GetService<SurveyContext>());
+        services.AddScoped<ISurveyContext>(provider =>
+            provider.GetService<SurveyContext>() ??
+            throw new InvalidOperationException($"{nameof(SurveyContext)} was not registered in IServiceProvider"));
 
         services.AddScoped<IDatabaseConnection>(_ => new DapperSqlServerConnection(connectionString));
 

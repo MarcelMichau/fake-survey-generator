@@ -33,7 +33,7 @@ public sealed class GetSurveyDetailQueryHandler : IRequestHandler<GetSurveyDetai
         var (isCached, cachedSurvey) = await _cache.TryGetValueAsync(cacheKey, cancellationToken);
 
         if (isCached)
-            return cachedSurvey;
+            return cachedSurvey!;
 
         var survey = await _surveyContext.Surveys
             .Include(s => s.Options)
