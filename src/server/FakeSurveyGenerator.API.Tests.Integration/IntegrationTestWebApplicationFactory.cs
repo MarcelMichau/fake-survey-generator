@@ -30,6 +30,7 @@ public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory
                 
                 // The below settings are the minimum required config to "bootstrap" the host so that services which reference these config values don't throw errors
                 // They are dummy values & will get overridden in the call to builder.ConfigureTestServices() below
+                {"ConnectionStrings:SurveyContext", _settings.SqlServerConnectionString},
                 {"Cache:RedisPassword", "testing"},
                 {"Cache:RedisSsl", "false"},
                 {"Cache:RedisUrl", "127.0.0.1"},

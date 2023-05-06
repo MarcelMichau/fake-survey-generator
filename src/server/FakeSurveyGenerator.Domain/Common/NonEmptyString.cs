@@ -17,12 +17,12 @@ public sealed class NonEmptyString : ValueObject
 
     public static NonEmptyString Create(string value)
     {
-        return new(value);
+        return new NonEmptyString(value);
     }
 
     public static explicit operator NonEmptyString(string value)
     {
-        return new(value);
+        return new NonEmptyString(value);
     }
 
     public static implicit operator string(NonEmptyString value)

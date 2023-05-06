@@ -9,9 +9,7 @@ namespace FakeSurveyGenerator.API.Controllers;
 [Route("api/[controller]")]
 public abstract class ApiController : ControllerBase
 {
-    private ISender _mediator;
-
-    protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetService<ISender>();
+    protected ISender Mediator => HttpContext.RequestServices.GetService<ISender>() ?? throw new InvalidOperationException("MediatR was not registered in IServiceProvider");
 
     protected IActionResult FromResult<T>(Result<T> result)
     {

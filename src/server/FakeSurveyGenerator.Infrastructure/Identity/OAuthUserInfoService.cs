@@ -44,7 +44,7 @@ internal sealed class OAuthUserInfoService : IUserService
         var (isCached, cachedUserInfo) = await _cache.TryGetValueAsync(cacheKey, cancellationToken);
 
         if (isCached)
-            return cachedUserInfo;
+            return cachedUserInfo!;
 
         var (_, isFailure, value) = await GetUserInfoFromIdentityProvider(accessToken, cancellationToken);
 
@@ -62,10 +62,10 @@ internal sealed class OAuthUserInfoService : IUserService
         return userInfo;
     }
 
-    private async Task<Result<UserInfoResponse>> GetUserInfoFromIdentityProvider(string accessToken,
+    private async Task<Result<UserInfoResponse>> GetUserInfoFromIdentityProvider(string? accessToken,
         CancellationToken cancellationToken)
     {
-        var identityProviderUrl = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
+        var identityProviderUrl = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL") ?? throw new InvalidOperationException("IDENTITY_PROVIDER_URL not found in config");
 
         try
         {

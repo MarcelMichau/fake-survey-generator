@@ -21,22 +21,20 @@ public sealed class AuditableEntitySaveChangesInterceptor : SaveChangesIntercept
 
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
-        UpdateEntities(eventData.Context);
+        if (eventData.Context != null) UpdateEntities(eventData.Context);
 
         return base.SavingChanges(eventData, result);
     }
 
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
-        UpdateEntities(eventData.Context);
+        if (eventData.Context != null) UpdateEntities(eventData.Context);
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    public void UpdateEntities(DbContext context)
+    private void UpdateEntities(DbContext context)
     {
-        if (context == null) return;
-
         foreach (var entry in context.ChangeTracker.Entries<AuditableEntity>())
         {
             if (entry.State == EntityState.Added)
@@ -60,6 +58,6 @@ public static class Extensions
         entry.References.Any(r =>
             r.TargetEntry != null &&
             r.TargetEntry.Metadata.IsOwned() &&
-            (r.TargetEntry.State == EntityState.Added || r.TargetEntry.State == EntityState.Modified));
+            r.TargetEntry.State is EntityState.Added or EntityState.Modified);
 }
 

@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.Net;
 using System.Runtime.InteropServices;
 using Ductus.FluentDocker.Builders;
@@ -10,14 +11,17 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks;
 [Binding]
 public class StartupHooks
 {
-    private static ICompositeService _compositeService;
+    private static ICompositeService? _compositeService;
     private static readonly IConfiguration Configuration;
     private static readonly bool IsRunningInDocker;
 
     static StartupHooks()
     {
         Configuration = LoadConfiguration();
-        IsRunningInDocker = Configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress").Contains("localhost");
+        IsRunningInDocker =
+            (Configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress") ??
+             throw new InvalidOperationException("BaseAddress for FakeSurveyGeneratorUI was not found in config"))
+            .Contains("localhost");
     }
 
     [BeforeTestRun]
@@ -26,7 +30,9 @@ public class StartupHooks
         if (!IsRunningInDocker)
             return;
 
-        var dockerComposeFileName = Configuration.GetValue<string>("DockerComposeFileName");
+        var dockerComposeFileName = Configuration.GetValue<string>("DockerComposeFileName") ??
+                                    throw new ConfigurationErrorsException(
+                                        "DockerComposeFileName was not found in config");
         var dockerComposeOverrideFileName = DetermineOverrideFileName(Configuration);
         var dockerComposePath = GetDockerComposeFileLocation(dockerComposeFileName);
         var dockerComposeOverridePath = GetDockerComposeFileLocation(dockerComposeOverrideFileName);
@@ -54,6 +60,8 @@ public class StartupHooks
         if (!IsRunningInDocker)
             return;
 
+        if (_compositeService == null) return;
+
         _compositeService.Stop();
         _compositeService.Dispose();
     }
@@ -69,7 +77,8 @@ public class StartupHooks
     {
         return config.GetValue<string>(RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
             ? "DockerComposeOverrideLinuxFileName"
-            : "DockerComposeOverrideWindowsFileName");
+            : "DockerComposeOverrideWindowsFileName") ?? throw new InvalidOperationException(
+            "DockerComposeOverrideLinuxFileName or DockerComposeOverrideWindowsFileName were not found in config");
     }
 
     private static string GetDockerComposeFileLocation(string dockerComposeFileName)
@@ -78,7 +87,7 @@ public class StartupHooks
 
         while (!Directory.EnumerateFiles(directory, "*.yml").Any(s => s.EndsWith(dockerComposeFileName)))
         {
-            directory = directory.Substring(0, directory.LastIndexOf(Path.DirectorySeparatorChar));
+            directory = directory[..directory.LastIndexOf(Path.DirectorySeparatorChar)];
         }
 
         return Path.Combine(directory, dockerComposeFileName);

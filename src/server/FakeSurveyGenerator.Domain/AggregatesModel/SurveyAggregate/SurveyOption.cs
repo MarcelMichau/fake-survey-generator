@@ -6,7 +6,7 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 public class SurveyOption : AuditableEntity
 {
-    public NonEmptyString OptionText { get; }
+    public NonEmptyString OptionText { get; } = null!;
     public int NumberOfVotes { get; private set; }
     public int PreferredNumberOfVotes { get; }
 

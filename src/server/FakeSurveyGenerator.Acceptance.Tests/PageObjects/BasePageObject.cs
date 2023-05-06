@@ -12,7 +12,9 @@ public abstract class BasePageObject
 
     protected BasePageObject(IConfiguration configuration)
     {
-        BaseAddress = configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress");
+        BaseAddress = configuration.GetValue<string>("FakeSurveyGeneratorUI:BaseAddress") ??
+                      throw new InvalidOperationException(
+                          "BaseAddress for FakeSurveyGeneratorUI was not found in config");
     }
 
     public async Task NavigateAsync()
@@ -25,9 +27,6 @@ public abstract class BasePageObject
     {
         Page = await Context.NewPageAsync();
 
-        await Page.RunAndWaitForResponseAsync(async () =>
-        {
-            await Page.GotoAsync(PagePath);
-        }, responsePredicate);
+        await Page.RunAndWaitForResponseAsync(async () => { await Page.GotoAsync(PagePath); }, responsePredicate);
     }
 }

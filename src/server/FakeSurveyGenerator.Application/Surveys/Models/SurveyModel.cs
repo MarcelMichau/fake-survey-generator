@@ -9,10 +9,10 @@ public sealed record SurveyModel : AuditableModel, IMapFrom<Survey>
 {
     public int Id { get; init; }
     public int OwnerId { get; init; }
-    public string Topic { get; init; }
-    public string RespondentType { get; init; }
+    public string Topic { get; init; } = null!;
+    public string RespondentType { get; init; } = null!;
     public int NumberOfRespondents { get; init; }
-    public List<SurveyOptionModel> Options { get; init; }
+    public List<SurveyOptionModel> Options { get; init; } = null!;
 
     public void Mapping(Profile profile)
     {

@@ -14,7 +14,7 @@ internal static class HealthChecksConfigurationExtensions
 
         healthChecksBuilder
             .AddSqlServer(
-                configuration.GetConnectionString(nameof(SurveyContext)),
+                configuration.GetConnectionString(nameof(SurveyContext)) ?? throw new InvalidOperationException($"Connection String for {nameof(SurveyContext)} not found in configuration"),
                 name: "FakeSurveyGeneratorDB-check",
                 tags: new[] { "fake-survey-generator-db", "ready" },
                 failureStatus: HealthStatus.Unhealthy);

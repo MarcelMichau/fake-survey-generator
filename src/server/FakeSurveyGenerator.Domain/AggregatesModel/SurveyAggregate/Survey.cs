@@ -11,15 +11,15 @@ namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
 public sealed class Survey : AuditableEntity, IAggregateRoot
 {
-    public User Owner { get; }
-    public NonEmptyString Topic { get; }
-    public NonEmptyString RespondentType { get; }
+    public User Owner { get; } = null!;
+    public NonEmptyString Topic { get; } = null!;
+    public NonEmptyString RespondentType { get; } = null!;
     public int NumberOfRespondents { get; }
 
     private readonly List<SurveyOption> _options = new();
     public IReadOnlyList<SurveyOption> Options => _options.ToList();
 
-    private IVoteDistribution _selectedVoteDistribution;
+    private IVoteDistribution _selectedVoteDistribution = null!;
 
     [UsedImplicitly]
     private Survey() { } // Necessary for Entity Framework Core + AutoMapper

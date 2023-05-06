@@ -13,8 +13,8 @@ namespace FakeSurveyGenerator.Infrastructure.Persistence;
 
 public sealed class SurveyContext : DbContext, ISurveyContext
 {
-    private readonly IDomainEventService _domainEventService;
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
+    private readonly IDomainEventService _domainEventService = null!;
+    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor = null!;
     private readonly ILogger _logger;
 
     public const string DefaultSchema = "Survey";

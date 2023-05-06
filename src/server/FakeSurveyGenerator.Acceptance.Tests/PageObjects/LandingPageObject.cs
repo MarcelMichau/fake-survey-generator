@@ -6,7 +6,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.PageObjects;
 public class LandingPageObject : BasePageObject
 {
     public override string PagePath => $"{BaseAddress}";
-    public override IPage Page { get; set; }
+    public override IPage Page { get; set; } = null!;
     public override IBrowserContext Context { get; }
 
     public LandingPageObject(IBrowserContext browser, IConfiguration configuration) : base(configuration)
@@ -14,7 +14,7 @@ public class LandingPageObject : BasePageObject
         Context = browser;
     }
 
-    public async Task<string> GetApplicationTitle()
+    public async Task<string?> GetApplicationTitle()
     {
         return await Page.TextContentAsync("h1");
     }
@@ -26,7 +26,7 @@ public class LandingPageObject : BasePageObject
         //await Task.Delay(10000);
     }
 
-    public async Task<string> GetVersionInfo()
+    public async Task<string?> GetVersionInfo()
     {
         return await Page.TextContentAsync("[data-test=version-info]");
     }
