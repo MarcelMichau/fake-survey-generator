@@ -81,12 +81,12 @@ resource uiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2022-11-01-preview' 
       sampleSize: 4
       successfulSamplesRequired: 3
     }
-    healthProbeSettings: {
-      probePath: '/'
-      probeRequestType: 'HEAD'
-      probeProtocol: 'Http' // The UI needs http for some reason
-      probeIntervalInSeconds: 100
-    }
+    // healthProbeSettings: {
+    //   probePath: '/'
+    //   probeRequestType: 'HEAD'
+    //   probeProtocol: 'Http' // The UI needs http for some reason
+    //   probeIntervalInSeconds: 100
+    // }
   }
 }
 
@@ -98,12 +98,12 @@ resource apiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2022-11-01-preview'
       sampleSize: 4
       successfulSamplesRequired: 3
     }
-    healthProbeSettings: {
-      probePath: '/health/live'
-      probeRequestType: 'GET'
-      probeProtocol: 'Https'
-      probeIntervalInSeconds: 100
-    }
+    // healthProbeSettings: {
+    //   probePath: '/health/live'
+    //   probeRequestType: 'GET'
+    //   probeProtocol: 'Https'
+    //   probeIntervalInSeconds: 100
+    // }
   }
 }
 
