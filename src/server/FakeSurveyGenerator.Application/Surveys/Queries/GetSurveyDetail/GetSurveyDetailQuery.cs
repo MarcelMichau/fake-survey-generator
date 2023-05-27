@@ -36,7 +36,6 @@ public sealed class GetSurveyDetailQueryHandler : IRequestHandler<GetSurveyDetai
             return cachedSurvey!;
 
         var survey = await _surveyContext.Surveys
-            .Include(s => s.Options)
             .Include(s => s.Owner)
             .ProjectTo<SurveyModel>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);

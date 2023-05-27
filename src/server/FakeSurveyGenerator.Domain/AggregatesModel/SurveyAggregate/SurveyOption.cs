@@ -1,10 +1,9 @@
 ﻿using FakeSurveyGenerator.Domain.Common;
-using FakeSurveyGenerator.Shared.SeedWork;
 using JetBrains.Annotations;
 
 namespace FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate;
 
-public class SurveyOption : AuditableEntity
+public class SurveyOption
 {
     public NonEmptyString OptionText { get; } = null!;
     public int NumberOfVotes { get; private set; }

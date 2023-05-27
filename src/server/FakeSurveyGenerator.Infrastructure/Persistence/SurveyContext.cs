@@ -21,7 +21,6 @@ public sealed class SurveyContext : DbContext, ISurveyContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Survey> Surveys => Set<Survey>();
-    public DbSet<SurveyOption> SurveyOptions => Set<SurveyOption>();
 
     public SurveyContext(DbContextOptions options, ILogger<SurveyContext> logger) : base(options)
     {

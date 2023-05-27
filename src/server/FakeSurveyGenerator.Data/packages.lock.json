@@ -2,11 +2,23 @@
   "version": 1,
   "dependencies": {
     "net7.0": {
+      "Microsoft.EntityFrameworkCore.Design": {
+        "type": "Direct",
+        "requested": "[7.0.5, )",
+        "resolved": "7.0.5",
+        "contentHash": "fzoU+Jk/chkqVOzDjuF+fwdc/6Tyqbp9L7rDORqB6IwHRG7nr+QnFOPdRi3B5kAZldvsvhUt+6Cl5qzeLT7B0Q==",
+        "dependencies": {
+          "Humanizer.Core": "2.14.1",
+          "Microsoft.EntityFrameworkCore.Relational": "7.0.5",
+          "Microsoft.Extensions.DependencyModel": "7.0.0",
+          "Mono.TextTemplating": "2.2.1"
+        }
+      },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.6.128, )",
-        "resolved": "3.6.128",
-        "contentHash": "zeA+Ho3XlPgt6P9MRALlkEvfOOzDQdNseV0xia/nSfC1lSrl0+gizlWyixaHvSYUw2ru7pBIKnK451bYOjPRjA=="
+        "requested": "[3.6.133, )",
+        "resolved": "3.6.133",
+        "contentHash": "VZWMd5YAeDxpjWjAP/X6bAxnRMiEf6tES/ITN0X5CHJgkWLLeHGmEALivmTAfYM6P+P/3Szy6VCITUAkqjcHVw=="
       },
       "AutoMapper": {
         "type": "Transitive",
@@ -27,8 +39,8 @@
       },
       "Azure.Core": {
         "type": "Transitive",
-        "resolved": "1.25.0",
-        "contentHash": "X8Dd4sAggS84KScWIjEbFAdt2U1KDolQopTPoHVubG2y3CM54f9l6asVrP5Uy384NWXjsspPYaJgz5xHc+KvTA==",
+        "resolved": "1.32.0",
+        "contentHash": "NmnJxaNqKjPwnHXngVg63SrkwbJXrkT0mcK8uCx9rSq0nK6Q3Q+/GZRCaTWcdcECoRP5XK0lr3Ce8PZkHkuHNg==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
           "System.Diagnostics.DiagnosticSource": "4.6.0",
@@ -41,10 +53,10 @@
       },
       "Azure.Identity": {
         "type": "Transitive",
-        "resolved": "1.8.2",
-        "contentHash": "ywnpn9MLhNTtBG12WOxSaomx0Dwu5HK5PyhHH/CApGrd1BCrhgEwdy4Uwy5IfAznJzVJKZRyKR9cp4aa61xYvA==",
+        "resolved": "1.9.0",
+        "contentHash": "VGcyxE66Za9mO0MtTYG1+ABZGF84QS+KZW8RTbcpYXLomHHvGT+aAL/Yg/ayfN+Usk2Z+DKB0+hymBaOAokj/w==",
         "dependencies": {
-          "Azure.Core": "1.25.0",
+          "Azure.Core": "1.32.0",
           "Microsoft.Identity.Client": "4.49.1",
           "Microsoft.Identity.Client.Extensions.Msal": "2.25.3",
           "System.Memory": "4.5.4",
@@ -55,8 +67,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.38.1",
-        "contentHash": "7rQUCqQ/8S6YdgyeJ8SOsR39H4b119AIwbZ5w2w6Abge4K1azs5ZtXt/3Uk/FQ3pjHewl918KHMWywC5tX8CvQ=="
+        "resolved": "2.39.0",
+        "contentHash": "wqGNYfJHISO7GU74xzXMRzE4aAuMEQrz1mInsZNEdv/7XSLyRRxaVHyQgCtTUvj8cWOQbZMwIrv/+JL1dH5CpA=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -76,6 +88,11 @@
           "FluentValidation": "11.5.2",
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
+      },
+      "Humanizer.Core": {
+        "type": "Transitive",
+        "resolved": "2.14.1",
+        "contentHash": "lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw=="
       },
       "IdentityModel": {
         "type": "Transitive",
@@ -236,6 +253,15 @@
         "resolved": "7.0.0",
         "contentHash": "h3j/QfmFN4S0w4C2A6X7arXij/M/OVw3uQHSOFxnND4DyAzO1F9eMX7Eti7lU/OkSthEE0WzRsfT/Dmx86jzCw=="
       },
+      "Microsoft.Extensions.DependencyModel": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "oONNYd71J3LzkWc4fUHl3SvMfiQMYUCo/mDHDEu76hYYxdhdrPYv6fvGv9nnKVyhE9P0h20AU8RZB5OOWQcAXg==",
+        "dependencies": {
+          "System.Text.Encodings.Web": "7.0.0",
+          "System.Text.Json": "7.0.0"
+        }
+      },
       "Microsoft.Extensions.Http": {
         "type": "Transitive",
         "resolved": "7.0.0",
@@ -385,6 +411,14 @@
         "resolved": "6.0.0",
         "contentHash": "hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A=="
       },
+      "Mono.TextTemplating": {
+        "type": "Transitive",
+        "resolved": "2.2.1",
+        "contentHash": "KZYeKBET/2Z0gY1WlTAK7+RHTl7GSbtvTLDXEZZojUdAPqpQNDL6tHv7VUpqfX5VEOh+uRGKaZXkuD253nEOBQ==",
+        "dependencies": {
+          "System.CodeDom": "4.4.0"
+        }
+      },
       "Pipelines.Sockets.Unofficial": {
         "type": "Transitive",
         "resolved": "2.2.0",
@@ -419,6 +453,11 @@
           "Pipelines.Sockets.Unofficial": "2.2.0",
           "System.Diagnostics.PerformanceCounter": "5.0.0"
         }
+      },
+      "System.CodeDom": {
+        "type": "Transitive",
+        "resolved": "4.4.0",
+        "contentHash": "2sCCb7doXEwtYAbqzbF/8UAeDRMNmPaQbU2q50Psg1J9KzumyVVCgKQY8s53WIPTufNT0DpSe9QRvVjOzfDWBA=="
       },
       "System.Configuration.ConfigurationManager": {
         "type": "Transitive",
@@ -606,7 +645,7 @@
         "dependencies": {
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
-          "CSharpFunctionalExtensions": "[2.38.1, )",
+          "CSharpFunctionalExtensions": "[2.39.0, )",
           "Dapper": "[2.0.123, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.5.2, )",
@@ -624,7 +663,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "[2.38.1, )",
+          "CSharpFunctionalExtensions": "[2.39.0, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
           "JetBrains.Annotations": "[2022.3.1, )"
         }
@@ -632,7 +671,7 @@
       "fakesurveygenerator.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "Azure.Identity": "[1.8.2, )",
+          "Azure.Identity": "[1.9.0, )",
           "FakeSurveyGenerator.Application": "[1.0.0, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "IdentityModel": "[6.1.0, )",

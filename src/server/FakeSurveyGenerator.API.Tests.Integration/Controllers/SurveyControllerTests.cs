@@ -2,6 +2,7 @@ using System.Text.Json;
 using AutoFixture;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
+using FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
 using FakeSurveyGenerator.Data;
@@ -97,6 +98,25 @@ public sealed class SurveyControllerTests
         survey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
         survey.RespondentType.Should().Be(newSurvey.RespondentType);
         survey.Options.First().OptionText.Should().Be(newSurvey.Options.First().OptionText);
+    }
+
+    [Fact]
+    public async Task GivenExistingUserWithSurveys_WhenCallingGetUserSurveys_ThenExistingSurveysShouldBeReturned()
+    {
+        await RegisterNewUser();
+        var newSurvey = await CreateSurvey();
+
+        var surveys = await _authenticatedClient.GetFromJsonAsync<List<UserSurveyModel>>("api/survey/user");
+
+        surveys!.Count.Should().BeGreaterThan(0);
+
+        var createdSurvey = surveys.First(s => s.Id == newSurvey.Id);
+
+        createdSurvey!.Id.Should().Be(newSurvey.Id);
+        createdSurvey.Topic.Should().Be(newSurvey.Topic);
+        createdSurvey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
+        createdSurvey.RespondentType.Should().Be(newSurvey.RespondentType);
+        createdSurvey.WinningOptionNumberOfVotes.Should().Be(newSurvey.Options.Max(o => o.NumberOfVotes));
     }
 
     [Fact]

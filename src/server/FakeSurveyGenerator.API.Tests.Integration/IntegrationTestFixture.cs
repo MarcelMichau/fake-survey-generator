@@ -50,6 +50,8 @@ public class IntegrationTestFixture : IAsyncLifetime
         var scopedServiceProvider = scope.ServiceProvider;
 
         var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
+
+        await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
 
         var respawner = await Respawner.CreateAsync(connectionString);

@@ -24,9 +24,9 @@
       },
       "coverlet.collector": {
         "type": "Direct",
-        "requested": "[3.2.0, )",
-        "resolved": "3.2.0",
-        "contentHash": "xjY8xBigSeWIYs4I7DgUHqSNoGqnHi7Fv7/7RZD02rvZyG3hlsjnQKiVKVWKgr9kRKgmV+dEfu8KScvysiC0Wg=="
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "tW3lsNS+dAEII6YGUX/VMoJjBS1QvsxqJeqLaJXub08y1FSjasFPtQ4UBUsudE9PNrzLjooClMsPtY2cZLdXpQ=="
       },
       "FluentAssertions": {
         "type": "Direct",
@@ -59,19 +59,19 @@
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
-        "requested": "[17.5.0, )",
-        "resolved": "17.5.0",
-        "contentHash": "IJ4eSPcsRbwbAZehh1M9KgejSy0u3d0wAdkJytfCh67zOaCl5U3ltruUEe15MqirdRqGmm/ngbjeaVeGapSZxg==",
+        "requested": "[17.6.0, )",
+        "resolved": "17.6.0",
+        "contentHash": "tHyg4C6c89QvLv6Utz3xKlba4EeoyJyIz59Q1NrjRENV7gfGnSE6I+sYPIbVOzQttoo2zpHDgOK/p6Hw2OlD7A==",
         "dependencies": {
-          "Microsoft.CodeCoverage": "17.5.0",
-          "Microsoft.TestPlatform.TestHost": "17.5.0"
+          "Microsoft.CodeCoverage": "17.6.0",
+          "Microsoft.TestPlatform.TestHost": "17.6.0"
         }
       },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.6.128, )",
-        "resolved": "3.6.128",
-        "contentHash": "zeA+Ho3XlPgt6P9MRALlkEvfOOzDQdNseV0xia/nSfC1lSrl0+gizlWyixaHvSYUw2ru7pBIKnK451bYOjPRjA=="
+        "requested": "[3.6.133, )",
+        "resolved": "3.6.133",
+        "contentHash": "VZWMd5YAeDxpjWjAP/X6bAxnRMiEf6tES/ITN0X5CHJgkWLLeHGmEALivmTAfYM6P+P/3Szy6VCITUAkqjcHVw=="
       },
       "NSubstitute": {
         "type": "Direct",
@@ -108,12 +108,12 @@
       },
       "Testcontainers": {
         "type": "Direct",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "LHyBFUdqdNaGcCsS3ylXlSMfg8V6Pv9uewbTuztcNdidLH/XAdrBH2eG5Ycvq5O/f3d4mqsCBjOh3YmbTG5OTw==",
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "q4WXHpfCjOmPs78EWN3Hxe78eVsT4p4wNPy6Azpiwo79yowtsKrwybRNfScoJdVdWAjwXSSm6hiIcZY2CVT6OQ==",
         "dependencies": {
-          "Docker.DotNet": "3.125.13",
-          "Docker.DotNet.X509": "3.125.13",
+          "Docker.DotNet": "3.125.15",
+          "Docker.DotNet.X509": "3.125.15",
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.3",
           "Portable.BouncyCastle": "1.9.0",
@@ -124,20 +124,20 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "10HgmycfHkfw+D2g6Ckk6b5sVx22BRBfI3RssNw1fL2qMG8r5b7cT54HlQuKDvVSLLwqPLW4CKiIiZciKy0Drg==",
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "z8hNZKz0+8e+T9r/IcH9fQcNcYD3uPZuUTCIf9d2Pp7+CZu+l9rb2hdnct5pFOkFq/FduaO4ZxVsjmYO2gtLIg==",
         "dependencies": {
-          "Testcontainers": "3.1.0"
+          "Testcontainers": "3.2.0"
         }
       },
       "Testcontainers.Redis": {
         "type": "Direct",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "b+GkyuwS27i5HJaRcxCxcKHpJsYZ7v+PZWdu7+DlRElUJ73I1O9GiiYkRpP2szKQNoRiGn2y4ZZ9FdINipbbRQ==",
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "kPguc4vFxpUZ3QOD/XoH2hym7S3zJmbo33lmlk04elgNQnKjhnLZJ38vHQbHLOip/fnMPNHzc6ptpvK8RA+cMw==",
         "dependencies": {
-          "Testcontainers": "3.1.0"
+          "Testcontainers": "3.2.0"
         }
       },
       "xunit": {
@@ -231,8 +231,8 @@
       },
       "Azure.Core": {
         "type": "Transitive",
-        "resolved": "1.25.0",
-        "contentHash": "X8Dd4sAggS84KScWIjEbFAdt2U1KDolQopTPoHVubG2y3CM54f9l6asVrP5Uy384NWXjsspPYaJgz5xHc+KvTA==",
+        "resolved": "1.32.0",
+        "contentHash": "NmnJxaNqKjPwnHXngVg63SrkwbJXrkT0mcK8uCx9rSq0nK6Q3Q+/GZRCaTWcdcECoRP5XK0lr3Ce8PZkHkuHNg==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
           "System.Diagnostics.DiagnosticSource": "4.6.0",
@@ -245,10 +245,10 @@
       },
       "Azure.Identity": {
         "type": "Transitive",
-        "resolved": "1.8.2",
-        "contentHash": "ywnpn9MLhNTtBG12WOxSaomx0Dwu5HK5PyhHH/CApGrd1BCrhgEwdy4Uwy5IfAznJzVJKZRyKR9cp4aa61xYvA==",
+        "resolved": "1.9.0",
+        "contentHash": "VGcyxE66Za9mO0MtTYG1+ABZGF84QS+KZW8RTbcpYXLomHHvGT+aAL/Yg/ayfN+Usk2Z+DKB0+hymBaOAokj/w==",
         "dependencies": {
-          "Azure.Core": "1.25.0",
+          "Azure.Core": "1.32.0",
           "Microsoft.Identity.Client": "4.49.1",
           "Microsoft.Identity.Client.Extensions.Msal": "2.25.3",
           "System.Memory": "4.5.4",
@@ -267,8 +267,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.38.1",
-        "contentHash": "7rQUCqQ/8S6YdgyeJ8SOsR39H4b119AIwbZ5w2w6Abge4K1azs5ZtXt/3Uk/FQ3pjHewl918KHMWywC5tX8CvQ=="
+        "resolved": "2.39.0",
+        "contentHash": "wqGNYfJHISO7GU74xzXMRzE4aAuMEQrz1mInsZNEdv/7XSLyRRxaVHyQgCtTUvj8cWOQbZMwIrv/+JL1dH5CpA=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -306,8 +306,8 @@
       },
       "Docker.DotNet": {
         "type": "Transitive",
-        "resolved": "3.125.13",
-        "contentHash": "p1DrW2Sw4ND2jFlIvpHB8/pY5o5HIkDalbGAI8tUvqjJR6n0/ubos7kDGWI+Xbx9+L3US3SUR8r59Zwq+ZxBvw==",
+        "resolved": "3.125.15",
+        "contentHash": "XN8FKxVv8Mjmwu104/Hl9lM61pLY675s70gzwSj8KR5pwblo8HfWLcCuinh9kYsqujBkMH4HVRCEcRuU6al4BQ==",
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.Buffers": "4.5.1",
@@ -316,10 +316,10 @@
       },
       "Docker.DotNet.X509": {
         "type": "Transitive",
-        "resolved": "3.125.13",
-        "contentHash": "+rhZU3AK4cgiRJQwramWZ2ud/tfGDZ5L7sQ6m1AtvFTUi7gEafHahRwLmdeGOov3NgW8aKD+TFRi9Ht97B+jBA==",
+        "resolved": "3.125.15",
+        "contentHash": "ONQN7ImrL3tHStUUCCPHwrFFQVpIpE+7L6jaDAMwSF+yTEmeWBmRARQZDRuvfj/+WtB8RR0oTW0tT3qQMSyHOw==",
         "dependencies": {
-          "Docker.DotNet": "3.125.13"
+          "Docker.DotNet": "3.125.15"
         }
       },
       "Fare": {
@@ -800,8 +800,8 @@
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
-        "resolved": "17.5.0",
-        "contentHash": "6FQo0O6LKDqbCiIgVQhJAf810HSjFlOj7FunWaeOGDKxy8DAbpHzPk4SfBTXz9ytaaceuIIeR6hZgplt09m+ig=="
+        "resolved": "17.6.0",
+        "contentHash": "5v2GwzpR7JEuQUzupjx3zLwn2FutADW/weLzLt726DR3WXxsM+ICPoJG6pxuKFsumtZp890UrVuudTUhsE8Qyg=="
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
@@ -1374,8 +1374,8 @@
       },
       "Microsoft.TestPlatform.ObjectModel": {
         "type": "Transitive",
-        "resolved": "17.5.0",
-        "contentHash": "QwiBJcC/oEA1kojOaB0uPWOIo4i6BYuTBBYJVhUvmXkyYqZ2Ut/VZfgi+enf8LF8J4sjO98oRRFt39MiRorcIw==",
+        "resolved": "17.6.0",
+        "contentHash": "AA/rrf5zwC5/OBLEOajkhjbVTM3SvxRXy8kcQ8e4mJKojbyZvqqhpfNg362N9vXU94DLg9NUTFOAnoYVT0pTJw==",
         "dependencies": {
           "NuGet.Frameworks": "5.11.0",
           "System.Reflection.Metadata": "1.6.0"
@@ -1383,10 +1383,10 @@
       },
       "Microsoft.TestPlatform.TestHost": {
         "type": "Transitive",
-        "resolved": "17.5.0",
-        "contentHash": "X86aikwp9d4SDcBChwzQYZihTPGEtMdDk+9t64emAl7N0Tq+OmlLAoW+Rs+2FB2k6QdUicSlT4QLO2xABRokaw==",
+        "resolved": "17.6.0",
+        "contentHash": "7YdgUcIeCPVKLC7n7LNKDiEHWc7z3brkkYPdUbDnFsvf6WvY9UfzS0VSUJ8P2NgN0CDSD223GCJFSjSBLZRqOQ==",
         "dependencies": {
-          "Microsoft.TestPlatform.ObjectModel": "17.5.0",
+          "Microsoft.TestPlatform.ObjectModel": "17.6.0",
           "Newtonsoft.Json": "13.0.1"
         }
       },
@@ -1798,20 +1798,20 @@
       },
       "Serilog": {
         "type": "Transitive",
-        "resolved": "2.11.0",
-        "contentHash": "ysv+hBzTul6Dp+Hvm10FlhJO3yMQcFKSAleus+LpiIzvNstpeV4Z7gGuIZ1OPNfIMulSHOjmLuGAEDKzpnV8ZQ=="
+        "resolved": "2.12.0",
+        "contentHash": "xaiJLIdu6rYMKfQMYUZgTy8YK7SMZjB4Yk50C/u//Z4OsvxkUfSPJy4nknfvwAC34yr13q7kcyh4grbwhSxyZg=="
       },
       "Serilog.AspNetCore": {
         "type": "Transitive",
-        "resolved": "6.1.0",
-        "contentHash": "iMwFUJDN+/yWIPz4TKCliagJ1Yn//SceCYCzgdPwe/ECYUwb5/WUL8cTzRKV+tFwxGjLEV/xpm0GupS5RwbhSQ==",
+        "resolved": "7.0.0",
+        "contentHash": "F6p6rzOmg/R0EPI/PjJXcAlhCzusW5+xFx8kbsy6mJ6/mHI6wWWPxZbsLPoAYTpMiopKFl7HZhAr//KABGHtBQ==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "5.0.0",
-          "Microsoft.Extensions.Logging": "5.0.0",
-          "Serilog": "2.10.0",
-          "Serilog.Extensions.Hosting": "5.0.1",
+          "Microsoft.Extensions.DependencyInjection": "7.0.0",
+          "Microsoft.Extensions.Logging": "7.0.0",
+          "Serilog": "2.12.0",
+          "Serilog.Extensions.Hosting": "7.0.0",
           "Serilog.Formatting.Compact": "1.1.0",
-          "Serilog.Settings.Configuration": "3.3.0",
+          "Serilog.Settings.Configuration": "7.0.0",
           "Serilog.Sinks.Console": "4.0.1",
           "Serilog.Sinks.Debug": "2.0.0",
           "Serilog.Sinks.File": "5.0.0"
@@ -1819,23 +1819,23 @@
       },
       "Serilog.Extensions.Hosting": {
         "type": "Transitive",
-        "resolved": "5.0.1",
-        "contentHash": "o0VUyt3npAqOJaZ6CiWLFeLYs3CYJwfcAqaUqprzsmj7qYIvorcn8cZLVR8AQX6vzX7gee2bD0sQeA17iO2/Aw==",
+        "resolved": "7.0.0",
+        "contentHash": "AWsDTs6TeCtyXYDWakzLXCOZA3/IdIfBWBwkYAF0ZvVktVr3E15oYP9pfI7GzKaGVmHaJF9TgFQnFEfcnzEkcw==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.8",
-          "Microsoft.Extensions.Hosting.Abstractions": "3.1.8",
-          "Microsoft.Extensions.Logging.Abstractions": "3.1.8",
-          "Serilog": "2.10.0",
-          "Serilog.Extensions.Logging": "3.1.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
+          "Microsoft.Extensions.Hosting.Abstractions": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.0",
+          "Serilog": "2.12.0",
+          "Serilog.Extensions.Logging": "7.0.0"
         }
       },
       "Serilog.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "3.1.0",
-        "contentHash": "IWfem7wfrFbB3iw1OikqPFNPEzfayvDuN4WP7Ue1AVFskalMByeWk3QbtUXQR34SBkv1EbZ3AySHda/ErDgpcg==",
+        "resolved": "7.0.0",
+        "contentHash": "9faU0zNQqU7I6soVhLUMYaGNpgWv6cKlKb2S5AnS8gXxzW/em5Ladm/6FMrWTnX41cdbdGPOWNAo6adi4WaJ6A==",
         "dependencies": {
-          "Microsoft.Extensions.Logging": "2.0.0",
-          "Serilog": "2.9.0"
+          "Microsoft.Extensions.Logging": "7.0.0",
+          "Serilog": "2.12.0"
         }
       },
       "Serilog.Formatting.Compact": {
@@ -1848,12 +1848,12 @@
       },
       "Serilog.Settings.Configuration": {
         "type": "Transitive",
-        "resolved": "3.3.0",
-        "contentHash": "7GNudISZwqaT902hqEL2OFGTZeUFWfnrNLupJkOqeF41AR3GjcxX+Hwb30xb8gG2/CDXsCMVfF8o0+8KY0fJNg==",
+        "resolved": "7.0.0",
+        "contentHash": "MlabSn74uXAGKNv9WWDdGejmsr7cKhsfi98ZtdeK119s4lTLp+hakBtnPm8OvXNUvtXYs2ijXKA0tIy4IMnjWQ==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyModel": "3.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "2.0.0",
-          "Serilog": "2.10.0"
+          "Microsoft.Extensions.Configuration.Binder": "7.0.0",
+          "Microsoft.Extensions.DependencyModel": "7.0.0",
+          "Serilog": "2.12.0"
         }
       },
       "Serilog.Sinks.ApplicationInsights": {
@@ -2987,7 +2987,7 @@
           "Microsoft.VisualStudio.Azure.Kubernetes.Tools.Targets": "[1.1.0, )",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "[7.0.6, )",
           "NetEscapades.AspNetCore.SecurityHeaders": "[0.18.0, )",
-          "Serilog.AspNetCore": "[6.1.0, )",
+          "Serilog.AspNetCore": "[7.0.0, )",
           "Serilog.Sinks.ApplicationInsights": "[4.0.0, )",
           "Swashbuckle.AspNetCore": "[6.5.0, )",
           "Swashbuckle.AspNetCore.Annotations": "[6.5.0, )"
@@ -2998,7 +2998,7 @@
         "dependencies": {
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
-          "CSharpFunctionalExtensions": "[2.38.1, )",
+          "CSharpFunctionalExtensions": "[2.39.0, )",
           "Dapper": "[2.0.123, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.5.2, )",
@@ -3023,7 +3023,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "[2.38.1, )",
+          "CSharpFunctionalExtensions": "[2.39.0, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
           "JetBrains.Annotations": "[2022.3.1, )"
         }
@@ -3031,7 +3031,7 @@
       "fakesurveygenerator.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "Azure.Identity": "[1.8.2, )",
+          "Azure.Identity": "[1.9.0, )",
           "FakeSurveyGenerator.Application": "[1.0.0, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "IdentityModel": "[6.1.0, )",

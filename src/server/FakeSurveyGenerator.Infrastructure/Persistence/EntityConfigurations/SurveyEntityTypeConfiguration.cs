@@ -10,7 +10,6 @@ internal sealed class SurveyEntityTypeConfiguration : AuditableEntityTypeConfigu
     {
         const string tableName = "Survey";
         const string sequenceName = $"{tableName}Seq";
-        const string foreignKeyName = $"{tableName}Id";
 
         builder
             .ToTable(tableName, SurveyContext.DefaultSchema);
@@ -38,10 +37,24 @@ internal sealed class SurveyEntityTypeConfiguration : AuditableEntityTypeConfigu
             .IsRequired();
 
         builder
-            .HasMany(s => s.Options)
-            .WithOne()
-            .HasForeignKey(foreignKeyName)
-            .IsRequired();
+            .OwnsMany(s => s.Options, ownedNavigationBuilder =>
+            {
+                const string surveyOptionTableName = "SurveyOption";
+
+                ownedNavigationBuilder
+                    .ToTable(surveyOptionTableName, SurveyContext.DefaultSchema);
+
+                ownedNavigationBuilder
+                    .Property(o => o.OptionText)
+                    .IsRequired();
+
+                ownedNavigationBuilder
+                    .Property(o => o.NumberOfVotes)
+                    .IsRequired();
+
+                ownedNavigationBuilder
+                    .Property(o => o.PreferredNumberOfVotes);
+            });
 
         builder.Navigation(s => s.Options)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
