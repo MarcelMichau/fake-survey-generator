@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FakeSurveyGenerator.Infrastructure.Migrations
 {
     [DbContext(typeof(SurveyContext))]
-    [Migration("20230524064408_TestingOwnedEntities")]
-    partial class TestingOwnedEntities
+    [Migration("20230531152838_FreshState")]
+    partial class FreshState
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
