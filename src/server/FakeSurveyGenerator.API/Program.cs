@@ -55,7 +55,7 @@ try
         .AddHealthChecksConfiguration(builder.Configuration)
         .AddSwaggerConfiguration(builder.Configuration)
         .AddAuthenticationConfiguration(builder.Configuration)
-        //.AddForwardedHeadersConfiguration()
+        .AddForwardedHeadersConfiguration()
         .AddApplicationInsightsConfiguration(builder.Configuration)
         .AddApplicationServicesConfiguration(builder.Configuration)
         .AddApiBehaviourConfiguration()
@@ -66,7 +66,7 @@ try
     var app = builder.Build();
 
     app.UseSecurityHeaders();
-    //app.UseForwardedHeaders();
+    app.UseForwardedHeaders();
 
     app.UseDefaultFiles();
     app.UseStaticFiles();
