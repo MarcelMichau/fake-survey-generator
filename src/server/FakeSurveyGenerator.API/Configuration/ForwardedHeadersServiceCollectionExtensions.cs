@@ -11,7 +11,7 @@ internal static class ForwardedHeadersServiceCollectionExtensions
         services.Configure<ForwardedHeadersOptions>(options =>
         {
             options.ForwardedHeaders =
-                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
 
             foreach (var network in Utilities.GetNetworks(NetworkInterfaceType.Ethernet))
             {
