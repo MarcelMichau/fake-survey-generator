@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using FakeSurveyGenerator.API.Networking;
-using Microsoft.AspNetCore.HttpOverrides;
+﻿using Microsoft.AspNetCore.HttpOverrides;
 
 namespace FakeSurveyGenerator.API.Configuration;
 
@@ -12,10 +10,13 @@ internal static class ForwardedHeadersServiceCollectionExtensions
         {
             options.ForwardedHeaders = ForwardedHeaders.All;
 
-            //foreach (var network in Utilities.GetNetworks(NetworkInterfaceType.Ethernet))
-            //{
-            //    options.KnownNetworks.Add(network);
-            //}
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+
+            options.AllowedHosts = new List<string>
+            {
+                "fakesurveygenerator.mysecondarydomain.com"
+            };
         });
 
         return services;
