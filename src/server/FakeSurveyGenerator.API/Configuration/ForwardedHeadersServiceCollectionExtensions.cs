@@ -10,13 +10,12 @@ internal static class ForwardedHeadersServiceCollectionExtensions
     {
         services.Configure<ForwardedHeadersOptions>(options =>
         {
-            options.ForwardedHeaders =
-                ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+            options.ForwardedHeaders = ForwardedHeaders.All;
 
-            foreach (var network in Utilities.GetNetworks(NetworkInterfaceType.Ethernet))
-            {
-                options.KnownNetworks.Add(network);
-            }
+            //foreach (var network in Utilities.GetNetworks(NetworkInterfaceType.Ethernet))
+            //{
+            //    options.KnownNetworks.Add(network);
+            //}
         });
 
         return services;
