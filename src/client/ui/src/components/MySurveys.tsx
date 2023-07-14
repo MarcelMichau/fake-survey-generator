@@ -13,8 +13,8 @@ export type MySurveysProps = {
 
 const MySurveys = ({ loading }: MySurveysProps) => {
     const { getAccessTokenSilently } = useAuth0();
-    const [userSurveysResponse, setUserSurveysResponse] = useState(
-        {} as Types.UserSurveysResponse
+    const [userSurveys, setUserSurveys] = useState(
+        {} as Types.UserSurveyModel[]
     );
 
     const fetchSurveys = async () => {
@@ -26,9 +26,9 @@ const MySurveys = ({ loading }: MySurveysProps) => {
             },
         });
 
-        const data: Types.UserSurveysResponse = await response.json();
+        const data: Types.UserSurveyModel[] = await response.json();
 
-        setUserSurveysResponse(data);
+        setUserSurveys(data);
     };
 
     const submitForm = async (e: React.FormEvent) => {
@@ -39,12 +39,12 @@ const MySurveys = ({ loading }: MySurveysProps) => {
     const tablePadding = "px-4 py-2";
     const tableBorder = "border border-gray-700";
 
-    type TableHeaderProps = { children: React.ReactNode; };
-    const TableHeader = ({ children } : TableHeaderProps) => (
+    type TableHeaderProps = { children: React.ReactNode };
+    const TableHeader = ({ children }: TableHeaderProps) => (
         <th className={`${tablePadding}`}>{children}</th>
     );
 
-    type TableDataProps = { children: React.ReactNode; }
+    type TableDataProps = { children: React.ReactNode };
     const TableData = ({ children }: TableDataProps) => (
         <td className={`${tableBorder} ${tablePadding}`}>{children}</td>
     );
@@ -66,64 +66,59 @@ const MySurveys = ({ loading }: MySurveysProps) => {
                     </SkeletonButton>
                 </form>
 
-                {!userSurveysResponse?.isError &&
-                    userSurveysResponse?.result?.length > 0 && (
-                        <table
-                            className={`table-auto bg-gray-900 text-gray-400 ${tableBorder} my-4`}
-                        >
-                            <thead>
-                                <tr>
-                                    <TableHeader>Question</TableHeader>
-                                    <TableHeader>Audience</TableHeader>
-                                    <TableHeader># Respondents</TableHeader>
-                                    <TableHeader># Options</TableHeader>
-                                    <TableHeader>Winning Option</TableHeader>
-                                    <TableHeader>Winning # Votes</TableHeader>
+                {userSurveys.length > 0 && (
+                    <table
+                        className={`table-auto bg-gray-900 text-gray-400 ${tableBorder} my-4`}
+                    >
+                        <thead>
+                            <tr>
+                                <TableHeader>Question</TableHeader>
+                                <TableHeader>Audience</TableHeader>
+                                <TableHeader># Respondents</TableHeader>
+                                <TableHeader># Options</TableHeader>
+                                <TableHeader>Winning Option</TableHeader>
+                                <TableHeader>Winning # Votes</TableHeader>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {userSurveys.map((survey) => (
+                                <tr key={survey.id}>
+                                    <TableData>{survey.topic}</TableData>
+                                    <TableData>
+                                        {survey.respondentType}
+                                    </TableData>
+                                    <TableData>
+                                        {new Intl.NumberFormat().format(
+                                            survey.numberOfRespondents
+                                        )}
+                                    </TableData>
+                                    <TableData>
+                                        {survey.numberOfOptions}
+                                    </TableData>
+                                    <TableData>
+                                        {survey.winningOption}
+                                    </TableData>
+                                    <TableData>
+                                        {new Intl.NumberFormat().format(
+                                            survey.winningOptionNumberOfVotes
+                                        )}
+                                    </TableData>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {userSurveysResponse.result.map((survey) => (
-                                    <tr key={survey.id}>
-                                        <TableData>{survey.topic}</TableData>
-                                        <TableData>
-                                            {survey.respondentType}
-                                        </TableData>
-                                        <TableData>
-                                            {new Intl.NumberFormat().format(
-                                                survey.numberOfRespondents
-                                            )}
-                                        </TableData>
-                                        <TableData>
-                                            {survey.numberOfOptions}
-                                        </TableData>
-                                        <TableData>
-                                            {survey.winningOption}
-                                        </TableData>
-                                        <TableData>
-                                            {new Intl.NumberFormat().format(
-                                                survey.winningOptionNumberOfVotes
-                                            )}
-                                        </TableData>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
-                {!userSurveysResponse?.isError &&
-                    userSurveysResponse?.result?.length === 0 && (
-                        <Alert
-                            title="No Surveys"
-                            message={"You have not created any surveys yet. :("}
-                        ></Alert>
-                    )}
-                {userSurveysResponse?.isError && (
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+                {userSurveys?.length === 0 && (
+                    <Alert
+                        title="No Surveys"
+                        message={"You have not created any surveys yet. :("}
+                    ></Alert>
+                )}
+                {(userSurveys === null || userSurveys === undefined) && (
                     <Alert
                         type="error"
                         title="Oh no! Something did not go as planned."
-                        message={
-                            userSurveysResponse.responseException
-                                .exceptionMessage.detail
-                        }
+                        message="Please try again or create an issue on GitHub"
                     ></Alert>
                 )}
             </div>

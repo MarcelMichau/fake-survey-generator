@@ -21,43 +21,8 @@ export type ApiVersionModel = {
     rootNamespace: string;
 };
 
-export type ApiVersionResponse = {
-    message: string;
-    result: ApiVersionModel;
-    isError: boolean;
-    responseException: ResponseException;
-};
-
-export type SurveyResponse = {
-    message: string;
-    result: SurveyModel;
-    isError: boolean;
-    responseException: ResponseException;
-};
-
-export type UserSurveysResponse = {
-    message: string;
-    result: UserSurveyModel[];
-    isError: boolean;
-    responseException: ResponseException;
-};
-
-export type UserResponse = {
-    message: string;
-    result: UserModel;
-    isError: boolean;
-    responseException: ResponseException;
-};
-
 export type UserRegistrationStatusModel = {
     isUserRegistered: boolean;
-};
-
-export type IsUserRegisteredResponse = {
-    message: string;
-    result: UserRegistrationStatusModel;
-    isError: boolean;
-    responseException: ResponseException;
 };
 
 export type UserModel = {
