@@ -50,15 +50,15 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
             body: JSON.stringify(surveyCommand),
         });
 
+        if (response.status === 422) {
+            const data: Record<string, string[]> = await response.json();
+
+            setValidationErrors(Object.values(data).flat());
+            return;
+        }
+
         if (response.status !== 201) {
-            setErrorMessage("Something did not go as planned");
-
-            if (response.status === 422) {
-                const data: Record<string, string[]> = await response.json();
-
-                setValidationErrors(Object.values(data).flat());
-            }
-
+            setErrorMessage("Please try again or create an issue on GitHub");
             return;
         }
 
