@@ -44,7 +44,6 @@ Here are some of the features incorporated into this project:
 - Adding OpenID Connect to Swagger UI
 - Securing an ASP.NET Core Web API using JWT Bearer authentication
 - Adding security headers to API responses using [NetEscapades.AspNetCore.SecurityHeaders](https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders)
-- Using [AutoWrapper](https://github.com/proudmonkey/AutoWrapper) to return consistent API response models
 - Using [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services) in ASP.NET Core Web API
 - Using a distributed [Redis](https://redis.io/) cache
 - Configuring SQL Server retry policies
@@ -114,7 +113,6 @@ The server side makes use of the following tools, libraries & frameworks:
   - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
   - [Docker](https://www.docker.com/)
   - [Serilog](https://serilog.net/)
-  - [AutoWrapper](https://github.com/proudmonkey/AutoWrapper)
   - [NSubstitute](https://nsubstitute.github.io/)
 - Fake Survey Generator Worker
   - .NET 7.0

@@ -50,24 +50,22 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
             body: JSON.stringify(surveyCommand),
         });
 
-        const data: Types.SurveyResponse = await response.json();
+        if (response.status === 422) {
+            const data: Record<string, string[]> = await response.json();
 
-        if (data.isError) {
-            setErrorMessage(data.responseException.exceptionMessage.title);
-
-            if (data.responseException.exceptionMessage.errors) {
-                setValidationErrors(
-                    Object.values(
-                        data.responseException.exceptionMessage.errors
-                    ).flat()
-                );
-            }
-
+            setValidationErrors(Object.values(data).flat());
             return;
         }
 
+        if (response.status !== 201) {
+            setErrorMessage("Please try again or create an issue on GitHub");
+            return;
+        }
+
+        const data: Types.SurveyModel = await response.json();
+
         setSuccessMessage(
-            `Survey created with ID: ${data.result.id}. Get the survey to see the outcome.`
+            `Survey created with ID: ${data.id}. Get the survey to see the outcome.`
         );
         setErrorMessage("");
         setValidationErrors([]);

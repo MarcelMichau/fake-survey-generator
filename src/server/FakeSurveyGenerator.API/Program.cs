@@ -1,9 +1,11 @@
-﻿using AutoWrapper;
-using Dapr.Client;
+﻿using Dapr.Client;
 using Dapr.Extensions.Configuration;
+using FakeSurveyGenerator.API.Admin;
 using FakeSurveyGenerator.API.Configuration;
 using FakeSurveyGenerator.API.Configuration.HealthChecks;
 using FakeSurveyGenerator.API.Configuration.Swagger;
+using FakeSurveyGenerator.API.Surveys;
+using FakeSurveyGenerator.API.Users;
 using Microsoft.ApplicationInsights.Extensibility;
 using Serilog;
 using Serilog.Events;
@@ -58,10 +60,7 @@ try
         .AddForwardedHeadersConfiguration()
         .AddApplicationInsightsConfiguration(builder.Configuration)
         .AddApplicationServicesConfiguration(builder.Configuration)
-        .AddApiBehaviourConfiguration()
-        .AddControllers()
-        .AddJsonConfiguration()
-        .AddExceptionHandlingConfiguration();
+        .AddApiBehaviourConfiguration();
 
     var app = builder.Build();
 
@@ -73,14 +72,15 @@ try
 
     app.UseSerilogRequestLogging();
 
-    app.UseAutoWrapper();
-
     app.UseHttpsRedirection();
 
-    app.MapControllers();
     app.UseHealthChecksConfiguration();
 
     app.UseSwaggerConfiguration();
+
+    app.MapAdminEndpoints();
+    app.MapSurveyEndpoints();
+    app.MapUserEndpoints();
 
     app.Run();
 }

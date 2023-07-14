@@ -9,11 +9,11 @@ const VersionInfo = () => {
         const getApiVersion = async () => {
             setIsLoading(true);
             const response = await fetch("api/admin/version");
-            const versionResponse: Types.ApiVersionResponse =
+            const versionResponse: Types.ApiVersionModel =
                 await response.json();
             setIsLoading(false);
 
-            setApiVersion(versionResponse.result);
+            setApiVersion(versionResponse);
         };
 
         getApiVersion();

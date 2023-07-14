@@ -1,4 +1,4 @@
-FROM node:19-alpine3.16 as build
+FROM node:20-alpine as build
 ARG REACT_APP_VERSION
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/package-lock.json ./

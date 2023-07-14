@@ -34,15 +34,19 @@ const GetSurvey = ({ loading }: GetSurveyProps) => {
             },
         });
 
-        const data: Types.SurveyResponse = await response.json();
-
-        if (data.isError) {
-            setErrorMessage(data.responseException.exceptionMessage.detail);
+        if (response.status === 404) {
+            setErrorMessage("Looks like that survey does not exist");
             setSurveyDetail({} as Types.SurveyModel);
             return;
         }
 
-        const survey = data.result;
+        if (response.status !== 200) {
+            setErrorMessage("Something did not go as planned");
+            setSurveyDetail({} as Types.SurveyModel);
+            return;
+        }
+
+        const survey: Types.SurveyModel = await response.json();
 
         setSurveyDetail(survey);
     };

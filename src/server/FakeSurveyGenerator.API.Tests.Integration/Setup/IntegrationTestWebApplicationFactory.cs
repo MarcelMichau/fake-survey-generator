@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using NSubstitute;
 using StackExchange.Redis;
 
-namespace FakeSurveyGenerator.API.Tests.Integration;
+namespace FakeSurveyGenerator.API.Tests.Integration.Setup;
 
 public sealed class IntegrationTestWebApplicationFactory : WebApplicationFactory<IApiMarker>
 {

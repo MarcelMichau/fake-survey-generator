@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 
 namespace FakeSurveyGenerator.API.Configuration;
 
@@ -10,8 +9,8 @@ internal static class AuthenticationServiceCollectionExtensions
     {
         var identityProviderUrl = configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        services.AddAuthentication()
+            .AddJwtBearer(options =>
             {
                 options.Authority = identityProviderUrl;
                 options.Audience = "fake-survey-generator-api";
@@ -21,7 +20,8 @@ internal static class AuthenticationServiceCollectionExtensions
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidIssuer = identityProviderUrl
+                    ValidIssuer = identityProviderUrl,
+                    ClockSkew = TimeSpan.FromSeconds(10)
                 };
             });
 

@@ -1,7 +1,7 @@
 ﻿using FakeSurveyGenerator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace FakeSurveyGenerator.API.HostedServices;
+namespace FakeSurveyGenerator.API.Data;
 
 internal sealed class DatabaseCreationHostedService : IHostedService
 {

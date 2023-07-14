@@ -7,6 +7,8 @@ internal static class SwaggerServiceCollectionExtensions
     public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
+       services.AddEndpointsApiExplorer();
+
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo

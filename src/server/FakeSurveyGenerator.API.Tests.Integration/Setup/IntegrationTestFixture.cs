@@ -6,7 +6,7 @@ using Testcontainers.MsSql;
 using Testcontainers.Redis;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration;
+namespace FakeSurveyGenerator.API.Tests.Integration.Setup;
 
 [CollectionDefinition(nameof(IntegrationTestFixture))]
 public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
@@ -42,7 +42,7 @@ public class IntegrationTestFixture : IAsyncLifetime
             $"Server={_dbContainer.Hostname};Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0;Encrypt=false";
 
         Factory = new IntegrationTestWebApplicationFactory(new TestContainerSettings(connectionString, _cacheContainer.GetConnectionString()));
-        
+
         _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
 
         using var scope = _serviceScopeFactory.CreateScope();

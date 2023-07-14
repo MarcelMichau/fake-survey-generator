@@ -1,8 +1,9 @@
-﻿using FakeSurveyGenerator.Application.Common.Caching;
+﻿using FakeSurveyGenerator.API.Tests.Integration.Setup;
+using FakeSurveyGenerator.Application.Common.Caching;
 using FluentAssertions;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration.Common;
+namespace FakeSurveyGenerator.API.Tests.Integration.Shared;
 
 [Collection(nameof(IntegrationTestFixture))]
 public sealed class CacheTests

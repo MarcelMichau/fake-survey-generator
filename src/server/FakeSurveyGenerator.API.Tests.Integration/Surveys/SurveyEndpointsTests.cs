@@ -1,5 +1,6 @@
 using System.Text.Json;
 using AutoFixture;
+using FakeSurveyGenerator.API.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Surveys.Commands.CreateSurvey;
 using FakeSurveyGenerator.Application.Surveys.Models;
 using FakeSurveyGenerator.Application.Surveys.Queries.GetUserSurveys;
@@ -9,10 +10,10 @@ using FakeSurveyGenerator.Data;
 using FluentAssertions;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration.Controllers;
+namespace FakeSurveyGenerator.API.Tests.Integration.Surveys;
 
 [Collection(nameof(IntegrationTestFixture))]
-public sealed class SurveyControllerTests
+public sealed class SurveyEndpointsTests
 {
     private readonly HttpClient _authenticatedClient;
     private readonly HttpClient _unauthenticatedClient;
@@ -22,7 +23,7 @@ public sealed class SurveyControllerTests
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public SurveyControllerTests(IntegrationTestFixture testFixture)
+    public SurveyEndpointsTests(IntegrationTestFixture testFixture)
     {
         var fixture = new Fixture();
 
@@ -63,7 +64,9 @@ public sealed class SurveyControllerTests
 
         using var response = await _unauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
-        Assert.Equal(StatusCodes.Status401Unauthorized, (int)response.StatusCode);
+        var statusCode = (int)response.StatusCode;
+
+        statusCode.Should().Be(StatusCodes.Status401Unauthorized);
     }
 
     [Fact]

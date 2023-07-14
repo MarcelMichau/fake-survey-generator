@@ -1,6 +1,7 @@
-﻿using Xunit;
+﻿using FakeSurveyGenerator.API.Tests.Integration.Setup;
+using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration.Common;
+namespace FakeSurveyGenerator.API.Tests.Integration.Shared;
 
 [Collection(nameof(IntegrationTestFixture))]
 public sealed class SwaggerTests
