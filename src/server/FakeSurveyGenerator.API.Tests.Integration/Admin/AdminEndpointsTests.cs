@@ -1,13 +1,14 @@
-﻿using Xunit;
+﻿using FakeSurveyGenerator.API.Tests.Integration.Setup;
+using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration.Controllers;
+namespace FakeSurveyGenerator.API.Tests.Integration.Admin;
 
 [Collection(nameof(IntegrationTestFixture))]
-public sealed class AdminControllerTests
+public sealed class AdminEndpointsTests
 {
     private readonly HttpClient _client;
 
-    public AdminControllerTests(IntegrationTestFixture testFixture)
+    public AdminEndpointsTests(IntegrationTestFixture testFixture)
     {
         _client = testFixture.Factory!.CreateClient();
     }

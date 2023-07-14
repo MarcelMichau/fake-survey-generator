@@ -1,10 +1,9 @@
-﻿using AutoWrapper.Server;
-using FakeSurveyGenerator.Application.Common.Identity;
+﻿using FakeSurveyGenerator.Application.Common.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.TestHost;
 using NSubstitute;
 
-namespace FakeSurveyGenerator.API.Tests.Integration;
+namespace FakeSurveyGenerator.API.Tests.Integration.Setup;
 
 public static class WebApplicationFactoryExtensions
 {
@@ -14,14 +13,15 @@ public static class WebApplicationFactoryExtensions
         {
             builder.ConfigureTestServices(ConfigureAuthenticationHandler)
                 .ConfigureServices(services => ConfigureNewUserUserService(services, user));
-        }).CreateDefaultClient(new UnwrappingResponseHandler());
+        }).CreateDefaultClient();
     }
 
     private static void ConfigureAuthenticationHandler(IServiceCollection services)
     {
-        services.AddAuthentication("Test")
+        const string defaultScheme = "TestScheme";
+        services.AddAuthentication(defaultScheme)
             .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                "Test", _ => { });
+                defaultScheme, _ => { });
     }
 
     private static void ConfigureNewUserUserService(IServiceCollection services, IUser testUser)

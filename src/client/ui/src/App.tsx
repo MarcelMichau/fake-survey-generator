@@ -26,12 +26,12 @@ const App = (): JSX.Element => {
                 },
             });
 
-            const data: Types.UserResponse = await response.json();
+            const data: Types.UserModel = await response.json();
 
-            if (data.isError) {
-                setErrorMessage(data.responseException.exceptionMessage.detail);
-                return;
-            }
+            // if (data.isError) {
+            // setErrorMessage("Oops, something went wrong.");
+            // return;
+            // }
         };
 
         const isUserRegistered = async (): Promise<boolean> => {
@@ -46,14 +46,15 @@ const App = (): JSX.Element => {
                 }
             );
 
-            const data: Types.IsUserRegisteredResponse = await response.json();
+            const data: Types.UserRegistrationStatusModel =
+                await response.json();
 
-            if (data.isError) {
-                setErrorMessage(data.responseException.exceptionMessage.detail);
-                return false;
-            }
+            // if (data.isError) {
+            // setErrorMessage("Oops, something went wrong.");
+            // return false;
+            // }
 
-            return data.result.isUserRegistered;
+            return data.isUserRegistered;
         };
 
         const register = async () => {

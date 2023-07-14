@@ -33,12 +33,6 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
             return;
         }
 
-        if (!context.ModelState.IsValid)
-        {
-            HandleInvalidModelStateException(context);
-            return;
-        }
-
         HandleUnknownException(context);
     }
 
@@ -69,18 +63,6 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         };
 
         context.Result = new UnprocessableEntityObjectResult(details);
-
-        context.ExceptionHandled = true;
-    }
-
-    private static void HandleInvalidModelStateException(ExceptionContext context)
-    {
-        var details = new ValidationProblemDetails(context.ModelState)
-        {
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
-        };
-
-        context.Result = new BadRequestObjectResult(details);
 
         context.ExceptionHandled = true;
     }

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using AutoFixture;
+using FakeSurveyGenerator.API.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Users.Commands.RegisterUser;
 using FakeSurveyGenerator.Application.Users.Models;
 using FakeSurveyGenerator.Application.Users.Queries.IsUserRegistered;
@@ -8,10 +9,10 @@ using FakeSurveyGenerator.Data;
 using FluentAssertions;
 using Xunit;
 
-namespace FakeSurveyGenerator.API.Tests.Integration.Controllers;
+namespace FakeSurveyGenerator.API.Tests.Integration.Users;
 
 [Collection(nameof(IntegrationTestFixture))]
-public sealed class UserControllerTests
+public sealed class UserEndpointsTests
 {
     private readonly IntegrationTestWebApplicationFactory? _factory;
     private readonly IFixture _fixture;
@@ -21,7 +22,7 @@ public sealed class UserControllerTests
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public UserControllerTests(IntegrationTestFixture fixture)
+    public UserEndpointsTests(IntegrationTestFixture fixture)
     {
         _factory = fixture.Factory;
         _fixture = new Fixture();
@@ -98,13 +99,11 @@ public sealed class UserControllerTests
     {
         var registerUserCommand = new RegisterUserCommand();
 
-        var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+        var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
         response.EnsureSuccessStatusCode();
 
-        await using var content = await response.Content.ReadAsStreamAsync();
-
-        var user = await JsonSerializer.DeserializeAsync<UserModel>(content, Options);
+        var user = await response.Content.ReadFromJsonAsync<UserModel>(new JsonSerializerOptions(JsonSerializerDefaults.Web));
         return user!;
     }
 }
