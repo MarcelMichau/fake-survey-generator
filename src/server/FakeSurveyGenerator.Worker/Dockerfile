@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.7-bullseye-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0.9-bookworm-slim AS base
 WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0.301-bullseye-slim AS build
