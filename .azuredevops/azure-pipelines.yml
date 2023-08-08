@@ -86,6 +86,7 @@ stages:
               useGlobalJson: true
 
           - task: Cache@2
+            enabled: false
             displayName: Cache
             inputs:
               key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
