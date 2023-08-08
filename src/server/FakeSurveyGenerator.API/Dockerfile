@@ -1,8 +1,10 @@
+# https://hub.docker.com/_/microsoft-dotnet-runtime/
 FROM mcr.microsoft.com/dotnet/aspnet:7.0.9-bookworm-slim AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+# https://hub.docker.com/_/microsoft-dotnet-sdk/
 FROM mcr.microsoft.com/dotnet/sdk:7.0.306-bookworm-slim AS build
 WORKDIR /src/server
 COPY src/server/Directory.Build.props .

@@ -12,23 +12,23 @@ param dnsZoneName string = 'mysecondarydomain.com'
 param uiContainerVersion string
 param apiContainerVersion string
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
   name: containerRegistryName
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: managedIdentityName
 }
 
-resource redisCache 'Microsoft.Cache/Redis@2021-06-01' existing = {
+resource redisCache 'Microsoft.Cache/redis@2023-05-01-preview' existing = {
   name: redisCacheName
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2022-02-01-preview' existing = {
+resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' existing = {
   name: sqlServerName
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-02-01-preview' existing = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' existing = {
   name: sqlDatabaseName
 }
 

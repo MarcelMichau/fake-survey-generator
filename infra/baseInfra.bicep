@@ -16,101 +16,101 @@ param sqlAzureAdAdministratorLogin string = 'SQL Server Administrators'
 param sqlAzureAdAdministratorObjectId string = '7accb81c-4513-4df6-9eb7-791ac78e8fdb'
 
 resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: location
+    name: resourceGroupName
+    location: location
 }
 
 module logAnalytics 'modules/logAnalytics.bicep' = {
-  name: 'logAnalytics'
-  params: {
-    location: location
-    name: logAnalyticsWorkspaceName
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'logAnalytics'
+    params: {
+        location: location
+        name: logAnalyticsWorkspaceName
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module applicationInsights 'modules/appInsights.bicep' = {
-  name: 'applicationInsights'
-  params: {
-    location: location
-    name: applicationInsightsName
-    logAnalyticsWorkspaceId: logAnalytics.outputs.id
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'applicationInsights'
+    params: {
+        location: location
+        name: applicationInsightsName
+        logAnalyticsWorkspaceId: logAnalytics.outputs.id
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module dnsZone 'modules/dnsZone.bicep' = {
-  name: 'dnsZone'
-  params: {
-    name: dnsZoneName
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'dnsZone'
+    params: {
+        name: dnsZoneName
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module keyVault 'modules/keyVault.bicep' = {
-  name: 'keyVault'
-  params: {
-    location: location
-    name: keyVaultName
-    secretsObject: {
-      secrets: [
-        {
-          secretName: 'HealthCheckSecret'
-          secretValue: 'healthy'
+    name: 'keyVault'
+    params: {
+        location: location
+        name: keyVaultName
+        secretsObject: {
+            secrets: [
+                {
+                    secretName: 'HealthCheckSecret'
+                    secretValue: 'healthy'
+                }
+            ]
         }
-      ]
     }
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module containerRegistry 'modules/containerRegistry.bicep' = {
-  name: 'containerRegistry'
-  params: {
-    location: location
-    name: containerRegistryName
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'containerRegistry'
+    params: {
+        location: location
+        name: containerRegistryName
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module redisCache 'modules/redisCache.bicep' = {
-  name: 'redisCache'
-  params: {
-    location: location
-    name: redisCacheName
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'redisCache'
+    params: {
+        location: location
+        name: redisCacheName
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module azureSql 'modules/sql.bicep' = {
-  name: 'azureSql'
-  params: {
-    location: location
-    serverName: sqlServerName
-    databaseName: sqlDatabaseName
-    azureAdAdministratorLogin: sqlAzureAdAdministratorLogin
-    azureAdAdministratorObjectId: sqlAzureAdAdministratorObjectId
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'azureSql'
+    params: {
+        location: location
+        serverName: sqlServerName
+        databaseName: sqlDatabaseName
+        azureAdAdministratorLogin: sqlAzureAdAdministratorLogin
+        azureAdAdministratorObjectId: sqlAzureAdAdministratorObjectId
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module managedIdentity 'modules/managedIdentity.bicep' = {
-  name: 'managedIdentity'
-  params: {
-    location: location
-    keyVaultName: keyVault.outputs.keyVaultName
-    containerRegistryName: containerRegistry.outputs.containerRegistryName
-    identityName: managedIdentityName
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'managedIdentity'
+    params: {
+        location: location
+        keyVaultName: keyVault.outputs.keyVaultName
+        containerRegistryName: containerRegistry.outputs.containerRegistryName
+        identityName: managedIdentityName
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
 
 module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
-  name: 'containerAppEnvironment'
-  params: {
-    location: location
-    logAnalyticsName: logAnalytics.outputs.name
-    containerAppEnvName: containerAppEnvironmentName
-  }
-  scope: fakeSurveyGeneratorResourceGroup
+    name: 'containerAppEnvironment'
+    params: {
+        location: location
+        logAnalyticsName: logAnalytics.outputs.name
+        containerAppEnvName: containerAppEnvironmentName
+    }
+    scope: fakeSurveyGeneratorResourceGroup
 }
