@@ -1,7 +1,7 @@
 @description('Friendly name for the DNS Zone')
 param name string
 
-resource dnsZone 'Microsoft.Network/dnsZones@2023-07-01-preview' = {
+resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' = {
   name: name
   location: 'global'
   properties: {

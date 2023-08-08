@@ -26,11 +26,11 @@ var profileName = endpointName
 var customDomainResourceName = replace('${cnameRecordName}.${dnsZoneName}', '.', '-')
 var dnsRecordTimeToLive = 3600
 
-resource dnsZone 'Microsoft.Network/dnsZones@2023-07-01-preview' existing = {
+resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = {
   name: dnsZoneName
 }
 
-resource cnameRecord 'Microsoft.Network/dnsZones/CNAME@2023-07-01-preview' = {
+resource cnameRecord 'Microsoft.Network/dnsZones/CNAME@2018-05-01' = {
   parent: dnsZone
   name: cnameRecordName
   properties: {
@@ -41,7 +41,7 @@ resource cnameRecord 'Microsoft.Network/dnsZones/CNAME@2023-07-01-preview' = {
   }
 }
 
-resource validationTxtRecord 'Microsoft.Network/dnsZones/TXT@2023-07-01-preview' = {
+resource validationTxtRecord 'Microsoft.Network/dnsZones/TXT@2018-05-01' = {
   parent: dnsZone
   name: '_dnsauth.${cnameRecordName}'
   properties: {
