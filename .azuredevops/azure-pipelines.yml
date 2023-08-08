@@ -93,13 +93,6 @@ stages:
                 nuget | "$(Agent.OS)"
                 nuget
               path: "$(NUGET_PACKAGES)"
-              cacheHitVar: "CACHE_RESTORED"
-
-          - task: NuGetCommand@2
-            condition: ne(variables.CACHE_RESTORED, true)
-            inputs:
-              command: "restore"
-              restoreSolution: "**/*.sln"
 
           - task: DotNetCoreCLI@2
             inputs:
