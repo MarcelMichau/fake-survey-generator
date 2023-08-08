@@ -86,13 +86,20 @@ stages:
               useGlobalJson: true
 
           - task: Cache@2
-            displayName: Cache NuGet Packages
+            displayName: Cache
             inputs:
-              key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/**/packages.lock.json'
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
               restoreKeys: |
                 nuget | "$(Agent.OS)"
                 nuget
-              path: $(NUGET_PACKAGES)
+              path: "$(NUGET_PACKAGES)"
+              cacheHitVar: "CACHE_RESTORED"
+
+          - task: NuGetCommand@2
+            condition: ne(variables.CACHE_RESTORED, true)
+            inputs:
+              command: "restore"
+              restoreSolution: "**/*.sln"
 
           - task: DotNetCoreCLI@2
             inputs:
