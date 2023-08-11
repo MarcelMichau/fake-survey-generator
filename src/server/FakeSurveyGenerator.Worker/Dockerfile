@@ -1,9 +1,9 @@
 # https://hub.docker.com/_/microsoft-dotnet-runtime/
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.9-bookworm-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0.10-bookworm-slim AS base
 WORKDIR /app
 
 # https://hub.docker.com/_/microsoft-dotnet-sdk/
-FROM mcr.microsoft.com/dotnet/sdk:7.0.301-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0.400-bookworm-slim AS build
 WORKDIR /src/server
 COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj FakeSurveyGenerator.Application/
 COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
