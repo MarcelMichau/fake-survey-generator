@@ -1,4 +1,3 @@
-import React from "react";
 import { SurveyModel } from "../types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";

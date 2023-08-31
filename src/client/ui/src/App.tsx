@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import NavBar from "./components/NavBar";
 import CreateSurvey from "./components/CreateSurvey";
@@ -26,12 +26,14 @@ const App = (): JSX.Element => {
                 },
             });
 
-            const data: Types.UserModel = await response.json();
-
-            // if (data.isError) {
-            // setErrorMessage("Oops, something went wrong.");
-            // return;
-            // }
+            try {
+                await response.json();
+            } catch (error) {
+                setErrorMessage(
+                    "Oops, something went wrong with registering a user."
+                );
+                return;
+            }
         };
 
         const isUserRegistered = async (): Promise<boolean> => {
@@ -46,15 +48,16 @@ const App = (): JSX.Element => {
                 }
             );
 
-            const data: Types.UserRegistrationStatusModel =
-                await response.json();
-
-            // if (data.isError) {
-            // setErrorMessage("Oops, something went wrong.");
-            // return false;
-            // }
-
-            return data.isUserRegistered;
+            try {
+                const data: Types.UserRegistrationStatusModel =
+                    await response.json();
+                return data.isUserRegistered;
+            } catch (error) {
+                setErrorMessage(
+                    "Oops, something went wrong getting the user registration status."
+                );
+                return false;
+            }
         };
 
         const register = async () => {

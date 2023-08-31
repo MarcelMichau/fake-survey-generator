@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import * as Types from "../types";
 
 const VersionInfo = () => {
@@ -22,7 +22,7 @@ const VersionInfo = () => {
     return (
         <>
             <span className="block mt-4 lg:inline-block lg:mt-0 text-white mr-4">
-                UI Version: {process.env.REACT_APP_VERSION}
+                UI Version: {import.meta.env.VITE_APP_VERSION}
             </span>
 
             <span className="block mt-4 lg:inline-block lg:mt-0 text-white">

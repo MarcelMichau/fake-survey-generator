@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import AuthButton from "./AuthButton";
 import VersionInfo from "./VersionInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
