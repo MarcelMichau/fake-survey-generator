@@ -207,7 +207,7 @@ stages:
               command: "build"
               Dockerfile: "src/client/ui/Dockerfile"
               buildContext: .
-              arguments: "--build-arg REACT_APP_VERSION=$(SetVersionTag.VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
+              arguments: "--build-arg VITE_APP_VERSION=$(SetVersionTag.VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |
                 $(SetVersionTag.VersionTag)
                 latest
