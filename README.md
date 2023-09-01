@@ -126,6 +126,7 @@ The client side consists of the following main components:
 
 The client side makes use of the following tools, libraries & frameworks:
 
+- [Vite](https://vitejs.dev/)
 - [React](https://reactjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [auth0.js](https://github.com/auth0/auth0.js/)
