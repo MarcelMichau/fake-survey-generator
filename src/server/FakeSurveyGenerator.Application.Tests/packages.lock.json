@@ -149,8 +149,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.40.0",
-        "contentHash": "Xo3BSUMuRCSp4/SeTn0G/ZgahCNXzrh28gprzYpqPPKisDbXqGQeDumhnrlhUSMHVyatXJniezuO7W8vPHt3Ww=="
+        "resolved": "2.40.1",
+        "contentHash": "17ob1jAB6yAbeRebc22XaXXJkh/zY3ZGAlthLTn+hKMzEq1urqN2ToU+QjVFDSGmbeedt61cKCVVeVd2cQmK8g=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -181,8 +181,8 @@
       },
       "IdentityModel": {
         "type": "Transitive",
-        "resolved": "6.1.0",
-        "contentHash": "W9A6U26se5Jeo+QoczLfXW5LgBDXL0bBfnb2DWWZMivv9L52ls/85WtEGZQ8kSgOUecuBUlQZdpu02Uni8n1tg=="
+        "resolved": "6.2.0",
+        "contentHash": "4AXZ6Tp+DNwrSSeBziiX/231i8ZpD77A9nEMyc68gLSCWG0kgWsIBeFquYcBebiIPkfB7GEXzCYuuLeR1QZJIQ=="
       },
       "JetBrains.Annotations": {
         "type": "Transitive",
@@ -1651,7 +1651,7 @@
         "dependencies": {
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
-          "CSharpFunctionalExtensions": "[2.40.0, )",
+          "CSharpFunctionalExtensions": "[2.40.1, )",
           "Dapper": "[2.0.151, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.7.1, )",
@@ -1675,7 +1675,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "[2.40.0, )",
+          "CSharpFunctionalExtensions": "[2.40.1, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
           "JetBrains.Annotations": "[2023.2.0, )"
         }
@@ -1686,7 +1686,7 @@
           "Azure.Identity": "[1.10.0, )",
           "FakeSurveyGenerator.Application": "[1.0.0, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
-          "IdentityModel": "[6.1.0, )",
+          "IdentityModel": "[6.2.0, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[7.0.10, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[7.0.10, )",
           "Microsoft.Extensions.Configuration.Binder": "[7.0.4, )",

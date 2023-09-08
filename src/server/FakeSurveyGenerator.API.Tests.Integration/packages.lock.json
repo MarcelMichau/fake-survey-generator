@@ -98,15 +98,15 @@
       },
       "Testcontainers": {
         "type": "Direct",
-        "requested": "[3.4.0, )",
-        "resolved": "3.4.0",
-        "contentHash": "zAQOLMxrxlfD8zYiLOgbZmXqGSr2h/ng+IRBfmFe/027sEZSaiS4Oo1W5wv+xtDLSlGyRORkkT1TSSudyFJ5hg==",
+        "requested": "[3.5.0, )",
+        "resolved": "3.5.0",
+        "contentHash": "UYMCZ778ZjjHPZtr5VpemtI8kjkchFJf+taoH4fUwuzBXbWm+0VgAfBTzOIfrKSVBCKqG0gPm5PSOU8eAhFTpg==",
         "dependencies": {
+          "BouncyCastle.Cryptography": "2.2.1",
           "Docker.DotNet": "3.125.15",
           "Docker.DotNet.X509": "3.125.15",
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.4",
-          "Portable.BouncyCastle": "1.9.0",
           "SSH.NET": "2020.0.2",
           "SharpZipLib": "1.4.2",
           "System.Text.Json": "6.0.8"
@@ -114,20 +114,20 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[3.4.0, )",
-        "resolved": "3.4.0",
-        "contentHash": "xJgwvlOdo74Fw11nYPbXeKsAKdYZsACUgLNFrAPJznQWgFJtQ3Q8PP2UQuxeB37NcBJRcfHeXQgRLByGlw6mCQ==",
+        "requested": "[3.5.0, )",
+        "resolved": "3.5.0",
+        "contentHash": "JQX35Uf5Rsnxeq2yh6PDM67qbpJtXvgo7GgASXfZZotIJawlgwfayXUyDzrlh6pJhhQPHWmecHTLW75i9/0FTw==",
         "dependencies": {
-          "Testcontainers": "3.4.0"
+          "Testcontainers": "3.5.0"
         }
       },
       "Testcontainers.Redis": {
         "type": "Direct",
-        "requested": "[3.4.0, )",
-        "resolved": "3.4.0",
-        "contentHash": "zR8a65jSM508BFSZ3E/+NeH09Usal3HSjmO6WwYfknKAA7PaHCgBKajXq90bhAe/HbNF915+vdXMXQCvpghBqg==",
+        "requested": "[3.5.0, )",
+        "resolved": "3.5.0",
+        "contentHash": "EJBfg4EXmMi1OUMclkrXV7QH23cjwDjlywOqCNH0RNRTaI2L4TPvDiwhejqAaNwdj4wWnJERkJEdJfxp1vOc1w==",
         "dependencies": {
-          "Testcontainers": "3.4.0"
+          "Testcontainers": "3.5.0"
         }
       },
       "xunit": {
@@ -237,6 +237,11 @@
           "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
+      "BouncyCastle.Cryptography": {
+        "type": "Transitive",
+        "resolved": "2.2.1",
+        "contentHash": "A6Zr52zVqJKt18ZBsTnX0qhG0kwIQftVAjLmszmkiR/trSp8H+xj1gUOzk7XHwaKgyREMSV1v9XaKrBUeIOdvQ=="
+      },
       "Castle.Core": {
         "type": "Transitive",
         "resolved": "5.0.0",
@@ -247,8 +252,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.40.0",
-        "contentHash": "Xo3BSUMuRCSp4/SeTn0G/ZgahCNXzrh28gprzYpqPPKisDbXqGQeDumhnrlhUSMHVyatXJniezuO7W8vPHt3Ww=="
+        "resolved": "2.40.1",
+        "contentHash": "17ob1jAB6yAbeRebc22XaXXJkh/zY3ZGAlthLTn+hKMzEq1urqN2ToU+QjVFDSGmbeedt61cKCVVeVd2cQmK8g=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -812,8 +817,8 @@
       },
       "IdentityModel": {
         "type": "Transitive",
-        "resolved": "6.1.0",
-        "contentHash": "W9A6U26se5Jeo+QoczLfXW5LgBDXL0bBfnb2DWWZMivv9L52ls/85WtEGZQ8kSgOUecuBUlQZdpu02Uni8n1tg=="
+        "resolved": "6.2.0",
+        "contentHash": "4AXZ6Tp+DNwrSSeBziiX/231i8ZpD77A9nEMyc68gLSCWG0kgWsIBeFquYcBebiIPkfB7GEXzCYuuLeR1QZJIQ=="
       },
       "JetBrains.Annotations": {
         "type": "Transitive",
@@ -2013,11 +2018,6 @@
         "dependencies": {
           "Polly": "7.1.0"
         }
-      },
-      "Portable.BouncyCastle": {
-        "type": "Transitive",
-        "resolved": "1.9.0",
-        "contentHash": "eZZBCABzVOek+id9Xy04HhmgykF0wZg9wpByzrWN7q8qEI0Qen9b7tfd7w8VA3dOeesumMG7C5ZPy0jk7PSRHw=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -3296,7 +3296,7 @@
           "Dapr.Extensions.Configuration": "[1.11.0, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FakeSurveyGenerator.Infrastructure": "[1.0.0, )",
-          "IdentityModel": "[6.1.0, )",
+          "IdentityModel": "[6.2.0, )",
           "MediatR": "[12.1.1, )",
           "Microsoft.ApplicationInsights.AspNetCore": "[2.21.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.10, )",
@@ -3318,7 +3318,7 @@
         "dependencies": {
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
-          "CSharpFunctionalExtensions": "[2.40.0, )",
+          "CSharpFunctionalExtensions": "[2.40.1, )",
           "Dapper": "[2.0.151, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.7.1, )",
@@ -3342,7 +3342,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "[2.40.0, )",
+          "CSharpFunctionalExtensions": "[2.40.1, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
           "JetBrains.Annotations": "[2023.2.0, )"
         }
@@ -3353,7 +3353,7 @@
           "Azure.Identity": "[1.10.0, )",
           "FakeSurveyGenerator.Application": "[1.0.0, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
-          "IdentityModel": "[6.1.0, )",
+          "IdentityModel": "[6.2.0, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[7.0.10, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[7.0.10, )",
           "Microsoft.Extensions.Configuration.Binder": "[7.0.4, )",

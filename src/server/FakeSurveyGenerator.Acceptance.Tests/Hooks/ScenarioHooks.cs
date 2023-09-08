@@ -9,12 +9,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests.Hooks;
 [Binding]
 public class ScenarioHooks
 {
-    private readonly IConfiguration _configuration;
-
-    public ScenarioHooks()
-    {
-        _configuration = LoadConfiguration();
-    }
+    private readonly IConfiguration _configuration = LoadConfiguration();
 
     [BeforeScenario("LandingPage")]
     public async Task BeforeLandingPageScenario(IObjectContainer container)
