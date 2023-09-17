@@ -1,9 +1,11 @@
 # https://hub.docker.com/_/microsoft-dotnet-runtime/
-FROM mcr.microsoft.com/dotnet/aspnet:7.0.11-bookworm-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER app
 WORKDIR /app
 
 # https://hub.docker.com/_/microsoft-dotnet-sdk/
-FROM mcr.microsoft.com/dotnet/sdk:7.0.401-bookworm-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src/server
 COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj FakeSurveyGenerator.Application/
 COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
@@ -14,10 +16,10 @@ COPY src/server/FakeSurveyGenerator.Worker/packages.lock.json FakeSurveyGenerato
 RUN dotnet restore FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj
 COPY src/server/. .
 WORKDIR /src/server/FakeSurveyGenerator.Worker
-RUN dotnet build FakeSurveyGenerator.Worker.csproj --no-restore -c Release -o /app/build
+RUN dotnet build FakeSurveyGenerator.Worker.csproj --no-restore -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish FakeSurveyGenerator.Worker.csproj -c Release -o /app/publish
+RUN dotnet publish FakeSurveyGenerator.Worker.csproj -c $BUILD_CONFIGURATION -o /app/publish
 
 FROM base AS final
 WORKDIR /app
