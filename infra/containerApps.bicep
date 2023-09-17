@@ -115,6 +115,7 @@ module apiContainerApp 'modules/containerApp.bicep' = {
         env: apiEnvironmentVariables
       }
     ]
+    targetPort: 8080
     daprConfig: {
       enabled: true
       appId: 'fake-survey-generator-api'
