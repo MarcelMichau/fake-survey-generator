@@ -1,5 +1,4 @@
 param location string = 'South Africa North'
-param virtualNetworkName string = 'vnet-fake-survey-generator'
 param containerAppEnvironmentName string = 'cae-fake-survey-generator'
 param uiContainerAppName string = 'ca-fake-survey-generator-ui'
 param apiContainerAppName string = 'ca-fake-survey-generator-api'
@@ -120,7 +119,7 @@ module apiContainerApp 'modules/containerApp.bicep' = {
       enabled: true
       appId: 'fake-survey-generator-api'
       appProtocol: 'http'
-      appPort: 80
+      appPort: 8080
     }
   }
 }

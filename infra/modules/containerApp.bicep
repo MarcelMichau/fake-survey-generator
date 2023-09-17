@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param externalIngressEnabled bool = true
 
 @description('Specifies the container port')
-param targetPort int = 80
+param targetPort int = 8080
 
 @description('Azure Container Registry Url')
 param containerRegistryUrl string
