@@ -7,6 +7,9 @@ param containerAppEnvName string
 @description('Specifies the name of the log analytics workspace')
 param logAnalyticsName string
 
+@description('Subnet Resource ID for the infrastructure subnet')
+param subnetResourceId string
+
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: logAnalyticsName
 }
@@ -21,6 +24,9 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' 
         customerId: logAnalytics.properties.customerId
         sharedKey: logAnalytics.listKeys().primarySharedKey
       }
+    }
+    vnetConfiguration: {
+      infrastructureSubnetId: subnetResourceId
     }
   }
 }

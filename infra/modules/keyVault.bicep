@@ -11,6 +11,9 @@ param name string
 @secure()
 param secretsObject object
 
+@description('Subnet Resource ID for the infrastructure subnet')
+param subnetResourceId string
+
 resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
   name: name
   location: location
@@ -25,7 +28,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     enableSoftDelete: true
     softDeleteRetentionInDays: 90
     networkAcls: {
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
+      virtualNetworkRules: [
+        {
+          id: subnetResourceId
+        }
+      ]
     }
   }
 }

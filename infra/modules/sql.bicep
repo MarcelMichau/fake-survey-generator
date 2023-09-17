@@ -16,6 +16,9 @@ param azureAdAdministratorObjectId string
 @description('The Azure AD administrator Azure AD Tenant ID')
 param azureAdAdministratorTenantId string = subscription().tenantId
 
+@description('Subnet Resource ID for the infrastructure subnet')
+param subnetResourceId string
+
 resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
   name: serverName
   location: location
@@ -41,11 +44,10 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   location: location
 }
 
-resource allowAllAzureIps 'Microsoft.Sql/servers/firewallRules@2022-11-01-preview' = {
+resource sqlServerVirtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = {
+  name: 'sql-vnet-rules'
   parent: sqlServer
-  name: 'AllowAllAzureIps'
   properties: {
-    endIpAddress: '0.0.0.0'
-    startIpAddress: '0.0.0.0'
+    virtualNetworkSubnetId: subnetResourceId
   }
 }

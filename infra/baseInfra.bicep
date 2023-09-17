@@ -20,6 +20,18 @@ resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@20
     location: location
 }
 
+var computeSubnetName = 'container-app'
+
+module virtualNetwork 'modules/virtualNetwork.bicep' = {
+    name: 'virtualNetwork'
+    params: {
+        location: location
+        name: 'vnet-fake-survey-generator'
+        subnetName: computeSubnetName
+    }
+    scope: fakeSurveyGeneratorResourceGroup
+}
+
 module logAnalytics 'modules/logAnalytics.bicep' = {
     name: 'logAnalytics'
     params: {
@@ -60,6 +72,7 @@ module keyVault 'modules/keyVault.bicep' = {
                 }
             ]
         }
+        subnetResourceId: virtualNetwork.outputs.subnetId
     }
     scope: fakeSurveyGeneratorResourceGroup
 }
@@ -90,6 +103,7 @@ module azureSql 'modules/sql.bicep' = {
         databaseName: sqlDatabaseName
         azureAdAdministratorLogin: sqlAzureAdAdministratorLogin
         azureAdAdministratorObjectId: sqlAzureAdAdministratorObjectId
+        subnetResourceId: virtualNetwork.outputs.subnetId
     }
     scope: fakeSurveyGeneratorResourceGroup
 }
@@ -111,6 +125,7 @@ module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
         location: location
         logAnalyticsName: logAnalytics.outputs.name
         containerAppEnvName: containerAppEnvironmentName
+        subnetResourceId: virtualNetwork.outputs.subnetId
     }
     scope: fakeSurveyGeneratorResourceGroup
 }

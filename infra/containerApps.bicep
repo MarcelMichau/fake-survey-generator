@@ -1,4 +1,5 @@
 param location string = 'South Africa North'
+param virtualNetworkName string = 'vnet-fake-survey-generator'
 param containerAppEnvironmentName string = 'cae-fake-survey-generator'
 param uiContainerAppName string = 'ca-fake-survey-generator-ui'
 param apiContainerAppName string = 'ca-fake-survey-generator-api'
