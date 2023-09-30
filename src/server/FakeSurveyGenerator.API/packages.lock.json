@@ -44,21 +44,21 @@
       },
       "Dapr.AspNetCore": {
         "type": "Direct",
-        "requested": "[1.11.0, )",
-        "resolved": "1.11.0",
-        "contentHash": "3afB7TjSGuG/fehzQ2TjbziWOTYWx89aQEftXlI41vd603Op7+jf/QOaESiV5RTWJVL0OtifT7Yu3D2GyeqjBQ==",
+        "requested": "[1.12.0-rc01, )",
+        "resolved": "1.12.0-rc01",
+        "contentHash": "0DCx5QxFsImmK0ZDkeqRefsAZFpT70op42VtGLm1xSOHWHYQ/mN+HSEgXSnkstwSGkwWjh13GL0PTMHOjCbAcg==",
         "dependencies": {
-          "Dapr.Client": "1.11.0",
+          "Dapr.Client": "1.12.0-rc01",
           "System.IO.Pipelines": "4.7.2"
         }
       },
       "Dapr.Extensions.Configuration": {
         "type": "Direct",
-        "requested": "[1.11.0, )",
-        "resolved": "1.11.0",
-        "contentHash": "YdGOsIh/6UF7E8B13hIq7P1egOazpzmIz46XGXT06cia1+ZnlYnzCH++yACfztYjTTmX+zTR6YLbt026Wfx1yg==",
+        "requested": "[1.12.0-rc01, )",
+        "resolved": "1.12.0-rc01",
+        "contentHash": "eakDqIqnd4CfltuT7NQWkf66Ib+/SXO1L/EseCIyL6VH/wKm4qQ7UXz/WHqHHJoGKApYRu9KwAw+9aOpWOYTcA==",
         "dependencies": {
-          "Dapr.Client": "1.11.0",
+          "Dapr.Client": "1.12.0-rc01",
           "Microsoft.Extensions.Configuration": "3.1.2"
         }
       },
@@ -179,9 +179,9 @@
       },
       "NetEscapades.AspNetCore.SecurityHeaders": {
         "type": "Direct",
-        "requested": "[0.20.0, )",
-        "resolved": "0.20.0",
-        "contentHash": "M5l3wdHH2Iu8vZ4GZi3vfeF+nHPniEDJLEP2IYgXpj9wYP/zivIa3YY/9ygsXAW+HMkrfFD/oHb7z3bjJxKWsQ=="
+        "requested": "[0.21.0, )",
+        "resolved": "0.21.0",
+        "contentHash": "Y0qnwxwZeTrni7G2yt8aDdM6RZ2dAjvvALgdLCNCd+lpBIGgi7qf/3I+0nj7MHwwCDg6fL1e2OAGAE4CtV2pKg=="
       },
       "Serilog.AspNetCore": {
         "type": "Direct",
@@ -287,8 +287,8 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.40.1",
-        "contentHash": "17ob1jAB6yAbeRebc22XaXXJkh/zY3ZGAlthLTn+hKMzEq1urqN2ToU+QjVFDSGmbeedt61cKCVVeVd2cQmK8g=="
+        "resolved": "2.40.2",
+        "contentHash": "PT2N7VO2eyyBwre+hym2h27dFBKn2RQGcDLmvtEfuSjtSf4TLaP6PVRWGQ5m9isaCoqaCBmOPtACxw8w8asyGA=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -297,12 +297,12 @@
       },
       "Dapr.Client": {
         "type": "Transitive",
-        "resolved": "1.11.0",
-        "contentHash": "kDkDvJ+wLGpVmKoBpLKmfUzqRnZKHyM/2uv4523FeG9OmbmmGi6un3heWkcJz/K5eAhw0vasTjjJWTwj/QgkKg==",
+        "resolved": "1.12.0-rc01",
+        "contentHash": "uOp2BfhprboZ1p7VIxVLaoVbu/cDyPUUM7qVJWH03GKyryiQD7f8yiY3nIOb8mKbW2w7MS9cO1AbxmYF2M2pKg==",
         "dependencies": {
           "Google.Api.CommonProtos": "2.2.0",
           "Google.Protobuf": "3.15.0",
-          "Grpc.Net.Client": "2.47.0",
+          "Grpc.Net.Client": "2.52.0",
           "System.Net.Http.Json": "5.0.0"
         }
       },
@@ -339,27 +339,27 @@
       },
       "Grpc.Core.Api": {
         "type": "Transitive",
-        "resolved": "2.47.0",
-        "contentHash": "oZXapxH/2WHAVALghNauo+r/bp6zjgQ6r0v8FizLLQg0/j/FkK2u3WZ7cLOL9Y5H4oLg+wLclO8FSvNTQpNR5Q==",
+        "resolved": "2.52.0",
+        "contentHash": "SQiPyBczG4vKPmI6Fd+O58GcxxDSFr6nfRAJuBDUNj+PgdokhjWJvZE/La1c09AkL2FVm/jrDloG89nkzmVF7A==",
         "dependencies": {
           "System.Memory": "4.5.3"
         }
       },
       "Grpc.Net.Client": {
         "type": "Transitive",
-        "resolved": "2.47.0",
-        "contentHash": "DLbUC3T8dMmhA2iqpaJo0X4g7fAi3FyVbDd0/jBXrlqc/bcyA1wPBzLx6mWOWoGUb5S89xL2svnsM8SfzzNa2Q==",
+        "resolved": "2.52.0",
+        "contentHash": "hWVH9g/Nnjz40ni//2S8UIOyEmhueQREoZIkD0zKHEPqLxXcNlbp4eebXIOicZtkwDSx0TFz9NpkbecEDn6rBw==",
         "dependencies": {
-          "Grpc.Net.Common": "2.47.0",
+          "Grpc.Net.Common": "2.52.0",
           "Microsoft.Extensions.Logging.Abstractions": "3.0.3"
         }
       },
       "Grpc.Net.Common": {
         "type": "Transitive",
-        "resolved": "2.47.0",
-        "contentHash": "Cv76h7noEN2s9cwIdEspOeDjeqcU6Nm34OmjSbRhD/FDBXFmG7rmSfJTPCEB1LYjZWfmf7uUH+nYcHR1I7oQqw==",
+        "resolved": "2.52.0",
+        "contentHash": "di9qzpdx525IxumZdYmu6sG2y/gXJyYeZ1ruFUzB9BJ1nj4kU1/dTAioNCMt1VLRvNVDqh8S8B1oBdKhHJ4xRg==",
         "dependencies": {
-          "Grpc.Core.Api": "2.47.0"
+          "Grpc.Core.Api": "2.52.0"
         }
       },
       "Humanizer": {
@@ -2954,7 +2954,7 @@
         "dependencies": {
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
-          "CSharpFunctionalExtensions": "[2.40.1, )",
+          "CSharpFunctionalExtensions": "[2.40.2, )",
           "Dapper": "[2.0.151, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.7.1, )",
@@ -2971,7 +2971,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "[2.40.1, )",
+          "CSharpFunctionalExtensions": "[2.40.2, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
           "JetBrains.Annotations": "[2023.2.0, )"
         }

@@ -275,7 +275,7 @@ stages:
                     AuthenticationType: "servicePrincipal"
                     ServerName: "$(sqlServerName)"
                     DatabaseName: "$(sqlDatabaseName)"
-                    deployType: "SqlTask"
+                    deployType: SqlTask
                     SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
                     IpDetectionMethod: "AutoDetect"
 

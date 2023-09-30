@@ -17,7 +17,7 @@ internal static class CacheServiceCollectionExtensions
         {
             options.ConfigurationOptions = new ConfigurationOptions
             {
-                EndPoints = {cacheOptions.RedisUrl},
+                EndPoints = {cacheOptions.RedisUrl ?? throw new InvalidOperationException("RedisUrl was not specified in config")},
                 Password = cacheOptions.RedisPassword,
                 Ssl = cacheOptions.RedisSsl,
                 DefaultDatabase = cacheOptions.RedisDefaultDatabase
