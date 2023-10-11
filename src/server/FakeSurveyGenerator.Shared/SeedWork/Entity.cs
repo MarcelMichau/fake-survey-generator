@@ -20,7 +20,7 @@ public abstract class Entity : IHasDomainEvents
 
     public void ClearDomainEvents()
     {
-        _domainEvents?.Clear();
+        _domainEvents.Clear();
     }
 
     private bool IsTransient()
@@ -52,7 +52,7 @@ public abstract class Entity : IHasDomainEvents
         return _requestedHashCode.Value;
     }
 
-    public static bool operator ==(Entity left, Entity right)
+    public static bool operator ==(Entity? left, Entity right)
     {
         return left?.Equals(right) ?? Equals(right, null);
     }

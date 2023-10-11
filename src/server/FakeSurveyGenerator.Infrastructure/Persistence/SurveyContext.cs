@@ -24,16 +24,14 @@ public sealed class SurveyContext : DbContext, ISurveyContext
 
     public SurveyContext(DbContextOptions options, ILogger<SurveyContext> logger) : base(options)
     {
-        if (options is null)
-            throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
 
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public SurveyContext(DbContextOptions options, IDomainEventService domainEventService, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor, ILogger<SurveyContext> logger) : base(options)
     {
-        if (options is null)
-            throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(options);
 
         _domainEventService = domainEventService ?? throw new ArgumentNullException(nameof(domainEventService));
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;

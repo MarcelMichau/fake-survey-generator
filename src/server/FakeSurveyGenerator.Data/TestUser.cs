@@ -2,23 +2,9 @@
 
 namespace FakeSurveyGenerator.Data;
 
-public sealed record TestUser : IUser
+public sealed record TestUser(string Id, string DisplayName, string EmailAddress) : IUser
 {
-    public string Id { get; init; }
-    public string DisplayName { get; init; }
-    public string EmailAddress { get; init; }
-
-    public TestUser()
+    public TestUser() : this("test-id", "Test User", "test.user@test.com")
     {
-        Id = "test-id";
-        DisplayName = "Test User";
-        EmailAddress = "test.user@test.com";
-    }
-
-    public TestUser(string id, string displayName, string emailAddress)
-    {
-        Id = id;
-        DisplayName = displayName;
-        EmailAddress = emailAddress;
     }
 }
