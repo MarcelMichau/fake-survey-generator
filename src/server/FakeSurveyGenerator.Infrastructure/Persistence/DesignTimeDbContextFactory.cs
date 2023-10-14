@@ -1,13 +1,12 @@
-﻿using FakeSurveyGenerator.Infrastructure.Persistence;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace FakeSurveyGenerator.EF.Design;
+namespace FakeSurveyGenerator.Infrastructure.Persistence;
 
 [UsedImplicitly]
-internal sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SurveyContext>
+public sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<SurveyContext>
 {
     public SurveyContext CreateDbContext(string[] args)
     {
