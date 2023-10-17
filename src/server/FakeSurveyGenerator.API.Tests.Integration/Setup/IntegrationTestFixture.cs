@@ -1,5 +1,5 @@
-﻿using DotNet.Testcontainers.Builders;
-using FakeSurveyGenerator.Infrastructure.Persistence;
+﻿using FakeSurveyGenerator.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Respawn;
 using Testcontainers.MsSql;
@@ -20,17 +20,11 @@ public class IntegrationTestFixture : IAsyncLifetime
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:latest")
-            .WithEnvironment("ACCEPT_EULA", "Y")
-            .WithEnvironment("SA_PASSWORD", "<YourStrong!Passw0rd>")
-            .WithPortBinding(1433, 1433)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
 
     private readonly RedisContainer _cacheContainer =
         new RedisBuilder()
             .WithImage("redis:latest")
-            .WithPortBinding(6379, 6379)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6379))
             .Build();
 
     public async Task InitializeAsync()
@@ -38,8 +32,7 @@ public class IntegrationTestFixture : IAsyncLifetime
         await _dbContainer.StartAsync();
         await _cacheContainer.StartAsync();
 
-        var connectionString =
-            $"Server={_dbContainer.Hostname};Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;ConnectRetryCount=0;Encrypt=false";
+        var connectionString = _dbContainer.GetConnectionString();
 
         Factory = new IntegrationTestWebApplicationFactory(new TestContainerSettings(connectionString, _cacheContainer.GetConnectionString()));
 
@@ -51,8 +44,7 @@ public class IntegrationTestFixture : IAsyncLifetime
 
         var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
 
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
 
         var respawner = await Respawner.CreateAsync(connectionString);
 

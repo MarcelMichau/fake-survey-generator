@@ -137,13 +137,13 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Transitive",
-        "resolved": "2.40.2",
-        "contentHash": "PT2N7VO2eyyBwre+hym2h27dFBKn2RQGcDLmvtEfuSjtSf4TLaP6PVRWGQ5m9isaCoqaCBmOPtACxw8w8asyGA=="
+        "resolved": "2.40.3",
+        "contentHash": "G+t+bf39aixVFN3O3Q5LoE0zy3o8QlV3mv3ATw76XwDRWkE9eFRLzZdx9HH9fgbPpasfP4kr8cnnXIP+Z7GcrQ=="
       },
       "Dapper": {
         "type": "Transitive",
-        "resolved": "2.1.4",
-        "contentHash": "TnTa28ktP/drRXnnXChHANq2WoF8af9DLu3VBtyPn3RYjxwDzuYhGrSvAN2CrmE+RyNaN1v81kf6rYbp0a4UaQ=="
+        "resolved": "2.1.11",
+        "contentHash": "4S2ysi5sxGID6TiAkNpAu4eqkGU1gZjOJ+UAygIdkWFEAX02S8NwUuUzqkqbHL9FTRgimwbz99xte2luMCm6iw=="
       },
       "FluentValidation": {
         "type": "Transitive",
@@ -792,8 +792,8 @@
         "dependencies": {
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
-          "CSharpFunctionalExtensions": "[2.40.2, )",
-          "Dapper": "[2.1.4, )",
+          "CSharpFunctionalExtensions": "[2.40.3, )",
+          "Dapper": "[2.1.11, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.7.1, )",
           "FluentValidation.DependencyInjectionExtensions": "[11.7.1, )",
@@ -809,7 +809,7 @@
       "fakesurveygenerator.domain": {
         "type": "Project",
         "dependencies": {
-          "CSharpFunctionalExtensions": "[2.40.2, )",
+          "CSharpFunctionalExtensions": "[2.40.3, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
           "JetBrains.Annotations": "[2023.2.0, )"
         }
