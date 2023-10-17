@@ -85,15 +85,15 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
-          - task: Cache@2
-            enabled: false
-            displayName: Cache
-            inputs:
-              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
-              restoreKeys: |
-                nuget | "$(Agent.OS)"
-                nuget
-              path: "$(NUGET_PACKAGES)"
+          # - task: Cache@2
+          #   enabled: false
+          #   displayName: Cache
+          #   inputs:
+          #     key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+          #     restoreKeys: |
+          #       nuget | "$(Agent.OS)"
+          #       nuget
+          #     path: "$(NUGET_PACKAGES)"
 
           - task: DotNetCoreCLI@2
             inputs:
