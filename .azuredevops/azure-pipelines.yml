@@ -85,15 +85,15 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
-          # - task: Cache@2
-          #   enabled: false
-          #   displayName: Cache
-          #   inputs:
-          #     key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
-          #     restoreKeys: |
-          #       nuget | "$(Agent.OS)"
-          #       nuget
-          #     path: "$(NUGET_PACKAGES)"
+          - task: Cache@2
+            enabled: false
+            displayName: Cache
+            inputs:
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+              restoreKeys: |
+                nuget | "$(Agent.OS)"
+                nuget
+              path: "$(NUGET_PACKAGES)"
 
           - task: DotNetCoreCLI@2
             inputs:
@@ -122,6 +122,7 @@ stages:
 
           - script: |
               dotnet tool restore
+              dotnet tool install --local dotnet-ef --version 8.0.0-rc.2.23480.1
               dotnet dotnet-ef migrations script --no-build --verbose -o DbMigrationScript.sql -i
             workingDirectory: src/server/FakeSurveyGenerator.Infrastructure
             displayName: "Create Database Migration Script"
