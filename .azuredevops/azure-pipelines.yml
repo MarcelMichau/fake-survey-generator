@@ -122,7 +122,7 @@ stages:
 
           - script: |
               dotnet tool restore
-              dotnet dotnet-ef migrations script --verbose -o DbMigrationScript.sql -i
+              dotnet dotnet-ef migrations script --no-build --verbose -o DbMigrationScript.sql -i
             workingDirectory: src/server/FakeSurveyGenerator.Infrastructure
             displayName: "Create Database Migration Script"
 
