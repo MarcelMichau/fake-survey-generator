@@ -26,7 +26,7 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 
 This is a .NET | C# | React | TypeScript full-stack application of moderate complexity (not just a to-do app), used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates various elements from different repos & blog posts which served as inspiration.
 
-It is built using Clean Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
+It is built using Vertical Slice Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
 
 It is heavily centered around the Microsoft [.NET](https://dotnet.microsoft.com/) + [Azure](https://azure.microsoft.com/) technology stacks as these are what I have the most experience in & just like building things with. 😀
 
@@ -87,15 +87,11 @@ FSG consists of two parts:
 The server side consists of the following main components:
 
 - Fake Survey Generator API
-  - Domain Project
-  - Domain Unit Tests Project
-  - Infrastructure Project
-  - Application Project
-  - Application Tests Project
-  - API Integration Tests Project
-  - EF Design Project (used purely for EF Core design-time tooling)
-  - Data Project (helpers for test data used across test projects)
 - Fake Survey Generator Worker
+- Application Project
+- Application Tests Project
+- API Integration Tests Project
+- E2E Acceptance Tests Project
 
 The server side makes use of the following tools, libraries & frameworks:
 
@@ -210,5 +206,6 @@ My deepest thanks to all the people who provided these resources as reference:
 - [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/)
 - [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 - [jasontaylordev/CleanArchitecture](https://github.com/jasontaylordev/CleanArchitecture)
+- [nadirbad/VerticalSliceArchitecture](https://github.com/nadirbad/VerticalSliceArchitecture)
 - [Vladimir Khorikov - Applying Functional Principles in C#](https://pluralsight.com/courses/csharp-applying-functional-principles)
 - [Vladimir Khorikov - Functional C#: Primitive obsession](https://enterprisecraftsmanship.com/posts/functional-c-primitive-obsession/)
