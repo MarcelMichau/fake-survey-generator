@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace FakeSurveyGenerator.Infrastructure.Migrations
+namespace FakeSurveyGenerator.Application.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class FreshState : Migration
+    public partial class CleanState : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

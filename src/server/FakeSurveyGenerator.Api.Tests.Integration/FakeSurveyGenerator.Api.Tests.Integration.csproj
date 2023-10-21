@@ -15,13 +15,13 @@
     <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0-rc.2.23480.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0-rc.2.23479.6" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23503-02" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="Respawn" Version="6.1.0" />
     <PackageReference Include="Testcontainers.MsSql" Version="3.5.0" />
     <PackageReference Include="Testcontainers.Redis" Version="3.5.0" />
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -32,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FakeSurveyGenerator.NewApi\FakeSurveyGenerator.Api.csproj" />
-    <ProjectReference Include="..\FakeSurveyGenerator.NewApplication\FakeSurveyGenerator.Application.csproj" />
+    <ProjectReference Include="..\FakeSurveyGenerator.Api\FakeSurveyGenerator.Api.csproj" />
+    <ProjectReference Include="..\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj" />
   </ItemGroup>
 
 </Project>

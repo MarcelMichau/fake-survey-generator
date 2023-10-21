@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FakeSurveyGenerator.Infrastructure.Migrations
+namespace FakeSurveyGenerator.Application.Infrastructure.Migrations
 {
     [DbContext(typeof(SurveyContext))]
     partial class SurveyContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -28,7 +28,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
             modelBuilder.HasSequence("UserSeq", "Survey")
                 .IncrementsBy(10);
 
-            modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate.Survey", b =>
+            modelBuilder.Entity("FakeSurveyGenerator.Application.Domain.Surveys.Survey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +74,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                     b.ToTable("Survey", "Survey");
                 });
 
-            modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate.User", b =>
+            modelBuilder.Entity("FakeSurveyGenerator.Application.Domain.Users.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -120,15 +120,15 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                     b.ToTable("User", "Survey");
                 });
 
-            modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate.Survey", b =>
+            modelBuilder.Entity("FakeSurveyGenerator.Application.Domain.Surveys.Survey", b =>
                 {
-                    b.HasOne("FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate.User", "Owner")
+                    b.HasOne("FakeSurveyGenerator.Application.Domain.Users.User", "Owner")
                         .WithMany("OwnedSurveys")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("FakeSurveyGenerator.Domain.AggregatesModel.SurveyAggregate.SurveyOption", "Options", b1 =>
+                    b.OwnsMany("FakeSurveyGenerator.Application.Domain.Surveys.SurveyOption", "Options", b1 =>
                         {
                             b1.Property<int>("SurveyId")
                                 .HasColumnType("int");
@@ -163,7 +163,7 @@ namespace FakeSurveyGenerator.Infrastructure.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("FakeSurveyGenerator.Domain.AggregatesModel.UserAggregate.User", b =>
+            modelBuilder.Entity("FakeSurveyGenerator.Application.Domain.Users.User", b =>
                 {
                     b.Navigation("OwnedSurveys");
                 });
