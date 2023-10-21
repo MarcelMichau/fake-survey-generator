@@ -54,12 +54,12 @@
       },
       "Azure.Identity": {
         "type": "Transitive",
-        "resolved": "1.10.2",
-        "contentHash": "jfq07QnxB7Rx15DWHxIfZbdbgICL1IARncBPIYmnmF+1Xqn6KqiF6ijlKv2hj82WFr9kUi+jzU8zVqrBocJZ8A==",
+        "resolved": "1.10.3",
+        "contentHash": "l1Xm2MWOF2Mzcwuarlw8kWQXLZk3UeB55aQXVyjj23aBfDwOZ3gu5GP2kJ6KlmZeZv2TCzw7x4L3V36iNr3gww==",
         "dependencies": {
           "Azure.Core": "1.35.0",
-          "Microsoft.Identity.Client": "4.54.1",
-          "Microsoft.Identity.Client.Extensions.Msal": "2.31.0",
+          "Microsoft.Identity.Client": "4.56.0",
+          "Microsoft.Identity.Client.Extensions.Msal": "4.56.0",
           "System.Memory": "4.5.4",
           "System.Security.Cryptography.ProtectedData": "4.7.0",
           "System.Text.Json": "4.7.2",
@@ -73,20 +73,20 @@
       },
       "Dapper": {
         "type": "Transitive",
-        "resolved": "2.1.11",
-        "contentHash": "4S2ysi5sxGID6TiAkNpAu4eqkGU1gZjOJ+UAygIdkWFEAX02S8NwUuUzqkqbHL9FTRgimwbz99xte2luMCm6iw=="
+        "resolved": "2.1.15",
+        "contentHash": "1aWSAosZymEM+mRwfrXteRIN74/JTUjqj9B/KqEbanH6vfUKy9D9cemRN0q1ZOEfSB7d1PpFTpVOCbf2Uv70Og=="
       },
       "FluentValidation": {
         "type": "Transitive",
-        "resolved": "11.7.1",
-        "contentHash": "w9Al4gls6iVGFbTd/NPOPlwzqDTghH+ntL4c4FYUatc+LeybpIwhYArLykZJP/VjF2n3ihj3ws+1yd7KR5lQlg=="
+        "resolved": "11.8.0",
+        "contentHash": "TiEaaYqSIAS+wXQv46LRm8Mca092XYNePD0n231Hqlkmm5FuToZoWnjI1ef/vJUxBzqR7/k2vaVQXxijNgVKRQ=="
       },
       "FluentValidation.DependencyInjectionExtensions": {
         "type": "Transitive",
-        "resolved": "11.7.1",
-        "contentHash": "q3R6mJ0SzWvHJkJ/9d4FAZeuhJp6Cv8WpQItRWyN0v5qxKtwZt6Ol/8HNv8THDOrywTdsNUVKpgDJalVY7hUdw==",
+        "resolved": "11.8.0",
+        "contentHash": "fNfH9XEwevXb1JKCWGEkmkIKDYK3+gaAG8ugeOggd0oc8hdwsl3SNC59qAM1tcKVUhcD+AEDCI4hXX5WWshpWg==",
         "dependencies": {
-          "FluentValidation": "11.7.1",
+          "FluentValidation": "11.8.0",
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
       },
@@ -102,8 +102,8 @@
       },
       "JetBrains.Annotations": {
         "type": "Transitive",
-        "resolved": "2023.2.0",
-        "contentHash": "dvO//8aLmLRsCVVgoc/7qBqi2/y4BTyRcg20LCBWtK4n6E9Um06Zp7jF1n0hOE+yqBHwcrDzAjWvCaM3qH8flg=="
+        "resolved": "2023.3.0-eap3",
+        "contentHash": "oJ0pvsr8V+NEeBxGLr4K4ZwTgSi4HGEI7vqbCTQ9GoZCyB1Mpyzqyo+lqP/jFL/HkD+ycV7FDNpJt18+Kx2/pg=="
       },
       "MediatR": {
         "type": "Transitive",
@@ -409,18 +409,18 @@
       },
       "Microsoft.Identity.Client": {
         "type": "Transitive",
-        "resolved": "4.54.1",
-        "contentHash": "YkQkV3IRaA1W36HD4NRD1cq+QFr+4QPKK3SgTSpx+RiobXnLZ6E9anOjDi2TS7okOEofBbjR6GyTPp4IR0MnEQ==",
+        "resolved": "4.56.0",
+        "contentHash": "rr4zbidvHy9r4NvOAs5hdd964Ao2A0pAeFBJKR95u1CJAVzbd1p6tPTXUZ+5ld0cfThiVSGvz6UHwY6JjraTpA==",
         "dependencies": {
           "Microsoft.IdentityModel.Abstractions": "6.22.0"
         }
       },
       "Microsoft.Identity.Client.Extensions.Msal": {
         "type": "Transitive",
-        "resolved": "2.31.0",
-        "contentHash": "IhGSqN0szneKC5Qk3/okJQJbDpQfLW/+mvslhzJPox4t2UuIkA2ZHe4w/z62ASye46G9sQWF9qqLXTgNacE2xQ==",
+        "resolved": "4.56.0",
+        "contentHash": "H12YAzEGK55vZ+QpxUzozhW8ZZtgPDuWvgA0JbdIR9UhMUplj29JhIgE2imuH8W2Nw9D8JKygR1uxRFtpSNcrg==",
         "dependencies": {
-          "Microsoft.Identity.Client": "4.54.1",
+          "Microsoft.Identity.Client": "4.56.0",
           "System.IO.FileSystem.AccessControl": "5.0.0",
           "System.Security.Cryptography.ProtectedData": "4.5.0"
         }
@@ -785,11 +785,11 @@
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
           "CSharpFunctionalExtensions": "[2.40.3, )",
-          "Dapper": "[2.1.11, )",
+          "Dapper": "[2.1.15, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
-          "FluentValidation": "[11.7.1, )",
-          "FluentValidation.DependencyInjectionExtensions": "[11.7.1, )",
-          "JetBrains.Annotations": "[2023.2.0, )",
+          "FluentValidation": "[11.8.0, )",
+          "FluentValidation.DependencyInjectionExtensions": "[11.8.0, )",
+          "JetBrains.Annotations": "[2023.3.0-eap3, )",
           "MediatR": "[12.1.1, )",
           "Microsoft.Data.SqlClient": "[5.2.0-preview3.23201.1, )",
           "Microsoft.EntityFrameworkCore": "[8.0.0-rc.2.23480.1, )",
@@ -803,13 +803,13 @@
         "dependencies": {
           "CSharpFunctionalExtensions": "[2.40.3, )",
           "FakeSurveyGenerator.Shared": "[1.0.0, )",
-          "JetBrains.Annotations": "[2023.2.0, )"
+          "JetBrains.Annotations": "[2023.3.0-eap3, )"
         }
       },
       "fakesurveygenerator.infrastructure": {
         "type": "Project",
         "dependencies": {
-          "Azure.Identity": "[1.10.2, )",
+          "Azure.Identity": "[1.10.3, )",
           "FakeSurveyGenerator.Application": "[1.0.0, )",
           "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "IdentityModel": "[6.2.0, )",
