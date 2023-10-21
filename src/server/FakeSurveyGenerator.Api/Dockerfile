@@ -27,4 +27,5 @@ RUN dotnet publish "./FakeSurveyGenerator.Api.csproj" -c $BUILD_CONFIGURATION -o
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER $APP_UID
 ENTRYPOINT ["dotnet", "FakeSurveyGenerator.Api.dll"]
