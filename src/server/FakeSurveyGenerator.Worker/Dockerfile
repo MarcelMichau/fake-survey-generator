@@ -9,7 +9,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/server/Directory.Build.props", "src/server/"]
 COPY ["src/server/FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj", "src/server/FakeSurveyGenerator.Worker/"]
-COPY ["src/server/FakeSurveyGenerator.NewApplication/FakeSurveyGenerator.Application.csproj", "src/server/FakeSurveyGenerator.NewApplication/"]
+COPY ["src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj", "src/server/FakeSurveyGenerator.Application/"]
 RUN dotnet restore "./src/server/FakeSurveyGenerator.Worker/./FakeSurveyGenerator.Worker.csproj"
 COPY . .
 WORKDIR "/src/src/server/FakeSurveyGenerator.Worker"

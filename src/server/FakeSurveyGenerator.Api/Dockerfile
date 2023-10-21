@@ -10,18 +10,21 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/server/Directory.Build.props", "src/server/"]
-COPY ["src/server/FakeSurveyGenerator.NewApi/FakeSurveyGenerator.NewApi.csproj", "src/server/FakeSurveyGenerator.NewApi/"]
-COPY ["src/server/FakeSurveyGenerator.NewApplication/FakeSurveyGenerator.NewApplication.csproj", "src/server/FakeSurveyGenerator.NewApplication/"]
-RUN dotnet restore "./src/server/FakeSurveyGenerator.NewApi/./FakeSurveyGenerator.NewApi.csproj"
+COPY ["src/server/version.json", "src/server/"]
+COPY ["src/server/FakeSurveyGenerator.Api/FakeSurveyGenerator.Api.csproj", "src/server/FakeSurveyGenerator.Api/"]
+COPY ["src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj", "src/server/FakeSurveyGenerator.Application/"]
+RUN dotnet restore "./src/server/FakeSurveyGenerator.Api/./FakeSurveyGenerator.Api.csproj"
 COPY . .
-WORKDIR "/src/src/server/FakeSurveyGenerator.NewApi"
-RUN dotnet build "./FakeSurveyGenerator.NewApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR /
+COPY .git .git
+WORKDIR "/src/src/server/FakeSurveyGenerator.Api"
+RUN dotnet build "./FakeSurveyGenerator.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./FakeSurveyGenerator.NewApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./FakeSurveyGenerator.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "FakeSurveyGenerator.NewApi.dll"]
+ENTRYPOINT ["dotnet", "FakeSurveyGenerator.Api.dll"]
