@@ -7,6 +7,10 @@ namespace FakeSurveyGenerator.Api.Configuration.HealthChecks;
 
 internal static class HealthChecksConfigurationExtensions
 {
+    internal static readonly string[] DbTags = { "fake-survey-generator-db", "ready" };
+    internal static readonly string[] RedisTags = { "redis-cache", "ready" };
+    internal static readonly string[] IdentityProviderTags = { "identity-provider", "ready" };
+
     public static IServiceCollection AddHealthChecksConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -16,7 +20,7 @@ internal static class HealthChecksConfigurationExtensions
             .AddSqlServer(
                 configuration.GetConnectionString(nameof(SurveyContext)) ?? throw new InvalidOperationException($"Connection String for {nameof(SurveyContext)} not found in configuration"),
                 name: "FakeSurveyGeneratorDB-check",
-                tags: new[] { "fake-survey-generator-db", "ready" },
+                tags: DbTags,
                 failureStatus: HealthStatus.Unhealthy);
 
         var redisConnectionString =
@@ -25,13 +29,13 @@ internal static class HealthChecksConfigurationExtensions
         healthChecksBuilder
             .AddRedis(redisConnectionString,
                 "RedisCache-check",
-                tags: new[] { "redis-cache", "ready" },
+                tags: RedisTags,
                 failureStatus: HealthStatus.Degraded);
 
         healthChecksBuilder.AddIdentityServer(
             new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
             "IdentityProvider-check",
-            tags: new[] { "identity-provider", "ready" },
+            tags: IdentityProviderTags,
             failureStatus: HealthStatus.Unhealthy,
             timeout: new TimeSpan(0, 0, 5));
 
