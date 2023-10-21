@@ -63,11 +63,11 @@
       },
       "Azure.Core": {
         "type": "Transitive",
-        "resolved": "1.35.0",
-        "contentHash": "hENcx03Jyuqv05F4RBEPbxz29UrM3Nbhnr6Wl6NQpoU9BCIbL3XLentrxDCTrH54NLS11Exxi/o8MYgT/cnKFA==",
+        "resolved": "1.25.0",
+        "contentHash": "X8Dd4sAggS84KScWIjEbFAdt2U1KDolQopTPoHVubG2y3CM54f9l6asVrP5Uy384NWXjsspPYaJgz5xHc+KvTA==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
-          "System.Diagnostics.DiagnosticSource": "6.0.1",
+          "System.Diagnostics.DiagnosticSource": "4.6.0",
           "System.Memory.Data": "1.0.2",
           "System.Numerics.Vectors": "4.5.0",
           "System.Text.Encodings.Web": "4.7.2",
@@ -77,12 +77,12 @@
       },
       "Azure.Identity": {
         "type": "Transitive",
-        "resolved": "1.10.3",
-        "contentHash": "l1Xm2MWOF2Mzcwuarlw8kWQXLZk3UeB55aQXVyjj23aBfDwOZ3gu5GP2kJ6KlmZeZv2TCzw7x4L3V36iNr3gww==",
+        "resolved": "1.7.0",
+        "contentHash": "eHEiCO/8+MfNc9nH5dVew/+FvxdaGrkRL4OMNwIz0W79+wtJyEoeRlXJ3SrXhoy9XR58geBYKmzMR83VO7bcAw==",
         "dependencies": {
-          "Azure.Core": "1.35.0",
-          "Microsoft.Identity.Client": "4.56.0",
-          "Microsoft.Identity.Client.Extensions.Msal": "4.56.0",
+          "Azure.Core": "1.25.0",
+          "Microsoft.Identity.Client": "4.39.0",
+          "Microsoft.Identity.Client.Extensions.Msal": "2.19.3",
           "System.Memory": "4.5.4",
           "System.Security.Cryptography.ProtectedData": "4.7.0",
           "System.Text.Json": "4.7.2",
@@ -149,12 +149,12 @@
       },
       "Microsoft.Data.SqlClient": {
         "type": "Transitive",
-        "resolved": "5.2.0-preview3.23201.1",
-        "contentHash": "1J2imP4ynNf5Bcp5CLQWJlyH4fcHDYSTa+1wAhJnGARmPOa4w5ezIdhuCODwl7nAWSlBeYXDIOz+d3ZSc4cMeQ==",
+        "resolved": "5.1.1",
+        "contentHash": "MW5E9HFvCaV069o8b6YpuRDPBux8s96qDnOJ+4N9QNUCs7c5W3KxwQ+ftpAjbMUlImL+c9WR+l+f5hzjkqhu2g==",
         "dependencies": {
-          "Azure.Identity": "1.8.0",
+          "Azure.Identity": "1.7.0",
           "Microsoft.Data.SqlClient.SNI.runtime": "5.1.0",
-          "Microsoft.Identity.Client": "4.53.0",
+          "Microsoft.Identity.Client": "4.47.2",
           "Microsoft.IdentityModel.JsonWebTokens": "6.24.0",
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.24.0",
           "Microsoft.SqlServer.Server": "1.0.0",
@@ -520,19 +520,18 @@
       },
       "Microsoft.Identity.Client": {
         "type": "Transitive",
-        "resolved": "4.56.0",
-        "contentHash": "rr4zbidvHy9r4NvOAs5hdd964Ao2A0pAeFBJKR95u1CJAVzbd1p6tPTXUZ+5ld0cfThiVSGvz6UHwY6JjraTpA==",
+        "resolved": "4.47.2",
+        "contentHash": "SPgesZRbXoDxg8Vv7k5Ou0ee7uupVw0E8ZCc4GKw25HANRLz1d5OSr0fvTVQRnEswo5Obk8qD4LOapYB+n5kzQ==",
         "dependencies": {
           "Microsoft.IdentityModel.Abstractions": "6.22.0"
         }
       },
       "Microsoft.Identity.Client.Extensions.Msal": {
         "type": "Transitive",
-        "resolved": "4.56.0",
-        "contentHash": "H12YAzEGK55vZ+QpxUzozhW8ZZtgPDuWvgA0JbdIR9UhMUplj29JhIgE2imuH8W2Nw9D8JKygR1uxRFtpSNcrg==",
+        "resolved": "2.19.3",
+        "contentHash": "zVVZjn8aW7W79rC1crioDgdOwaFTQorsSO6RgVlDDjc7MvbEGz071wSNrjVhzR0CdQn6Sefx7Abf1o7vasmrLg==",
         "dependencies": {
-          "Microsoft.Identity.Client": "4.56.0",
-          "System.IO.FileSystem.AccessControl": "5.0.0",
+          "Microsoft.Identity.Client": "4.38.0",
           "System.Security.Cryptography.ProtectedData": "4.5.0"
         }
       },
@@ -682,15 +681,6 @@
           "Microsoft.IdentityModel.Tokens": "6.24.0"
         }
       },
-      "System.IO.FileSystem.AccessControl": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "SxHB3nuNrpptVk+vZ/F+7OHEpoHUIKKMl02bUmYHQr1r+glbZQxs7pRtsf4ENO29TVm2TH3AEeep2fJcy92oYw==",
-        "dependencies": {
-          "System.Security.AccessControl": "5.0.0",
-          "System.Security.Principal.Windows": "5.0.0"
-        }
-      },
       "System.IO.Pipelines": {
         "type": "Transitive",
         "resolved": "5.0.1",
@@ -820,43 +810,19 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
           "CSharpFunctionalExtensions": "[2.40.3, )",
           "Dapper": "[2.1.15, )",
-          "FakeSurveyGenerator.Domain": "[1.0.0, )",
           "FluentValidation": "[11.8.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[11.8.0, )",
+          "IdentityModel": "[6.2.0, )",
           "JetBrains.Annotations": "[2023.3.0-eap3, )",
           "MediatR": "[12.1.1, )",
-          "Microsoft.Data.SqlClient": "[5.2.0-preview3.23201.1, )",
-          "Microsoft.EntityFrameworkCore": "[8.0.0-rc.2.23480.1, )",
-          "Microsoft.Extensions.Caching.Abstractions": "[8.0.0-rc.2.23479.6, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[8.0.0-rc.2.23479.6, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[8.0.0-rc.2.23479.6, )"
-        }
-      },
-      "fakesurveygenerator.domain": {
-        "type": "Project",
-        "dependencies": {
-          "CSharpFunctionalExtensions": "[2.40.3, )",
-          "FakeSurveyGenerator.Shared": "[1.0.0, )",
-          "JetBrains.Annotations": "[2023.3.0-eap3, )"
-        }
-      },
-      "fakesurveygenerator.infrastructure": {
-        "type": "Project",
-        "dependencies": {
-          "Azure.Identity": "[1.10.3, )",
-          "FakeSurveyGenerator.Application": "[1.0.0, )",
-          "FakeSurveyGenerator.Domain": "[1.0.0, )",
-          "IdentityModel": "[6.2.0, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[8.0.0-rc.2.23480.1, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.0-rc.2.23480.2, )",
-          "Microsoft.Extensions.Configuration.Binder": "[8.0.0-rc.2.23479.6, )",
           "Microsoft.Extensions.Http": "[8.0.0-rc.2.23479.6, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.0-rc.2.23480.2, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[8.0.0-rc.2.23479.6, )",
+          "Polly": "[7.2.4, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )"
         }
-      },
-      "fakesurveygenerator.shared": {
-        "type": "Project"
       }
     }
   }
