@@ -35,9 +35,8 @@ Here are some of the features incorporated into this project:
 ### Application Features
 
 - Unit & Integration tests for a CQRS/DDD project with [XUnit](https://xunit.net/)
-- Running Unit & Integration tests with [Docker Compose](https://docs.docker.com/compose/)
+- Target production database for integration tests using [Testcontainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
 - BDD-style acceptance/E2E tests using [SpecFlow](https://specflow.org/) & [Playwright for .NET](https://playwright.dev/dotnet/)
-- Using an in-memory database for testing
 - Implementing health checks for an ASP.NET Core Web API using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
 - Adding [Swagger](https://swagger.io/) to an ASP.NET Core Web API using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
 - Adding [OpenID Connect](https://openid.net/connect/) for Authentication
@@ -51,13 +50,14 @@ Here are some of the features incorporated into this project:
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
 - Configuring [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) for telemetry
+- Using [Dapr](https://dapr.io/) with [Dapr SDK for .NET](https://github.com/dapr/dotnet-sdk) for platform agnostic integration with infrastructure components
 
 ### Infrastructure Features
 
 - Automatic semantic versioning using [Nerdbank.GitVersioning](https://github.com/dotnet/Nerdbank.GitVersioning)
 - Creating trusted SSL certificates for HTTPS in development
 - Deploying Entity Framework Core Code-First Migrations to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops)
-- Using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework Core
+- Using [Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id) authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework Core
 - Running a microservice application locally using [Docker Compose](https://docs.docker.com/compose/)
 - Using Azure Pipelines to build & deploy a microservice application to [Azure Container Apps](https://azure.microsoft.com/en-us/services/container-apps/#overview)
 - Infrastructure as Code for Azure resources using [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview)
