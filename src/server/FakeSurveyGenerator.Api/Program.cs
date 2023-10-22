@@ -54,7 +54,6 @@ try
     builder.Services
         .AddAuthorization()
         .AddDaprConfiguration(builder.Configuration)
-        .AddHealthChecksConfiguration(builder.Configuration)
         .AddSwaggerConfiguration(builder.Configuration)
         .AddAuthenticationConfiguration(builder.Configuration)
         .AddForwardedHeadersConfiguration()

@@ -62,7 +62,7 @@ public static class ServiceCollectionConfiguration
     public static IServiceCollection AddInfrastructureForApi(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddBaseInfrastructure(configuration);
-        services.AddOAuthConfiguration();
+        services.AddOAuthConfiguration(configuration);
 
         return services;
     }

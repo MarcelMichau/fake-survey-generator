@@ -114,6 +114,33 @@
         "resolved": "2.0.0",
         "contentHash": "Qxnl9XFdxDYzsru/atgi3b0E6EhCtAV1kXaYogpH1/C7fSAwlZ3ZDMNA6kqeXHBFbWKryv+hwf4WIeps0iDgPA=="
       },
+      "AspNetCore.HealthChecks.OpenIdConnectServer": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "CtH7gJwTb4H4FEARP285Ue4w9emiwWGBvD/U9PkiBXYIkItttQTzh6tMEAFCZuCvcLPBGLsVwiRdbxPlcv2dZQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9",
+          "Microsoft.Extensions.Http": "7.0.0"
+        }
+      },
+      "AspNetCore.HealthChecks.Redis": {
+        "type": "Transitive",
+        "resolved": "7.0.1",
+        "contentHash": "zg1wNKhoW6HWV1mLtT+Bo3xpfOCDFGbc4GLsNTLzvR/+uYx3sVnWB6ZRwY3gT4K3hw4SRraBePtPVhul3p78HQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9",
+          "StackExchange.Redis": "2.6.122"
+        }
+      },
+      "AspNetCore.HealthChecks.SqlServer": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "H3xMIeToQTOniukoqnkIc6F1UZCJDuHut74WCr8hlQji5J5m0iyZITPsNnLIGwVQm3tkEHYy9TQCH7diSwQFfg==",
+        "dependencies": {
+          "Microsoft.Data.SqlClient": "5.1.1",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9"
+        }
+      },
       "AutoMapper": {
         "type": "Transitive",
         "resolved": "12.0.1",
@@ -431,6 +458,22 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0-rc.2.23479.6",
           "Microsoft.Extensions.EnumStrings": "8.0.0-rc.2.23510.2"
         }
+      },
+      "Microsoft.Extensions.Diagnostics.HealthChecks": {
+        "type": "Transitive",
+        "resolved": "7.0.9",
+        "contentHash": "ubVLIa7GbGZrC7OWcMuFo/GJRYdVvqyMj7M4JFgWobXgh4QT2km40T46zLlXJfQWH68mh+g4iBJeg7VN3pldJA==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "7.0.9",
+          "Microsoft.Extensions.Hosting.Abstractions": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
+          "Microsoft.Extensions.Options": "7.0.1"
+        }
+      },
+      "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
+        "type": "Transitive",
+        "resolved": "7.0.9",
+        "contentHash": "myuiz5s14NEWffeiRH94GM1W9PkPyU/TLWCPjEIJ+Tck6QwRV89KHNwlJ+ZebRMlMTd64hwECybjLp1vIS4gTA=="
       },
       "Microsoft.Extensions.EnumStrings": {
         "type": "Transitive",
@@ -1855,6 +1898,9 @@
       "fakesurveygenerator.application": {
         "type": "Project",
         "dependencies": {
+          "AspNetCore.HealthChecks.OpenIdConnectServer": "[7.0.0, )",
+          "AspNetCore.HealthChecks.Redis": "[7.0.1, )",
+          "AspNetCore.HealthChecks.SqlServer": "[7.0.0, )",
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
           "CSharpFunctionalExtensions": "[2.40.3, )",

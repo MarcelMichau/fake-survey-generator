@@ -2,36 +2,6 @@
   "version": 1,
   "dependencies": {
     "net8.0": {
-      "AspNetCore.HealthChecks.OpenIdConnectServer": {
-        "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "CtH7gJwTb4H4FEARP285Ue4w9emiwWGBvD/U9PkiBXYIkItttQTzh6tMEAFCZuCvcLPBGLsVwiRdbxPlcv2dZQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9",
-          "Microsoft.Extensions.Http": "7.0.0"
-        }
-      },
-      "AspNetCore.HealthChecks.Redis": {
-        "type": "Direct",
-        "requested": "[7.0.1, )",
-        "resolved": "7.0.1",
-        "contentHash": "zg1wNKhoW6HWV1mLtT+Bo3xpfOCDFGbc4GLsNTLzvR/+uYx3sVnWB6ZRwY3gT4K3hw4SRraBePtPVhul3p78HQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9",
-          "StackExchange.Redis": "2.6.122"
-        }
-      },
-      "AspNetCore.HealthChecks.SqlServer": {
-        "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "H3xMIeToQTOniukoqnkIc6F1UZCJDuHut74WCr8hlQji5J5m0iyZITPsNnLIGwVQm3tkEHYy9TQCH7diSwQFfg==",
-        "dependencies": {
-          "Microsoft.Data.SqlClient": "5.1.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9"
-        }
-      },
       "AspNetCore.HealthChecks.UI.Client": {
         "type": "Direct",
         "requested": "[7.1.0, )",
@@ -168,6 +138,33 @@
           "Swashbuckle.AspNetCore.Swagger": "6.5.0",
           "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0",
           "Swashbuckle.AspNetCore.SwaggerUI": "6.5.0"
+        }
+      },
+      "AspNetCore.HealthChecks.OpenIdConnectServer": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "CtH7gJwTb4H4FEARP285Ue4w9emiwWGBvD/U9PkiBXYIkItttQTzh6tMEAFCZuCvcLPBGLsVwiRdbxPlcv2dZQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9",
+          "Microsoft.Extensions.Http": "7.0.0"
+        }
+      },
+      "AspNetCore.HealthChecks.Redis": {
+        "type": "Transitive",
+        "resolved": "7.0.1",
+        "contentHash": "zg1wNKhoW6HWV1mLtT+Bo3xpfOCDFGbc4GLsNTLzvR/+uYx3sVnWB6ZRwY3gT4K3hw4SRraBePtPVhul3p78HQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9",
+          "StackExchange.Redis": "2.6.122"
+        }
+      },
+      "AspNetCore.HealthChecks.SqlServer": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "H3xMIeToQTOniukoqnkIc6F1UZCJDuHut74WCr8hlQji5J5m0iyZITPsNnLIGwVQm3tkEHYy9TQCH7diSwQFfg==",
+        "dependencies": {
+          "Microsoft.Data.SqlClient": "5.1.1",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "7.0.9"
         }
       },
       "AspNetCore.HealthChecks.UI.Core": {
@@ -1476,6 +1473,9 @@
       "fakesurveygenerator.application": {
         "type": "Project",
         "dependencies": {
+          "AspNetCore.HealthChecks.OpenIdConnectServer": "[7.0.0, )",
+          "AspNetCore.HealthChecks.Redis": "[7.0.1, )",
+          "AspNetCore.HealthChecks.SqlServer": "[7.0.0, )",
           "AutoMapper": "[12.0.1, )",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "[12.0.1, )",
           "CSharpFunctionalExtensions": "[2.40.3, )",
