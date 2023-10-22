@@ -26,7 +26,7 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 
 This is a .NET | C# | React | TypeScript full-stack application of moderate complexity (not just a to-do app), used as a playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/) book, as well as its companion reference application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates various elements from different repos & blog posts which served as inspiration.
 
-It is built using Clean Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
+It is built using Vertical Slice Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent example of how to apply the basics of these principles.
 
 It is heavily centered around the Microsoft [.NET](https://dotnet.microsoft.com/) + [Azure](https://azure.microsoft.com/) technology stacks as these are what I have the most experience in & just like building things with. 😀
 
@@ -47,7 +47,7 @@ Here are some of the features incorporated into this project:
 - Using [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services) in ASP.NET Core Web API
 - Using a distributed [Redis](https://redis.io/) cache
 - Configuring SQL Server retry policies
-- Using [Polly](https://github.com/App-vNext/Polly) to make resilient HTTP requests
+- Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience?view=dotnet-plat-ext-8.0) for resilient HTTP requests
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
 - Configuring [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) for telemetry
@@ -87,15 +87,11 @@ FSG consists of two parts:
 The server side consists of the following main components:
 
 - Fake Survey Generator API
-  - Domain Project
-  - Domain Unit Tests Project
-  - Infrastructure Project
-  - Application Project
-  - Application Tests Project
-  - API Integration Tests Project
-  - EF Design Project (used purely for EF Core design-time tooling)
-  - Data Project (helpers for test data used across test projects)
 - Fake Survey Generator Worker
+- Application Project
+- Application Tests Project
+- API Integration Tests Project
+- E2E Acceptance Tests Project
 
 The server side makes use of the following tools, libraries & frameworks:
 
@@ -109,7 +105,6 @@ The server side makes use of the following tools, libraries & frameworks:
   - [AutoMapper](https://automapper.org/)
   - [MediatR](https://github.com/jbogard/MediatR)
   - [FluentValidation](https://fluentvalidation.net/)
-  - [Polly](https://github.com/App-vNext/Polly)
   - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
   - [Docker](https://www.docker.com/)
   - [Serilog](https://serilog.net/)
@@ -210,5 +205,6 @@ My deepest thanks to all the people who provided these resources as reference:
 - [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/)
 - [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 - [jasontaylordev/CleanArchitecture](https://github.com/jasontaylordev/CleanArchitecture)
+- [nadirbad/VerticalSliceArchitecture](https://github.com/nadirbad/VerticalSliceArchitecture)
 - [Vladimir Khorikov - Applying Functional Principles in C#](https://pluralsight.com/courses/csharp-applying-functional-principles)
 - [Vladimir Khorikov - Functional C#: Primitive obsession](https://enterprisecraftsmanship.com/posts/functional-c-primitive-obsession/)

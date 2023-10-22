@@ -1,5 +1,4 @@
 using FakeSurveyGenerator.Application;
-using FakeSurveyGenerator.Infrastructure;
 
 namespace FakeSurveyGenerator.Worker;
 

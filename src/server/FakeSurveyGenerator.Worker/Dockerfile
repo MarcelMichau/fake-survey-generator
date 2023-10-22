@@ -1,27 +1,26 @@
-# https://hub.docker.com/_/microsoft-dotnet-runtime/
+#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
 
-# https://hub.docker.com/_/microsoft-dotnet-sdk/
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src/server
-COPY src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj FakeSurveyGenerator.Application/
-COPY src/server/FakeSurveyGenerator.Domain/FakeSurveyGenerator.Domain.csproj FakeSurveyGenerator.Domain/
-COPY src/server/FakeSurveyGenerator.Infrastructure/FakeSurveyGenerator.Infrastructure.csproj FakeSurveyGenerator.Infrastructure/
-COPY src/server/FakeSurveyGenerator.Shared/FakeSurveyGenerator.Shared.csproj FakeSurveyGenerator.Shared/
-COPY src/server/FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj FakeSurveyGenerator.Worker/
-COPY src/server/FakeSurveyGenerator.Worker/packages.lock.json FakeSurveyGenerator.Worker/
-RUN dotnet restore FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj
-COPY src/server/. .
-WORKDIR /src/server/FakeSurveyGenerator.Worker
-RUN dotnet build FakeSurveyGenerator.Worker.csproj --no-restore -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR /src
+COPY ["src/server/Directory.Build.props", "src/server/"]
+COPY ["src/server/FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj", "src/server/FakeSurveyGenerator.Worker/"]
+COPY ["src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj", "src/server/FakeSurveyGenerator.Application/"]
+RUN dotnet restore "./src/server/FakeSurveyGenerator.Worker/./FakeSurveyGenerator.Worker.csproj"
+COPY . .
+WORKDIR "/src/src/server/FakeSurveyGenerator.Worker"
+RUN dotnet build "./FakeSurveyGenerator.Worker.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish FakeSurveyGenerator.Worker.csproj -c $BUILD_CONFIGURATION -o /app/publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./FakeSurveyGenerator.Worker.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER $APP_UID
 ENTRYPOINT ["dotnet", "FakeSurveyGenerator.Worker.dll"]

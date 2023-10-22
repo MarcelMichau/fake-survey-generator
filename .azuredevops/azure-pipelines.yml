@@ -109,9 +109,8 @@ stages:
               publishTestResults: true
               arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
-                src/server/FakeSurveyGenerator.Domain.Tests
                 src/server/FakeSurveyGenerator.Application.Tests
-                src/server/FakeSurveyGenerator.API.Tests.Integration
+                src/server/FakeSurveyGenerator.Api.Tests.Integration
             displayName: "Run Unit + Integration Tests"
 
           - task: PublishCodeCoverageResults@1
@@ -124,12 +123,12 @@ stages:
               dotnet tool restore
               dotnet tool install --local dotnet-ef --version 8.0.0-rc.2.23480.1
               dotnet dotnet-ef migrations script --no-build --verbose -o DbMigrationScript.sql -i
-            workingDirectory: src/server/FakeSurveyGenerator.Infrastructure
+            workingDirectory: src/server/FakeSurveyGenerator.Application
             displayName: "Create Database Migration Script"
 
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: "src/server/FakeSurveyGenerator.Infrastructure/DbMigrationScript.sql"
+              targetPath: "src/server/FakeSurveyGenerator.Application/DbMigrationScript.sql"
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
 
@@ -149,7 +148,7 @@ stages:
               containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
               repository: "$(projectName)"
               command: "build"
-              Dockerfile: "src/server/FakeSurveyGenerator.API/Dockerfile"
+              Dockerfile: "src/server/FakeSurveyGenerator.Api/Dockerfile"
               buildContext: "."
               arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
               tags: |

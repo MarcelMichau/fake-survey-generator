@@ -1,19 +1,14 @@
-using FakeSurveyGenerator.Infrastructure.Persistence;
+using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Worker;
 
-internal sealed class Worker : BackgroundService
+internal sealed class Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
+    : BackgroundService
 {
-    private readonly ILogger _logger;
-    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
     private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(10));
-
-    public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

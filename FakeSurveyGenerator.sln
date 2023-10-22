@@ -3,16 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{438984B1-9FA7-45B5-8716-CDE285922F9B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.API", "src\server\FakeSurveyGenerator.API\FakeSurveyGenerator.API.csproj", "{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.API.Tests.Integration", "src\server\FakeSurveyGenerator.API.Tests.Integration\FakeSurveyGenerator.API.Tests.Integration.csproj", "{F18CFDB2-EA79-4AC3-BC06-203A31F35486}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain", "src\server\FakeSurveyGenerator.Domain\FakeSurveyGenerator.Domain.csproj", "{C936D670-5D01-45D3-9625-3AB91C8CAFA6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Domain.Tests", "src\server\FakeSurveyGenerator.Domain.Tests\FakeSurveyGenerator.Domain.Tests.csproj", "{62E03C8E-7FD4-4CE9-B686-40840950C98A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6465B709-BA6F-4AE9-B22C-C8E28CCA9AC6}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -22,23 +12,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build\fake-survey-generator-ui\azure-pipelines.yml = build\fake-survey-generator-ui\azure-pipelines.yml
 		build\infrastructure\azure-pipelines.yml = build\infrastructure\azure-pipelines.yml
 		global.json = global.json
+		launchSettings.json = launchSettings.json
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Worker", "src\server\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj", "{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application", "src\server\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj", "{87784ADE-CB11-47DA-AA11-675AB96DE059}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application.Tests", "src\server\FakeSurveyGenerator.Application.Tests\FakeSurveyGenerator.Application.Tests.csproj", "{EC88BDF7-47DD-42F7-8039-A52638375902}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Infrastructure", "src\server\FakeSurveyGenerator.Infrastructure\FakeSurveyGenerator.Infrastructure.csproj", "{C1C21608-5D92-48A4-9553-6D96D2CE8723}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Data", "src\server\FakeSurveyGenerator.Data\FakeSurveyGenerator.Data.csproj", "{0F52FF53-408E-4B34-A737-632B7CB70936}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Shared", "src\server\FakeSurveyGenerator.Shared\FakeSurveyGenerator.Shared.csproj", "{BCACA880-C288-4F91-A734-A0EA95599EC8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Acceptance.Tests", "src\server\FakeSurveyGenerator.Acceptance.Tests\FakeSurveyGenerator.Acceptance.Tests.csproj", "{0E9489B9-06B0-42FD-A119-78A9B8557E9F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application", "src\server\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj", "{1ED9C2E4-9B20-4419-A8F2-9E8BBAF3B278}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Application.Tests", "src\server\FakeSurveyGenerator.Application.Tests\FakeSurveyGenerator.Application.Tests.csproj", "{185B6E2E-6E2E-4CA5-9067-B161A39ED830}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Api", "src\server\FakeSurveyGenerator.Api\FakeSurveyGenerator.Api.csproj", "{469BD976-64AD-4294-8D12-C4CFA171D8CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Api.Tests.Integration", "src\server\FakeSurveyGenerator.Api.Tests.Integration\FakeSurveyGenerator.Api.Tests.Integration.csproj", "{3428A8E4-1A8D-4EE5-9363-6D1D982D8C67}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{438984B1-9FA7-45B5-8716-CDE285922F9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,54 +37,34 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3382496-05D8-4608-9BDE-C6F9BD2EB43C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F18CFDB2-EA79-4AC3-BC06-203A31F35486}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C936D670-5D01-45D3-9625-3AB91C8CAFA6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62E03C8E-7FD4-4CE9-B686-40840950C98A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22C32FFB-93C4-470F-90FA-B3727CAFB8CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87784ADE-CB11-47DA-AA11-675AB96DE059}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EC88BDF7-47DD-42F7-8039-A52638375902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EC88BDF7-47DD-42F7-8039-A52638375902}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EC88BDF7-47DD-42F7-8039-A52638375902}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EC88BDF7-47DD-42F7-8039-A52638375902}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1C21608-5D92-48A4-9553-6D96D2CE8723}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F52FF53-408E-4B34-A737-632B7CB70936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F52FF53-408E-4B34-A737-632B7CB70936}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F52FF53-408E-4B34-A737-632B7CB70936}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F52FF53-408E-4B34-A737-632B7CB70936}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCACA880-C288-4F91-A734-A0EA95599EC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCACA880-C288-4F91-A734-A0EA95599EC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCACA880-C288-4F91-A734-A0EA95599EC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCACA880-C288-4F91-A734-A0EA95599EC8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E9489B9-06B0-42FD-A119-78A9B8557E9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED9C2E4-9B20-4419-A8F2-9E8BBAF3B278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED9C2E4-9B20-4419-A8F2-9E8BBAF3B278}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED9C2E4-9B20-4419-A8F2-9E8BBAF3B278}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED9C2E4-9B20-4419-A8F2-9E8BBAF3B278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{185B6E2E-6E2E-4CA5-9067-B161A39ED830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{185B6E2E-6E2E-4CA5-9067-B161A39ED830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{185B6E2E-6E2E-4CA5-9067-B161A39ED830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{185B6E2E-6E2E-4CA5-9067-B161A39ED830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{469BD976-64AD-4294-8D12-C4CFA171D8CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{469BD976-64AD-4294-8D12-C4CFA171D8CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{469BD976-64AD-4294-8D12-C4CFA171D8CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{469BD976-64AD-4294-8D12-C4CFA171D8CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3428A8E4-1A8D-4EE5-9363-6D1D982D8C67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3428A8E4-1A8D-4EE5-9363-6D1D982D8C67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3428A8E4-1A8D-4EE5-9363-6D1D982D8C67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3428A8E4-1A8D-4EE5-9363-6D1D982D8C67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{438984B1-9FA7-45B5-8716-CDE285922F9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
