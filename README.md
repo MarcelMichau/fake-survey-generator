@@ -16,7 +16,7 @@ This is an app. That generates surveys. Fake ones. For fun. That is all.
 
 [![Build Status](https://dev.azure.com/marcelmichau/Personal/_apis/build/status/fake-survey-generator/fake-survey-generator?branchName=main)](https://dev.azure.com/marcelmichau/Personal/_build/latest?definitionId=26&branchName=main)
 
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/MarcelMichau/fake-survey-generator)
+[Open in github.dev](https://github.dev/MarcelMichau/fake-survey-generator)
 
 ## Screenshot
 
