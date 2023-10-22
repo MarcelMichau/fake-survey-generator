@@ -47,7 +47,7 @@ Here are some of the features incorporated into this project:
 - Using [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services) in ASP.NET Core Web API
 - Using a distributed [Redis](https://redis.io/) cache
 - Configuring SQL Server retry policies
-- Using [Polly](https://github.com/App-vNext/Polly) to make resilient HTTP requests
+- Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience?view=dotnet-plat-ext-8.0) for resilient HTTP requests
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
 - Configuring [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) for telemetry
@@ -105,7 +105,6 @@ The server side makes use of the following tools, libraries & frameworks:
   - [AutoMapper](https://automapper.org/)
   - [MediatR](https://github.com/jbogard/MediatR)
   - [FluentValidation](https://fluentvalidation.net/)
-  - [Polly](https://github.com/App-vNext/Polly)
   - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
   - [Docker](https://www.docker.com/)
   - [Serilog](https://serilog.net/)
