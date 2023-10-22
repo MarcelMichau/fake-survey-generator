@@ -14,7 +14,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
   name: logAnalyticsName
 }
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-02-preview' = {
   name: containerAppEnvName
   location: location
   properties: {

@@ -6,7 +6,7 @@ param location string = resourceGroup().location
 @description('SKU/Tier of the Azure Container Registry')
 param sku string = 'Basic'
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-08-01-preview' = {
   name: name
   location: location
   sku: {

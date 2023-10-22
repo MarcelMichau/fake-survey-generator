@@ -12,7 +12,7 @@ param dnsZoneName string = 'mysecondarydomain.com'
 param uiContainerVersion string
 param apiContainerVersion string
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-08-01-preview' existing = {
   name: containerRegistryName
 }
 
@@ -20,15 +20,15 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   name: managedIdentityName
 }
 
-resource redisCache 'Microsoft.Cache/redis@2023-05-01-preview' existing = {
+resource redisCache 'Microsoft.Cache/redis@2023-08-01' existing = {
   name: redisCacheName
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' existing = {
+resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' existing = {
   name: sqlServerName
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' existing = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' existing = {
   name: sqlDatabaseName
 }
 
@@ -125,7 +125,7 @@ module apiContainerApp 'modules/containerApp.bicep' = {
   }
 }
 
-resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview' = {
+resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2023-05-02-preview' = {
   name: 'azure-key-vault'
   parent: containerAppEnvironment
   properties: {

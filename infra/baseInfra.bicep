@@ -15,7 +15,7 @@ param containerAppEnvironmentName string = 'cae-fake-survey-generator'
 param sqlAzureAdAdministratorLogin string = 'SQL Server Administrators'
 param sqlAzureAdAdministratorObjectId string = '7accb81c-4513-4df6-9eb7-791ac78e8fdb'
 
-resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
     name: resourceGroupName
     location: location
 }

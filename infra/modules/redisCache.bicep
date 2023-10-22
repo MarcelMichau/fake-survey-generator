@@ -10,7 +10,7 @@ param sku object = {
   capacity: 0
 }
 
-resource redisCache 'Microsoft.Cache/redis@2023-05-01-preview' = {
+resource redisCache 'Microsoft.Cache/redis@2023-08-01' = {
   name: name
   location: location
   properties: {

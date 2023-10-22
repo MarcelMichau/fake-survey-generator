@@ -19,7 +19,7 @@ param azureAdAdministratorTenantId string = subscription().tenantId
 @description('Subnet Resource ID for the infrastructure subnet')
 param subnetResourceId string
 
-resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' = {
   name: serverName
   location: location
   properties: {
@@ -34,7 +34,7 @@ resource sqlServer 'Microsoft.Sql/servers@2022-11-01-preview' = {
   }
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
   parent: sqlServer
   name: databaseName
   sku: {
@@ -44,7 +44,7 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2022-11-01-preview' = {
   location: location
 }
 
-resource sqlServerVirtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2022-05-01-preview' = {
+resource sqlServerVirtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2023-02-01-preview' = {
   name: 'sql-vnet-rules'
   parent: sqlServer
   properties: {

@@ -7,7 +7,7 @@ param subnetName string
 @description('Specifies the location for all resources.')
 param location string = resourceGroup().location
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
   name: name
   location: location
   properties: {
