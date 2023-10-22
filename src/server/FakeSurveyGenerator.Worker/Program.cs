@@ -1,21 +1,11 @@
 using FakeSurveyGenerator.Application;
+using FakeSurveyGenerator.Worker;
 
-namespace FakeSurveyGenerator.Worker;
+var builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddHostedService<Worker>();
 
-internal static class Program
-{
-    public static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
-    private static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddInfrastructure(hostContext.Configuration);
-                services.AddApplication();
-
-                services.AddHostedService<Worker>();
-            });
-}
+var host = builder.Build();
+host.Run();

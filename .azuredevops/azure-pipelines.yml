@@ -7,9 +7,7 @@ trigger:
     include:
       - .azuredevops/*
       - src/server/*
-      - build/fake-survey-generator-api/*
       - src/client/ui/*
-      - build/fake-survey-generator-ui/*
       - infra/*
 
 pr:
@@ -24,9 +22,7 @@ pr:
     include:
       - .azuredevops/*
       - src/server/*
-      - build/fake-survey-generator-api/*
       - src/client/ui/*
-      - build/fake-survey-generator-ui/*
       - infra/*
 
 variables:

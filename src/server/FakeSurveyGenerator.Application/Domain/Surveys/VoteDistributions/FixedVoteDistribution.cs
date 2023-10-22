@@ -4,8 +4,7 @@ internal sealed class FixedVoteDistribution : IVoteDistribution
 {
     public void DistributeVotes(Survey survey)
     {
-        if (survey is null)
-            throw new ArgumentNullException(nameof(survey));
+        ArgumentNullException.ThrowIfNull(survey);
 
         foreach (var surveyOption in survey.Options)
         {

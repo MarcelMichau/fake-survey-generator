@@ -4,8 +4,7 @@ internal sealed class RandomVoteDistribution : IVoteDistribution
 {
     public void DistributeVotes(Survey survey)
     {
-        if (survey is null)
-            throw new ArgumentNullException(nameof(survey));
+        ArgumentNullException.ThrowIfNull(survey);
 
         for (var i = 0; i < survey.NumberOfRespondents; i++)
         {
