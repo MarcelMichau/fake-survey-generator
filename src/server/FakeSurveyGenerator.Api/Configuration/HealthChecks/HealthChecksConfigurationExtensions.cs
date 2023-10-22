@@ -28,13 +28,13 @@ internal static class HealthChecksConfigurationExtensions
 
         healthChecksBuilder
             .AddRedis(redisConnectionString,
-                "RedisCache-check",
+                name:"RedisCache-check",
                 tags: RedisTags,
                 failureStatus: HealthStatus.Degraded);
 
         healthChecksBuilder.AddIdentityServer(
             new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
-            "IdentityProvider-check",
+            name: "IdentityProvider-check",
             tags: IdentityProviderTags,
             failureStatus: HealthStatus.Unhealthy,
             timeout: new TimeSpan(0, 0, 5));
