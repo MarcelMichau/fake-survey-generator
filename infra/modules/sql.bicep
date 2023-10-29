@@ -1,3 +1,6 @@
+@description('Tags to apply to the resource')
+param tags object
+
 @description('The name of the SQL logical server')
 param serverName string = uniqueString('sql', resourceGroup().id)
 
@@ -21,6 +24,7 @@ param subnetResourceId string
 
 resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' = {
   name: serverName
+  tags: tags
   location: location
   properties: {
     administrators: {
@@ -36,6 +40,7 @@ resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' = {
 
 resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
   parent: sqlServer
+  tags: tags
   name: databaseName
   sku: {
     name: 'Basic'
@@ -51,3 +56,7 @@ resource sqlServerVirtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules
     virtualNetworkSubnetId: subnetResourceId
   }
 }
+
+output sqlServerInstance string = sqlServer.properties.fullyQualifiedDomainName
+output sqlServerName string = sqlServer.name
+output sqlServerDatabaseName string = sqlDatabase.name

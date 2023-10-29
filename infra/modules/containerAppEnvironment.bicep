@@ -1,6 +1,9 @@
 @description('Specifies the location for all resources.')
 param location string = resourceGroup().location
 
+@description('Tags to apply to the resource')
+param tags object
+
 @description('Specifies the name of the Container App Environment')
 param containerAppEnvName string
 
@@ -17,6 +20,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-02-preview' = {
   name: containerAppEnvName
   location: location
+  tags: tags
   properties: {
     appLogsConfiguration: {
       destination: 'log-analytics'
@@ -30,3 +34,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-02-p
     }
   }
 }
+
+output containerAppEnvironmentId string = containerAppEnvironment.id
+output containerAppEnvironmentName string = containerAppEnvironment.name

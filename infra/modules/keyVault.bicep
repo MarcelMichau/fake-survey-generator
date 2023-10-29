@@ -1,6 +1,9 @@
 @description('Location')
 param location string = resourceGroup().location
 
+@description('Tags to apply to the resource')
+param tags object
+
 @description('Tenant id')
 param tenantId string = subscription().tenantId
 
@@ -16,6 +19,7 @@ param subnetResourceId string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
   name: name
+  tags: tags
   location: location
   properties: {
     sku: {

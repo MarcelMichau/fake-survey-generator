@@ -1,3 +1,6 @@
+@description('Tags to apply to the resource')
+param tags object
+
 @description('Specifies the name of the Container App')
 param containerAppName string
 
@@ -43,6 +46,7 @@ param daprConfig object = {}
 resource containerApp 'Microsoft.App/containerApps@2023-05-02-preview' = {
   name: containerAppName
   location: location
+  tags: tags
   identity: {
     type: identityType
     userAssignedIdentities: empty(userAssignedIdentities) ? null : userAssignedIdentities
@@ -80,3 +84,5 @@ resource containerApp 'Microsoft.App/containerApps@2023-05-02-preview' = {
 }
 
 output containerAppFqdn string = containerApp.properties.configuration.ingress.fqdn
+output containerAppName string = containerApp.name
+output containerAppUri string = 'https://${containerApp.properties.configuration.ingress.fqdn}'
