@@ -1,3 +1,6 @@
+@description('Tags to apply to the resource')
+param tags object
+
 @description('The name of the Front Door endpoint to create. This must be globally unique.')
 param endpointName string = 'afd-${uniqueString(resourceGroup().id)}'
 
@@ -58,6 +61,7 @@ resource validationTxtRecord 'Microsoft.Network/dnsZones/TXT@2023-07-01-preview'
 
 resource profile 'Microsoft.Cdn/profiles@2023-07-01-preview' = {
   name: profileName
+  tags: tags
   location: 'global'
   sku: {
     name: skuName
@@ -66,6 +70,7 @@ resource profile 'Microsoft.Cdn/profiles@2023-07-01-preview' = {
 
 resource endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2023-07-01-preview' = {
   name: endpointName
+  tags: tags
   parent: profile
   location: 'global'
   properties: {

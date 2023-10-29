@@ -1,6 +1,9 @@
 @description('Name of the Virtual Network')
 param name string
 
+@description('Tags to apply to the resource')
+param tags object
+
 @description('Name of the compute subnet')
 param subnetName string
 
@@ -10,6 +13,7 @@ param location string = resourceGroup().location
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = {
   name: name
   location: location
+  tags: tags
   properties: {
     addressSpace: {
       addressPrefixes: [

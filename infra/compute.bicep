@@ -1,16 +1,22 @@
-param location string = 'South Africa North'
-param containerAppEnvironmentName string = 'cae-fake-survey-generator'
-param uiContainerAppName string = 'ca-fake-survey-generator-ui'
-param apiContainerAppName string = 'ca-fake-survey-generator-api'
-param containerRegistryName string = 'acrfakesurveygenerator'
-param managedIdentityName string = 'mi-fake-survey-generator'
-param redisCacheName string = 'redis-fake-survey-generator'
-param sqlServerName string = 'sql-marcel-michau'
-param sqlDatabaseName string = 'sqldb-fake-survey-generator'
-param applicationInsightsName string = 'appi-fake-survey-generator'
-param dnsZoneName string = 'mysecondarydomain.com'
-param uiContainerVersion string
-param apiContainerVersion string
+param tags object
+param location string
+param containerAppEnvironmentName string
+param uiContainerAppName string
+param apiContainerAppName string
+param containerRegistryName string
+param managedIdentityName string
+param redisCacheName string
+param sqlServerName string
+param sqlDatabaseName string
+param logAnalyticsName string
+param applicationInsightsName string
+param virtualNetworkSubnetId string
+
+param apiContainerAppExists bool
+param uiContainerAppExists bool
+
+param apiContainerImage string = ''
+param uiContainerImage string = ''
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-08-01-preview' existing = {
   name: containerRegistryName
@@ -36,11 +42,27 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   name: applicationInsightsName
 }
 
+resource existingUiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing = if (uiContainerAppExists) {
+  name: uiContainerAppName
+}
+
+module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
+  name: 'containerAppEnvironment'
+  params: {
+    location: location
+    tags: tags
+    logAnalyticsName: logAnalyticsName
+    containerAppEnvName: containerAppEnvironmentName
+    subnetResourceId: virtualNetworkSubnetId
+  }
+}
+
 module uiContainerApp 'modules/containerApp.bicep' = {
   name: 'uiContainerApp'
   params: {
     location: location
-    containerAppEnvId: containerAppEnvironment.id
+    tags: union(tags, { 'azd-service-name': 'ui' })
+    containerAppEnvId: containerAppEnvironment.outputs.containerAppEnvironmentId
     containerAppName: uiContainerAppName
     containerRegistryUrl: containerRegistry.properties.loginServer
     identityType: 'UserAssigned'
@@ -51,7 +73,7 @@ module uiContainerApp 'modules/containerApp.bicep' = {
     containers: [
       {
         name: 'fake-survey-generator-ui'
-        image: '${containerRegistry.properties.loginServer}/fake-survey-generator-ui:${uiContainerVersion}'
+        image: !empty(uiContainerImage) ? uiContainerImage : uiContainerAppExists ? existingUiContainerApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
       }
     ]
   }
@@ -80,15 +102,16 @@ var apiEnvironmentVariables = [
   }
 ]
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
-  name: containerAppEnvironmentName
+resource existingApiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing = if (apiContainerAppExists) {
+  name: apiContainerAppName
 }
 
 module apiContainerApp 'modules/containerApp.bicep' = {
   name: 'apiContainerApp'
   params: {
     location: location
-    containerAppEnvId: containerAppEnvironment.id
+    tags: union(tags, { 'azd-service-name': 'api' })
+    containerAppEnvId: containerAppEnvironment.outputs.containerAppEnvironmentId
     containerAppName: apiContainerAppName
     containerRegistryUrl: containerRegistry.properties.loginServer
     identityType: 'UserAssigned'
@@ -99,7 +122,7 @@ module apiContainerApp 'modules/containerApp.bicep' = {
     containers: [
       {
         name: 'fake-survey-generator-api'
-        image: '${containerRegistry.properties.loginServer}/fake-survey-generator-api:${apiContainerVersion}'
+        image: !empty(apiContainerImage) ? apiContainerImage : apiContainerAppExists ? existingApiContainerApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         env: apiEnvironmentVariables
       }
     ]
@@ -118,7 +141,6 @@ resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprCompone
   parent: containerAppEnvironment
   properties: {
     componentType: 'secretstores.azure.keyvault'
-    version: 'v1'
     metadata: [
       {
         name: 'vaultName'
@@ -139,13 +161,16 @@ resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprCompone
   }
 }
 
-module frontDoor 'modules/frontDoor.bicep' = {
-  name: 'frontDoor'
-  params: {
-    dnsZoneName: dnsZoneName
-    uiOriginHostName: uiContainerApp.outputs.containerAppFqdn
-    apiOriginHostName: apiContainerApp.outputs.containerAppFqdn
-    cnameRecordName: 'fakesurveygenerator'
-    endpointName: 'afd-fake-survey-generator'
-  }
-}
+output apiContainerAppFqdn string = apiContainerApp.outputs.containerAppFqdn
+output apiContainerAppIdentityName string = managedIdentity.name
+output apiContainerAppIdentityPrincipalId string = managedIdentity.properties.principalId
+output apiContainerAppName string = apiContainerApp.outputs.containerAppName
+output apiContainerAppUri string = apiContainerApp.outputs.containerAppUri
+output apiContainerImageName string = apiContainerImage
+
+output uiContainerAppFqdn string = uiContainerApp.outputs.containerAppFqdn
+output uiContainerAppIdentityName string = managedIdentity.name
+output uiContainerAppIdentityPrincipalId string = managedIdentity.properties.principalId
+output uiContainerAppName string = uiContainerApp.outputs.containerAppName
+output uiContainerAppUri string = uiContainerApp.outputs.containerAppUri
+output uiContainerImageName string = uiContainerImage

@@ -1,5 +1,8 @@
 param location string = resourceGroup().location
 
+@description('Tags to apply to the resource')
+param tags object
+
 @description('User Assigned Managed Identity Name')
 param identityName string
 
@@ -17,6 +20,7 @@ var uniqueRoleGuidAcrPull = guid(resourceId('Microsoft.ContainerRegistry/registr
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: identityName
+  tags: tags
   location: location
 }
 
