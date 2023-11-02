@@ -1,3 +1,4 @@
+Install-Module -Name SqlServer -Force
 Import-Module SQLServer
 Import-Module Az.Accounts -MinimumVersion 2.2.0
 Import-Module Az.Sql

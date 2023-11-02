@@ -55,3 +55,5 @@ resource acrPullRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-
 output identityName string = identityName
 output identityResourceId string = managedIdentity.id
 output identityClientId string = managedIdentity.properties.clientId
+output principalId string = managedIdentity.properties.principalId
+output tenantId string = managedIdentity.properties.tenantId
