@@ -20,9 +20,21 @@ var tags = { 'azd-env-name': environment }
 
 var abbrs = loadJsonContent('abbreviations.json')
 
+var resourceToken = toLower(uniqueString(subscription().id, '${abbrs.resourcesResourceGroups}${applicationName}', location))
+
 resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: '${abbrs.resourcesResourceGroups}${applicationName}'
   location: location
+}
+
+module devOpsIdentitySetup 'modules/devOpsIdentitySetup.bicep' = {
+  name: 'devOpsIdentitySetup'
+  scope: fakeSurveyGeneratorResourceGroup
+  params: {
+    tags: tags
+    location: location
+    resourceToken: resourceToken
+  }
 }
 
 var computeSubnetName = 'container-app'
@@ -79,6 +91,8 @@ module dnsZone 'modules/dnsZone.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
+var azureSqlPassword = uniqueString(subscription().id, fakeSurveyGeneratorResourceGroup.id, '${abbrs.sqlServers}${applicationName}')
+
 module keyVault 'modules/keyVault.bicep' = {
   name: 'keyVault'
   params: {
@@ -90,6 +104,10 @@ module keyVault 'modules/keyVault.bicep' = {
         {
           secretName: 'HealthCheckSecret'
           secretValue: 'healthy'
+        }
+        {
+          secretName: 'SqlAdminPassword'
+          secretValue: azureSqlPassword
         }
       ]
     }
@@ -128,6 +146,18 @@ module azureSql 'modules/sql.bicep' = {
     azureAdAdministratorLogin: sqlAzureAdAdministratorLogin
     azureAdAdministratorObjectId: sqlAzureAdAdministratorObjectId
     subnetResourceId: virtualNetwork.outputs.subnetId
+    managedIdentity: {
+      name: managedIdentity.outputs.identityName
+      id: managedIdentity.outputs.identityResourceId
+      properties: {
+        clientId: managedIdentity.outputs.identityClientId
+        principalId: managedIdentity.outputs.principalId
+        tenantId: managedIdentity.outputs.tenantId
+      }
+    }
+    devOpsManagedIdentityId: devOpsIdentitySetup.outputs.devOpsManagedIdentityId
+    sqlAdministratorLogin: 'sqladmin${resourceToken}'
+    sqlAdministratorPassword: azureSqlPassword
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
