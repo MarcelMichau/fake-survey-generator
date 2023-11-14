@@ -117,7 +117,6 @@ stages:
 
           - script: |
               dotnet tool restore
-              dotnet tool install --local dotnet-ef --version 8.0.0-rc.2.23480.1
               dotnet dotnet-ef migrations script --no-build --verbose -o DbMigrationScript.sql -i
             workingDirectory: src/server/FakeSurveyGenerator.Application
             displayName: "Create Database Migration Script"
