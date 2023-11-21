@@ -3,16 +3,6 @@
 # To learn more about the azure.yaml file, visit https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/azd-schema
 
 name: fake-survey-generator
-hooks:
-  postpackage:
-    shell: pwsh
-    run: ./scripts/CreateDatabaseMigrationScript.ps1
-  # preprovision:
-  #   shell: pwsh
-  #   run: ./scripts/GetAppRegistrationDetailsForEnv.ps1
-  postprovision:
-    shell: pwsh
-    run: ./scripts/ProvisionSqlDatabase.ps1
 services:
   api:
     language: csharp
@@ -25,7 +15,7 @@ services:
     language: ts
     project: ./src/client/ui
     host: containerapp
-    # dist: dist
+    dist: dist
     docker:
       path: ./Dockerfile
       context: ../../../
