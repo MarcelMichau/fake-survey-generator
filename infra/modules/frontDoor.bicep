@@ -31,31 +31,29 @@ var dnsRecordTimeToLive = 3600
 
 resource dnsZone 'Microsoft.Network/dnsZones@2023-07-01-preview' existing = {
   name: dnsZoneName
-}
 
-resource cnameRecord 'Microsoft.Network/dnsZones/CNAME@2023-07-01-preview' = {
-  parent: dnsZone
-  name: cnameRecordName
-  properties: {
-    TTL: dnsRecordTimeToLive
-    CNAMERecord: {
-      cname: endpoint.properties.hostName
+  resource cnameRecord 'CNAME' = {
+    name: cnameRecordName
+    properties: {
+      TTL: dnsRecordTimeToLive
+      CNAMERecord: {
+        cname: profile::endpoint.properties.hostName
+      }
     }
   }
-}
 
-resource validationTxtRecord 'Microsoft.Network/dnsZones/TXT@2023-07-01-preview' = {
-  parent: dnsZone
-  name: '_dnsauth.${cnameRecordName}'
-  properties: {
-    TTL: dnsRecordTimeToLive
-    TXTRecords: [
-      {
-        value: [
-          customDomain.properties.validationProperties.validationToken
-        ]
-      }
-    ]
+  resource validationTxtRecord 'TXT' = {
+    name: '_dnsauth.${cnameRecordName}'
+    properties: {
+      TTL: dnsRecordTimeToLive
+      TXTRecords: [
+        {
+          value: [
+            profile::customDomain.properties.validationProperties.validationToken
+          ]
+        }
+      ]
+    }
   }
 }
 
@@ -66,145 +64,137 @@ resource profile 'Microsoft.Cdn/profiles@2023-07-01-preview' = {
   sku: {
     name: skuName
   }
-}
 
-resource endpoint 'Microsoft.Cdn/profiles/afdEndpoints@2023-07-01-preview' = {
-  name: endpointName
-  tags: tags
-  parent: profile
-  location: 'global'
-  properties: {
-    enabledState: 'Enabled'
-  }
-}
-
-resource uiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2023-07-01-preview' = {
-  name: 'ui-origin-group'
-  parent: profile
-  properties: {
-    loadBalancingSettings: {
-      sampleSize: 4
-      successfulSamplesRequired: 3
+  resource endpoint 'afdEndpoints' = {
+    name: endpointName
+    tags: tags
+    location: 'global'
+    properties: {
+      enabledState: 'Enabled'
     }
-    // healthProbeSettings: {
-    //   probePath: '/'
-    //   probeRequestType: 'HEAD'
-    //   probeProtocol: 'Http' // The UI needs http for some reason
-    //   probeIntervalInSeconds: 100
-    // }
-  }
-}
 
-resource apiOriginGroup 'Microsoft.Cdn/profiles/originGroups@2023-07-01-preview' = {
-  name: 'api-origin-group'
-  parent: profile
-  properties: {
-    loadBalancingSettings: {
-      sampleSize: 4
-      successfulSamplesRequired: 3
-    }
-    // healthProbeSettings: {
-    //   probePath: '/health/live'
-    //   probeRequestType: 'GET'
-    //   probeProtocol: 'Https'
-    //   probeIntervalInSeconds: 100
-    // }
-  }
-}
-
-resource customDomain 'Microsoft.Cdn/profiles/customDomains@2023-07-01-preview' = {
-  name: customDomainResourceName
-  parent: profile
-  properties: {
-    hostName: substring(cnameRecord.properties.fqdn, 0, length(cnameRecord.properties.fqdn) - 1)
-    tlsSettings: {
-      certificateType: 'ManagedCertificate'
-      minimumTlsVersion: 'TLS12'
-    }
-  }
-}
-
-resource uiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2023-07-01-preview' = {
-  name: 'ui-origin'
-  parent: uiOriginGroup
-  properties: {
-    hostName: uiOriginHostName
-    httpPort: 80
-    httpsPort: 443
-    originHostHeader: uiOriginHostName
-    priority: 1
-    weight: 1000
-  }
-}
-
-resource apiOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2023-07-01-preview' = {
-  name: 'api-origin'
-  parent: apiOriginGroup
-  properties: {
-    hostName: apiOriginHostName
-    httpPort: 80
-    httpsPort: 443
-    originHostHeader: apiOriginHostName
-    priority: 1
-    weight: 1000
-  }
-}
-
-resource uiRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-07-01-preview' = {
-  name: 'ui-route'
-  parent: endpoint
-  dependsOn: [
-    uiOrigin // This explicit dependency is required to ensure that the origin group is not empty when the route is created.
-  ]
-  properties: {
-    customDomains: [
-      {
-        id: customDomain.id
+    resource uiRoute 'routes' = {
+      name: 'ui-route'
+      dependsOn: [
+        uiOriginGroup::uiOrigin // This explicit dependency is required to ensure that the origin group is not empty when the route is created.
+      ]
+      properties: {
+        customDomains: [
+          {
+            id: customDomain.id
+          }
+        ]
+        originGroup: {
+          id: uiOriginGroup.id
+        }
+        supportedProtocols: [
+          'Http'
+          'Https'
+        ]
+        patternsToMatch: [
+          '/*'
+        ]
+        forwardingProtocol: 'HttpsOnly'
+        linkToDefaultDomain: 'Enabled'
+        httpsRedirect: 'Enabled'
       }
-    ]
-    originGroup: {
-      id: uiOriginGroup.id
     }
-    supportedProtocols: [
-      'Http'
-      'Https'
-    ]
-    patternsToMatch: [
-      '/*'
-    ]
-    forwardingProtocol: 'HttpsOnly'
-    linkToDefaultDomain: 'Enabled'
-    httpsRedirect: 'Enabled'
-  }
-}
 
-resource apiRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2023-07-01-preview' = {
-  name: 'api-route'
-  parent: endpoint
-  dependsOn: [
-    uiOrigin // This explicit dependency is required to ensure that the origin group is not empty when the route is created.
-  ]
-  properties: {
-    customDomains: [
-      {
-        id: customDomain.id
+    resource apiRoute 'routes' = {
+      name: 'api-route'
+      dependsOn: [
+        apiOriginGroup::apiOrigin // This explicit dependency is required to ensure that the origin group is not empty when the route is created.
+      ]
+      properties: {
+        customDomains: [
+          {
+            id: customDomain.id
+          }
+        ]
+        originGroup: {
+          id: apiOriginGroup.id
+        }
+        supportedProtocols: [
+          'Http'
+          'Https'
+        ]
+        patternsToMatch: [
+          '/api/*'
+          '/health/*'
+          '/swagger'
+          '/swagger/*'
+        ]
+        forwardingProtocol: 'HttpsOnly'
+        linkToDefaultDomain: 'Enabled'
+        httpsRedirect: 'Enabled'
       }
-    ]
-    originGroup: {
-      id: apiOriginGroup.id
     }
-    supportedProtocols: [
-      'Http'
-      'Https'
-    ]
-    patternsToMatch: [
-      '/api/*'
-      '/health/*'
-      '/swagger'
-      '/swagger/*'
-    ]
-    forwardingProtocol: 'HttpsOnly'
-    linkToDefaultDomain: 'Enabled'
-    httpsRedirect: 'Enabled'
+  }
+
+  resource uiOriginGroup 'originGroups' = {
+    name: 'ui-origin-group'
+    properties: {
+      loadBalancingSettings: {
+        sampleSize: 4
+        successfulSamplesRequired: 3
+      }
+      // healthProbeSettings: {
+      //   probePath: '/'
+      //   probeRequestType: 'HEAD'
+      //   probeProtocol: 'Http' // The UI needs http for some reason
+      //   probeIntervalInSeconds: 100
+      // }
+    }
+
+    resource uiOrigin 'origins' = {
+      name: 'ui-origin'
+      properties: {
+        hostName: uiOriginHostName
+        httpPort: 80
+        httpsPort: 443
+        originHostHeader: uiOriginHostName
+        priority: 1
+        weight: 1000
+      }
+    }
+  }
+
+  resource apiOriginGroup 'originGroups' = {
+    name: 'api-origin-group'
+    properties: {
+      loadBalancingSettings: {
+        sampleSize: 4
+        successfulSamplesRequired: 3
+      }
+      // healthProbeSettings: {
+      //   probePath: '/health/live'
+      //   probeRequestType: 'GET'
+      //   probeProtocol: 'Https'
+      //   probeIntervalInSeconds: 100
+      // }
+    }
+
+    resource apiOrigin 'origins' = {
+      name: 'api-origin'
+      properties: {
+        hostName: apiOriginHostName
+        httpPort: 80
+        httpsPort: 443
+        originHostHeader: apiOriginHostName
+        priority: 1
+        weight: 1000
+      }
+    }
+  }
+
+  resource customDomain 'customDomains' = {
+    name: customDomainResourceName
+    properties: {
+      hostName: substring(dnsZone::cnameRecord.properties.fqdn, 0, length(dnsZone::cnameRecord.properties.fqdn) - 1)
+      tlsSettings: {
+        certificateType: 'ManagedCertificate'
+        minimumTlsVersion: 'TLS12'
+      }
+    }
   }
 }
