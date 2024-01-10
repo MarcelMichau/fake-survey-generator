@@ -11,7 +11,7 @@ public sealed class User : AuditableEntity, IAggregateRoot
     public NonEmptyString EmailAddress { get; } = null!;
     public NonEmptyString ExternalUserId { get; } = null!;
 
-    private readonly List<Survey> _ownedSurveys = new();
+    private readonly List<Survey> _ownedSurveys = [];
     public IReadOnlyList<Survey> OwnedSurveys => _ownedSurveys.ToList();
 
     [UsedImplicitly]
