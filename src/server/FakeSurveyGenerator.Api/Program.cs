@@ -57,7 +57,7 @@ try
         .AddSwaggerConfiguration(builder.Configuration)
         .AddAuthenticationConfiguration(builder.Configuration)
         .AddForwardedHeadersConfiguration()
-        .AddApplicationInsightsConfiguration(builder.Configuration)
+        .AddTelemetryConfiguration(builder.Configuration)
         .AddApplicationServicesConfiguration(builder.Configuration)
         .AddApiBehaviourConfiguration();
 
