@@ -49,7 +49,7 @@ Here are some of the features incorporated into this project:
 - Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience?view=dotnet-plat-ext-8.0) for resilient HTTP requests
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
-- Configuring [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) for telemetry
+- Configuring [Azure Monitor OpenTelemetry](https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable) for telemetry
 - Using [Dapr](https://dapr.io/) with [Dapr SDK for .NET](https://github.com/dapr/dotnet-sdk) for platform agnostic integration with infrastructure components
 
 ### Infrastructure Features
