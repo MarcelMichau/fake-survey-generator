@@ -1,0 +1,11 @@
+meta {
+  name: Checks whether or not a User with a specific UserId is already registered in the system
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/api/user/isRegistered
+  body: none
+  auth: none
+}

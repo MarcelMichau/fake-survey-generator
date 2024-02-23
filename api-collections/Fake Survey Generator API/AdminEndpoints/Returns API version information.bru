@@ -1,0 +1,11 @@
+meta {
+  name: Returns API version information
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{BASE_URL}}/api/admin/version
+  body: none
+  auth: bearer
+}

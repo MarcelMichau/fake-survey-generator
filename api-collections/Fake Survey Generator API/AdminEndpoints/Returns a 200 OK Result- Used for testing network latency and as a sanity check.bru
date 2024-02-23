@@ -1,0 +1,11 @@
+meta {
+  name: Returns a 200 OK Result- Used for testing network latency and as a sanity check
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/api/admin/ping
+  body: none
+  auth: none
+}

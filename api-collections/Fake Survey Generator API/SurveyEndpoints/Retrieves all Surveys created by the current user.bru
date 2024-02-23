@@ -1,0 +1,11 @@
+meta {
+  name: Retrieves all Surveys created by the current user
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{BASE_URL}}/api/survey/user
+  body: none
+  auth: none
+}
