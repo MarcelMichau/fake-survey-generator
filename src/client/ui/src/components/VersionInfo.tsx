@@ -8,7 +8,10 @@ const VersionInfo = () => {
     useEffect(() => {
         const getApiVersion = async () => {
             setIsLoading(true);
-            const response = await fetch("api/admin/version");
+
+            const response = await fetch(
+                `${import.meta.env.VITE_APP_API}/api/admin/version`
+            );
             const versionResponse: Types.ApiVersionModel =
                 await response.json();
             setIsLoading(false);

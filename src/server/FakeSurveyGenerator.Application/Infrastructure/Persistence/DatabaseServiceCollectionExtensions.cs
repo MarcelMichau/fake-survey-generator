@@ -4,38 +4,47 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
 internal static class DatabaseServiceCollectionExtensions
 {
-    internal static readonly string[] DbTags = { "fake-survey-generator-db", "ready" };
+    internal static readonly string[] DbTags = ["fake-survey-generator-db", "ready"];
 
-    public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services,
+    public static IHostApplicationBuilder AddDatabaseConfiguration(this IHostApplicationBuilder builder,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString(nameof(SurveyContext)) ??
+        const string connectionName = "database";
+
+        var connectionString = configuration.GetConnectionString(connectionName) ??
                                throw new InvalidOperationException(
-                                   $"Connection String for {nameof(SurveyContext)} was not found in config");
+                                   $"Connection String for '{connectionName}' was not found in config");
 
-        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        builder.Services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
-        services.AddDbContext<SurveyContext>
-        (options =>
-            {
-                options.UseSqlServer(connectionString,
-                    sqlServerOptions =>
-                        sqlServerOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30),
-                            null));
-            }
-        );
+        builder.AddSqlServerDbContext<SurveyContext>(connectionName, settings =>
+        {
+            settings.DbContextPooling = false;
+            settings.MaxRetryCount = 5;
+        });
 
-        services.AddScoped<IDatabaseConnection>(_ => new DapperSqlServerConnection(connectionString));
+        //services.AddDbContext<SurveyContext>
+        //(options =>
+        //    {
+        //        options.UseSqlServer(connectionString,
+        //            sqlServerOptions =>
+        //                sqlServerOptions.EnableRetryOnFailure(15, TimeSpan.FromSeconds(30),
+        //                    null));
+        //    }
+        //);
 
-        var healthChecksBuilder = services.AddHealthChecks();
-        healthChecksBuilder.AddDatabaseHealthCheck(configuration);
+        builder.Services.AddScoped<IDatabaseConnection>(_ => new DapperSqlServerConnection(connectionString));
 
-        return services;
+        //var healthChecksBuilder = services.AddHealthChecks();
+        //healthChecksBuilder.AddDatabaseHealthCheck(configuration);
+
+        return builder;
     }
 
     public static IHealthChecksBuilder AddDatabaseHealthCheck(this IHealthChecksBuilder healthChecksBuilder,

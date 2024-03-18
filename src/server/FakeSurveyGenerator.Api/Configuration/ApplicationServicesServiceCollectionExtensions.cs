@@ -5,14 +5,13 @@ namespace FakeSurveyGenerator.Api.Configuration;
 
 internal static class ApplicationServicesServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServicesConfiguration(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IHostApplicationBuilder AddApplicationServicesConfiguration(this IHostApplicationBuilder builder)
     {
-        services.AddInfrastructureForApi(configuration);
-        services.AddApplication();
+        builder.AddInfrastructureForApi();
+        builder.Services.AddApplication();
 
-        services.AddHostedService<DatabaseCreationHostedService>();
+        builder.Services.AddHostedService<DatabaseCreationHostedService>();
 
-        return services;
+        return builder;
     }
 }

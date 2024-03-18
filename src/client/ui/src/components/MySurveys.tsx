@@ -20,11 +20,14 @@ const MySurveys = ({ loading }: MySurveysProps) => {
     const fetchSurveys = async () => {
         const token = await getAccessTokenSilently();
 
-        const response = await fetch(`/api/survey/user`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await fetch(
+            `${import.meta.env.VITE_APP_API}/api/survey/user`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
 
         const data: Types.UserSurveyModel[] = await response.json();
 

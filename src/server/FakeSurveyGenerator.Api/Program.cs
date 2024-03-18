@@ -20,6 +20,8 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.AddServiceDefaults();
+
     builder.Host
         .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
         {
@@ -51,6 +53,10 @@ try
     builder.WebHost
         .ConfigureKestrel(options => { options.AddServerHeader = false; });
 
+    builder.AddApplicationServicesConfiguration();
+
+    builder.AddCorsConfiguration();
+
     builder.Services
         .AddAuthorization()
         .AddDaprConfiguration(builder.Configuration)
@@ -58,7 +64,6 @@ try
         .AddAuthenticationConfiguration(builder.Configuration)
         .AddForwardedHeadersConfiguration()
         .AddTelemetryConfiguration(builder.Configuration)
-        .AddApplicationServicesConfiguration(builder.Configuration)
         .AddApiBehaviourConfiguration();
 
     var app = builder.Build();
@@ -68,6 +73,8 @@ try
 
     app.UseDefaultFiles();
     app.UseStaticFiles();
+
+    app.UseCors();
 
     app.UseSerilogRequestLogging();
 
@@ -80,6 +87,8 @@ try
     app.MapAdminEndpoints();
     app.MapSurveyEndpoints();
     app.MapUserEndpoints();
+
+    app.MapDefaultEndpoints();
 
     app.Run();
 }

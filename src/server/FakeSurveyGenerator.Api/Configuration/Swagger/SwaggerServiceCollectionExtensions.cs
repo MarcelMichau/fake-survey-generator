@@ -7,7 +7,7 @@ internal static class SwaggerServiceCollectionExtensions
     public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services,
         IConfiguration configuration)
     {
-       services.AddEndpointsApiExplorer();
+        services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen(options =>
         {

@@ -11,6 +11,7 @@ using FakeSurveyGenerator.Application.Shared.Notifications;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application;
 public static class ServiceCollectionConfiguration
@@ -30,19 +31,18 @@ public static class ServiceCollectionConfiguration
         return services;
     }
 
-    private static IServiceCollection AddBaseInfrastructure(this IServiceCollection services,
-        IConfiguration configuration)
+    private static IHostApplicationBuilder AddBaseInfrastructure(this IHostApplicationBuilder builder)
     {
-        services.AddSingleton(TimeProvider.System);
+        builder.Services.AddSingleton(TimeProvider.System);
 
-        services.AddScoped<INotificationService, NotificationService>();
+        builder.Services.AddScoped<INotificationService, NotificationService>();
 
-        services.AddDatabaseConfiguration(configuration);
-        services.AddCacheConfiguration(configuration.GetSection(CacheOptions.Cache).Get<CacheOptions>() ?? throw new InvalidOperationException("Cache config section not found"));
+        builder.AddDatabaseConfiguration(builder.Configuration);
+        builder.AddCacheConfiguration();
 
-        services.AddScoped<IDomainEventService, DomainEventService>();
+        builder.Services.AddScoped<IDomainEventService, DomainEventService>();
 
-        return services;
+        return builder;
     }
 
     // There are two different extension methods to add the Infrastructure dependencies to the service collection.
@@ -51,19 +51,19 @@ public static class ServiceCollectionConfiguration
     // The AddInfrastructureForApi method registers an OAuthUserInfoService to get the current user info from an OAuth Identity Provider using the Access Token from the HTTP request - this is intended
     // to be used by APIs which do have an HttpContext & which have an ITokenProvider implementation registered with the service collection.
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder, IConfiguration configuration)
     {
-        services.AddBaseInfrastructure(configuration);
-        services.AddSingleton<IUserService, SystemUserInfoService>();
+        builder.AddBaseInfrastructure();
+        builder.Services.AddSingleton<IUserService, SystemUserInfoService>();
 
-        return services;
+        return builder;
     }
 
-    public static IServiceCollection AddInfrastructureForApi(this IServiceCollection services, IConfiguration configuration)
+    public static IHostApplicationBuilder AddInfrastructureForApi(this IHostApplicationBuilder builder)
     {
-        services.AddBaseInfrastructure(configuration);
-        services.AddOAuthConfiguration(configuration);
+        builder.AddBaseInfrastructure();
+        builder.Services.AddOAuthConfiguration(builder.Configuration);
 
-        return services;
+        return builder;
     }
 }
