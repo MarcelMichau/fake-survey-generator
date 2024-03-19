@@ -4,13 +4,13 @@ namespace FakeSurveyGenerator.Api.Configuration;
 
 internal static class ApiBehaviourServiceCollectionExtensions
 {
-    public static IServiceCollection AddApiBehaviourConfiguration(this IServiceCollection services)
+    public static IHostApplicationBuilder AddApiBehaviourConfiguration(this IHostApplicationBuilder builder)
     {
-        services.Configure<ApiBehaviorOptions>(options =>
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
         {
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        return services;
+        return builder;
     }
 }

@@ -8,7 +8,7 @@ internal static class ApplicationServicesServiceCollectionExtensions
     public static IHostApplicationBuilder AddApplicationServicesConfiguration(this IHostApplicationBuilder builder)
     {
         builder.AddInfrastructureForApi();
-        builder.Services.AddApplication();
+        builder.AddApplication();
 
         builder.Services.AddHostedService<DatabaseCreationHostedService>();
 

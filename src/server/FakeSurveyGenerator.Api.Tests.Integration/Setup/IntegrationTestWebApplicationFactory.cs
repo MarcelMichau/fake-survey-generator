@@ -1,17 +1,13 @@
-﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence;
-using FakeSurveyGenerator.Application.Shared.Identity;
+﻿using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.TestHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using StackExchange.Redis;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
@@ -28,13 +24,8 @@ public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings s
                 {"ASPNETCORE_ENVIRONMENT", "Production"}, // Run integration tests as close as possible to how code will be run in Production
                 {"SKIP_DAPR", "true"}, // Do not configure Dapr components for integration tests
                 
-                // The below settings are the minimum required config to "bootstrap" the host so that services which reference these config values don't throw errors
-                // They are dummy values & will get overridden in the call to builder.ConfigureTestServices() below
-                {"ConnectionStrings:SurveyContext", _settings.SqlServerConnectionString},
-                {"Cache:RedisPassword", "testing"},
-                {"Cache:RedisSsl", "false"},
-                {"Cache:RedisUrl", "127.0.0.1"},
-                {"Cache:RedisDefaultDatabase", "0"},
+                {"ConnectionStrings:database", _settings.SqlServerConnectionString},
+                {"ConnectionStrings:cache", _settings.RedisConnectionString},
                 {"IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com"}
             }!);
         });
@@ -49,23 +40,7 @@ public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings s
             logging.ClearProviders();
         });
 
-        builder.ConfigureTestServices(services =>
-        {
-            RemoveDefaultDbContextFromServiceCollection(services);
-            RemoveDefaultDistributedCacheFromServiceCollection(services);
-
-            services.AddDbContext<SurveyContext>(options =>
-            {
-                options.UseSqlServer(_settings.SqlServerConnectionString);
-            });
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.ConfigurationOptions = ConfigurationOptions.Parse(_settings.RedisConnectionString);
-            });
-
-            ConfigureMockServices(services);
-        });
+        builder.ConfigureTestServices(ConfigureMockServices);
     }
 
     private static void ConfigureMockServices(IServiceCollection services)
@@ -75,19 +50,5 @@ public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings s
         mockUserService.GetUserIdentity().Returns(new TestUser().Id);
 
         services.AddScoped(_ => mockUserService);
-    }
-
-    private static void RemoveDefaultDbContextFromServiceCollection(IServiceCollection services)
-    {
-        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<SurveyContext>));
-        if (descriptor is null) return;
-        services.Remove(descriptor);
-    }
-
-    private static void RemoveDefaultDistributedCacheFromServiceCollection(IServiceCollection services)
-    {
-        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IDistributedCache));
-        if (descriptor is null) return;
-        services.Remove(descriptor);
     }
 }

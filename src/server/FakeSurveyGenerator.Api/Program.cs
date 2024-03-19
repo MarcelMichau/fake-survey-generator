@@ -50,20 +50,18 @@ try
             configurationBuilder.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
         });
 
-    builder.WebHost
-        .ConfigureKestrel(options => { options.AddServerHeader = false; });
+    builder.Services.AddAuthorization();
 
     builder.AddApplicationServicesConfiguration();
 
     builder.AddCorsConfiguration();
 
-    builder.Services
-        .AddAuthorization()
-        .AddDaprConfiguration(builder.Configuration)
-        .AddSwaggerConfiguration(builder.Configuration)
-        .AddAuthenticationConfiguration(builder.Configuration)
+    builder
+        .AddDaprConfiguration()
+        .AddSwaggerConfiguration()
+        .AddAuthenticationConfiguration()
         .AddForwardedHeadersConfiguration()
-        .AddTelemetryConfiguration(builder.Configuration)
+        .AddTelemetryConfiguration()
         .AddApiBehaviourConfiguration();
 
     var app = builder.Build();

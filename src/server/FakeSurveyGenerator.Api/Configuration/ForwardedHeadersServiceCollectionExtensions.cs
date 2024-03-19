@@ -4,9 +4,9 @@ namespace FakeSurveyGenerator.Api.Configuration;
 
 internal static class ForwardedHeadersServiceCollectionExtensions
 {
-    public static IServiceCollection AddForwardedHeadersConfiguration(this IServiceCollection services)
+    public static IHostApplicationBuilder AddForwardedHeadersConfiguration(this IHostApplicationBuilder builder)
     {
-        services.Configure<ForwardedHeadersOptions>(options =>
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
         {
             options.ForwardedHeaders = ForwardedHeaders.All;
 
@@ -19,6 +19,6 @@ internal static class ForwardedHeadersServiceCollectionExtensions
             };
         });
 
-        return services;
+        return builder;
     }
 }

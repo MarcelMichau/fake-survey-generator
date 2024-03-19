@@ -7,6 +7,8 @@ namespace FakeSurveyGenerator.Api.Configuration.Swagger;
 
 public sealed class AuthorizeOperationFilter : IOperationFilter
 {
+    private static readonly string[] OAuth2SecurityScheme = ["OAuth2"];
+
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         var authAttributes = context.MethodInfo.DeclaringType?.GetCustomAttributes(true)
@@ -29,7 +31,7 @@ public sealed class AuthorizeOperationFilter : IOperationFilter
 
         operation.Security.Add(new OpenApiSecurityRequirement
         {
-            [oauth2SecurityScheme] = new[] { "OAuth2" }
+            [oauth2SecurityScheme] = OAuth2SecurityScheme
         });
     }
 }

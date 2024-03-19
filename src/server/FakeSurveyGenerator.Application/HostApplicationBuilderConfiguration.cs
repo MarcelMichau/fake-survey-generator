@@ -9,26 +9,25 @@ using FakeSurveyGenerator.Application.Shared.DomainEvents;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application;
-public static class ServiceCollectionConfiguration
+public static class HostApplicationBuilderConfiguration
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)
     {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddMediatR(cfg =>
+        builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        builder.Services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
         });
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        return services;
+        return builder;
     }
 
     private static IHostApplicationBuilder AddBaseInfrastructure(this IHostApplicationBuilder builder)
@@ -51,7 +50,7 @@ public static class ServiceCollectionConfiguration
     // The AddInfrastructureForApi method registers an OAuthUserInfoService to get the current user info from an OAuth Identity Provider using the Access Token from the HTTP request - this is intended
     // to be used by APIs which do have an HttpContext & which have an ITokenProvider implementation registered with the service collection.
 
-    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder, IConfiguration configuration)
+    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
         builder.AddBaseInfrastructure();
         builder.Services.AddSingleton<IUserService, SystemUserInfoService>();
@@ -62,7 +61,7 @@ public static class ServiceCollectionConfiguration
     public static IHostApplicationBuilder AddInfrastructureForApi(this IHostApplicationBuilder builder)
     {
         builder.AddBaseInfrastructure();
-        builder.Services.AddOAuthConfiguration(builder.Configuration);
+        builder.AddOAuthConfiguration();
 
         return builder;
     }
