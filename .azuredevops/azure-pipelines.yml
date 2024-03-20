@@ -50,10 +50,6 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
-          - script: |
-              dotnet workload install aspire
-            displayName: Install .NET Aspire Workload
-
           - task: DotNetCoreCLI@2
             inputs:
               command: custom
@@ -84,6 +80,10 @@ stages:
             inputs:
               packageType: "sdk"
               useGlobalJson: true
+
+          - script: |
+              dotnet workload install aspire
+            displayName: Install .NET Aspire Workload
 
           - task: Cache@2
             enabled: false
