@@ -9,7 +9,6 @@ internal static class HealthChecksConfigurationExtensions
     {
         endpoints.MapHealthChecks("/health/ready", new HealthCheckOptions
         {
-            Predicate = check => check.Tags.Contains("ready"),
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
 

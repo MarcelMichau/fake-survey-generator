@@ -20,6 +20,8 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.AddServiceDefaults();
+
     builder.Host
         .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
         {
@@ -48,17 +50,18 @@ try
             configurationBuilder.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
         });
 
-    builder.WebHost
-        .ConfigureKestrel(options => { options.AddServerHeader = false; });
+    builder.Services.AddAuthorization();
 
-    builder.Services
-        .AddAuthorization()
-        .AddDaprConfiguration(builder.Configuration)
-        .AddSwaggerConfiguration(builder.Configuration)
-        .AddAuthenticationConfiguration(builder.Configuration)
+    builder.AddApplicationServicesConfiguration();
+
+    builder.AddCorsConfiguration();
+
+    builder
+        .AddDaprConfiguration()
+        .AddSwaggerConfiguration()
+        .AddAuthenticationConfiguration()
         .AddForwardedHeadersConfiguration()
-        .AddTelemetryConfiguration(builder.Configuration)
-        .AddApplicationServicesConfiguration(builder.Configuration)
+        .AddTelemetryConfiguration()
         .AddApiBehaviourConfiguration();
 
     var app = builder.Build();
@@ -68,6 +71,8 @@ try
 
     app.UseDefaultFiles();
     app.UseStaticFiles();
+
+    app.UseCors();
 
     app.UseSerilogRequestLogging();
 
@@ -80,6 +85,8 @@ try
     app.MapAdminEndpoints();
     app.MapSurveyEndpoints();
     app.MapUserEndpoints();
+
+    app.MapDefaultEndpoints();
 
     app.Run();
 }

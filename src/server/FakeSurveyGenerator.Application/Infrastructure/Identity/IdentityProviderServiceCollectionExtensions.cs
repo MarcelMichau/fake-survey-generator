@@ -2,27 +2,27 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Http.Resilience;
+using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Identity;
 
 internal static class IdentityProviderServiceCollectionExtensions
 {
-    internal static readonly string[] IdentityProviderTags = { "identity-provider", "ready" };
+    internal static readonly string[] IdentityProviderTags = ["identity-provider", "ready"];
 
-    public static IServiceCollection AddOAuthConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static IHostApplicationBuilder AddOAuthConfiguration(this IHostApplicationBuilder builder)
     {
-        services
+        builder.Services
             .AddHttpClient<IUserService, OAuthUserInfoService>()
             .AddStandardResilienceHandler();
 
-        services.AddHttpContextAccessor();
-        services.AddScoped<ITokenProviderService, JwtBearerTokenProviderService>();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<ITokenProviderService, JwtBearerTokenProviderService>();
 
-        var healthChecksBuilder = services.AddHealthChecks();
-        healthChecksBuilder.AddIdentityProviderHealthCheck(configuration);
+        var healthChecksBuilder = builder.Services.AddHealthChecks();
+        healthChecksBuilder.AddIdentityProviderHealthCheck(builder.Configuration);
 
-        return services;
+        return builder;
     }
 
     internal static IHealthChecksBuilder AddIdentityProviderHealthCheck(this IHealthChecksBuilder healthChecksBuilder,

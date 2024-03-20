@@ -4,12 +4,11 @@ namespace FakeSurveyGenerator.Api.Configuration;
 
 internal static class AuthenticationServiceCollectionExtensions
 {
-    public static IServiceCollection AddAuthenticationConfiguration(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IHostApplicationBuilder AddAuthenticationConfiguration(this IHostApplicationBuilder builder)
     {
-        var identityProviderUrl = configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
+        var identityProviderUrl = builder.Configuration.GetValue<string>("IDENTITY_PROVIDER_URL");
 
-        services.AddAuthentication()
+        builder.Services.AddAuthentication()
             .AddJwtBearer(options =>
             {
                 options.Authority = identityProviderUrl;
@@ -25,6 +24,6 @@ internal static class AuthenticationServiceCollectionExtensions
                 };
             });
 
-        return services;
+        return builder;
     }
 }

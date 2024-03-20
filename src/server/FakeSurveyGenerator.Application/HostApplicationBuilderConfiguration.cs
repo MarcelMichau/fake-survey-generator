@@ -9,40 +9,39 @@ using FakeSurveyGenerator.Application.Shared.DomainEvents;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using FluentValidation;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application;
-public static class ServiceCollectionConfiguration
+public static class HostApplicationBuilderConfiguration
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)
     {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddMediatR(cfg =>
+        builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        builder.Services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
         });
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-        return services;
+        return builder;
     }
 
-    private static IServiceCollection AddBaseInfrastructure(this IServiceCollection services,
-        IConfiguration configuration)
+    private static IHostApplicationBuilder AddBaseInfrastructure(this IHostApplicationBuilder builder)
     {
-        services.AddSingleton(TimeProvider.System);
+        builder.Services.AddSingleton(TimeProvider.System);
 
-        services.AddScoped<INotificationService, NotificationService>();
+        builder.Services.AddScoped<INotificationService, NotificationService>();
 
-        services.AddDatabaseConfiguration(configuration);
-        services.AddCacheConfiguration(configuration.GetSection(CacheOptions.Cache).Get<CacheOptions>() ?? throw new InvalidOperationException("Cache config section not found"));
+        builder.AddDatabaseConfiguration(builder.Configuration);
+        builder.AddCacheConfiguration();
 
-        services.AddScoped<IDomainEventService, DomainEventService>();
+        builder.Services.AddScoped<IDomainEventService, DomainEventService>();
 
-        return services;
+        return builder;
     }
 
     // There are two different extension methods to add the Infrastructure dependencies to the service collection.
@@ -51,19 +50,19 @@ public static class ServiceCollectionConfiguration
     // The AddInfrastructureForApi method registers an OAuthUserInfoService to get the current user info from an OAuth Identity Provider using the Access Token from the HTTP request - this is intended
     // to be used by APIs which do have an HttpContext & which have an ITokenProvider implementation registered with the service collection.
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
-        services.AddBaseInfrastructure(configuration);
-        services.AddSingleton<IUserService, SystemUserInfoService>();
+        builder.AddBaseInfrastructure();
+        builder.Services.AddSingleton<IUserService, SystemUserInfoService>();
 
-        return services;
+        return builder;
     }
 
-    public static IServiceCollection AddInfrastructureForApi(this IServiceCollection services, IConfiguration configuration)
+    public static IHostApplicationBuilder AddInfrastructureForApi(this IHostApplicationBuilder builder)
     {
-        services.AddBaseInfrastructure(configuration);
-        services.AddOAuthConfiguration(configuration);
+        builder.AddBaseInfrastructure();
+        builder.AddOAuthConfiguration();
 
-        return services;
+        return builder;
     }
 }

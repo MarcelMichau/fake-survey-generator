@@ -4,12 +4,11 @@ namespace FakeSurveyGenerator.Api.Configuration.Swagger;
 
 internal static class SwaggerServiceCollectionExtensions
 {
-    public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IHostApplicationBuilder AddSwaggerConfiguration(this IHostApplicationBuilder builder)
     {
-       services.AddEndpointsApiExplorer();
+        builder.Services.AddEndpointsApiExplorer();
 
-        services.AddSwaggerGen(options =>
+        builder.Services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
@@ -31,7 +30,7 @@ internal static class SwaggerServiceCollectionExtensions
 
             options.OperationFilter<AuthorizeOperationFilter>();
 
-            var identityProviderBaseUrl = configuration.GetValue<string>("IDENTITY_PROVIDER_URL")?.TrimEnd('/');
+            var identityProviderBaseUrl = builder.Configuration.GetValue<string>("IDENTITY_PROVIDER_URL")?.TrimEnd('/');
 
             options.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
             {
@@ -55,7 +54,7 @@ internal static class SwaggerServiceCollectionExtensions
             });
         });
 
-        return services;
+        return builder;
     }
 
     public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder app)

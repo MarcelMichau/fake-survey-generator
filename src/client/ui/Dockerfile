@@ -1,4 +1,4 @@
-FROM node:20-alpine as build
+FROM node:21-alpine as build
 ARG VITE_APP_VERSION
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/package-lock.json ./

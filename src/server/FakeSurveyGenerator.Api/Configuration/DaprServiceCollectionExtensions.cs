@@ -2,11 +2,10 @@
 
 internal static class DaprServiceCollectionExtensions
 {
-    public static IServiceCollection AddDaprConfiguration(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IHostApplicationBuilder AddDaprConfiguration(this IHostApplicationBuilder builder)
     {
-        services.AddDaprClient();
+        builder.Services.AddDaprClient();
 
-        return services;
+        return builder;
     }
 }

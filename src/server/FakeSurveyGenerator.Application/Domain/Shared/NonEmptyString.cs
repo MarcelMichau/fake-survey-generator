@@ -1,7 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
+using System.Diagnostics;
 
 namespace FakeSurveyGenerator.Application.Domain.Shared;
 
+[DebuggerDisplay("Value = {Value}")]
 public sealed class NonEmptyString : ValueObject
 {
     public string Value { get; }

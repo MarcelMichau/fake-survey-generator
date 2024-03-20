@@ -4,16 +4,15 @@ namespace FakeSurveyGenerator.Api.Configuration;
 
 internal static class TelemetryServiceCollectionExtensions
 {
-    public static IServiceCollection AddTelemetryConfiguration(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IHostApplicationBuilder AddTelemetryConfiguration(this IHostApplicationBuilder builder)
     {
-        var connectionString = configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+        var connectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
 
         if (string.IsNullOrWhiteSpace(connectionString))
-            return services;
+            return builder;
 
-        services.AddOpenTelemetry().UseAzureMonitor();
+        builder.Services.AddOpenTelemetry().UseAzureMonitor();
 
-        return services;
+        return builder;
     }
 }
