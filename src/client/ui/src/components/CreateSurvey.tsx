@@ -42,7 +42,9 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
         const token = await getAccessTokenSilently();
 
         const response = await fetch(
-            `${import.meta.env.VITE_APP_API}api/survey`,
+            `${
+                import.meta.env.VITE_APP_API || import.meta.env.BASE_URL
+            }api/survey`,
             {
                 method: "POST",
                 headers: {

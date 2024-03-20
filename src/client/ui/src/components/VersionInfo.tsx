@@ -10,7 +10,9 @@ const VersionInfo = () => {
             setIsLoading(true);
 
             const response = await fetch(
-                `${import.meta.env.VITE_APP_API}api/admin/version`
+                `${
+                    import.meta.env.VITE_APP_API || import.meta.env.BASE_URL
+                }api/admin/version`
             );
             const versionResponse: Types.ApiVersionModel =
                 await response.json();

@@ -21,7 +21,9 @@ const MySurveys = ({ loading }: MySurveysProps) => {
         const token = await getAccessTokenSilently();
 
         const response = await fetch(
-            `${import.meta.env.VITE_APP_API}api/survey/user`,
+            `${
+                import.meta.env.VITE_APP_API || import.meta.env.BASE_URL
+            }api/survey/user`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

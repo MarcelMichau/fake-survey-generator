@@ -34,6 +34,7 @@ Here are some of the features incorporated into this project:
 
 ### Application Features
 
+- Observable, production ready, distributed application support using [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
 - Unit & Integration tests for a CQRS/DDD project with [XUnit](https://xunit.net/)
 - Target production database for integration tests using [Testcontainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
 - BDD-style acceptance/E2E tests using [SpecFlow](https://specflow.org/) & [Playwright for .NET](https://playwright.dev/dotnet/)
