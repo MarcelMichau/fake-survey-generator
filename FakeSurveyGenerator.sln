@@ -31,9 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Api.Tes
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{438984B1-9FA7-45B5-8716-CDE285922F9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.AppHost", "FakeSurveyGenerator.AppHost\FakeSurveyGenerator.AppHost.csproj", "{13A07095-01FD-41D8-BB81-43ADE7AFEE3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.AppHost", "src\server\FakeSurveyGenerator.AppHost\FakeSurveyGenerator.AppHost.csproj", "{13A07095-01FD-41D8-BB81-43ADE7AFEE3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.ServiceDefaults", "FakeSurveyGenerator.ServiceDefaults\FakeSurveyGenerator.ServiceDefaults.csproj", "{1F2F6841-6D7F-4E0D-A70D-39B13EA0B995}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.ServiceDefaults", "src\server\FakeSurveyGenerator.ServiceDefaults\FakeSurveyGenerator.ServiceDefaults.csproj", "{1F2F6841-6D7F-4E0D-A70D-39B13EA0B995}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
