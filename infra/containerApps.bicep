@@ -63,24 +63,12 @@ var apiEnvironmentVariables = [
     value: 'Production'
   }
   {
-    name: 'Cache__RedisUrl'
-    value: redisCache.properties.hostName
+    name: 'ConnectionStrings__database'
+    value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabase.name};Encrypt=True;TrustServerCertificate=False;Authentication=Active Directory Managed Identity;User Id=${managedIdentity.properties.clientId};'
   }
   {
-    name: 'Cache__RedisPassword'
-    value: redisCache.listKeys().primaryKey
-  }
-  {
-    name: 'Cache__RedisDefaultDatabase'
-    value: '0'
-  }
-  {
-    name: 'Cache__RedisSsl'
-    value: 'true'
-  }
-  {
-    name: 'ConnectionStrings__SurveyContext'
-    value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabase.name};Persist Security Info=False;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Managed Identity;User Id=${managedIdentity.properties.clientId};'
+    name: 'ConnectionStrings__cache'
+    value: '${redisCache.properties.hostName},defaultDatabase=0,ssl=true,password=${redisCache.listKeys().primaryKey},abortConnect=false'
   }
   {
     name: 'IDENTITY_PROVIDER_URL'
