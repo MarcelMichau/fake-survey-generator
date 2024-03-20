@@ -19,7 +19,7 @@ const App = (): JSX.Element => {
             const token = await getAccessTokenSilently();
 
             const response = await fetch(
-                `${import.meta.env.VITE_APP_API}/api/user/register`,
+                `${import.meta.env.VITE_APP_API}api/user/register`,
                 {
                     method: "POST",
                     headers: {
@@ -43,7 +43,7 @@ const App = (): JSX.Element => {
             const token = await getAccessTokenSilently();
 
             const response = await fetch(
-                `${import.meta.env.VITE_APP_API}/api/user/isRegistered?userId=${
+                `${import.meta.env.VITE_APP_API}api/user/isRegistered?userId=${
                     user?.sub
                 }`,
                 {
