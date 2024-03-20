@@ -45,7 +45,7 @@ stages:
           vmImage: "ubuntu-latest"
         steps:
           - task: UseDotNet@2
-            displayName: "Install .NET Core SDK"
+            displayName: "Install .NET SDK"
             inputs:
               packageType: "sdk"
               useGlobalJson: true
@@ -76,7 +76,7 @@ stages:
 
         steps:
           - task: UseDotNet@2
-            displayName: "Install .NET Core SDK"
+            displayName: "Install .NET SDK"
             inputs:
               packageType: "sdk"
               useGlobalJson: true
@@ -177,7 +177,7 @@ stages:
           imageRepository: "$(registryName).azurecr.io/$(projectName)"
         steps:
           - task: UseDotNet@2
-            displayName: "Install .NET Core SDK"
+            displayName: "Install .NET SDK"
             inputs:
               packageType: "sdk"
               useGlobalJson: true
