@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class ForwardedHeadersServiceCollectionExtensions
+internal static class ForwardedHeadersConfigurationExtensions
 {
     public static IHostApplicationBuilder AddForwardedHeadersConfiguration(this IHostApplicationBuilder builder)
     {

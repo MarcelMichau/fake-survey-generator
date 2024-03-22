@@ -38,12 +38,6 @@
           "Microsoft.Extensions.Hosting": "8.0.0"
         }
       },
-      "Microsoft.Extensions.DependencyInjection.Abstractions": {
-        "type": "Direct",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "fGLiCRLMYd00JYpClraLjJTNKLmMJPnqxMaiRzEBIIvevlzxz33mXy39Lkd48hu1G+N21S7QpaO5ZzKsI6FRuA=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.9.0, )",
@@ -80,20 +74,20 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[3.7.0, )",
-        "resolved": "3.7.0",
-        "contentHash": "4VtcNvd1FdQTaOTqOv+5NtuSmpyahzFeUdR1rnnw8bJPEkfnQkTUNVe5/ZuygSsFh7bM+hCApce4WGVdpm+Xdw==",
+        "requested": "[3.8.0, )",
+        "resolved": "3.8.0",
+        "contentHash": "4SUnPddk4VbXDZkeSxyCSQA1pFlvlMh5KA0iYXiRykG71F2+F0fyweogoTnD/dVU2NDMVwxJSzqz6SN1wzPAZw==",
         "dependencies": {
-          "Testcontainers": "3.7.0"
+          "Testcontainers": "3.8.0"
         }
       },
       "Testcontainers.Redis": {
         "type": "Direct",
-        "requested": "[3.7.0, )",
-        "resolved": "3.7.0",
-        "contentHash": "Lf16QdS1MbxtCat6G3LIKSywlv79ht5pFb08eVojIZE2eGKBoOcf9zkDVeBf7guxddWF1ZN0P3lQVLqRIZTTog==",
+        "requested": "[3.8.0, )",
+        "resolved": "3.8.0",
+        "contentHash": "sPPSCuxLH/7ycjJUOLkIqspwFiU1eVZhxWAJ2JROZlYDscOP94Lm4IgNg/sMeSQI4VJ7ptcW/B/Sjw5tAnG6Ww==",
         "dependencies": {
-          "Testcontainers": "3.7.0"
+          "Testcontainers": "3.8.0"
         }
       },
       "xunit": {
@@ -243,11 +237,6 @@
           "OpenTelemetry": "1.7.0",
           "OpenTelemetry.PersistentStorage.FileSystem": "1.0.0"
         }
-      },
-      "BouncyCastle.Cryptography": {
-        "type": "Transitive",
-        "resolved": "2.2.1",
-        "contentHash": "A6Zr52zVqJKt18ZBsTnX0qhG0kwIQftVAjLmszmkiR/trSp8H+xj1gUOzk7XHwaKgyREMSV1v9XaKrBUeIOdvQ=="
       },
       "Castle.Core": {
         "type": "Transitive",
@@ -432,8 +421,8 @@
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "UcSjPsst+DfAdJGVDsu346FX0ci0ah+lw3WRtn18NUwEqRt70HaOQ7lI72vy3+1LxtqI3T5GWwV39rQSrCzAeg=="
+        "resolved": "1.1.1",
+        "contentHash": "yuvf07qFWFqtK3P/MRkEKLhn5r2UbSpVueRziSqj0yJQIKFwG1pq9mOayK3zE5qZCTs0CbrwL9M6R8VwqyGy2w=="
       },
       "Microsoft.Bcl.TimeProvider": {
         "type": "Transitive",
@@ -650,6 +639,11 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
         }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions": {
+        "type": "Transitive",
+        "resolved": "8.0.1",
+        "contentHash": "fGLiCRLMYd00JYpClraLjJTNKLmMJPnqxMaiRzEBIIvevlzxz33mXy39Lkd48hu1G+N21S7QpaO5ZzKsI6FRuA=="
       },
       "Microsoft.Extensions.DependencyInjection.AutoActivation": {
         "type": "Transitive",
@@ -1278,8 +1272,8 @@
       },
       "OpenTelemetry.Instrumentation.GrpcNetClient": {
         "type": "Transitive",
-        "resolved": "1.6.0-beta.2",
-        "contentHash": "q0g+3M8zoISr37kqPIibMiJIU1cIZqH0WeOVN4K+M7MM25ZJoAxHPwqTNY6otNKoBJRHdMiz2qGJEjOxGYcHDg==",
+        "resolved": "1.6.0-beta.3",
+        "contentHash": "nzw8D5in6Hg/GbjNlq2FETP4GjSckae9hPGTxAUO7UiOS1lqkyxZJ7f4ntIjFKbiS3wuA9wPfQVH/3CaPV6EvQ==",
         "dependencies": {
           "OpenTelemetry": "1.6.0"
         }
@@ -2492,17 +2486,14 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "3.7.0",
-        "contentHash": "Nn9/mVOiYEC1mdE0Kr2xQfVAV9mssLedalC6OnC59kHOudx2IhVgenHc983LIdMIhsYF9ywVnyW7HrJE7qVuJg==",
+        "resolved": "3.8.0",
+        "contentHash": "R0+4VTGtFm+Q50+dP7Rm+ZB6thjKdBF3mGYbh5dEf/qt+r35MdFx8tMsE0VIbtaqgJMsOSD06CUZB2wPqBe2cw==",
         "dependencies": {
-          "BouncyCastle.Cryptography": "2.2.1",
           "Docker.DotNet": "3.125.15",
           "Docker.DotNet.X509": "3.125.15",
-          "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.4",
           "SSH.NET": "2023.0.0",
-          "SharpZipLib": "1.4.2",
-          "System.Text.Json": "6.0.9"
+          "SharpZipLib": "1.4.2"
         }
       },
       "xunit.abstractions": {
@@ -2590,7 +2581,7 @@
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.7.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.7.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.7.1, )",
-          "OpenTelemetry.Instrumentation.GrpcNetClient": "[1.6.0-beta.2, )",
+          "OpenTelemetry.Instrumentation.GrpcNetClient": "[1.6.0-beta.3, )",
           "OpenTelemetry.Instrumentation.Http": "[1.7.1, )",
           "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.4, )",
           "OpenTelemetry.Instrumentation.Runtime": "[1.7.0, )"

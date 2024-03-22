@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class ExceptionHandlingServiceCollectionExtensions
+internal static class ExceptionHandlingConfigurationExtensions
 {
     public static IMvcBuilder AddExceptionHandlingConfiguration(this IMvcBuilder builder)
     {

@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class TelemetryServiceCollectionExtensions
+internal static class TelemetryConfigurationExtensions
 {
     public static IHostApplicationBuilder AddTelemetryConfiguration(this IHostApplicationBuilder builder)
     {

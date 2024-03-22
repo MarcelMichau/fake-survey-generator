@@ -3,7 +3,7 @@ using FakeSurveyGenerator.Application;
 
 namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class ApplicationServicesServiceCollectionExtensions
+internal static class ApplicationServicesConfigurationExtensions
 {
     public static IHostApplicationBuilder AddApplicationServicesConfiguration(this IHostApplicationBuilder builder)
     {

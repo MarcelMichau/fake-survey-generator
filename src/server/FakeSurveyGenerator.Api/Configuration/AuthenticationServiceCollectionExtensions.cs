@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class AuthenticationServiceCollectionExtensions
+internal static class AuthenticationConfigurationExtensions
 {
     public static IHostApplicationBuilder AddAuthenticationConfiguration(this IHostApplicationBuilder builder)
     {

@@ -1,6 +1,6 @@
 ﻿namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class DaprServiceCollectionExtensions
+internal static class DaprConfigurationExtensions
 {
     public static IHostApplicationBuilder AddDaprConfiguration(this IHostApplicationBuilder builder)
     {

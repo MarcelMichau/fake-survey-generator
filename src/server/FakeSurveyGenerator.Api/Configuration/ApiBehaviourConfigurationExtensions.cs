@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class ApiBehaviourServiceCollectionExtensions
+internal static class ApiBehaviourConfigurationExtensions
 {
     public static IHostApplicationBuilder AddApiBehaviourConfiguration(this IHostApplicationBuilder builder)
     {

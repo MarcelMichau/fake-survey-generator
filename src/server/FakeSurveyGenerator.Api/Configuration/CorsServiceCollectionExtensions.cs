@@ -1,6 +1,6 @@
 ﻿namespace FakeSurveyGenerator.Api.Configuration;
 
-internal static class CorsServiceCollectionExtensions
+internal static class CorsConfigurationExtensions
 {
     public static IHostApplicationBuilder AddCorsConfiguration(this IHostApplicationBuilder builder)
     {
