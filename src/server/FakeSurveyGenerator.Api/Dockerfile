@@ -13,6 +13,7 @@ COPY ["src/server/Directory.Build.props", "src/server/"]
 COPY ["src/server/version.json", "src/server/"]
 COPY ["src/server/FakeSurveyGenerator.Api/FakeSurveyGenerator.Api.csproj", "src/server/FakeSurveyGenerator.Api/"]
 COPY ["src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj", "src/server/FakeSurveyGenerator.Application/"]
+COPY ["src/server/FakeSurveyGenerator.ServiceDefaults/FakeSurveyGenerator.ServiceDefaults.csproj", "src/server/FakeSurveyGenerator.ServiceDefaults/"]
 RUN dotnet restore "./src/server/FakeSurveyGenerator.Api/./FakeSurveyGenerator.Api.csproj"
 COPY . .
 WORKDIR /
