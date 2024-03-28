@@ -13,10 +13,10 @@ internal static class ForwardedHeadersConfigurationExtensions
             options.KnownNetworks.Clear();
             options.KnownProxies.Clear();
 
-            options.AllowedHosts = new List<string>
-            {
+            options.AllowedHosts =
+            [
                 "fakesurveygenerator.mysecondarydomain.com"
-            };
+            ];
         });
 
         return builder;

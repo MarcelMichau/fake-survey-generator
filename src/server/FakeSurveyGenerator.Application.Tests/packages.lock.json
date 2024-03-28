@@ -81,6 +81,17 @@
           "Castle.Core": "5.1.1"
         }
       },
+      "xunit": {
+        "type": "Direct",
+        "requested": "[2.7.0, )",
+        "resolved": "2.7.0",
+        "contentHash": "KcCI5zxh8zbUfQTeErc4oT7YokViVND2V0p4vDJ2VD4lhF9V5qCYMMDNixme7FdwYy3SwPHF+2xC2Dq4Z9GSlA==",
+        "dependencies": {
+          "xunit.analyzers": "1.11.0",
+          "xunit.assert": "2.7.0",
+          "xunit.core": "[2.7.0]"
+        }
+      },
       "xunit.runner.visualstudio": {
         "type": "Direct",
         "requested": "[2.5.7, )",
@@ -1931,19 +1942,42 @@
       },
       "xunit.abstractions": {
         "type": "Transitive",
-        "resolved": "2.0.1",
-        "contentHash": "bDm/zdG5rnRDsobKuKwrvL4HccBdC0uvT12be6fG12P3d1U7u9Wkvfoq/PM2GeyIeb0Dtcmm/7k2oaawiqQ2Dg==",
+        "resolved": "2.0.3",
+        "contentHash": "pot1I4YOxlWjIb5jmwvvQNbTrZ3lJQ+jUGkGjWE3hEFM0l5gOnBWS+H3qsex68s5cO52g+44vpGzhAt+42vwKg=="
+      },
+      "xunit.analyzers": {
+        "type": "Transitive",
+        "resolved": "1.11.0",
+        "contentHash": "SCv+Ihxv+fCqotGeM8sVwLhw8nzAJ2aFRN5lcoKn9QtGdbVJ79JqDc+4u8/Ddnp2udxtmv+xYFWkHNlb/sk01w=="
+      },
+      "xunit.assert": {
+        "type": "Transitive",
+        "resolved": "2.7.0",
+        "contentHash": "CCTs3bUhmIS4tDwK6Cn/IiabG3RhYzdf65eIkO7u9/grKoN9MrN780LzVED3E8v+vwmmj7b5TW3/GFuZHPAzWA=="
+      },
+      "xunit.core": {
+        "type": "Transitive",
+        "resolved": "2.7.0",
+        "contentHash": "98tzqYAbtc/p/2Ba455XTNbD12Qoo8kPehjC4oDT46CAsLli5JOCU9hFF2MV3HHWMw/Y3yFUV2Vcukplbs6kuA==",
         "dependencies": {
-          "NETStandard.Library": "1.6.0"
+          "xunit.extensibility.core": "[2.7.0]",
+          "xunit.extensibility.execution": "[2.7.0]"
         }
       },
       "xunit.extensibility.core": {
         "type": "Transitive",
-        "resolved": "2.2.0",
-        "contentHash": "2bT3sG8obWbRm45NewcV+Sr2K1whj88LnjQT7szJx1DcydgKR86ggV5rIZ5NccCWo2ctZMRb0QMYttVrhrG9Gw==",
+        "resolved": "2.7.0",
+        "contentHash": "JLnx4PI0vn1Xr1Ust6ydrp2t/ktm2dyGPAVoDJV5gQuvBMSbd2K7WGzODa2ttiz030CeQ8nbsXl05+cvf7QNyA==",
         "dependencies": {
-          "NETStandard.Library": "1.6.0",
-          "xunit.abstractions": "2.0.1"
+          "xunit.abstractions": "2.0.3"
+        }
+      },
+      "xunit.extensibility.execution": {
+        "type": "Transitive",
+        "resolved": "2.7.0",
+        "contentHash": "bjY+crT1jOyxKagFjCMdEVzoenO2v66ru8+CK/0UaXvyG4U9Q3UTieJkbQXbi7/1yZIK1sGh01l5/jh2CwLJtQ==",
+        "dependencies": {
+          "xunit.extensibility.core": "[2.7.0]"
         }
       },
       "fakesurveygenerator.application": {

@@ -17,13 +17,12 @@ public sealed class RequestLoggerTests
         var requestLogger = new LoggingBehaviour<CreateSurveyCommand>(_logger, _userService);
 
         await requestLogger.Process(new CreateSurveyCommand("Test Topic", 10, "Test Respondents",
-            new List<SurveyOptionDto>
-            {
-                new()
+            [
+                new SurveyOptionDto
                 {
                     OptionText = "Option 1"
                 }
-            }), CancellationToken.None);
+            ]), CancellationToken.None);
 
         _userService.Received(1).GetUserIdentity();
     }
