@@ -17,11 +17,11 @@ var api = builder.AddProject<Projects.FakeSurveyGenerator_Api>("fakesurveygenera
     {
         options.WithOptions(new DaprSidecarOptions
         {
-            ResourcesPaths = ImmutableHashSet.Create("../dapr/components")
+            ResourcesPaths = ImmutableHashSet.Create("../../../dapr/components")
         });
     });
 
-builder.AddNpmApp("fake-survey-generator-ui", "../src/client/ui", "dev")
+builder.AddNpmApp("fake-survey-generator-ui", "../../client/ui", "dev")
     .WithReference(api)
     .WithEndpoint(containerPort: 3000, hostPort: 3000, scheme: "https", env: "PORT")
     .PublishAsDockerFile();

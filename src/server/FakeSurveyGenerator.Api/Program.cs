@@ -20,7 +20,18 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.AddServiceDefaults();
+    builder.Services.AddAuthorization();
+
+    builder
+        .AddServiceDefaults()
+        .AddCorsConfiguration()
+        .AddDaprConfiguration()
+        .AddSwaggerConfiguration()
+        .AddAuthenticationConfiguration()
+        .AddForwardedHeadersConfiguration()
+        .AddTelemetryConfiguration()
+        .AddApiBehaviourConfiguration()
+        .AddApplicationServicesConfiguration();
 
     builder.Host
         .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
@@ -49,20 +60,6 @@ try
             var daprClient = new DaprClientBuilder().Build();
             configurationBuilder.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
         });
-
-    builder.Services.AddAuthorization();
-
-    builder.AddApplicationServicesConfiguration();
-
-    builder.AddCorsConfiguration();
-
-    builder
-        .AddDaprConfiguration()
-        .AddSwaggerConfiguration()
-        .AddAuthenticationConfiguration()
-        .AddForwardedHeadersConfiguration()
-        .AddTelemetryConfiguration()
-        .AddApiBehaviourConfiguration();
 
     var app = builder.Build();
 
@@ -99,7 +96,4 @@ finally
     Log.CloseAndFlush();
 }
 
-namespace FakeSurveyGenerator.Api
-{
-    public partial class Program;
-}
+public partial class Program;
