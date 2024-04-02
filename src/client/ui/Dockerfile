@@ -1,10 +1,10 @@
-FROM node:21-alpine as build
+FROM oven/bun:alpine as build
 ARG VITE_APP_VERSION
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/package-lock.json ./
-RUN npm i
+RUN bun i
 COPY src/client/ui/. ./
-RUN npm run build
+RUN bun run build
 
 FROM nginx:1.25.4-alpine
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
