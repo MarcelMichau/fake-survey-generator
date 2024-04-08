@@ -61,7 +61,8 @@ try
     app.UseDefaultFiles();
     app.UseStaticFiles();
 
-    app.UseCors();
+    if (app.Environment.IsDevelopment())
+        app.UseCors(); // CORS is only used for local development when running in the Aspire Host
 
     app.UseSerilogRequestLogging();
 
