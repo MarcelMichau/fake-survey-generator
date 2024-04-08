@@ -24,12 +24,12 @@ try
 
     builder
         .AddServiceDefaults()
+        .AddTelemetryConfiguration()
         .AddCorsConfiguration()
         .AddDaprConfiguration()
         .AddSwaggerConfiguration()
         .AddAuthenticationConfiguration()
         .AddForwardedHeadersConfiguration()
-        .AddTelemetryConfiguration()
         .AddApiBehaviourConfiguration()
         .AddApplicationServicesConfiguration();
 
