@@ -113,9 +113,8 @@ stages:
                 src/server/FakeSurveyGenerator.Api.Tests.Integration
             displayName: "Run Unit + Integration Tests"
 
-          - task: PublishCodeCoverageResults@1
+          - task: PublishCodeCoverageResults@2
             inputs:
-              codeCoverageTool: "cobertura"
               summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
             displayName: "Publish Code Coverage Results"
 
