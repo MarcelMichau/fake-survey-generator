@@ -41,14 +41,6 @@ try
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
                 .WriteTo.Console();
-
-            if (!string.IsNullOrWhiteSpace(
-                    hostBuilderContext.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING")))
-            {
-                loggerConfiguration.WriteTo.ApplicationInsights(
-                    services.GetRequiredService<TelemetryConfiguration>(),
-                    TelemetryConverter.Traces);
-            }
         }).ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
         {
             if (hostBuilderContext.Configuration.GetValue<bool>("SKIP_DAPR"))
