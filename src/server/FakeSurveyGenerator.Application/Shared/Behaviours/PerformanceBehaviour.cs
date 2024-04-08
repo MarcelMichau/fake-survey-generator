@@ -4,17 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Application.Shared.Behaviours;
 
-public sealed class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public sealed class PerformanceBehaviour<TRequest, TResponse>(ILogger<TRequest> logger)
+    : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly Stopwatch _timer;
-    private readonly ILogger<TRequest> _logger;
-
-    public PerformanceBehaviour(ILogger<TRequest> logger)
-    {
-        _timer = new Stopwatch();
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly Stopwatch _timer = new();
+    private readonly ILogger<TRequest> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task<TResponse> Handle(TRequest request,
         RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)

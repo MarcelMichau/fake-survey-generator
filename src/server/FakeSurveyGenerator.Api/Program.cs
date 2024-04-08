@@ -6,87 +6,55 @@ using FakeSurveyGenerator.Api.Configuration.HealthChecks;
 using FakeSurveyGenerator.Api.Configuration.Swagger;
 using FakeSurveyGenerator.Api.Surveys;
 using FakeSurveyGenerator.Api.Users;
-using Microsoft.ApplicationInsights.Extensibility;
-using Serilog;
-using Serilog.Events;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
+var builder = WebApplication.CreateBuilder(args);
 
-try
+builder.Services.AddAuthorization();
+
+builder
+    .AddServiceDefaults()
+    .AddTelemetryConfiguration()
+    .AddCorsConfiguration()
+    .AddDaprConfiguration()
+    .AddSwaggerConfiguration()
+    .AddAuthenticationConfiguration()
+    .AddForwardedHeadersConfiguration()
+    .AddApiBehaviourConfiguration()
+    .AddApplicationServicesConfiguration();
+
+if (!builder.Configuration.GetValue<bool>("SKIP_DAPR"))
 {
-    Log.Information("Starting web host");
+    var configStoreName =
+        builder.Environment.IsDevelopment() ? "local-file" : "azure-key-vault";
 
-    var builder = WebApplication.CreateBuilder(args);
+    var daprClient = new DaprClientBuilder().Build();
 
-    builder.Services.AddAuthorization();
-
-    builder
-        .AddServiceDefaults()
-        .AddTelemetryConfiguration()
-        .AddCorsConfiguration()
-        .AddDaprConfiguration()
-        .AddSwaggerConfiguration()
-        .AddAuthenticationConfiguration()
-        .AddForwardedHeadersConfiguration()
-        .AddApiBehaviourConfiguration()
-        .AddApplicationServicesConfiguration();
-
-    builder.Host
-        .UseSerilog((hostBuilderContext, services, loggerConfiguration) =>
-        {
-            loggerConfiguration
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.Console();
-        }).ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
-        {
-            if (hostBuilderContext.Configuration.GetValue<bool>("SKIP_DAPR"))
-                return;
-
-            var configStoreName =
-                hostBuilderContext.HostingEnvironment.IsDevelopment() ? "local-file" : "azure-key-vault";
-
-            var daprClient = new DaprClientBuilder().Build();
-            configurationBuilder.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
-        });
-
-    var app = builder.Build();
-
-    app.UseSecurityHeaders();
-    app.UseForwardedHeaders();
-
-    app.UseDefaultFiles();
-    app.UseStaticFiles();
-
-    if (app.Environment.IsDevelopment())
-        app.UseCors(); // CORS is only used for local development when running in the Aspire Host
-
-    app.UseSerilogRequestLogging();
-
-    app.UseHttpsRedirection();
-
-    app.UseHealthChecksConfiguration();
-
-    app.UseSwaggerConfiguration();
-
-    app.MapAdminEndpoints();
-    app.MapSurveyEndpoints();
-    app.MapUserEndpoints();
-
-    app.MapDefaultEndpoints();
-
-    app.Run();
+    builder.Configuration.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
 }
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Host terminated unexpectedly");
-}
-finally
-{
-    Log.CloseAndFlush();
-}
+
+var app = builder.Build();
+
+app.UseSecurityHeaders();
+app.UseForwardedHeaders();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+if (app.Environment.IsDevelopment())
+    app.UseCors(); // CORS is only used for local development when running in the Aspire Host
+
+app.UseHttpsRedirection();
+
+app.UseHealthChecksConfiguration();
+
+app.UseSwaggerConfiguration();
+
+app.MapAdminEndpoints();
+app.MapSurveyEndpoints();
+app.MapUserEndpoints();
+
+app.MapDefaultEndpoints();
+
+app.Run();
 
 public partial class Program;

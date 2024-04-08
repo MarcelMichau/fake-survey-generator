@@ -18,13 +18,16 @@ public static class HostApplicationBuilderConfiguration
     public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)
     {
         builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
         builder.Services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddOpenRequestPreProcessor(typeof(LoggingBehaviour<>));
             cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
         });
+
         builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         return builder;

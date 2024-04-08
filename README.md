@@ -108,7 +108,6 @@ The server side makes use of the following tools, libraries & frameworks:
   - [FluentValidation](https://fluentvalidation.net/)
   - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
   - [Docker](https://www.docker.com/)
-  - [Serilog](https://serilog.net/)
   - [NSubstitute](https://nsubstitute.github.io/)
 - Fake Survey Generator Worker
   - .NET 8.0
