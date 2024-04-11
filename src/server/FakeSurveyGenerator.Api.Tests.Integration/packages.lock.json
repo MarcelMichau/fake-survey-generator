@@ -50,9 +50,9 @@
       },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.7.48-alpha, )",
-        "resolved": "3.7.48-alpha",
-        "contentHash": "UdkeqPFZp9mXqONyuL8i9yJ6sWf+BckTNh9p/MthVWgrY1wczG/5qg0HoQDmgy2HEIU3uUSTjgly9ZPkPjrZ+w=="
+        "requested": "[3.7.62-alpha, )",
+        "resolved": "3.7.62-alpha",
+        "contentHash": "AznrIeQ9gjhyViYnTiTfRd1YmGRboUoaWf26W8sXonjxxQucPWZaFh9mh3xbLzJFHjMlzvJSea+VvMMrUdAnpw=="
       },
       "NSubstitute": {
         "type": "Direct",
@@ -1243,10 +1243,10 @@
       },
       "OpenTelemetry.Instrumentation.GrpcNetClient": {
         "type": "Transitive",
-        "resolved": "1.6.0-beta.3",
-        "contentHash": "nzw8D5in6Hg/GbjNlq2FETP4GjSckae9hPGTxAUO7UiOS1lqkyxZJ7f4ntIjFKbiS3wuA9wPfQVH/3CaPV6EvQ==",
+        "resolved": "1.8.0-beta.1",
+        "contentHash": "6vyT7uAWDR1TlE9+6TnsXuSd33NzotpfRbs8Hw0s7JNB+lmn3IqBBAKrnHB/MSyjX6cxdb6rvvthVBtXJy7MyQ==",
         "dependencies": {
-          "OpenTelemetry": "1.6.0"
+          "OpenTelemetry": "1.8.0"
         }
       },
       "OpenTelemetry.Instrumentation.Http": {
@@ -1260,10 +1260,10 @@
       },
       "OpenTelemetry.Instrumentation.Process": {
         "type": "Transitive",
-        "resolved": "0.5.0-beta.4",
-        "contentHash": "5lmIQoikQVk5DZB3PzGs1AJfrZnyCbqOHMwfGi6OmXCZjKmXPeooTcXQURkoKwqHErrNZRe6rAnxAVC1B5RbDg==",
+        "resolved": "0.5.0-beta.5",
+        "contentHash": "jWGUzdqfdGkkUWzeuCzxf3Ict+XDt2mTtGTjnIsytl1QYtxQs9+OyZYPV2UmaK31syl89ugup09x7mWVjH7qIw==",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.7.0, 2.0.0)"
+          "OpenTelemetry.Api": "[1.8.0, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.Runtime": {
@@ -2452,9 +2452,9 @@
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.8.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.8.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.8.0, )",
-          "OpenTelemetry.Instrumentation.GrpcNetClient": "[1.6.0-beta.3, )",
+          "OpenTelemetry.Instrumentation.GrpcNetClient": "[1.8.0-beta.1, )",
           "OpenTelemetry.Instrumentation.Http": "[1.8.0, )",
-          "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.4, )",
+          "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.5, )",
           "OpenTelemetry.Instrumentation.Runtime": "[1.8.0, )"
         }
       }
