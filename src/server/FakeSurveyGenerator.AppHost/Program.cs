@@ -5,12 +5,11 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 var database = builder.AddSqlServer("sql-server")
     .AddDatabase("database")
-    .WithEndpoint(containerPort: 1433, hostPort: 1433);
+    .WithEndpoint(targetPort: 1433, port: 1433);
 
 var cache = builder.AddRedis("cache");
 
-var api = builder.AddProject<Projects.FakeSurveyGenerator_Api>("fakesurveygeneratorapi")
-    .WithLaunchProfile("https")
+var api = builder.AddProject<Projects.FakeSurveyGenerator_Api>("fakesurveygeneratorapi", "https")
     .WithReference(database)
     .WithReference(cache)
     .WithDaprSidecar(options =>
@@ -23,7 +22,7 @@ var api = builder.AddProject<Projects.FakeSurveyGenerator_Api>("fakesurveygenera
 
 builder.AddNpmApp("fake-survey-generator-ui", "../../client/ui", "dev")
     .WithReference(api)
-    .WithEndpoint(containerPort: 3000, hostPort: 3000, scheme: "https", env: "PORT")
+    .WithEndpoint(targetPort: 3000, port: 3000, scheme: "https", env: "PORT")
     .PublishAsDockerFile();
 
 builder.Build().Run();
