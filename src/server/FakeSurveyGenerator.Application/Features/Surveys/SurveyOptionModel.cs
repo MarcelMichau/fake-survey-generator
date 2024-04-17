@@ -4,9 +4,9 @@ namespace FakeSurveyGenerator.Application.Features.Surveys;
 
 public sealed record SurveyOptionModel
 {
-    public string OptionText { get; init; } = null!;
-    public int NumberOfVotes { get; init; }
-    public int PreferredNumberOfVotes { get; init; }
+    public required string OptionText { get; init; }
+    public required int NumberOfVotes { get; init; }
+    public required int PreferredNumberOfVotes { get; init; }
 }
 
 public static class SurveyOptionModelMappingExtensions

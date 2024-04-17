@@ -5,12 +5,12 @@ namespace FakeSurveyGenerator.Application.Features.Surveys;
 
 public sealed record SurveyModel : AuditableModel
 {
-    public int Id { get; init; }
-    public int OwnerId { get; init; }
-    public string Topic { get; init; } = null!;
-    public string RespondentType { get; init; } = null!;
-    public int NumberOfRespondents { get; init; }
-    public List<SurveyOptionModel> Options { get; init; } = null!;
+    public required int Id { get; init; }
+    public required int OwnerId { get; init; }
+    public required string Topic { get; init; }
+    public required string RespondentType { get; init; }
+    public required int NumberOfRespondents { get; init; }
+    public required List<SurveyOptionModel> Options { get; init; }
 }
 
 public static class SurveyModelMappingExtensions

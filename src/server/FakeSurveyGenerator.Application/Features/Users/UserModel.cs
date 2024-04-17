@@ -5,10 +5,10 @@ namespace FakeSurveyGenerator.Application.Features.Users;
 
 public sealed record UserModel : AuditableModel
 {
-    public int Id { get; init; }
-    public string DisplayName { get; init; } = null!;
-    public string EmailAddress { get; init; } = null!;
-    public string ExternalUserId { get; init; } = null!;
+    public required int Id { get; init; }
+    public required string DisplayName { get; init; }
+    public required string EmailAddress { get; init; }
+    public required string ExternalUserId { get; init; }
 }
 
 public static class UserModelMappingExtensions
