@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
@@ -12,7 +11,6 @@ namespace FakeSurveyGenerator.Application.Tests.Features.Users;
 public sealed class GetUserQueryTests(QueryTestFixture fixture)
 {
     private readonly SurveyContext _surveyContext = fixture.Context;
-    private readonly IMapper _mapper = fixture.Mapper;
 
     [Fact]
     public async Task GivenExistingUserId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
@@ -21,7 +19,7 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext, _mapper);
+        var handler = new GetUserQueryHandler(_surveyContext);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -35,7 +33,7 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext, _mapper);
+        var handler = new GetUserQueryHandler(_surveyContext);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -52,7 +50,7 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext, _mapper);
+        var handler = new GetUserQueryHandler(_surveyContext);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -69,7 +67,7 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext, _mapper);
+        var handler = new GetUserQueryHandler(_surveyContext);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -86,7 +84,7 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext, _mapper);
+        var handler = new GetUserQueryHandler(_surveyContext);
 
         var result = await handler.Handle(query, CancellationToken.None);
 

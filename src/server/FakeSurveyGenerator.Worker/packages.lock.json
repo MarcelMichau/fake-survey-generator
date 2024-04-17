@@ -67,14 +67,6 @@
           "StackExchange.Redis": "2.7.4"
         }
       },
-      "AutoMapper": {
-        "type": "Transitive",
-        "resolved": "13.0.1",
-        "contentHash": "/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
-        "dependencies": {
-          "Microsoft.Extensions.Options": "6.0.0"
-        }
-      },
       "Azure.Core": {
         "type": "Transitive",
         "resolved": "1.35.0",
@@ -110,8 +102,8 @@
       },
       "Dapper": {
         "type": "Transitive",
-        "resolved": "2.1.35",
-        "contentHash": "YKRwjVfrG7GYOovlGyQoMvr1/IJdn+7QzNXJxyMh0YfFF5yvDmTYaJOVYWsckreNjGsGSEtrMTpnzxTUq/tZQw=="
+        "resolved": "2.1.44",
+        "contentHash": "L6Zdsn0mZY5+UxF2iag/X1an0g+rsPHVswsibunLvHUqby8CyYq5RoVnic1iz/hCtIcqDRTl31Aiu5JXiTyohA=="
       },
       "FluentValidation": {
         "type": "Transitive",
@@ -915,9 +907,8 @@
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[8.0.1, )",
           "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[8.0.0-preview.5.24201.12, )",
           "Aspire.StackExchange.Redis.DistributedCaching": "[8.0.0-preview.5.24201.12, )",
-          "AutoMapper": "[13.0.1, )",
           "CSharpFunctionalExtensions": "[2.41.0, )",
-          "Dapper": "[2.1.35, )",
+          "Dapper": "[2.1.44, )",
           "FluentValidation": "[11.9.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[11.9.0, )",
           "IdentityModel": "[7.0.0, )",

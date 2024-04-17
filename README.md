@@ -103,7 +103,6 @@ The server side makes use of the following tools, libraries & frameworks:
   - [Dapper](https://github.com/StackExchange/Dapper)
   - [Redis](https://redis.io/)
   - [Swagger](https://swagger.io/)
-  - [AutoMapper](https://automapper.org/)
   - [MediatR](https://github.com/jbogard/MediatR)
   - [FluentValidation](https://fluentvalidation.net/)
   - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)

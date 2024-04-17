@@ -1,18 +1,23 @@
-﻿using AutoMapper;
-using FakeSurveyGenerator.Application.Domain.Surveys;
-using FakeSurveyGenerator.Application.Shared.Mappings;
+﻿using FakeSurveyGenerator.Application.Domain.Surveys;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
 
-public sealed record SurveyOptionModel : IMapFrom<SurveyOption>
+public sealed record SurveyOptionModel
 {
     public string OptionText { get; init; } = null!;
     public int NumberOfVotes { get; init; }
     public int PreferredNumberOfVotes { get; init; }
+}
 
-    public void Mapping(Profile profile)
+public static class SurveyOptionModelMappingExtensions
+{
+    public static SurveyOptionModel MapToModel(this SurveyOption surveyOption)
     {
-        profile.CreateMap<SurveyOption, SurveyOptionModel>()
-            .ForMember(dest => dest.OptionText, opts => opts.MapFrom(src => src.OptionText.Value));
+        return new SurveyOptionModel
+        {
+            OptionText = surveyOption.OptionText.Value,
+            NumberOfVotes = surveyOption.NumberOfVotes,
+            PreferredNumberOfVotes = surveyOption.PreferredNumberOfVotes
+        };
     }
 }

@@ -38,7 +38,7 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
 
         var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-        var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
+        var sut = new CreateSurveyCommandHandler(Context, _mockUserService);
 
         var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -72,7 +72,7 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
 
         var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
-        var sut = new CreateSurveyCommandHandler(Context, Mapper, _mockUserService);
+        var sut = new CreateSurveyCommandHandler(Context, _mockUserService);
 
         var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 

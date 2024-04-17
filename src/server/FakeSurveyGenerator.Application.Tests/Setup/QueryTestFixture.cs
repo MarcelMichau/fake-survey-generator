@@ -1,25 +1,10 @@
-﻿using AutoMapper;
-using FakeSurveyGenerator.Application.Infrastructure.Persistence;
-using FakeSurveyGenerator.Application.Shared.Mappings;
+﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
 namespace FakeSurveyGenerator.Application.Tests.Setup;
 
 public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
 {
-    public SurveyContext Context { get; }
-    public IMapper Mapper { get; }
-
-    public QueryTestFixture()
-    {
-        Context = SurveyContextFactory.Create();
-
-        var configurationProvider = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-
-        Mapper = configurationProvider.CreateMapper();
-    }
+    public SurveyContext Context { get; } = SurveyContextFactory.Create();
 
     public void Dispose()
     {

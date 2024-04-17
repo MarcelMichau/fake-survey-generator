@@ -28,7 +28,7 @@ public sealed class RegisterUserCommandTests : CommandTestBase
         var mockUserService = Substitute.For<IUserService>();
         mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser(_fixture.Create<string>(), _fixture.Create<string>(), _fixture.Create<string>()));
 
-        var sut = new RegisterUserCommandHandler(mockUserService, Context, Mapper);
+        var sut = new RegisterUserCommandHandler(mockUserService, Context);
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
@@ -44,7 +44,7 @@ public sealed class RegisterUserCommandTests : CommandTestBase
         var mockUserService = Substitute.For<IUserService>();
         mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser(newUserId, newUserDisplayName, newUserEmailAddress));
 
-        var sut = new RegisterUserCommandHandler(mockUserService, Context, Mapper);
+        var sut = new RegisterUserCommandHandler(mockUserService, Context);
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
@@ -59,7 +59,7 @@ public sealed class RegisterUserCommandTests : CommandTestBase
     {
         var registerUserCommand = new RegisterUserCommand();
 
-        var sut = new RegisterUserCommandHandler(_mockUserService, Context, Mapper);
+        var sut = new RegisterUserCommandHandler(_mockUserService, Context);
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
@@ -71,7 +71,7 @@ public sealed class RegisterUserCommandTests : CommandTestBase
     {
         var registerUserCommand = new RegisterUserCommand();
 
-        var sut = new RegisterUserCommandHandler(_mockUserService, Context, Mapper);
+        var sut = new RegisterUserCommandHandler(_mockUserService, Context);
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 

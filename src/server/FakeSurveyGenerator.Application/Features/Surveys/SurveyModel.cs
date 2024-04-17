@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using FakeSurveyGenerator.Application.Domain.Surveys;
+﻿using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Shared.Auditing;
-using FakeSurveyGenerator.Application.Shared.Mappings;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
 
-public sealed record SurveyModel : AuditableModel, IMapFrom<Survey>
+public sealed record SurveyModel : AuditableModel
 {
     public int Id { get; init; }
     public int OwnerId { get; init; }
@@ -13,12 +11,24 @@ public sealed record SurveyModel : AuditableModel, IMapFrom<Survey>
     public string RespondentType { get; init; } = null!;
     public int NumberOfRespondents { get; init; }
     public List<SurveyOptionModel> Options { get; init; } = null!;
+}
 
-    public void Mapping(Profile profile)
+public static class SurveyModelMappingExtensions
+{
+    public static SurveyModel MapToModel(this Survey survey)
     {
-        profile.CreateMap<Survey, SurveyModel>()
-            .ForMember(dest => dest.OwnerId, opts => opts.MapFrom(src => src.Owner.Id))
-            .ForMember(dest => dest.Topic, opts => opts.MapFrom(src => src.Topic.Value))
-            .ForMember(dest => dest.RespondentType, opts => opts.MapFrom(src => src.RespondentType.Value));
+        return new SurveyModel
+        {
+            Id = survey.Id,
+            OwnerId = survey.Owner.Id,
+            Topic = survey.Topic.Value,
+            RespondentType = survey.RespondentType.Value,
+            NumberOfRespondents = survey.NumberOfRespondents,
+            Options = survey.Options.Select(option => option.MapToModel()).ToList(),
+            CreatedBy = survey.CreatedBy,
+            CreatedOn = survey.CreatedOn,
+            ModifiedBy = survey.ModifiedBy,
+            ModifiedOn = survey.ModifiedOn
+        };
     }
 }

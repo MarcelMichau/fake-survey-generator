@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Caching;
@@ -14,7 +13,6 @@ namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
 public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 {
     private readonly SurveyContext _surveyContext = fixture.Context;
-    private readonly IMapper _mapper = fixture.Mapper;
     private readonly ICache<SurveyModel> _cache = Substitute.For<ICache<SurveyModel>>();
 
     [Fact]
@@ -24,7 +22,7 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
+        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -38,7 +36,7 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
+        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -55,7 +53,7 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
+        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -72,7 +70,7 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
+        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -89,7 +87,7 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
+        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -105,7 +103,7 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _mapper, _cache);
+        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 

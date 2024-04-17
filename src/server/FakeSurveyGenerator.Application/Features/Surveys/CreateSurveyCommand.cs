@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Features.Notifications;
@@ -24,7 +23,8 @@ public sealed record CreateSurveyCommand() : IRequest<Result<SurveyModel, Error>
 
     public IEnumerable<SurveyOptionDto> SurveyOptions { get; init; } = [];
 
-    public CreateSurveyCommand(string surveyTopic, int numberOfRespondents, string respondentType, IEnumerable<SurveyOptionDto> surveyOptions) : this()
+    public CreateSurveyCommand(string surveyTopic, int numberOfRespondents, string respondentType,
+        IEnumerable<SurveyOptionDto> surveyOptions) : this()
     {
         SurveyTopic = surveyTopic;
         NumberOfRespondents = numberOfRespondents;
@@ -72,12 +72,14 @@ public sealed class SurveyOptionValidator : AbstractValidator<SurveyOptionDto>
     }
 }
 
-public sealed class CreateSurveyCommandHandler(SurveyContext surveyContext, IMapper mapper,
-        IUserService userService)
+public sealed class CreateSurveyCommandHandler(
+    SurveyContext surveyContext,
+    IUserService userService)
     : IRequestHandler<CreateSurveyCommand, Result<SurveyModel, Error>>
 {
-    private readonly SurveyContext _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
-    private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    private readonly SurveyContext _surveyContext =
+        surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
+
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
     public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request,
@@ -103,7 +105,7 @@ public sealed class CreateSurveyCommandHandler(SurveyContext surveyContext, IMap
 
             await _surveyContext.SaveChangesAsync(cancellationToken);
 
-            return _mapper.Map<SurveyModel>(survey);
+            return survey.MapToModel();
         }
         catch (SurveyDomainException e)
         {
@@ -113,7 +115,8 @@ public sealed class CreateSurveyCommandHandler(SurveyContext surveyContext, IMap
 }
 
 public sealed class
-    SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService) : INotificationHandler<
+    SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
+    : INotificationHandler<
         DomainEventNotification<SurveyCreatedDomainEvent>>
 {
     public async Task Handle(DomainEventNotification<SurveyCreatedDomainEvent> notification,

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Users;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
@@ -13,12 +12,13 @@ namespace FakeSurveyGenerator.Application.Features.Users;
 // This command has no properties as all the data needed to register a user is retrieved from the request context.
 public sealed record RegisterUserCommand : IRequest<Result<UserModel, Error>>;
 
-public sealed class RegisterUserCommandHandler(IUserService userService, SurveyContext surveyContext, IMapper mapper)
+public sealed class RegisterUserCommandHandler(IUserService userService, SurveyContext surveyContext)
     : IRequestHandler<RegisterUserCommand, Result<UserModel, Error>>
 {
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-    private readonly SurveyContext _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
-    private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+
+    private readonly SurveyContext _surveyContext =
+        surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
 
     public async Task<Result<UserModel, Error>> Handle(RegisterUserCommand request,
         CancellationToken cancellationToken)
@@ -35,6 +35,6 @@ public sealed class RegisterUserCommandHandler(IUserService userService, SurveyC
 
         await _surveyContext.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<UserModel>(newUser);
+        return newUser.MapToModel();
     }
 }

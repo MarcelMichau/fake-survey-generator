@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Domain.Users;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
@@ -10,18 +8,16 @@ using Microsoft.EntityFrameworkCore;
 namespace FakeSurveyGenerator.Application.Features.Users;
 public sealed record GetUserQuery(int Id) : IRequest<Result<UserModel, Error>>;
 
-public sealed class GetUserQueryHandler(SurveyContext context, IMapper mapper) : IRequestHandler<GetUserQuery, Result<UserModel, Error>>
+public sealed class GetUserQueryHandler(SurveyContext context) : IRequestHandler<GetUserQuery, Result<UserModel, Error>>
 {
     private readonly SurveyContext _surveyContext = context ?? throw new ArgumentNullException(nameof(context));
-    private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 
     public async Task<Result<UserModel, Error>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         var user = await _surveyContext.Users
             .AsNoTracking()
-            .ProjectTo<UserModel>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
 
-        return user is null ? Errors.General.NotFound(nameof(User), request.Id) : user;
+        return user is null ? Errors.General.NotFound(nameof(User), request.Id) : user.MapToModel();
     }
 }
