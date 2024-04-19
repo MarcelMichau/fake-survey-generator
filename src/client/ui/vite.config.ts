@@ -7,6 +7,6 @@ export default defineConfig({
     plugins: [react(), mkcert()],
     server: {
         host: true,
-        port: parseInt(process.env.PORT ?? "5173"),
+        port: Number.parseInt(process.env.PORT ?? "5173"),
     },
 });
