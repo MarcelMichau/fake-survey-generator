@@ -1,5 +1,4 @@
 ﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence.Interceptors;
-using FakeSurveyGenerator.Application.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,8 +27,6 @@ internal static class DatabaseServiceCollectionExtensions
         );
 
         builder.EnrichSqlServerDbContext<SurveyContext>();
-
-        builder.Services.AddScoped<IDatabaseConnection>(_ => new DapperSqlServerConnection(connectionString));
 
         return builder;
     }

@@ -3,7 +3,6 @@ using Dapper;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
-using FakeSurveyGenerator.Application.Shared.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +11,12 @@ namespace FakeSurveyGenerator.Application.Features.Surveys;
 public sealed record GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>;
 
 public sealed class
-    GetUserSurveysQueryHandler(IDatabaseConnection databaseConnection, IUserService userService,
+    GetUserSurveysQueryHandler(IUserService userService,
         SurveyContext surveyContext)
     : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
 {
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
     private readonly SurveyContext _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
-    private readonly IDatabaseConnection _databaseConnection = databaseConnection ?? throw new ArgumentNullException(nameof(databaseConnection));
 
     public async Task<Result<List<UserSurveyModel>, Error>> Handle(GetUserSurveysQuery request,
         CancellationToken cancellationToken)
@@ -29,7 +27,8 @@ public sealed class
             await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
                 cancellationToken);
 
-        await using var connection = await _databaseConnection.GetDbConnection();
+        var connection = _surveyContext.Database.GetDbConnection();
+
         await connection.OpenAsync(cancellationToken);
 
         var surveys = await connection.QueryAsync<UserSurveyModel>(@"
