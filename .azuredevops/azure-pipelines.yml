@@ -140,6 +140,18 @@ stages:
           imageRepository: "$(registryName).azurecr.io/$(projectName)"
           semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
         steps:
+          - task: Cache@2
+            displayName: Cache Docker Image
+            inputs:
+              key: 'docker | "$(Agent.OS)" | cache'
+              path: $(Pipeline.Workspace)/docker
+              cacheHitVar: CACHE_RESTORED
+
+          - script: |
+              docker load -i $(Pipeline.Workspace)/docker/cache.tar
+            displayName: Docker Restore
+            condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
+
           - task: Docker@2
             displayName: "Build Docker Image"
             inputs:
@@ -152,6 +164,12 @@ stages:
               tags: |
                 $(semVerVersionTag)
                 latest
+
+          - script: |
+              mkdir -p $(Pipeline.Workspace)/docker
+              docker save -o $(Pipeline.Workspace)/docker/cache.tar $(repository):$(semVerVersionTag)
+            displayName: Docker Save
+            condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
           - task: Docker@2
             displayName: "Push Image to Azure Container Registry"
