@@ -167,7 +167,7 @@ stages:
 
           - script: |
               mkdir -p $(Pipeline.Workspace)/docker
-              docker save -o $(Pipeline.Workspace)/docker/cache.tar $(repository):$(semVerVersionTag)
+              docker save -o $(Pipeline.Workspace)/docker/cache.tar $(imageRepository):$(semVerVersionTag)
             displayName: Docker Save
             condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
