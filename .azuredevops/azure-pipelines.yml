@@ -29,7 +29,7 @@ variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   registryName: acrfakesurveygenerator
   resourceGroupName: rg-fake-survey-generator
-  azureResourceManagerConnection: "Azure Service Connection"
+  azureResourceManagerConnection: "FakeSurveyGeneratorServiceConnection"
   location: "South Africa North"
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1

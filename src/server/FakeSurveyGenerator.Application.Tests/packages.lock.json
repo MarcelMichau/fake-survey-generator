@@ -102,14 +102,14 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "Transitive",
-        "resolved": "8.0.0-preview.5.24201.12",
-        "contentHash": "qyxMiqJEZXbjDVBT3SWrOLNgUHfOvHGPabYJ4FIx4WsB0TmEzWHrhUkpowGmqYbBPwj62BcpintdVukK1wTaPw==",
+        "resolved": "8.0.0-preview.6.24214.1",
+        "contentHash": "Gya2zQy0gcMbNe1RB8+OU0usAluqbxACFbEocv7k6lc0ivwfZZzpfs54y7MVf9AYMuYlGyd7DrZdy4DfbxuYgA==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.3",
           "Microsoft.Extensions.Configuration.Binder": "8.0.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "8.0.2",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
-          "OpenTelemetry.Extensions.Hosting": "1.7.0"
+          "OpenTelemetry.Extensions.Hosting": "1.8.0"
         }
       },
       "Aspire.StackExchange.Redis": {
@@ -843,39 +843,38 @@
       },
       "OpenTelemetry": {
         "type": "Transitive",
-        "resolved": "1.7.0",
-        "contentHash": "HNmOJg++4FtEJGCIn1dCJcDkHRLNuLKU047owrGXUOfz/C/c5oZHOPKrowKVOy2jOOh/F9+HDshzeOk5NnQEZg==",
+        "resolved": "1.8.0",
+        "contentHash": "REAYqOj2KcLYdg7Xtj4xdx9bSqwNkUQMBl3jpqhQD1AX4qs+ip4Cd8fs7xUDRj7+7Sce2mRvBX4V8Fy0GHranA==",
         "dependencies": {
-          "Microsoft.Extensions.Logging": "8.0.0",
+          "Microsoft.Extensions.Diagnostics.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging.Configuration": "8.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.7.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.8.0"
         }
       },
       "OpenTelemetry.Api": {
         "type": "Transitive",
-        "resolved": "1.7.0",
-        "contentHash": "w5uDHl1Nm7R5igWu1QjewpdPzJSavua8NTI3+iThOdRNHD3cabox8JeIJ8LpBSXGHARSNFMJZ/Xr5EGRinMTMg==",
+        "resolved": "1.8.0",
+        "contentHash": "+daN4OqIXne3QLlFHEzb6ybAETgKs7Hg5jINYT5P8p8A/cEtuP6CRDYdDpOe6AlW8oAaV/nJJ5tLyPUVKKQu0w==",
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "8.0.0"
         }
       },
       "OpenTelemetry.Api.ProviderBuilderExtensions": {
         "type": "Transitive",
-        "resolved": "1.7.0",
-        "contentHash": "fHLmJcRJk1dAwddjBgvqi/Grmr04hPo1DoFwTa6hxtSvAFOXPU56Xe9Sh2VXqz6Gstzp6TCju8z0Sob1t7BzSg==",
+        "resolved": "1.8.0",
+        "contentHash": "BLo2IwO+sJZMsedvKyMtDJL1Pk7gto2B5lf0rkGKigihUUYDaWwh7HTYtftTamXn0UthCB9B+VUaF7h9AohXMg==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "OpenTelemetry.Api": "1.7.0"
+          "OpenTelemetry.Api": "1.8.0"
         }
       },
       "OpenTelemetry.Extensions.Hosting": {
         "type": "Transitive",
-        "resolved": "1.7.0",
-        "contentHash": "MbB7CWWqb7xHK0jTF9Gtvw/eLWdaKqzkE1XAwLe05xyskHuwJWAbZFax4nGLA71YkMWQNO5iPIBlirvYXOLMlg==",
+        "resolved": "1.8.0",
+        "contentHash": "mJXRMgd7ZoFLuKc2rUlmGNRbbTk6ayQuPJhJy/rktdTZN3lY3wpTRhKPvZNSlKgftx9w039/ORoCUIXmpcgAVQ==",
         "dependencies": {
-          "Microsoft.Extensions.Diagnostics.Abstractions": "8.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
-          "OpenTelemetry": "1.7.0"
+          "OpenTelemetry": "1.8.0"
         }
       },
       "Pipelines.Sockets.Unofficial": {
@@ -1948,7 +1947,7 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[8.0.1, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[8.0.0-preview.5.24201.12, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[8.0.0-preview.6.24214.1, )",
           "Aspire.StackExchange.Redis.DistributedCaching": "[8.0.0-preview.5.24201.12, )",
           "CSharpFunctionalExtensions": "[2.41.0, )",
           "Dapper": "[2.1.44, )",
