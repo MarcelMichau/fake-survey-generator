@@ -14,7 +14,6 @@ builder.Services.AddAuthorization();
 builder
     .AddServiceDefaults()
     .AddTelemetryConfiguration()
-    .AddCorsConfiguration()
     .AddDaprConfiguration()
     .AddSwaggerConfiguration()
     .AddAuthenticationConfiguration()
@@ -39,9 +38,6 @@ app.UseForwardedHeaders();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
-if (app.Environment.IsDevelopment())
-    app.UseCors(); // CORS is only used for local development when running in the Aspire Host
 
 app.UseHttpsRedirection();
 
