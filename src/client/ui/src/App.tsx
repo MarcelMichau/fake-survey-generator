@@ -18,18 +18,13 @@ const App = (): JSX.Element => {
 		const registerUser = async () => {
 			const token = await getAccessTokenSilently();
 
-			const response = await fetch(
-				`${
-					import.meta.env.VITE_APP_API || import.meta.env.BASE_URL
-				}api/user/register`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
-					},
+			const response = await fetch("api/user/register", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
 				},
-			);
+			});
 
 			try {
 				await response.json();
@@ -43,9 +38,7 @@ const App = (): JSX.Element => {
 			const token = await getAccessTokenSilently();
 
 			const response = await fetch(
-				`${
-					import.meta.env.VITE_APP_API || import.meta.env.BASE_URL
-				}api/user/isRegistered?userId=${user?.sub}`,
+				`api/user/isRegistered?userId=${user?.sub}`,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,

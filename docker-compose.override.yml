@@ -12,11 +12,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;Encrypt=false
-      - Cache__RedisPassword=testing
-      - Cache__RedisSsl=false
-      - Cache__RedisUrl=redis
-      - Cache__RedisDefaultDatabase=0
+      - ConnectionStrings__database=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;Encrypt=false
+      - ConnectionStrings__cache=redis,defaultDatabase=0,ssl=false,password=testing,abortConnect=false  
       - IDENTITY_PROVIDER_URL=https://marcelmichau.eu.auth0.com/
     ports:
       - "5000:8080"
@@ -43,11 +40,8 @@ services:
 
   fake-survey-generator-worker:
     environment:
-      - ConnectionStrings__SurveyContext=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;Encrypt=false
-      - Cache__RedisPassword=testing
-      - Cache__RedisSsl=false
-      - Cache__RedisUrl=redis
-      - Cache__RedisDefaultDatabase=0
+      - ConnectionStrings__database=Server=sql-server;Database=FakeSurveyGenerator;user id=SA;pwd=<YourStrong!Passw0rd>;Encrypt=false
+      - ConnectionStrings__cache=redis,defaultDatabase=0,ssl=false,password=testing,abortConnect=false
 
   sql-server:
     ports:

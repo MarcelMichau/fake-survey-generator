@@ -22,7 +22,7 @@ var api = builder.AddProject<Projects.FakeSurveyGenerator_Api>("fakesurveygenera
 
 builder.AddNpmApp("fake-survey-generator-ui", "../../client/ui", "dev")
     .WithReference(api)
-    .WithEndpoint(targetPort: 3000, port: 3000, scheme: "https", env: "PORT")
+    .WithEndpoint(targetPort: 3000, port: 3000, scheme: "https", env: "PORT", isProxied: false)
     .PublishAsDockerFile();
 
 builder.Build().Run();

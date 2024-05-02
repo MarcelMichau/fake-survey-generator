@@ -29,16 +29,11 @@ const GetSurvey = ({ loading }: GetSurveyProps) => {
 
 		const token = await getAccessTokenSilently();
 
-		const response = await fetch(
-			`${
-				import.meta.env.VITE_APP_API || import.meta.env.BASE_URL
-			}api/survey/${surveyId}`,
-			{
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
+		const response = await fetch(`api/survey/${surveyId}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
 			},
-		);
+		});
 
 		if (response.status === 404) {
 			setErrorMessage("Looks like that survey does not exist");

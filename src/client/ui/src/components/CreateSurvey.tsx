@@ -42,17 +42,14 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
 
 		const token = await getAccessTokenSilently();
 
-		const response = await fetch(
-			`${import.meta.env.VITE_APP_API || import.meta.env.BASE_URL}api/survey`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(surveyCommand),
+		const response = await fetch("api/survey", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
 			},
-		);
+			body: JSON.stringify(surveyCommand),
+		});
 
 		if (response.status === 422) {
 			const data: Record<string, string[]> = await response.json();
