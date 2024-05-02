@@ -22,7 +22,7 @@ public class EndToEndTests
         var context = await browser.NewContextAsync();
         var page = await context.NewPageAsync();
 
-        await page.GotoAsync($"{httpClient.BaseAddress}/");
+        await page.GotoAsync($"{httpClient.BaseAddress}");
 
         var title = await page.TextContentAsync("h1");
         title.Should().Be("Fake Survey Generator");

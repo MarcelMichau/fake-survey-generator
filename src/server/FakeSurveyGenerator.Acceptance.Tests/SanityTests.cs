@@ -1,10 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Acceptance.Tests;
 
-public class SanityTests
+public class SanityTests(ITestOutputHelper output)
 {
     private const string UiProjectName = "fake-survey-generator-ui";
     private const string ApiProjectName = "fakesurveygeneratorapi";
@@ -15,6 +16,8 @@ public class SanityTests
     [Fact]
     public async Task GivenRunningApp_WhenNavigatingToUiIndexPage_ThenResponseIsSuccessful()
     {
+        output.WriteLine("Running UI Index Page Test...");
+
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.FakeSurveyGenerator_Api>();
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
@@ -33,6 +36,8 @@ public class SanityTests
     [Fact]
     public async Task GivenRunningApp_WhenCallingApiHealthLiveEndpoint_ThenResponseIsSuccessful()
     {
+        output.WriteLine("Running API Health Live Endpoint Test...");
+
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.FakeSurveyGenerator_Api>();
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
@@ -52,6 +57,8 @@ public class SanityTests
     [Fact]
     public async Task GivenRunningApp_WhenCallingApiHealthReadyEndpoint_ThenResponseIsSuccessful()
     {
+        output.WriteLine("Running API Health Ready Endpoint Test...");
+
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.FakeSurveyGenerator_Api>();
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
@@ -71,6 +78,8 @@ public class SanityTests
     [Fact]
     public async Task GivenRunningApp_WhenCallingApiVersionEndpoint_ThenValidVersionIsReturned()
     {
+        output.WriteLine("Running API Version Endpoint Test...");
+
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.FakeSurveyGenerator_Api>();
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
