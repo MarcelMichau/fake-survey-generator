@@ -229,7 +229,7 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--configuration $(buildConfiguration) --no-restore --collect "XPlat Code Coverage"'
+              arguments: '--configuration $(buildConfiguration) --no-restore --collect "XPlat Code Coverage" --logger "console;verbosity=detailed"'
               projects: |
                 src/server/FakeSurveyGenerator.Acceptance.Tests
             displayName: "Run Acceptance (E2E) Tests"
