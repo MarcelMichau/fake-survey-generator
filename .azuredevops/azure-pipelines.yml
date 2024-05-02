@@ -25,6 +25,12 @@ pr:
       - src/client/ui/*
       - infra/*
 
+parameters:
+  - name: runAcceptanceTests
+    displayName: 'Enable Running Acceptance Tests'
+    default: false
+    type: boolean
+
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   registryName: acrfakesurveygenerator
@@ -182,6 +188,64 @@ stages:
                 $(semVerVersionTag)
                 latest
 
+      - job: AcceptanceTests
+        displayName: "Run Acceptance (E2E) Tests"
+        condition: ${{ eq(parameters.runAcceptanceTests, true) }} # .NET Aspire Tests hang in the pipeline so this is here until it is fixed
+        pool:
+          vmImage: "ubuntu-latest"
+
+        variables:
+          buildConfiguration: "Release"
+
+        steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+
+          - script: |
+              dotnet workload install aspire
+            displayName: Install .NET Aspire Workload
+
+          - task: Cache@2
+            enabled: false
+            displayName: Cache
+            inputs:
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+              restoreKeys: |
+                nuget | "$(Agent.OS)"
+                nuget
+              path: "$(NUGET_PACKAGES)"
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "build"
+              arguments: "--configuration $(buildConfiguration)"
+              projects: |
+                FakeSurveyGenerator.sln
+            displayName: "Build Solution"
+
+          - task: PowerShell@2
+            inputs:
+              filePath: 'src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net8.0/playwright.ps1'
+              arguments: 'install --with-deps'
+            displayName: "Download Playwright Browsers"
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              publishTestResults: true
+              arguments: '--configuration $(buildConfiguration) --no-restore --collect "XPlat Code Coverage" --logger "console;verbosity=detailed"'
+              projects: |
+                src/server/FakeSurveyGenerator.Acceptance.Tests
+            displayName: "Run Acceptance (E2E) Tests"
+
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
+            displayName: "Publish Code Coverage Results"
+       
   - stage: BuildUi
     displayName: "Build UI"
     dependsOn: []

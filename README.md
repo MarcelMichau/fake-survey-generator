@@ -37,7 +37,7 @@ Here are some of the features incorporated into this project:
 - Observable, production ready, distributed application support using [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
 - Unit & Integration tests for a CQRS/DDD project with [XUnit](https://xunit.net/)
 - Target production database for integration tests using [Testcontainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
-- BDD-style acceptance/E2E tests using [SpecFlow](https://specflow.org/) & [Playwright for .NET](https://playwright.dev/dotnet/)
+- E2E acceptance tests using [.NET Aspire Test Projects](https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/testing) & [Playwright for .NET](https://playwright.dev/dotnet/)
 - Implementing health checks for various components using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
 - Adding [Swagger](https://swagger.io/) to an ASP.NET Core Web API using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
 - Adding [OpenID Connect](https://openid.net/connect/) for Authentication
