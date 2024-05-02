@@ -182,6 +182,55 @@ stages:
                 $(semVerVersionTag)
                 latest
 
+      - job: AcceptanceTests
+        displayName: "Run Acceptance Tests"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - task: UseDotNet@2
+            displayName: "Install .NET SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+
+          - script: |
+              dotnet workload install aspire
+            displayName: Install .NET Aspire Workload
+
+          - task: Cache@2
+            enabled: false
+            displayName: Cache
+            inputs:
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
+              restoreKeys: |
+                nuget | "$(Agent.OS)"
+                nuget
+              path: "$(NUGET_PACKAGES)"
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "build"
+              arguments: "--configuration $(buildConfiguration)"
+              projects: |
+                FakeSurveyGenerator.sln
+            displayName: "Build Solution"
+
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              publishTestResults: true
+              arguments: '--no-restore --collect "XPlat Code Coverage"'
+              projects: |
+                src/server/FakeSurveyGenerator.Application.Tests
+                src/server/FakeSurveyGenerator.Api.Tests.Integration
+                src/server/FakeSurveyGenerator.Api.Acceptance.Tests
+            displayName: "Run Unit + Integration Tests"
+
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
+            displayName: "Publish Code Coverage Results"
+       
   - stage: BuildUi
     displayName: "Build UI"
     dependsOn: []
