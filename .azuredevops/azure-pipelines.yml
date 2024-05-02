@@ -219,6 +219,10 @@ stages:
                 FakeSurveyGenerator.sln
             displayName: "Build Solution"
 
+          - script: |
+              pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net8.0\playwright.ps1 install
+            displayName: "Download Playwright Browsers"
+
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
