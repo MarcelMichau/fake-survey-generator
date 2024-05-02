@@ -183,9 +183,13 @@ stages:
                 latest
 
       - job: AcceptanceTests
-        displayName: "Run Acceptance Tests"
+        displayName: "Run Acceptance (E2E) Tests"
         pool:
           vmImage: "ubuntu-latest"
+
+        variables:
+          buildConfiguration: "Release"
+
         steps:
           - task: UseDotNet@2
             displayName: "Install .NET SDK"
@@ -222,7 +226,7 @@ stages:
               arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
                 src/server/FakeSurveyGenerator.Api.Acceptance.Tests
-            displayName: "Run Unit + Integration Tests"
+            displayName: "Run Acceptance (E2E) Tests"
 
           - task: PublishCodeCoverageResults@2
             inputs:
