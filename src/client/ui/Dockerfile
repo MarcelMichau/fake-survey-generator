@@ -6,7 +6,7 @@ RUN bun i
 COPY src/client/ui/. ./
 RUN bun run build
 
-FROM nginx:1.25.5-alpine
+FROM nginx:1.26-alpine
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
