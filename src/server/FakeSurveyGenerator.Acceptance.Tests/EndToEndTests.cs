@@ -1,8 +1,9 @@
 ﻿using Microsoft.Playwright;
 using FluentAssertions;
+using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Acceptance.Tests;
-public class EndToEndTests
+public class EndToEndTests(ITestOutputHelper output)
 {
     private const string UiProjectName = "fake-survey-generator-ui";
 
@@ -11,6 +12,8 @@ public class EndToEndTests
     [Fact]
     public async Task GivenRunningApp_WhenOpeningUiWithPlaywright_ThenIndexPageIsDisplayed()
     {
+        output.WriteLine("Running Playwright UI Index Page Test...");
+
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.FakeSurveyGenerator_Api>();
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();

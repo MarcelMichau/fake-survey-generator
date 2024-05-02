@@ -25,6 +25,11 @@ pr:
       - src/client/ui/*
       - infra/*
 
+parameters:
+  - name: runAcceptanceTests
+    default: false
+    type: boolean
+
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   registryName: acrfakesurveygenerator
@@ -184,6 +189,7 @@ stages:
 
       - job: AcceptanceTests
         displayName: "Run Acceptance (E2E) Tests"
+        condition: ${{ eq(parameters.runAcceptanceTests, true) }} # .NET Aspire Tests hang in the pipeline so this is here until it is fixed
         pool:
           vmImage: "ubuntu-latest"
 
