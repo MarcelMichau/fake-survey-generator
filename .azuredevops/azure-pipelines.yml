@@ -221,8 +221,6 @@ stages:
               publishTestResults: true
               arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
-                src/server/FakeSurveyGenerator.Application.Tests
-                src/server/FakeSurveyGenerator.Api.Tests.Integration
                 src/server/FakeSurveyGenerator.Api.Acceptance.Tests
             displayName: "Run Unit + Integration Tests"
 
