@@ -225,7 +225,7 @@ stages:
               publishTestResults: true
               arguments: '--no-restore --collect "XPlat Code Coverage"'
               projects: |
-                src/server/FakeSurveyGenerator.Api.Acceptance.Tests
+                src/server/FakeSurveyGenerator.Acceptance.Tests
             displayName: "Run Acceptance (E2E) Tests"
 
           - task: PublishCodeCoverageResults@2
