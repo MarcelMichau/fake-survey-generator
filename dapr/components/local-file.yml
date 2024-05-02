@@ -1,7 +1,7 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: local-file
+  name: secrets
   namespace: default
 spec:
   type: secretstores.local.file

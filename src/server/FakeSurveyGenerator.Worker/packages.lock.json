@@ -28,23 +28,23 @@
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "8.0.0-preview.5.24201.12",
-        "contentHash": "WvURcUpzb3SjklUTS+AxTN+HYPYtx7rMSf9i/9k9p/xe1v/4AVWgZ68tjr4YT/y5dyyLP0ukp+VP1TCMUR5PWA==",
+        "resolved": "8.0.0-preview.6.24214.1",
+        "contentHash": "zBIpi7FinQ5OvPGXGA44WoIEg/DQ+b44NiHi1wW22VsoQwJi7syvWm1euaMN3BfjNVxzbvPHSX9n2kS+6xKX2w==",
         "dependencies": {
-          "AspNetCore.HealthChecks.Redis": "8.0.0",
+          "AspNetCore.HealthChecks.Redis": "8.0.1",
           "Microsoft.Extensions.Configuration.Binder": "8.0.1",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.2",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
-          "OpenTelemetry.Extensions.Hosting": "1.7.0",
+          "OpenTelemetry.Extensions.Hosting": "1.8.0",
           "StackExchange.Redis": "2.7.27"
         }
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "Transitive",
-        "resolved": "8.0.0-preview.5.24201.12",
-        "contentHash": "pox70UDis8ravAjMRH3NYIPwHx4IzY5n0XEt7yZuavqa5oazE8GAjMrHxyl18wROFlvoMUmUflBTD3Jl8RUsJQ==",
+        "resolved": "8.0.0-preview.6.24214.1",
+        "contentHash": "8uPLTQon/kSnVej2u+vyGwGXzJvyIQGZYKrFrZJOT+3edagu+azMjlCfU6tZSIbyxkykekrU4X2CSROD0msvEg==",
         "dependencies": {
-          "Aspire.StackExchange.Redis": "8.0.0-preview.5.24201.12",
+          "Aspire.StackExchange.Redis": "8.0.0-preview.6.24214.1",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "8.0.2"
         }
       },
@@ -60,8 +60,8 @@
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "ejDemKPrlWV1fwMxCwgg11bbblNICQdo6koRd66RK3wqHPaSOS8FpJQ/5O64pQ/56/Syx43uqxi7LEuSlzjmFA==",
+        "resolved": "8.0.1",
+        "contentHash": "45jqq4ydvmm7yKpTf0jEpUuYloe2vlytN9dasmqwmQyorpNbjdvWuyvSmjVZM5nBa5e5ryF5MU+F7bXv6Zp2vQ==",
         "dependencies": {
           "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.0",
           "StackExchange.Redis": "2.7.4"
@@ -905,7 +905,7 @@
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[8.0.1, )",
           "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[8.0.0-preview.6.24214.1, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[8.0.0-preview.5.24201.12, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[8.0.0-preview.6.24214.1, )",
           "CSharpFunctionalExtensions": "[2.41.0, )",
           "Dapper": "[2.1.44, )",
           "FluentValidation": "[11.9.1, )",

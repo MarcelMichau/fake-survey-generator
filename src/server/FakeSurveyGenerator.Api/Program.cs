@@ -22,14 +22,7 @@ builder
     .AddApplicationServicesConfiguration();
 
 if (!builder.Configuration.GetValue<bool>("SKIP_DAPR"))
-{
-    var configStoreName =
-        builder.Environment.IsDevelopment() ? "local-file" : "azure-key-vault";
-
-    var daprClient = new DaprClientBuilder().Build();
-
-    builder.Configuration.AddDaprSecretStore(configStoreName, daprClient, TimeSpan.FromSeconds(10));
-}
+    builder.Configuration.AddDaprSecretStore("secrets", new DaprClientBuilder().Build(), TimeSpan.FromSeconds(10));
 
 var app = builder.Build();
 

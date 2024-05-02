@@ -114,7 +114,7 @@ module apiContainerApp 'modules/containerApp.bicep' = {
 }
 
 resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2023-05-02-preview' = {
-  name: 'azure-key-vault'
+  name: 'secrets'
   parent: containerAppEnvironment
   properties: {
     componentType: 'secretstores.azure.keyvault'
