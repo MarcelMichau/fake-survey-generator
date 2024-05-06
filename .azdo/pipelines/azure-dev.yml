@@ -303,7 +303,7 @@ stages:
                 $(SetVersionTag.VersionTag)
                 latest
 
-  - stage: Deploy
+  - stage: App_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - BuildTestApi
@@ -354,7 +354,7 @@ stages:
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
-      - ProvisionInfrastructure
+      - App_Deployment
     displayName: "Database Deployment"
     jobs:
       - deployment: Deployment_Job
