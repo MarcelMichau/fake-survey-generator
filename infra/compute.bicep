@@ -42,9 +42,10 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   name: applicationInsightsName
 }
 
-resource existingUiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing = if (uiContainerAppExists) {
-  name: uiContainerAppName
-}
+resource existingUiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing =
+  if (uiContainerAppExists) {
+    name: uiContainerAppName
+  }
 
 module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
   name: 'containerAppEnvironment'
@@ -73,7 +74,11 @@ module uiContainerApp 'modules/containerApp.bicep' = {
     containers: [
       {
         name: 'fake-survey-generator-ui'
-        image: !empty(uiContainerImage) ? uiContainerImage : uiContainerAppExists ? existingUiContainerApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: !empty(uiContainerImage)
+          ? uiContainerImage
+          : uiContainerAppExists
+              ? existingUiContainerApp.properties.template.containers[0].image
+              : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
       }
     ]
   }
@@ -102,9 +107,10 @@ var apiEnvironmentVariables = [
   }
 ]
 
-resource existingApiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing = if (apiContainerAppExists) {
-  name: apiContainerAppName
-}
+resource existingApiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing =
+  if (apiContainerAppExists) {
+    name: apiContainerAppName
+  }
 
 module apiContainerApp 'modules/containerApp.bicep' = {
   name: 'apiContainerApp'
@@ -122,7 +128,11 @@ module apiContainerApp 'modules/containerApp.bicep' = {
     containers: [
       {
         name: 'fake-survey-generator-api'
-        image: !empty(apiContainerImage) ? apiContainerImage : apiContainerAppExists ? existingApiContainerApp.properties.template.containers[0].image : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        image: !empty(apiContainerImage)
+          ? apiContainerImage
+          : apiContainerAppExists
+              ? existingApiContainerApp.properties.template.containers[0].image
+              : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         env: apiEnvironmentVariables
       }
     ]
@@ -136,10 +146,11 @@ module apiContainerApp 'modules/containerApp.bicep' = {
   }
 }
 
-resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2023-05-02-preview' = {
-  name: 'secrets'
-  parent: containerAppEnvironment
-  properties: {
+module daprSecretStoreComponent 'modules/daprComponent.bicep' = {
+  name: 'daprSecretStoreComponent'
+  params: {
+    componentName: 'secrets'
+    containerAppEnvironmentName: containerAppEnvironment.outputs.containerAppEnvironmentName
     componentType: 'secretstores.azure.keyvault'
     metadata: [
       {
