@@ -353,6 +353,7 @@ stages:
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
               AZURE_LOCATION: $(AZURE_LOCATION)
               AZURE_RESOURCE_GROUP: $(AZURE_RESOURCE_GROUP)
+              VITE_APP_VERSION: $(uiSemVerVersionTag)
 
   - stage: Database_Deployment
     condition: succeeded()
