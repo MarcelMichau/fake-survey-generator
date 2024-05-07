@@ -305,7 +305,7 @@ stages:
           #       latest
 
   - stage: App_Deployment
-    condition: and(succeeded(), eq(variables.isMain, true))
+    condition: succeeded()
     dependsOn:
       - BuildTestApi
       - BuildUi
@@ -353,7 +353,7 @@ stages:
           #     AZURE_LOCATION: $(AZURE_LOCATION)
 
   - stage: Database_Deployment
-    condition: and(succeeded(), eq(variables.isMain, true))
+    condition: succeeded()
     dependsOn:
       - App_Deployment
     displayName: "Deploy Database"
