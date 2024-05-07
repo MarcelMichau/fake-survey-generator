@@ -353,7 +353,8 @@ stages:
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
               AZURE_LOCATION: $(AZURE_LOCATION)
               AZURE_RESOURCE_GROUP: $(AZURE_RESOURCE_GROUP)
-              VITE_APP_VERSION: $(uiSemVerVersionTag)
+              UI_VERSION: $(uiSemVerVersionTag)
+              API_VERSION: $(apiSemVerVersionTag)
 
   - stage: Database_Deployment
     condition: succeeded()
@@ -366,7 +367,7 @@ stages:
         pool:
           vmImage: "windows-latest"
         variables:
-          sqlServerName: "sql-marcel-michau.database.windows.net"
+          sqlServerName: "sql-fake-survey-generator.database.windows.net"
           sqlDatabaseName: sqldb-fake-survey-generator
         environment: "azure-sql"
         strategy:
