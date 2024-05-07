@@ -339,18 +339,18 @@ stages:
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
               AZURE_LOCATION: $(AZURE_LOCATION)
 
-          # - task: AzureCLI@2
-          #   displayName: Deploy Application
-          #   inputs:
-          #     azureSubscription: $(azureResourceManagerConnection)
-          #     scriptType: bash
-          #     scriptLocation: inlineScript
-          #     inlineScript: |
-          #       azd deploy --no-prompt
-          #   env:
-          #     AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-          #     AZURE_ENV_NAME: $(AZURE_ENV_NAME)
-          #     AZURE_LOCATION: $(AZURE_LOCATION)
+          - task: AzureCLI@2
+            displayName: Deploy Application
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                azd deploy --no-prompt
+            env:
+              AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+              AZURE_ENV_NAME: $(AZURE_ENV_NAME)
+              AZURE_LOCATION: $(AZURE_LOCATION)
 
   - stage: Database_Deployment
     condition: succeeded()
