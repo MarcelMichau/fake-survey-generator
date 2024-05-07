@@ -11,6 +11,8 @@ services:
     docker:
       path: ./Dockerfile
       context: ../../../
+      image: fake-survey-generator/fake-survey-generator-api
+      tag: ${apiSemVerVersionTag}
   ui:
     language: ts
     project: ./src/client/ui
@@ -19,3 +21,7 @@ services:
     docker:
       path: ./Dockerfile
       context: ../../../
+      image: fake-survey-generator/fake-survey-generator-ui
+      tag: ${uiSemVerVersionTag}
+      buildArgs:
+        - "VITE_APP_VERSION=${uiSemVerVersionTag}"

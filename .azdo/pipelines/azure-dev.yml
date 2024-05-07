@@ -37,6 +37,7 @@ variables:
   resourceGroupName: rg-fake-survey-generator
   azureResourceManagerConnection: "Azure Service Connection"
   location: "South Africa North"
+  AZURE_CONTAINER_REGISTRY_ENDPOINT: $(registryName).azurecr.io
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
@@ -323,7 +324,7 @@ stages:
 
           - pwsh: |
               azd config set auth.useAzCliAuth "true"
-            displayName: Configure AZD to Use AZ CLI Authentication.
+            displayName: Configure AZD to Use AZ CLI Authentication
 
           - task: AzureCLI@2
             displayName: Provision Infrastructure
@@ -355,7 +356,7 @@ stages:
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - App_Deployment
-    displayName: "Database Deployment"
+    displayName: "Deploy Database"
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator Database
