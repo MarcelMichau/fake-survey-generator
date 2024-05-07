@@ -137,57 +137,57 @@ stages:
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
 
-      - job: Docker
-        displayName: "Docker Preparation"
-        dependsOn: VersionSetup
-        pool:
-          vmImage: "ubuntu-latest"
-        variables:
-          projectName: fake-survey-generator-api
-          imageRepository: "$(registryName).azurecr.io/$(projectName)"
-          semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
-        steps:
-          - task: Cache@2
-            displayName: Cache Docker Image
-            inputs:
-              key: 'docker | "$(Agent.OS)" | cache'
-              path: $(Pipeline.Workspace)/docker
-              cacheHitVar: CACHE_RESTORED
+      # - job: Docker
+      #   displayName: "Docker Preparation"
+      #   dependsOn: VersionSetup
+      #   pool:
+      #     vmImage: "ubuntu-latest"
+      #   variables:
+      #     projectName: fake-survey-generator-api
+      #     imageRepository: "$(registryName).azurecr.io/$(projectName)"
+      #     semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
+      #   steps:
+      #     - task: Cache@2
+      #       displayName: Cache Docker Image
+      #       inputs:
+      #         key: 'docker | "$(Agent.OS)" | cache'
+      #         path: $(Pipeline.Workspace)/docker
+      #         cacheHitVar: CACHE_RESTORED
 
-          - script: |
-              docker load -i $(Pipeline.Workspace)/docker/cache.tar
-            displayName: Docker Restore
-            condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
+      #     - script: |
+      #         docker load -i $(Pipeline.Workspace)/docker/cache.tar
+      #       displayName: Docker Restore
+      #       condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
 
-          - task: Docker@2
-            displayName: "Build Docker Image"
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "build"
-              Dockerfile: "src/server/FakeSurveyGenerator.Api/Dockerfile"
-              buildContext: "."
-              arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
-              tags: |
-                $(semVerVersionTag)
-                latest
+      #     - task: Docker@2
+      #       displayName: "Build Docker Image"
+      #       inputs:
+      #         containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+      #         repository: "$(projectName)"
+      #         command: "build"
+      #         Dockerfile: "src/server/FakeSurveyGenerator.Api/Dockerfile"
+      #         buildContext: "."
+      #         arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
+      #         tags: |
+      #           $(semVerVersionTag)
+      #           latest
 
-          - script: |
-              mkdir -p $(Pipeline.Workspace)/docker
-              docker save -o $(Pipeline.Workspace)/docker/cache.tar $(imageRepository):$(semVerVersionTag)
-            displayName: Docker Save
-            condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
+      #     - script: |
+      #         mkdir -p $(Pipeline.Workspace)/docker
+      #         docker save -o $(Pipeline.Workspace)/docker/cache.tar $(imageRepository):$(semVerVersionTag)
+      #       displayName: Docker Save
+      #       condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
 
-          - task: Docker@2
-            displayName: "Push Image to Azure Container Registry"
-            condition: and(succeeded(), eq(variables.isMain, 'true'))
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "push"
-              tags: |
-                $(semVerVersionTag)
-                latest
+      #     - task: Docker@2
+      #       displayName: "Push Image to Azure Container Registry"
+      #       condition: and(succeeded(), eq(variables.isMain, 'true'))
+      #       inputs:
+      #         containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+      #         repository: "$(projectName)"
+      #         command: "push"
+      #         tags: |
+      #           $(semVerVersionTag)
+      #           latest
 
       - job: AcceptanceTests
         displayName: "Run Acceptance (E2E) Tests"
@@ -280,29 +280,29 @@ stages:
             name: "SetVersionTag"
             displayName: "Set SemVer Version Tag from NBGV"
 
-          - task: Docker@2
-            displayName: "Build Docker Image"
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "build"
-              Dockerfile: "src/client/ui/Dockerfile"
-              buildContext: .
-              arguments: "--build-arg VITE_APP_VERSION=$(SetVersionTag.VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
-              tags: |
-                $(SetVersionTag.VersionTag)
-                latest
+          # - task: Docker@2
+          #   displayName: "Build Docker Image"
+          #   inputs:
+          #     containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+          #     repository: "$(projectName)"
+          #     command: "build"
+          #     Dockerfile: "src/client/ui/Dockerfile"
+          #     buildContext: .
+          #     arguments: "--build-arg VITE_APP_VERSION=$(SetVersionTag.VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
+          #     tags: |
+          #       $(SetVersionTag.VersionTag)
+          #       latest
 
-          - task: Docker@2
-            displayName: "Push Image to Azure Container Registry"
-            condition: and(succeeded(), eq(variables.isMain, 'true'))
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "push"
-              tags: |
-                $(SetVersionTag.VersionTag)
-                latest
+          # - task: Docker@2
+          #   displayName: "Push Image to Azure Container Registry"
+          #   condition: and(succeeded(), eq(variables.isMain, 'true'))
+          #   inputs:
+          #     containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
+          #     repository: "$(projectName)"
+          #     command: "push"
+          #     tags: |
+          #       $(SetVersionTag.VersionTag)
+          #       latest
 
   - stage: App_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
@@ -339,18 +339,18 @@ stages:
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
               AZURE_LOCATION: $(AZURE_LOCATION)
 
-          - task: AzureCLI@2
-            displayName: Deploy Application
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                azd deploy --no-prompt
-            env:
-              AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-              AZURE_ENV_NAME: $(AZURE_ENV_NAME)
-              AZURE_LOCATION: $(AZURE_LOCATION)
+          # - task: AzureCLI@2
+          #   displayName: Deploy Application
+          #   inputs:
+          #     azureSubscription: $(azureResourceManagerConnection)
+          #     scriptType: bash
+          #     scriptLocation: inlineScript
+          #     inlineScript: |
+          #       azd deploy --no-prompt
+          #   env:
+          #     AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+          #     AZURE_ENV_NAME: $(AZURE_ENV_NAME)
+          #     AZURE_LOCATION: $(AZURE_LOCATION)
 
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
