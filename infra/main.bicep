@@ -23,6 +23,7 @@ var abbrs = loadJsonContent('abbreviations.json')
 resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: '${abbrs.resourcesResourceGroups}${applicationName}'
   location: location
+  tags: tags
 }
 
 var computeSubnetName = 'container-app'
