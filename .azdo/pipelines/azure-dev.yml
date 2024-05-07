@@ -338,6 +338,7 @@ stages:
               AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
               AZURE_LOCATION: $(AZURE_LOCATION)
+              AZURE_RESOURCE_GROUP: $(AZURE_RESOURCE_GROUP)
 
           - task: AzureCLI@2
             displayName: Deploy Application
@@ -351,6 +352,7 @@ stages:
               AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
               AZURE_LOCATION: $(AZURE_LOCATION)
+              AZURE_RESOURCE_GROUP: $(AZURE_RESOURCE_GROUP)
 
   - stage: Database_Deployment
     condition: succeeded()
