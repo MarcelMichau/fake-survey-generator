@@ -24,4 +24,4 @@ services:
       image: fake-survey-generator/fake-survey-generator-ui
       tag: ${UI_VERSION}
       buildArgs:
-        - "VITE_APP_VERSION=${UI_VERSION}"
+        - "VITE_APP_VERSION"

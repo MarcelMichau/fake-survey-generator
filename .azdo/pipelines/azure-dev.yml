@@ -355,6 +355,7 @@ stages:
               AZURE_RESOURCE_GROUP: $(AZURE_RESOURCE_GROUP)
               UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
+              VITE_APP_VERSION: $(uiSemVerVersionTag)
 
   - stage: Database_Deployment
     condition: succeeded()
