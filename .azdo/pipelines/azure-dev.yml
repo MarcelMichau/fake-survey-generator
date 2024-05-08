@@ -5,7 +5,7 @@ trigger:
       - main
   paths:
     include:
-      - .azuredevops/*
+      - .azdo/*
       - src/server/*
       - src/client/ui/*
       - infra/*
@@ -20,25 +20,24 @@ pr:
       - refactor/*
   paths:
     include:
-      - .azuredevops/*
+      - .azdo/*
       - src/server/*
       - src/client/ui/*
       - infra/*
 
 parameters:
   - name: runAcceptanceTests
-    displayName: 'Enable Running Acceptance Tests'
+    displayName: "Enable Running Acceptance Tests"
     default: false
     type: boolean
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
-  registryName: acrfakesurveygenerator
-  resourceGroupName: rg-fake-survey-generator
+  azureSubscriptionId: $(AZURE_SUBSCRIPTION_ID)
+  azureEnvName: "dev"
+  azureResourceGroup: rg-fake-survey-generator
   azureResourceManagerConnection: "Azure Service Connection"
-  location: "South Africa North"
-  DOCKER_BUILDKIT: 1
-  COMPOSE_DOCKER_CLI_BUILD: 1
+  azureLocation: "South Africa North"
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
@@ -136,58 +135,6 @@ stages:
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
 
-      - job: Docker
-        displayName: "Docker Preparation"
-        dependsOn: VersionSetup
-        pool:
-          vmImage: "ubuntu-latest"
-        variables:
-          projectName: fake-survey-generator-api
-          imageRepository: "$(registryName).azurecr.io/$(projectName)"
-          semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
-        steps:
-          - task: Cache@2
-            displayName: Cache Docker Image
-            inputs:
-              key: 'docker | "$(Agent.OS)" | cache'
-              path: $(Pipeline.Workspace)/docker
-              cacheHitVar: CACHE_RESTORED
-
-          - script: |
-              docker load -i $(Pipeline.Workspace)/docker/cache.tar
-            displayName: Docker Restore
-            condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
-
-          - task: Docker@2
-            displayName: "Build Docker Image"
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "build"
-              Dockerfile: "src/server/FakeSurveyGenerator.Api/Dockerfile"
-              buildContext: "."
-              arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
-              tags: |
-                $(semVerVersionTag)
-                latest
-
-          - script: |
-              mkdir -p $(Pipeline.Workspace)/docker
-              docker save -o $(Pipeline.Workspace)/docker/cache.tar $(imageRepository):$(semVerVersionTag)
-            displayName: Docker Save
-            condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
-
-          - task: Docker@2
-            displayName: "Push Image to Azure Container Registry"
-            condition: and(succeeded(), eq(variables.isMain, 'true'))
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "push"
-              tags: |
-                $(semVerVersionTag)
-                latest
-
       - job: AcceptanceTests
         displayName: "Run Acceptance (E2E) Tests"
         condition: ${{ eq(parameters.runAcceptanceTests, true) }} # .NET Aspire Tests hang in the pipeline so this is here until it is fixed
@@ -228,8 +175,8 @@ stages:
 
           - task: PowerShell@2
             inputs:
-              filePath: 'src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net8.0/playwright.ps1'
-              arguments: 'install --with-deps'
+              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net8.0/playwright.ps1"
+              arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
           - task: DotNetCoreCLI@2
@@ -245,7 +192,7 @@ stages:
             inputs:
               summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
             displayName: "Publish Code Coverage Results"
-       
+
   - stage: BuildUi
     displayName: "Build UI"
     dependsOn: []
@@ -279,69 +226,71 @@ stages:
             name: "SetVersionTag"
             displayName: "Set SemVer Version Tag from NBGV"
 
-          - task: Docker@2
-            displayName: "Build Docker Image"
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "build"
-              Dockerfile: "src/client/ui/Dockerfile"
-              buildContext: .
-              arguments: "--build-arg VITE_APP_VERSION=$(SetVersionTag.VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
-              tags: |
-                $(SetVersionTag.VersionTag)
-                latest
-
-          - task: Docker@2
-            displayName: "Push Image to Azure Container Registry"
-            condition: and(succeeded(), eq(variables.isMain, 'true'))
-            inputs:
-              containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-              repository: "$(projectName)"
-              command: "push"
-              tags: |
-                $(SetVersionTag.VersionTag)
-                latest
-
-  - stage: ProvisionBaseInfrastructure
+  - stage: App_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - BuildTestApi
       - BuildUi
-    displayName: "Provision Base Infrastructure"
+    displayName: "Deploy App"
     jobs:
       - job: Deploy
-        displayName: "Deploy Base Infrastructure"
+        displayName: "Deploy App"
         pool:
           vmImage: "ubuntu-latest"
-
+        variables:
+          apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
+          uiSemVerVersionTag: $[stageDependencies.BuildUi.Build.outputs['SetVersionTag.VersionTag']]
         steps:
+          - task: setup-azd@0
+            displayName: Install azd
+
+          - pwsh: |
+              azd config set auth.useAzCliAuth "true"
+            displayName: Configure AZD to Use AZ CLI Authentication
+
           - task: AzureCLI@2
-            displayName: "Deploy Bicep Template"
+            displayName: Provision Infrastructure
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
               scriptLocation: inlineScript
-              inlineScript: >-
-                az deployment sub create 
-                --template-file infra/baseInfra.bicep
-                --location "$(location)"
-                --parameters
-                location="$(location)"
-                resourceGroupName="$(resourceGroupName)"
+              inlineScript: |
+                azd provision --no-prompt
+            env:
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+
+          - task: AzureCLI@2
+            displayName: Deploy Application
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                azd deploy --no-prompt
+            env:
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              UI_VERSION: $(uiSemVerVersionTag)
+              API_VERSION: $(apiSemVerVersionTag)
+              VITE_APP_VERSION: $(uiSemVerVersionTag)
 
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
-      - ProvisionBaseInfrastructure
-    displayName: "Database Deployment"
+      - App_Deployment
+    displayName: "Deploy Database"
     jobs:
       - deployment: Deployment_Job
         displayName: Deploy Fake Survey Generator Database
         pool:
           vmImage: "windows-latest"
         variables:
-          sqlServerName: "sql-marcel-michau.database.windows.net"
+          sqlServerName: "sql-fake-survey-generator.database.windows.net"
           sqlDatabaseName: sqldb-fake-survey-generator
         environment: "azure-sql"
         strategy:
@@ -358,34 +307,3 @@ stages:
                     deployType: SqlTask
                     SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
                     IpDetectionMethod: "AutoDetect"
-
-  - stage: DeployApps
-    dependsOn:
-      - BuildUi
-      - BuildTestApi
-      - ProvisionBaseInfrastructure
-    condition: and(succeeded(), eq(variables.isMain, true))
-    displayName: "Application Deployment"
-    jobs:
-      - job: DeployAppInfra
-        displayName: Deploy Fake Survey Generator
-        pool:
-          vmImage: "ubuntu-latest"
-        variables:
-          apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
-          uiSemVerVersionTag: $[stageDependencies.BuildUi.Build.outputs['SetVersionTag.VersionTag']]
-        steps:
-          - task: AzureCLI@2
-            displayName: "Deploy Bicep Template"
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: >-
-                az deployment group create 
-                --resource-group $(resourceGroupName) 
-                --template-file infra/containerApps.bicep
-                --parameters
-                location="$(location)"
-                uiContainerVersion="$(uiSemVerVersionTag)"
-                apiContainerVersion="$(apiSemVerVersionTag)"

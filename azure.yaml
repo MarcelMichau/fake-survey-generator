@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+# To learn more about the azure.yaml file, visit https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/azd-schema
+
+name: fake-survey-generator
+services:
+  api:
+    language: csharp
+    project: ./src/server/FakeSurveyGenerator.Api
+    host: containerapp
+    docker:
+      path: ./Dockerfile
+      context: ../../../
+      image: fake-survey-generator/fake-survey-generator-api
+      tag: ${API_VERSION}
+  ui:
+    language: ts
+    project: ./src/client/ui
+    host: containerapp
+    dist: dist
+    docker:
+      path: ./Dockerfile
+      context: ../../../
+      image: fake-survey-generator/fake-survey-generator-ui
+      tag: ${UI_VERSION}
+      buildArgs:
+        - "VITE_APP_VERSION"

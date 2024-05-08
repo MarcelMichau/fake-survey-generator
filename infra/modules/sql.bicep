@@ -1,3 +1,6 @@
+@description('Tags to apply to the resource')
+param tags object
+
 @description('The name of the SQL logical server')
 param serverName string = uniqueString('sql', resourceGroup().id)
 
@@ -19,8 +22,9 @@ param azureAdAdministratorTenantId string = subscription().tenantId
 @description('Subnet Resource ID for the infrastructure subnet')
 param subnetResourceId string
 
-resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2023-05-01-preview' = {
   name: serverName
+  tags: tags
   location: location
   properties: {
     administrators: {
@@ -32,22 +36,25 @@ resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' = {
       tenantId: azureAdAdministratorTenantId
     }
   }
+
+  resource sqlDatabase 'databases' = {
+    tags: tags
+    name: databaseName
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    location: location
+  }
+
+  resource sqlServerVirtualNetworkRules 'virtualNetworkRules' = {
+    name: 'sql-vnet-rules'
+    properties: {
+      virtualNetworkSubnetId: subnetResourceId
+    }
+  }
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
-  parent: sqlServer
-  name: databaseName
-  sku: {
-    name: 'Basic'
-    tier: 'Basic'
-  }
-  location: location
-}
-
-resource sqlServerVirtualNetworkRules 'Microsoft.Sql/servers/virtualNetworkRules@2023-02-01-preview' = {
-  name: 'sql-vnet-rules'
-  parent: sqlServer
-  properties: {
-    virtualNetworkSubnetId: subnetResourceId
-  }
-}
+output sqlServerInstance string = sqlServer.properties.fullyQualifiedDomainName
+output sqlServerName string = sqlServer.name
+output sqlServerDatabaseName string = sqlServer::sqlDatabase.name
