@@ -5,7 +5,7 @@ trigger:
       - main
   paths:
     include:
-      - .azuredevops/*
+      - .azdo/*
       - src/server/*
       - src/client/ui/*
       - infra/*
@@ -20,7 +20,7 @@ pr:
       - refactor/*
   paths:
     include:
-      - .azuredevops/*
+      - .azdo/*
       - src/server/*
       - src/client/ui/*
       - infra/*
@@ -33,13 +33,9 @@ parameters:
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
-  registryName: acrfakesurveygenerator
   resourceGroupName: rg-fake-survey-generator
   azureResourceManagerConnection: "Azure Service Connection"
   location: "South Africa North"
-  AZURE_CONTAINER_REGISTRY_ENDPOINT: $(registryName).azurecr.io
-  DOCKER_BUILDKIT: 1
-  COMPOSE_DOCKER_CLI_BUILD: 1
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
@@ -137,58 +133,6 @@ stages:
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
 
-      # - job: Docker
-      #   displayName: "Docker Preparation"
-      #   dependsOn: VersionSetup
-      #   pool:
-      #     vmImage: "ubuntu-latest"
-      #   variables:
-      #     projectName: fake-survey-generator-api
-      #     imageRepository: "$(registryName).azurecr.io/$(projectName)"
-      #     semVerVersionTag: $[dependencies.VersionSetup.outputs['SetVersionTag.VersionTag']]
-      #   steps:
-      #     - task: Cache@2
-      #       displayName: Cache Docker Image
-      #       inputs:
-      #         key: 'docker | "$(Agent.OS)" | cache'
-      #         path: $(Pipeline.Workspace)/docker
-      #         cacheHitVar: CACHE_RESTORED
-
-      #     - script: |
-      #         docker load -i $(Pipeline.Workspace)/docker/cache.tar
-      #       displayName: Docker Restore
-      #       condition: and(not(canceled()), eq(variables.CACHE_RESTORED, 'true'))
-
-      #     - task: Docker@2
-      #       displayName: "Build Docker Image"
-      #       inputs:
-      #         containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-      #         repository: "$(projectName)"
-      #         command: "build"
-      #         Dockerfile: "src/server/FakeSurveyGenerator.Api/Dockerfile"
-      #         buildContext: "."
-      #         arguments: "--build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
-      #         tags: |
-      #           $(semVerVersionTag)
-      #           latest
-
-      #     - script: |
-      #         mkdir -p $(Pipeline.Workspace)/docker
-      #         docker save -o $(Pipeline.Workspace)/docker/cache.tar $(imageRepository):$(semVerVersionTag)
-      #       displayName: Docker Save
-      #       condition: and(not(canceled()), not(failed()), ne(variables.CACHE_RESTORED, 'true'))
-
-      #     - task: Docker@2
-      #       displayName: "Push Image to Azure Container Registry"
-      #       condition: and(succeeded(), eq(variables.isMain, 'true'))
-      #       inputs:
-      #         containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-      #         repository: "$(projectName)"
-      #         command: "push"
-      #         tags: |
-      #           $(semVerVersionTag)
-      #           latest
-
       - job: AcceptanceTests
         displayName: "Run Acceptance (E2E) Tests"
         condition: ${{ eq(parameters.runAcceptanceTests, true) }} # .NET Aspire Tests hang in the pipeline so this is here until it is fixed
@@ -280,30 +224,6 @@ stages:
             name: "SetVersionTag"
             displayName: "Set SemVer Version Tag from NBGV"
 
-          # - task: Docker@2
-          #   displayName: "Build Docker Image"
-          #   inputs:
-          #     containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-          #     repository: "$(projectName)"
-          #     command: "build"
-          #     Dockerfile: "src/client/ui/Dockerfile"
-          #     buildContext: .
-          #     arguments: "--build-arg VITE_APP_VERSION=$(SetVersionTag.VersionTag) --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $(imageRepository):latest"
-          #     tags: |
-          #       $(SetVersionTag.VersionTag)
-          #       latest
-
-          # - task: Docker@2
-          #   displayName: "Push Image to Azure Container Registry"
-          #   condition: and(succeeded(), eq(variables.isMain, 'true'))
-          #   inputs:
-          #     containerRegistry: "FakeSurveyGeneratorAzureContainerRegistry"
-          #     repository: "$(projectName)"
-          #     command: "push"
-          #     tags: |
-          #       $(SetVersionTag.VersionTag)
-          #       latest
-
   - stage: App_Deployment
     condition: succeeded()
     dependsOn:
@@ -337,8 +257,8 @@ stages:
             env:
               AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
-              AZURE_LOCATION: $(AZURE_LOCATION)
-              AZURE_RESOURCE_GROUP: $(AZURE_RESOURCE_GROUP)
+              AZURE_LOCATION: $(location)
+              AZURE_RESOURCE_GROUP: $(resourceGroupName)
 
           - task: AzureCLI@2
             displayName: Deploy Application
@@ -351,8 +271,8 @@ stages:
             env:
               AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
               AZURE_ENV_NAME: $(AZURE_ENV_NAME)
-              AZURE_LOCATION: $(AZURE_LOCATION)
-              AZURE_RESOURCE_GROUP: $(AZURE_RESOURCE_GROUP)
+              AZURE_LOCATION: $(location)
+              AZURE_RESOURCE_GROUP: $(resourceGroupName)
               UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
               VITE_APP_VERSION: $(uiSemVerVersionTag)

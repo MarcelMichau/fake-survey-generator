@@ -60,7 +60,7 @@ Here are some of the features incorporated into this project:
 - Deploying Entity Framework Core Code-First Migrations to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops)
 - Using [Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id) authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework Core
 - Running a microservice application locally using [Docker Compose](https://docs.docker.com/compose/)
-- Using Azure Pipelines to build & deploy a microservice application to [Azure Container Apps](https://azure.microsoft.com/en-us/services/container-apps/#overview)
+- Using Azure Pipelines with [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview) to build & deploy a microservice application to [Azure Container Apps](https://azure.microsoft.com/en-us/services/container-apps/#overview)
 - Infrastructure as Code for Azure resources using [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview)
 
 Some of the above features are relatively straightforward to implement, others have some intricacies that require some Googling in order to set up. I just like to have them placed in the context of a complete working application to refer back to when necessary.
@@ -99,6 +99,7 @@ The server side makes use of the following tools, libraries & frameworks:
 - Fake Survey Generator API
   - .NET 8.0
   - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 8.0 Web API
+  - [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
   - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 8.0 with [Code-First Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
   - [Dapper](https://github.com/StackExchange/Dapper)
   - [Redis](https://redis.io/)
