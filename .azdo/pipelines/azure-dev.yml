@@ -225,7 +225,7 @@ stages:
             displayName: "Set SemVer Version Tag from NBGV"
 
   - stage: App_Deployment
-    condition: succeeded()
+    condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - BuildTestApi
       - BuildUi
@@ -278,7 +278,7 @@ stages:
               VITE_APP_VERSION: $(uiSemVerVersionTag)
 
   - stage: Database_Deployment
-    condition: succeeded()
+    condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - App_Deployment
     displayName: "Deploy Database"
