@@ -12,8 +12,14 @@ param keyVaultName string
 @description('Container Registry to assign roles to')
 param containerRegistryName string
 
-var keyVaultSecretsOfficer = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')
-var uniqueRoleGuidKeyVaultSecretsOfficer = guid(resourceId('Microsoft.KeyVault/vaults', keyVaultName), keyVaultSecretsOfficer)
+var keyVaultSecretsOfficer = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+)
+var uniqueRoleGuidKeyVaultSecretsOfficer = guid(
+  resourceId('Microsoft.KeyVault/vaults', keyVaultName),
+  keyVaultSecretsOfficer
+)
 
 var acrPull = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
 var uniqueRoleGuidAcrPull = guid(resourceId('Microsoft.ContainerRegistry/registries', containerRegistryName), acrPull)
@@ -24,7 +30,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
 }
 
@@ -38,7 +44,7 @@ resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
   }
 }
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-08-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
   name: containerRegistryName
 }
 

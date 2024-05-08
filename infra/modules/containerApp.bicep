@@ -43,7 +43,7 @@ param containerRegistryIdentity string = 'system'
 @description('Dapr configuration for the Container App')
 param daprConfig object = {}
 
-resource containerApp 'Microsoft.App/containerApps@2023-05-02-preview' = {
+resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
   name: containerAppName
   location: location
   tags: tags

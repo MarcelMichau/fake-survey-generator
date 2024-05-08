@@ -18,11 +18,11 @@ param uiContainerAppExists bool
 param apiContainerImage string = ''
 param uiContainerImage string = ''
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-08-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
   name: containerRegistryName
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' existing = {
   name: managedIdentityName
 }
 
@@ -30,11 +30,11 @@ resource redisCache 'Microsoft.Cache/redis@2023-08-01' existing = {
   name: redisCacheName
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2023-02-01-preview' existing = {
+resource sqlServer 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: sqlServerName
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-02-01-preview' existing = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-08-01-preview' existing = {
   name: sqlDatabaseName
 }
 
@@ -42,10 +42,9 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   name: applicationInsightsName
 }
 
-resource existingUiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing =
-  if (uiContainerAppExists) {
-    name: uiContainerAppName
-  }
+resource existingUiContainerApp 'Microsoft.App/containerApps@2024-03-01' existing = if (uiContainerAppExists) {
+  name: uiContainerAppName
+}
 
 module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
   name: 'containerAppEnvironment'
@@ -107,10 +106,9 @@ var apiEnvironmentVariables = [
   }
 ]
 
-resource existingApiContainerApp 'Microsoft.App/containerApps@2023-05-02-preview' existing =
-  if (apiContainerAppExists) {
-    name: apiContainerAppName
-  }
+resource existingApiContainerApp 'Microsoft.App/containerApps@2024-03-01' existing = if (apiContainerAppExists) {
+  name: apiContainerAppName
+}
 
 module apiContainerApp 'modules/containerApp.bicep' = {
   name: 'apiContainerApp'

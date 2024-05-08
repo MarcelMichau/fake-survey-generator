@@ -72,7 +72,7 @@ stages:
             displayName: "Set SemVer Version Tag from NBGV"
 
       - job: Build
-        displayName: "Build + Test API"
+        displayName: "Build"
         pool:
           vmImage: "ubuntu-latest"
 
@@ -227,14 +227,14 @@ stages:
             displayName: "Set SemVer Version Tag from NBGV"
 
   - stage: App_Deployment
+    displayName: "Deploy App"
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - BuildTestApi
       - BuildUi
-    displayName: "Deploy App"
     jobs:
       - job: Deploy
-        displayName: "Deploy App"
+        displayName: "Provision Infra + Deploy App"
         pool:
           vmImage: "ubuntu-latest"
         variables:
@@ -286,7 +286,7 @@ stages:
     displayName: "Deploy Database"
     jobs:
       - deployment: Deployment_Job
-        displayName: Deploy Fake Survey Generator Database
+        displayName: Deploy Database Migration Script
         pool:
           vmImage: "windows-latest"
         variables:
