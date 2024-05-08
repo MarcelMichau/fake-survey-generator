@@ -33,9 +33,11 @@ parameters:
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
-  resourceGroupName: rg-fake-survey-generator
+  azureSubscriptionId: $(AZURE_SUBSCRIPTION_ID)
+  azureEnvName: "dev"
+  azureResourceGroup: rg-fake-survey-generator
   azureResourceManagerConnection: "Azure Service Connection"
-  location: "South Africa North"
+  azureLocation: "South Africa North"
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
@@ -255,10 +257,10 @@ stages:
               inlineScript: |
                 azd provision --no-prompt
             env:
-              AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-              AZURE_ENV_NAME: $(AZURE_ENV_NAME)
-              AZURE_LOCATION: $(location)
-              AZURE_RESOURCE_GROUP: $(resourceGroupName)
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
 
           - task: AzureCLI@2
             displayName: Deploy Application
@@ -269,10 +271,10 @@ stages:
               inlineScript: |
                 azd deploy --no-prompt
             env:
-              AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-              AZURE_ENV_NAME: $(AZURE_ENV_NAME)
-              AZURE_LOCATION: $(location)
-              AZURE_RESOURCE_GROUP: $(resourceGroupName)
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
               UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
               VITE_APP_VERSION: $(uiSemVerVersionTag)
