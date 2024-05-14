@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Api.Configuration.Swagger;
 
-internal static class SwaggerServiceCollectionExtensions
+internal static class SwaggerConfigurationExtensions
 {
     public static IHostApplicationBuilder AddSwaggerConfiguration(this IHostApplicationBuilder builder)
     {
