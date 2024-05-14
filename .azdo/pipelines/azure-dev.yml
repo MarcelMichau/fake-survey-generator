@@ -248,6 +248,12 @@ stages:
               azd config set auth.useAzCliAuth "true"
             displayName: Configure AZD to Use AZ CLI Authentication
 
+          - task: UseDotNet@2
+            displayName: "Install .NET SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+
           - task: AzureCLI@2
             displayName: Provision Infrastructure
             inputs:
