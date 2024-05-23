@@ -4,8 +4,7 @@ using Aspire.Hosting.Dapr;
 var builder = DistributedApplication.CreateBuilder(args);
 
 var database = builder.AddSqlServer("sql-server")
-    .AddDatabase("database")
-    .WithEndpoint(targetPort: 1433, port: 1433);
+    .AddDatabase("database");
 
 var cache = builder.AddRedis("cache");
 
