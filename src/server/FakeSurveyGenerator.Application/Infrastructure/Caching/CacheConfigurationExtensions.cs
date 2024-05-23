@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Caching;
 
-internal static class CacheServiceCollectionExtensions
+internal static class CacheConfigurationExtensions
 {
     public static IHostApplicationBuilder AddCacheConfiguration(this IHostApplicationBuilder builder)
     {

@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Surveys;
@@ -15,11 +14,6 @@ public sealed class SurveyEndpointsTests
 {
     private readonly HttpClient _authenticatedClient;
     private readonly HttpClient _unauthenticatedClient;
-
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
 
     public SurveyEndpointsTests(IntegrationTestFixture testFixture)
     {
@@ -136,13 +130,11 @@ public sealed class SurveyEndpointsTests
     {
         var registerUserCommand = new RegisterUserCommand();
 
-        var response = await _authenticatedClient.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+        var response = await _authenticatedClient.PostAsJsonAsync("/api/user/register", registerUserCommand);
 
         response.EnsureSuccessStatusCode();
 
-        await using var content = await response.Content.ReadAsStreamAsync();
-
-        var user = await JsonSerializer.DeserializeAsync<UserModel>(content, Options);
+        var user = await response.Content.ReadFromJsonAsync<UserModel>();
         return user!;
     }
 
@@ -161,13 +153,11 @@ public sealed class SurveyEndpointsTests
                 }
             });
 
-        var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand, Options);
+        var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
         response.EnsureSuccessStatusCode();
 
-        await using var content = await response.Content.ReadAsStreamAsync();
-
-        var survey = await JsonSerializer.DeserializeAsync<SurveyModel>(content, Options);
+        var survey = await response.Content.ReadFromJsonAsync<SurveyModel>();
         return survey!;
     }
 }

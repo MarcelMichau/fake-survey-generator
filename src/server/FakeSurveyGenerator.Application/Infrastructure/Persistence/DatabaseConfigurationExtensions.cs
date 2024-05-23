@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
-internal static class DatabaseServiceCollectionExtensions
+internal static class DatabaseConfigurationExtensions
 {
     public static IHostApplicationBuilder AddDatabaseConfiguration(this IHostApplicationBuilder builder,
         IConfiguration configuration)

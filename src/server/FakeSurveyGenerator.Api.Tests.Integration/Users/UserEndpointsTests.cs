@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Users;
@@ -14,11 +13,6 @@ public sealed class UserEndpointsTests(IntegrationTestFixture fixture)
 {
     private readonly IntegrationTestWebApplicationFactory? _factory = fixture.Factory;
     private readonly IFixture _fixture = new Fixture();
-
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
 
     [Fact]
     public async Task GivenExistingUserId_WhenCallingGetUser_ThenExistingUserShouldBeReturned()
@@ -82,7 +76,7 @@ public sealed class UserEndpointsTests(IntegrationTestFixture fixture)
         var _ = await RegisterNewUser(client);
         var registerUserCommand = new RegisterUserCommand();
 
-        var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand, Options);
+        var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -91,11 +85,11 @@ public sealed class UserEndpointsTests(IntegrationTestFixture fixture)
     {
         var registerUserCommand = new RegisterUserCommand();
 
-        var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand);
 
         response.EnsureSuccessStatusCode();
 
-        var user = await response.Content.ReadFromJsonAsync<UserModel>(new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        var user = await response.Content.ReadFromJsonAsync<UserModel>();
         return user!;
     }
 }
