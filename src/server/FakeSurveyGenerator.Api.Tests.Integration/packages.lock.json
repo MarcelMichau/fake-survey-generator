@@ -27,6 +27,16 @@
           "System.Configuration.ConfigurationManager": "4.4.0"
         }
       },
+      "Meziantou.Extensions.Logging.Xunit": {
+        "type": "Direct",
+        "requested": "[1.0.7, )",
+        "resolved": "1.0.7",
+        "contentHash": "ZCTr/6vz5YlIYFdtmqPnYtpYWucrY8vfysR2EisewyQShnLJwAYSTz/XXJ3igl/1PDKYjCzgoeX8U8paNDPUHA==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
+          "xunit.abstractions": "2.0.3"
+        }
+      },
       "Microsoft.AspNetCore.Mvc.Testing": {
         "type": "Direct",
         "requested": "[8.0.5, )",

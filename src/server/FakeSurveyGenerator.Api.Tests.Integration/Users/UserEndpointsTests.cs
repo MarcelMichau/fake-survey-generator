@@ -5,13 +5,15 @@ using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.TestHelpers;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Users;
 
 [Collection(nameof(IntegrationTestFixture))]
-public sealed class UserEndpointsTests(IntegrationTestFixture fixture)
+public sealed class UserEndpointsTests(IntegrationTestFixture fixture, ITestOutputHelper testOutputHelper)
 {
-    private readonly IntegrationTestWebApplicationFactory? _factory = fixture.Factory;
+    private readonly WebApplicationFactory<Program>? _factory = fixture.Factory!.WithLoggerOutput(testOutputHelper);
     private readonly IFixture _fixture = new Fixture();
 
     [Fact]

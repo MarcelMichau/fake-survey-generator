@@ -1,14 +1,30 @@
 ﻿using FakeSurveyGenerator.Application.Shared.Identity;
+using Meziantou.Extensions.Logging.Xunit;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
+using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 public static class WebApplicationFactoryExtensions
 {
-    public static HttpClient WithSpecificUser(this IntegrationTestWebApplicationFactory? factory, IUser user)
+    public static WebApplicationFactory<Program> WithLoggerOutput(this WebApplicationFactory<Program>? factory,
+        ITestOutputHelper testOutputHelper)
+    {
+        return factory!.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureLogging(lb =>
+                lb.Services.AddSingleton<ILoggerProvider>(new XUnitLoggerProvider(testOutputHelper,
+                    appendScope: false)));
+        });
+    }
+
+    public static HttpClient WithSpecificUser(this WebApplicationFactory<Program>? factory, IUser user)
     {
         return factory!.WithWebHostBuilder(builder =>
         {

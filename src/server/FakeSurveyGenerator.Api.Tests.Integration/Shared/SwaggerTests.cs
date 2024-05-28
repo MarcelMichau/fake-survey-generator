@@ -1,11 +1,12 @@
 ﻿using FakeSurveyGenerator.Api.Tests.Integration.Setup;
+using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 
 [Collection(nameof(IntegrationTestFixture))]
-public sealed class SwaggerTests(IntegrationTestFixture testFixture)
+public sealed class SwaggerTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
 {
-    private readonly HttpClient _client = testFixture.Factory!.CreateClient();
+    private readonly HttpClient _client = testFixture.Factory!.WithLoggerOutput(testOutputHelper).CreateClient();
 
     [Fact]
     public async Task GivenAnyUser_WhenMakingRequestToSwaggerUiRoute_ThenSuccessResponseShouldBeReturned()

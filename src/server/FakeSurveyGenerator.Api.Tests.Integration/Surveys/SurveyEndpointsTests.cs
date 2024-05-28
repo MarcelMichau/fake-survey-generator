@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
@@ -5,7 +6,7 @@ using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.TestHelpers;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
+using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Surveys;
 
@@ -15,14 +16,17 @@ public sealed class SurveyEndpointsTests
     private readonly HttpClient _authenticatedClient;
     private readonly HttpClient _unauthenticatedClient;
 
-    public SurveyEndpointsTests(IntegrationTestFixture testFixture)
+    public SurveyEndpointsTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
     {
         var fixture = new Fixture();
 
-        _authenticatedClient = testFixture.Factory
+        _authenticatedClient = testFixture.Factory!
+            .WithLoggerOutput(testOutputHelper)
             .WithSpecificUser(fixture.Create<TestUser>());
 
-        _unauthenticatedClient = testFixture.Factory!.CreateClient();
+        _unauthenticatedClient = testFixture.Factory!
+            .WithLoggerOutput(testOutputHelper)
+            .CreateClient();
     }
 
     [Fact]
@@ -56,9 +60,7 @@ public sealed class SurveyEndpointsTests
 
         using var response = await _unauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
-        var statusCode = (int)response.StatusCode;
-
-        statusCode.Should().Be(StatusCodes.Status401Unauthorized);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -75,9 +77,7 @@ public sealed class SurveyEndpointsTests
 
         using var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
-        var statusCode = (int)response.StatusCode;
-
-        statusCode.Should().Be(StatusCodes.Status422UnprocessableEntity);
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
     }
 
     [Fact]
@@ -121,9 +121,7 @@ public sealed class SurveyEndpointsTests
 
         var response = await _authenticatedClient.GetAsync($"api/survey/{surveyId}");
 
-        var statusCode = (int)response.StatusCode;
-
-        statusCode.Should().Be(StatusCodes.Status404NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     private async Task<UserModel> RegisterNewUser()
