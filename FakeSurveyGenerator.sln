@@ -8,9 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		build\fake-survey-generator-api\azure-pipelines.yml = build\fake-survey-generator-api\azure-pipelines.yml
-		build\fake-survey-generator-ui\azure-pipelines.yml = build\fake-survey-generator-ui\azure-pipelines.yml
-		build\infrastructure\azure-pipelines.yml = build\infrastructure\azure-pipelines.yml
+		.azdo\pipelines\azure-dev.yml = .azdo\pipelines\azure-dev.yml
 		global.json = global.json
 		launchSettings.json = launchSettings.json
 		LICENSE = LICENSE
@@ -33,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.AppHost
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.ServiceDefaults", "src\server\FakeSurveyGenerator.ServiceDefaults\FakeSurveyGenerator.ServiceDefaults.csproj", "{1F2F6841-6D7F-4E0D-A70D-39B13EA0B995}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSurveyGenerator.Acceptance.Tests", "src\server\FakeSurveyGenerator.Acceptance.Tests\FakeSurveyGenerator.Acceptance.Tests.csproj", "{A90BC61D-1D65-4782-A101-BACEC5843302}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakeSurveyGenerator.Acceptance.Tests", "src\server\FakeSurveyGenerator.Acceptance.Tests\FakeSurveyGenerator.Acceptance.Tests.csproj", "{A90BC61D-1D65-4782-A101-BACEC5843302}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
