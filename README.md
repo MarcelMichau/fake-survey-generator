@@ -168,31 +168,17 @@ The application makes use of [OpenID Connect](https://openid.net/connect/) for a
 
 In order to run FSG on your local machine, you will need the following prerequisites:
 
-To run with Docker Compose:
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- [mkcert](https://github.com/FiloSottile/mkcert) - To generate SSL certificates for local development
-- [Visual Studio](https://visualstudio.microsoft.com/) (optional)
-
-1. After installing mkcert, run: `mkcert localhost` in the `certs` directory to create the localhost development certificates. If successful, the following will be printed:
-
-   `The certificate is at "./localhost.pem" and the key at "./localhost-key.pem"`
-
-2. In a Terminal/Command Prompt/PowerShell window in the project root, run:
-
-   `docker-compose up`
-
-3. In a browser, navigate to https://localhost:3000 to open up the Fake Survey Generator UI
-
-or
+- [Docker](https://www.docker.com/products/docker-desktop) or [Podman](https://podman.io/)
+- [Dapr CLI](https://docs.dapr.io/getting-started/install-dapr-cli/)
+- [Visual Studio 2022 v17.10 or higher](https://visualstudio.microsoft.com/vs/)
 
 1. Open `FakeSurveyGenerator.sln` in Visual Studio:
 
-2. Make sure that the `docker-compose` project is selected as the startup project
+2. Ensure that the `FakeSurveyGenerator.AppHost` project is selected as the startup project
 
 3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
 
-4. In a browser, navigate to https://localhost:3000 to open up the Fake Survey Generator UI
+4. The [.NET Aspire Dashboard](https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/overview) should open automatically
 
 ## How do I contribute?
 

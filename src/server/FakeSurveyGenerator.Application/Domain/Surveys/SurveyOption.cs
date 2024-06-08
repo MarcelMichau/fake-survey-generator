@@ -8,6 +8,7 @@ public class SurveyOption
     public NonEmptyString OptionText { get; } = null!;
     public int NumberOfVotes { get; private set; }
     public int PreferredNumberOfVotes { get; }
+    public bool IsRigged => PreferredNumberOfVotes > 0;
 
     [UsedImplicitly]
     private SurveyOption() { } // Necessary for Entity Framework Core + AutoMapper

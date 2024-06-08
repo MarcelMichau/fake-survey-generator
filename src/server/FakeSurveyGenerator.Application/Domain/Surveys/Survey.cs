@@ -13,9 +13,10 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     public NonEmptyString Topic { get; } = null!;
     public NonEmptyString RespondentType { get; } = null!;
     public int NumberOfRespondents { get; }
+    public IReadOnlyList<SurveyOption> Options => _options.ToList();
+    public bool IsRigged => _options.Any(option => option.IsRigged);
 
     private readonly List<SurveyOption> _options = [];
-    public IReadOnlyList<SurveyOption> Options => _options.ToList();
 
     private IVoteDistribution _selectedVoteDistribution = null!;
 

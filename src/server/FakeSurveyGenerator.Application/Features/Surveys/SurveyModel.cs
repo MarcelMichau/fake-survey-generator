@@ -10,6 +10,7 @@ public sealed record SurveyModel : AuditableModel
     public required string Topic { get; init; }
     public required string RespondentType { get; init; }
     public required int NumberOfRespondents { get; init; }
+    public required bool IsRigged { get; init; }
     public required List<SurveyOptionModel> Options { get; init; }
 }
 
@@ -24,6 +25,7 @@ public static class SurveyModelMappingExtensions
             Topic = survey.Topic.Value,
             RespondentType = survey.RespondentType.Value,
             NumberOfRespondents = survey.NumberOfRespondents,
+            IsRigged = survey.IsRigged,
             Options = survey.Options.Select(option => option.MapToModel()).ToList(),
             CreatedBy = survey.CreatedBy,
             CreatedOn = survey.CreatedOn,

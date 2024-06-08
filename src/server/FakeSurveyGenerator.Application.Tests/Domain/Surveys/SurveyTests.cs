@@ -149,6 +149,8 @@ public sealed class SurveyTests
 
         survey.Options[0].NumberOfVotes.Should().Be(600);
         survey.Options[^1].NumberOfVotes.Should().Be(400);
+
+        survey.IsRigged.Should().BeTrue();
     }
 
     [Fact]

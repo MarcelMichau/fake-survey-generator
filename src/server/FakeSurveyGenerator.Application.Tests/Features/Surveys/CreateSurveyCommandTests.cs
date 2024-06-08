@@ -81,6 +81,7 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
         survey.Topic.Should().Be(topic);
         survey.NumberOfRespondents.Should().Be(numberOfRespondents);
         survey.RespondentType.Should().Be(respondentType);
+        survey.IsRigged.Should().BeTrue();
 
         survey.Options.Should().HaveCount(2);
         survey.Options.First().NumberOfVotes.Should().Be(100);
