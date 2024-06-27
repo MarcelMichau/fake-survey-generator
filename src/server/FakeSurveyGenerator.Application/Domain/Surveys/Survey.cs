@@ -21,7 +21,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     private IVoteDistribution _selectedVoteDistribution = null!;
 
     [UsedImplicitly]
-    private Survey() { } // Necessary for Entity Framework Core + AutoMapper
+    private Survey() { } // Necessary for Entity Framework Core
 
     public Survey(User owner, NonEmptyString topic, int numberOfRespondents, NonEmptyString respondentType)
     {

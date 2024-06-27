@@ -11,7 +11,7 @@ public class SurveyOption
     public bool IsRigged => PreferredNumberOfVotes > 0;
 
     [UsedImplicitly]
-    private SurveyOption() { } // Necessary for Entity Framework Core + AutoMapper
+    private SurveyOption() { } // Necessary for Entity Framework Core
 
     public SurveyOption(NonEmptyString optionText)
     {

@@ -15,7 +15,7 @@ public sealed class User : AuditableEntity, IAggregateRoot
     public IReadOnlyList<Survey> OwnedSurveys => _ownedSurveys.ToList();
 
     [UsedImplicitly]
-    private User() { } // Necessary for Entity Framework Core + AutoMapper
+    private User() { } // Necessary for Entity Framework Core
 
     public User(NonEmptyString displayName, NonEmptyString emailAddress, NonEmptyString externalUserId)
     {
