@@ -102,24 +102,24 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "I9AUn437DL276uRAQnn+PjuS+83GOt0kuDuJr5LYhFJrw/LKprc2pWD0tc+hzBJRQmzdp+BOgnvSb0lSFabnBQ==",
+        "resolved": "8.0.2",
+        "contentHash": "HiT9j4b6IK01ZAItvw/7B5BrpNk0RNxMPYFALSEmabuqtp1tE1I0ebgyoBswYo71Mf9zwM87dmIkz+1ENKwUAg==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.SqlServer": "8.0.4",
+          "Microsoft.EntityFrameworkCore.SqlServer": "8.0.6",
           "Microsoft.Extensions.Configuration.Binder": "8.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "8.0.4",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "8.0.6",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
           "OpenTelemetry.Extensions.Hosting": "1.8.1"
         }
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "JrjJwwpb+A1ynXPxssTgZ3Fw33Hf4EUG2+JFVjVEUWjvhSw31q0Id+a877op+/+L+f2i/wLly35WN/MOWMILMw==",
+        "resolved": "8.0.2",
+        "contentHash": "iQ37P8Hwiqc3rNLxNcBOod5bTbkmKylrLMa95gfKWuf7JHC0G2W6Sf009TRq+RBquS6KgV/jxDHvtZVr4DjWwQ==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "8.0.1",
           "Microsoft.Extensions.Configuration.Binder": "8.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.4",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.6",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
           "OpenTelemetry.Extensions.Hosting": "1.8.1",
           "StackExchange.Redis": "2.7.33"
@@ -127,11 +127,11 @@
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "TfZuQdsChwnbSe3Wz2oUBWYFaWRyQILJ3HpGGIUJ93SLtMQSaeRjkxqxDdhsLfkQOWPszETesBAHH15tGbRVsQ==",
+        "resolved": "8.0.2",
+        "contentHash": "T3hqdbUKaN4aXMt76f2HY6lKOuDEiK+Ew+FTRDXbbUzat6gQnwNNiMm6uFFsKY12hjvR4jWEWyo07lovlUtXGw==",
         "dependencies": {
-          "Aspire.StackExchange.Redis": "8.0.1",
-          "Microsoft.Extensions.Caching.StackExchangeRedis": "8.0.4"
+          "Aspire.StackExchange.Redis": "8.0.2",
+          "Microsoft.Extensions.Caching.StackExchangeRedis": "8.0.6"
         }
       },
       "AspNetCore.HealthChecks.OpenIdConnectServer": {
@@ -469,10 +469,10 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks": {
         "type": "Transitive",
-        "resolved": "8.0.4",
-        "contentHash": "QOMZwmA5cCJA29pWQ8gSgwSW1RBKh1x0IKyUYJFy4o644pFmXKhpdnZhilERjp/V8k7+Cu9Aqg72wYk/U4vAiQ==",
+        "resolved": "8.0.6",
+        "contentHash": "Wtylr3ucMUQ+/6x5ngRtBQ0D0TVloWE3hbwUEhwE16OZHB66uqAEVnEvcAXxW2IFuVAuEHMXX5GebfkbSZQSTw==",
         "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "8.0.4",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "8.0.6",
           "Microsoft.Extensions.Hosting.Abstractions": "8.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.1",
           "Microsoft.Extensions.Options": "8.0.2"
@@ -480,17 +480,17 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.0.4",
-        "contentHash": "/VINyqL+Hth2P+u5Qyrmar+w/RtNL/LBUhqG4vST2oDSout8N85j8FQdMKR2R/MJJiEBbg9H6NwWBWEYCCE+gw=="
+        "resolved": "8.0.6",
+        "contentHash": "GiHK4B5Xsf5YzL73kup2zJoJfDx5RJYBd0LZN6dx8XyOSoZnh7NNrMP+vTLxAJVp//JxHk0KIhBnW9YuFrSVig=="
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "8.0.4",
-        "contentHash": "TeRLVNpX7UvjBgTjluMRbP515+WZHyiB5CxhPjFWpE+rzMO28AFgvat+fh0y4GLBhJZUry5kY9wvWTLi1ZlhIw==",
+        "resolved": "8.0.6",
+        "contentHash": "paBCLbj7dMnPSlZ+dkD/Q8KNmI/UZbnCrBVMbX/GZ/6Cs787GSrWawX1UtiCDPfsVGvoaHhQ5oyWHoXrvhb+1g==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.4",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.4",
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "8.0.4"
+          "Microsoft.EntityFrameworkCore.Relational": "8.0.6",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.6",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "8.0.6"
         }
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
@@ -1938,8 +1938,8 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[8.0.1, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[8.0.1, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[8.0.1, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[8.0.2, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[8.0.2, )",
           "CSharpFunctionalExtensions": "[2.42.5, )",
           "Dapper": "[2.1.44, )",
           "FluentValidation": "[11.9.2, )",
