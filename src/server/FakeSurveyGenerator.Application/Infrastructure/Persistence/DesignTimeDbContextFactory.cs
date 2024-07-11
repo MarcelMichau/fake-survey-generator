@@ -15,6 +15,6 @@ public sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Sur
 
         var builder = new DbContextOptionsBuilder<SurveyContext>();
         builder.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(SurveyContext).Assembly.FullName));
-        return new SurveyContext(builder.Options, new NullLogger<SurveyContext>());
+        return new SurveyContext(builder.Options, NullLogger<SurveyContext>.Instance);
     }
 }

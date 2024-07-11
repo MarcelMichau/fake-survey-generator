@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Identity;
+using FakeSurveyGenerator.Application.TestHelpers;
 using FakeSurveyGenerator.Application.Tests.Setup;
 using FluentAssertions;
 using NSubstitute;
@@ -14,7 +15,7 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
 
     public CreateSurveyCommandTests()
     {
-        _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
+        _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
     }
 
     [Fact]

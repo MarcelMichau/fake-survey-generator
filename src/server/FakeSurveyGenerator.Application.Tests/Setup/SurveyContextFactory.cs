@@ -2,6 +2,7 @@
 using FakeSurveyGenerator.Application.Infrastructure.Persistence.Interceptors;
 using FakeSurveyGenerator.Application.Shared.DomainEvents;
 using FakeSurveyGenerator.Application.Shared.Identity;
+using FakeSurveyGenerator.Application.TestHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Time.Testing;
@@ -14,8 +15,8 @@ public static class SurveyContextFactory
     public static SurveyContext Create()
     {
         var mockUserService = Substitute.For<IUserService>();
-        mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
-        mockUserService.GetUserIdentity().Returns(new TestUser().Id);
+        mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
+        mockUserService.GetUserIdentity().Returns(TestUser.Instance.Id);
 
         var fixedDateTime = new DateTimeOffset(3001, 1, 1, 12, 1, 1, new TimeSpan(2, 0, 0));
 
@@ -28,7 +29,7 @@ public static class SurveyContextFactory
 
         var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockUserService, fakeTimeProvider);
 
-        var context = new SurveyContext(options, Substitute.For<IDomainEventService>(), auditableEntitySaveChangesInterceptor, new NullLogger<SurveyContext>());
+        var context = new SurveyContext(options, Substitute.For<IDomainEventService>(), auditableEntitySaveChangesInterceptor, NullLogger<SurveyContext>.Instance);
 
         context.Database.EnsureCreated();
 

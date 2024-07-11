@@ -7,6 +7,7 @@ using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
+// ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.Hosting;
 
 public static class Extensions

@@ -8,7 +8,7 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Identity;
 
 internal static class IdentityProviderServiceCollectionExtensions
 {
-    internal static readonly string[] IdentityProviderTags = ["identity-provider", "ready"];
+    private static readonly string[] IdentityProviderTags = ["identity-provider", "ready"];
 
     public static IHostApplicationBuilder AddOAuthConfiguration(this IHostApplicationBuilder builder)
     {
@@ -25,7 +25,7 @@ internal static class IdentityProviderServiceCollectionExtensions
         return builder;
     }
 
-    internal static IHealthChecksBuilder AddIdentityProviderHealthCheck(this IHealthChecksBuilder healthChecksBuilder,
+    private static IHealthChecksBuilder AddIdentityProviderHealthCheck(this IHealthChecksBuilder healthChecksBuilder,
         IConfiguration configuration)
     {
         healthChecksBuilder.AddIdentityServer(

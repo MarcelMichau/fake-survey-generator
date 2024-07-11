@@ -3,6 +3,7 @@ using AutoFixture.Xunit2;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
+using FakeSurveyGenerator.Application.TestHelpers;
 using FakeSurveyGenerator.Application.Tests.Setup;
 using FluentAssertions;
 using NSubstitute;
@@ -17,7 +18,7 @@ public sealed class RegisterUserCommandTests : CommandTestBase
 
     public RegisterUserCommandTests()
     {
-        _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser());
+        _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
     }
 
     [Fact]
