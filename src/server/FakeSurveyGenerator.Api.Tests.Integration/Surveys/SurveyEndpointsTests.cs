@@ -83,12 +83,13 @@ public sealed class SurveyEndpointsTests
     [Fact]
     public async Task GivenExistingSurveyId_WhenCallingGetSurvey_ThenExistingSurveyShouldBeReturned()
     {
-        await RegisterNewUser();
+        var owner = await RegisterNewUser();
         var newSurvey = await CreateSurvey();
 
         var survey = await _authenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{newSurvey.Id}");
 
         survey!.Id.Should().Be(newSurvey.Id);
+        survey.OwnerId.Should().Be(owner.Id);
         survey.Topic.Should().Be(newSurvey.Topic);
         survey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
         survey.RespondentType.Should().Be(newSurvey.RespondentType);
