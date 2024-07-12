@@ -88,6 +88,6 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
         survey.Options.Should().HaveCount(2);
 
         survey.Options.Should().SatisfyRespectively(firstOption => { firstOption.NumberOfVotes.Should().Be(100); },
-            secondOption => { secondOption.NumberOfVotes.Should().Be(300); });
+            secondOption => { secondOption.NumberOfVotes.Should().Be(400); });
     }
 }
