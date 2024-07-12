@@ -39,7 +39,7 @@ public sealed class SurveyEndpointsTests
         newSurvey.Options.Sum(option => option.NumberOfVotes).Should().Be(350);
         newSurvey.Topic.Should().Be("How awesome is this?");
         newSurvey.RespondentType.Should().Be("Individuals");
-        newSurvey.Options.Should().AllSatisfy(option => { option.NumberOfVotes.Should().BeGreaterThan(0); });
+        newSurvey.Options.Should().OnlyContain(option => option.NumberOfVotes > 0);
         newSurvey.CreatedOn.Should().NotBe(DateTimeOffset.MinValue);
         newSurvey.CreatedBy.Should().Be(newUser.ExternalUserId);
     }
@@ -97,7 +97,14 @@ public sealed class SurveyEndpointsTests
         survey.Topic.Should().Be(newSurvey.Topic);
         survey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
         survey.RespondentType.Should().Be(newSurvey.RespondentType);
-        survey.Options.First().OptionText.Should().Be(newSurvey.Options.First().OptionText);
+
+        survey.Options.Should().SatisfyRespectively(firstOption =>
+        {
+            firstOption.OptionText.Should().Be(newSurvey.Options.First().OptionText);
+        }, secondOption =>
+        {
+            secondOption.OptionText.Should().Be(newSurvey.Options.Last().OptionText);
+        });
     }
 
     [Fact]
