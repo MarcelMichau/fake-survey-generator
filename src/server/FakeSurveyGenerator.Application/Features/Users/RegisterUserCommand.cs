@@ -15,10 +15,10 @@ public sealed record RegisterUserCommand : IRequest<Result<UserModel, Error>>;
 public sealed class RegisterUserCommandHandler(IUserService userService, SurveyContext surveyContext)
     : IRequestHandler<RegisterUserCommand, Result<UserModel, Error>>
 {
-    private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-
     private readonly SurveyContext _surveyContext =
         surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
+
+    private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
     public async Task<Result<UserModel, Error>> Handle(RegisterUserCommand request,
         CancellationToken cancellationToken)

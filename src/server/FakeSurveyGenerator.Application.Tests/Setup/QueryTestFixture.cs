@@ -6,11 +6,6 @@ public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
 {
     public SurveyContext Context { get; } = SurveyContextFactory.Create();
 
-    public void Dispose()
-    {
-        SurveyContextFactory.Destroy(Context);
-    }
-
     public async Task InitializeAsync()
     {
         await SurveyContextFactory.SeedSampleData(Context);
@@ -20,7 +15,14 @@ public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
     {
         return Task.CompletedTask;
     }
+
+    public void Dispose()
+    {
+        SurveyContextFactory.Destroy(Context);
+    }
 }
 
 [CollectionDefinition(nameof(QueryTestFixture))]
-public class QueryCollection : ICollectionFixture<QueryTestFixture> { }
+public class QueryCollection : ICollectionFixture<QueryTestFixture>
+{
+}

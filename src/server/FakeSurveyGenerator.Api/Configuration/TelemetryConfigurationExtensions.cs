@@ -17,9 +17,9 @@ internal static class TelemetryConfigurationExtensions
 
         var resourceAttributes = new Dictionary<string, object>
         {
-            {"service.name", "fake-survey-generator-api"},
-            {"service.namespace", "fake-survey-generator"},
-            {"service.instance.id", builder.Environment.IsDevelopment() ? "development" : "production"}
+            { "service.name", "fake-survey-generator-api" },
+            { "service.namespace", "fake-survey-generator" },
+            { "service.instance.id", builder.Environment.IsDevelopment() ? "development" : "production" }
         };
 
         builder.Services.ConfigureOpenTelemetryTracerProvider((_, tracerProviderBuilder) =>

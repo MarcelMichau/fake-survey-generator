@@ -24,10 +24,10 @@ public sealed class GetSurveyDetailQueryHandler(
     ICache<SurveyModel> cache)
     : IRequestHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>>
 {
+    private readonly ICache<SurveyModel> _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+
     private readonly SurveyContext _surveyContext =
         surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
-
-    private readonly ICache<SurveyModel> _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
     public async Task<Result<SurveyModel, Error>> Handle(GetSurveyDetailQuery request,
         CancellationToken cancellationToken)

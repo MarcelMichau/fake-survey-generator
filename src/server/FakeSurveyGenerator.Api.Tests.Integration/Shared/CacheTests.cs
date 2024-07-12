@@ -4,14 +4,14 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 
 [Collection(nameof(IntegrationTestFixture))]
 public sealed class CacheTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
 {
-    private readonly WebApplicationFactory<Program>? _clientFactory = testFixture.Factory!.WithLoggerOutput(testOutputHelper);
+    private readonly WebApplicationFactory<Program>? _clientFactory =
+        testFixture.Factory!.WithLoggerOutput(testOutputHelper);
 
     [Fact]
     public async Task GivenADistributedCache_WhenGettingAnItemThatIsNotCached_ThenCachedValueShouldBeNull()

@@ -9,23 +9,24 @@ using Testcontainers.Redis;
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 [CollectionDefinition(nameof(IntegrationTestFixture))]
-public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture> { }
+public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture>
+{
+}
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    public IntegrationTestWebApplicationFactory? Factory;
-
-    private IServiceScopeFactory? _serviceScopeFactory;
+    private readonly RedisContainer _cacheContainer =
+        new RedisBuilder()
+            .WithImage("redis:latest")
+            .Build();
 
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:latest")
             .Build();
 
-    private readonly RedisContainer _cacheContainer =
-        new RedisBuilder()
-            .WithImage("redis:latest")
-            .Build();
+    private IServiceScopeFactory? _serviceScopeFactory;
+    public IntegrationTestWebApplicationFactory? Factory;
 
     public async Task InitializeAsync()
     {
@@ -34,7 +35,8 @@ public class IntegrationTestFixture : IAsyncLifetime
 
         var connectionString = _dbContainer.GetConnectionString();
 
-        Factory = new IntegrationTestWebApplicationFactory(new TestContainerSettings(connectionString, _cacheContainer.GetConnectionString()));
+        Factory = new IntegrationTestWebApplicationFactory(new TestContainerSettings(connectionString,
+            _cacheContainer.GetConnectionString()));
 
         _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
 

@@ -6,10 +6,7 @@ internal static class ApiBehaviourConfigurationExtensions
 {
     public static IHostApplicationBuilder AddApiBehaviourConfiguration(this IHostApplicationBuilder builder)
     {
-        builder.Services.Configure<ApiBehaviorOptions>(options =>
-        {
-            options.SuppressModelStateInvalidFilter = true;
-        });
+        builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
         return builder;
     }

@@ -8,8 +8,8 @@ public sealed class PerformanceBehaviour<TRequest, TResponse>(ILogger<TRequest> 
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly Stopwatch _timer = new();
     private readonly ILogger<TRequest> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly Stopwatch _timer = new();
 
     public async Task<TResponse> Handle(TRequest request,
         RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)

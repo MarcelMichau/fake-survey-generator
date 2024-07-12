@@ -9,7 +9,8 @@ public sealed class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRe
 {
     private readonly ILogger<TRequest> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -19,7 +20,8 @@ public sealed class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRe
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogError(ex, "Fake Survey Generator Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+            _logger.LogError(ex, "Fake Survey Generator Request: Unhandled Exception for Request {Name} {@Request}",
+                requestName, request);
 
             throw;
         }

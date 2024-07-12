@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application;
+
 public static class HostApplicationBuilderConfiguration
 {
     public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)

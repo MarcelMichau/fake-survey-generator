@@ -46,8 +46,8 @@ internal static class SwaggerConfigurationExtensions
                         TokenUrl = new Uri($"{identityProviderBaseUrl}/oauth/token"),
                         Scopes = new Dictionary<string, string>
                         {
-                            {"openid", "Standard OpenID Scope"}, {"profile", "Standard OpenID Scope"},
-                            {"email", "Standard OpenID Scope"}
+                            { "openid", "Standard OpenID Scope" }, { "profile", "Standard OpenID Scope" },
+                            { "email", "Standard OpenID Scope" }
                         }
                     }
                 }

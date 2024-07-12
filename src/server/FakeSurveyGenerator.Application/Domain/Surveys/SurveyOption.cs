@@ -5,13 +5,10 @@ namespace FakeSurveyGenerator.Application.Domain.Surveys;
 
 public class SurveyOption
 {
-    public NonEmptyString OptionText { get; } = null!;
-    public int NumberOfVotes { get; private set; }
-    public int PreferredNumberOfVotes { get; }
-    public bool IsRigged => PreferredNumberOfVotes > 0;
-
     [UsedImplicitly]
-    private SurveyOption() { } // Necessary for Entity Framework Core
+    private SurveyOption()
+    {
+    } // Necessary for Entity Framework Core
 
     public SurveyOption(NonEmptyString optionText)
     {
@@ -24,6 +21,11 @@ public class SurveyOption
         OptionText = optionText ?? throw new ArgumentNullException(nameof(optionText));
         PreferredNumberOfVotes = preferredNumberOfVotes;
     }
+
+    public NonEmptyString OptionText { get; } = null!;
+    public int NumberOfVotes { get; private set; }
+    public int PreferredNumberOfVotes { get; }
+    public bool IsRigged => PreferredNumberOfVotes > 0;
 
     internal void AddVote()
     {

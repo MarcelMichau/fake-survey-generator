@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using Aspire.Hosting.Dapr;
+using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -8,7 +9,7 @@ var database = builder.AddSqlServer("sql-server")
 
 var cache = builder.AddRedis("cache");
 
-var api = builder.AddProject<Projects.FakeSurveyGenerator_Api>("fakesurveygeneratorapi", "https")
+var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", "https")
     .WithReference(database)
     .WithReference(cache)
     .WithDaprSidecar(options =>

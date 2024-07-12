@@ -9,19 +9,14 @@ namespace FakeSurveyGenerator.Application.Domain.Surveys;
 
 public sealed class Survey : AuditableEntity, IAggregateRoot
 {
-    public User Owner { get; } = null!;
-    public NonEmptyString Topic { get; } = null!;
-    public NonEmptyString RespondentType { get; } = null!;
-    public int NumberOfRespondents { get; }
-    public IReadOnlyList<SurveyOption> Options => _options.ToList();
-    public bool IsRigged => _options.Any(option => option.IsRigged);
-
     private readonly List<SurveyOption> _options = [];
 
     private IVoteDistribution _selectedVoteDistribution = null!;
 
     [UsedImplicitly]
-    private Survey() { } // Necessary for Entity Framework Core
+    private Survey()
+    {
+    } // Necessary for Entity Framework Core
 
     public Survey(User owner, NonEmptyString topic, int numberOfRespondents, NonEmptyString respondentType)
     {
@@ -38,6 +33,13 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
         AddDomainEvent(new SurveyCreatedDomainEvent(this));
     }
 
+    public User Owner { get; } = null!;
+    public NonEmptyString Topic { get; } = null!;
+    public NonEmptyString RespondentType { get; } = null!;
+    public int NumberOfRespondents { get; }
+    public IReadOnlyList<SurveyOption> Options => _options.ToList();
+    public bool IsRigged => _options.Any(option => option.IsRigged);
+
     public void AddSurveyOption(NonEmptyString optionText)
     {
         var newOption = new SurveyOption(optionText);
@@ -47,8 +49,10 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public void AddSurveyOption(NonEmptyString optionText, int preferredNumberOfVotes)
     {
-        if (preferredNumberOfVotes > NumberOfRespondents || _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes > NumberOfRespondents)
-            throw new SurveyDomainException($"Preferred number of votes: {preferredNumberOfVotes} is higher than the number of respondents: {NumberOfRespondents}");
+        if (preferredNumberOfVotes > NumberOfRespondents ||
+            _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes > NumberOfRespondents)
+            throw new SurveyDomainException(
+                $"Preferred number of votes: {preferredNumberOfVotes} is higher than the number of respondents: {NumberOfRespondents}");
 
         var newOption = new SurveyOption(optionText, preferredNumberOfVotes);
 
@@ -58,9 +62,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     public void AddSurveyOptions(IEnumerable<SurveyOption> options)
     {
         foreach (var surveyOption in options)
-        {
             AddSurveyOption(surveyOption.OptionText, surveyOption.PreferredNumberOfVotes);
-        }
     }
 
     public void CalculateOutcome()

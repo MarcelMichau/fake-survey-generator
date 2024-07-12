@@ -7,13 +7,15 @@ internal sealed class Worker(ILogger<Worker> logger, IServiceScopeFactory servic
     : BackgroundService
 {
     private readonly ILogger _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+
+    private readonly IServiceScopeFactory _serviceScopeFactory =
+        serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
+
     private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(10));
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (await _timer.WaitForNextTickAsync(stoppingToken))
-        {
             try
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
@@ -23,7 +25,6 @@ internal sealed class Worker(ILogger<Worker> logger, IServiceScopeFactory servic
             {
                 _logger.LogError(e, "Oh no! Something bad happened.");
             }
-        }
     }
 
     private async Task GetTotalSurveys(CancellationToken stoppingToken)
@@ -36,7 +37,7 @@ internal sealed class Worker(ILogger<Worker> logger, IServiceScopeFactory servic
 
         _logger.LogInformation("Current Number of Surveys in Database: {SurveyCount}", surveyCount);
     }
-    
+
     public override void Dispose()
     {
         _timer.Dispose();

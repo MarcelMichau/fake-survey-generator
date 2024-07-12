@@ -27,7 +27,8 @@ public sealed class RegisterUserCommandTests : CommandTestBase
         var registerUserCommand = new RegisterUserCommand();
 
         var mockUserService = Substitute.For<IUserService>();
-        mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser(_fixture.Create<string>(), _fixture.Create<string>(), _fixture.Create<string>()));
+        mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser(_fixture.Create<string>(),
+            _fixture.Create<string>(), _fixture.Create<string>()));
 
         var sut = new RegisterUserCommandHandler(mockUserService, Context);
 
@@ -38,12 +39,14 @@ public sealed class RegisterUserCommandTests : CommandTestBase
 
     [Theory]
     [AutoData]
-    public async Task GivenValidRegisterUserCommand_WhenCallingHandle_ThenNewUserShouldBeReturned(string newUserId, string newUserDisplayName, string newUserEmailAddress)
+    public async Task GivenValidRegisterUserCommand_WhenCallingHandle_ThenNewUserShouldBeReturned(string newUserId,
+        string newUserDisplayName, string newUserEmailAddress)
     {
         var registerUserCommand = new RegisterUserCommand();
 
         var mockUserService = Substitute.For<IUserService>();
-        mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(new TestUser(newUserId, newUserDisplayName, newUserEmailAddress));
+        mockUserService.GetUserInfo(Arg.Any<CancellationToken>())
+            .Returns(new TestUser(newUserId, newUserDisplayName, newUserEmailAddress));
 
         var sut = new RegisterUserCommandHandler(mockUserService, Context);
 

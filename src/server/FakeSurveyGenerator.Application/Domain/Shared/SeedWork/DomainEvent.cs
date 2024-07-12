@@ -10,10 +10,10 @@ public interface IHasDomainEvents
 
 public abstract class DomainEvent
 {
-    public DateTimeOffset DateOccurred { get; protected set; }
-
     protected DomainEvent()
     {
         DateOccurred = DateTimeOffset.Now;
     }
+
+    public DateTimeOffset DateOccurred { get; protected set; }
 }

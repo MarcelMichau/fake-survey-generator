@@ -17,8 +17,10 @@ public sealed class AuthorizeOperationFilter : IOperationFilter
 
         if ((authAttributes ?? Enumerable.Empty<AuthorizeAttribute>()).Any())
         {
-            operation.Responses.Add(StatusCodes.Status401Unauthorized.ToString(), new OpenApiResponse { Description = nameof(HttpStatusCode.Unauthorized) });
-            operation.Responses.Add(StatusCodes.Status403Forbidden.ToString(), new OpenApiResponse { Description = nameof(HttpStatusCode.Forbidden) });
+            operation.Responses.Add(StatusCodes.Status401Unauthorized.ToString(),
+                new OpenApiResponse { Description = nameof(HttpStatusCode.Unauthorized) });
+            operation.Responses.Add(StatusCodes.Status403Forbidden.ToString(),
+                new OpenApiResponse { Description = nameof(HttpStatusCode.Forbidden) });
         }
 
         if (!(authAttributes ?? Enumerable.Empty<AuthorizeAttribute>()).Any()) return;

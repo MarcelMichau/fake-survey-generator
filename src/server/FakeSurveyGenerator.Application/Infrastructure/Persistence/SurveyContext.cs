@@ -12,14 +12,10 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
 public sealed class SurveyContext : DbContext
 {
-    private readonly IDomainEventService _domainEventService = null!;
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor = null!;
-    private readonly ILogger _logger;
-
     public const string DefaultSchema = "Survey";
-
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Survey> Surveys => Set<Survey>();
+    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor = null!;
+    private readonly IDomainEventService _domainEventService = null!;
+    private readonly ILogger _logger;
 
     public SurveyContext(DbContextOptions options, ILogger<SurveyContext> logger) : base(options)
     {
@@ -28,7 +24,9 @@ public sealed class SurveyContext : DbContext
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public SurveyContext(DbContextOptions options, IDomainEventService domainEventService, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor, ILogger<SurveyContext> logger) : base(options)
+    public SurveyContext(DbContextOptions options, IDomainEventService domainEventService,
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+        ILogger<SurveyContext> logger) : base(options)
     {
         ArgumentNullException.ThrowIfNull(options);
 
@@ -36,6 +34,9 @@ public sealed class SurveyContext : DbContext
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Survey> Surveys => Set<Survey>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,9 +89,6 @@ public sealed class SurveyContext : DbContext
 
         entities.ToList().ForEach(e => e.ClearDomainEvents());
 
-        foreach (var domainEvent in domainEvents)
-        {
-            await _domainEventService.Publish(domainEvent, cancellationToken);
-        }
+        foreach (var domainEvent in domainEvents) await _domainEventService.Publish(domainEvent, cancellationToken);
     }
 }

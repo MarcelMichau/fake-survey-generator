@@ -8,9 +8,6 @@ internal sealed class OneSidedVoteDistribution : IVoteDistribution
 
         var winningOptionIndex = Random.Shared.Next(0, survey.Options.Count);
 
-        for (var i = 0; i < survey.NumberOfRespondents; i++)
-        {
-            survey.Options[winningOptionIndex].AddVote();
-        }
+        for (var i = 0; i < survey.NumberOfRespondents; i++) survey.Options[winningOptionIndex].AddVote();
     }
 }

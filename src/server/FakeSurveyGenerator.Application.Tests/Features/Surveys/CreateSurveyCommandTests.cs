@@ -51,7 +51,8 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
     }
 
     [Fact]
-    public async Task GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
+    public async Task
+        GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
     {
         var topic = _fixture.Create<string>();
         const int numberOfRespondents = 500;
@@ -85,7 +86,8 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
         survey.IsRigged.Should().BeTrue();
 
         survey.Options.Should().HaveCount(2);
-        survey.Options.First().NumberOfVotes.Should().Be(100);
-        survey.Options.Last().NumberOfVotes.Should().Be(400);
+
+        survey.Options.Should().SatisfyRespectively(firstOption => { firstOption.NumberOfVotes.Should().Be(100); },
+            secondOption => { secondOption.NumberOfVotes.Should().Be(300); });
     }
 }

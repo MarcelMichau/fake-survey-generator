@@ -20,10 +20,7 @@ internal static class DatabaseConfigurationExtensions
         builder.Services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
         builder.Services.AddDbContext<SurveyContext>
-        (options =>
-            {
-                options.UseSqlServer(connectionString);
-            }
+        (options => { options.UseSqlServer(connectionString); }
         );
 
         builder.EnrichSqlServerDbContext<SurveyContext>();

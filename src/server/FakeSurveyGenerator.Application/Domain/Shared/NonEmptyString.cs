@@ -1,13 +1,11 @@
-﻿using CSharpFunctionalExtensions;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using CSharpFunctionalExtensions;
 
 namespace FakeSurveyGenerator.Application.Domain.Shared;
 
 [DebuggerDisplay("Value = {Value}")]
 public sealed class NonEmptyString : ValueObject
 {
-    public string Value { get; }
-
     private NonEmptyString(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -16,6 +14,8 @@ public sealed class NonEmptyString : ValueObject
 
         Value = value;
     }
+
+    public string Value { get; }
 
     public static NonEmptyString Create(string value)
     {

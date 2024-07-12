@@ -18,7 +18,8 @@ internal static class AdminEndpoints
 
         adminGroup.MapGet("/secret-test", SecretTest)
             .WithName(nameof(SecretTest))
-            .WithSummary("Retrieves a test secret from Dapr Secret Store. Uses local file in Development & Azure Key Vault in Production")
+            .WithSummary(
+                "Retrieves a test secret from Dapr Secret Store. Uses local file in Development & Azure Key Vault in Production")
             .WithOpenApi();
     }
 

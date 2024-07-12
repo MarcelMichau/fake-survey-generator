@@ -11,12 +11,15 @@ namespace FakeSurveyGenerator.Application.Features.Surveys;
 public sealed record GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>;
 
 public sealed class
-    GetUserSurveysQueryHandler(IUserService userService,
+    GetUserSurveysQueryHandler(
+        IUserService userService,
         SurveyContext surveyContext)
     : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
 {
+    private readonly SurveyContext _surveyContext =
+        surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
+
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-    private readonly SurveyContext _surveyContext = surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
 
     public async Task<Result<List<UserSurveyModel>, Error>> Handle(GetUserSurveysQuery request,
         CancellationToken cancellationToken)

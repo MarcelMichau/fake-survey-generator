@@ -195,7 +195,7 @@ stages:
 
   - stage: BuildUi
     displayName: "Build UI"
-    dependsOn: []
+    dependsOn: [ ]
     jobs:
       - job: Build
         pool:

@@ -39,28 +39,29 @@ internal static class UserEndpoints
             .WithOpenApi();
     }
 
-    private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(ISender mediator, int id, CancellationToken cancellationToken)
+    private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(ISender mediator, int id,
+        CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetUserQuery(id), cancellationToken);
 
         return ResultExtensions.FromResult(result);
     }
 
-    private static async Task<IResult> IsRegistered(ISender mediator, string userId, CancellationToken cancellationToken)
+    private static async Task<IResult> IsRegistered(ISender mediator, string userId,
+        CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new IsUserRegisteredQuery(userId), cancellationToken);
 
         return ResultExtensions.FromResult(result);
     }
 
-    private static async Task<Results<CreatedAtRoute<UserModel>, ProblemHttpResult>> Register(ISender mediator, CancellationToken cancellationToken)
+    private static async Task<Results<CreatedAtRoute<UserModel>, ProblemHttpResult>> Register(ISender mediator,
+        CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new RegisterUserCommand(), cancellationToken);
 
         if (result.IsSuccess)
-        {
             return TypedResults.CreatedAtRoute(result.Value, nameof(GetUser), new { id = result.Value.Id });
-        }
 
         return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
             statusCode: StatusCodes.Status400BadRequest);

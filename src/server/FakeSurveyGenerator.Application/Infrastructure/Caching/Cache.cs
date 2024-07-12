@@ -8,8 +8,8 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Caching;
 internal sealed class Cache<T>(IDistributedCache distributedCache, ILogger<Cache<T>> logger)
     : ICache<T>
 {
-    private static string ApplicationName => "FakeSurveyGenerator";
     private readonly string _cacheKeyPrefix = $"{ApplicationName}:{typeof(T).Namespace}:{typeof(T).Name}:";
+    private static string ApplicationName => "FakeSurveyGenerator";
 
     public async Task<(bool, T? value)> TryGetValueAsync(string key, CancellationToken cancellationToken)
     {
@@ -25,15 +25,11 @@ internal sealed class Cache<T>(IDistributedCache distributedCache, ILogger<Cache
             var cachedResult = await distributedCache.GetAsync(CacheKey(key), cancellationToken);
 
             if (cachedResult is null)
-            {
                 logger.LogInformation(
-                "Cache miss for cache key: {CacheKey}", CacheKey(key));
-            }
+                    "Cache miss for cache key: {CacheKey}", CacheKey(key));
             else
-            {
                 logger.LogInformation(
-                "Cache hit for cache key: {CacheKey}", CacheKey(key));
-            }
+                    "Cache hit for cache key: {CacheKey}", CacheKey(key));
 
             return cachedResult is null ? default : await DeserialiseCacheResult(cachedResult, cancellationToken);
         }
@@ -75,7 +71,10 @@ internal sealed class Cache<T>(IDistributedCache distributedCache, ILogger<Cache
         }
     }
 
-    private string CacheKey(string key) => $"{_cacheKeyPrefix}{key}";
+    private string CacheKey(string key)
+    {
+        return $"{_cacheKeyPrefix}{key}";
+    }
 
     private async Task<T?> DeserialiseCacheResult(byte[] cachedResult, CancellationToken cancellationToken)
     {

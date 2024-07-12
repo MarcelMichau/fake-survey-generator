@@ -12,8 +12,8 @@ namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
 [Collection(nameof(QueryTestFixture))]
 public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 {
-    private readonly SurveyContext _surveyContext = fixture.Context;
     private readonly ICache<SurveyModel> _cache = Substitute.For<ICache<SurveyModel>>();
+    private readonly SurveyContext _surveyContext = fixture.Context;
 
     [Fact]
     public async Task GivenExistingSurveyId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
@@ -63,7 +63,8 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
     }
 
     [Fact]
-    public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyNumberOfRespondentsShouldMatchExpectedValue()
+    public async Task
+        GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyNumberOfRespondentsShouldMatchExpectedValue()
     {
         const int id = 1;
         const int expectedNumberOfRespondents = 10;

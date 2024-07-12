@@ -1,12 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
+using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace FakeSurveyGenerator.Api.Shared;
 
 public static class ResultExtensions
 {
-    public static Microsoft.AspNetCore.Http.IResult FromResult<T>(Result<T> result)
+    public static IResult FromResult<T>(Result<T> result)
     {
         return TypedResults.Ok(result.Value);
     }

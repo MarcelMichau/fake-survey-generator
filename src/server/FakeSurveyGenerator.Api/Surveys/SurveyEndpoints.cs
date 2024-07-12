@@ -50,17 +50,17 @@ internal static class SurveyEndpoints
         return ResultExtensions.FromResult(result);
     }
 
-    private static async Task<Results<CreatedAtRoute<SurveyModel>, ProblemHttpResult, UnprocessableEntity<IDictionary<string, string[]>>>> CreateSurvey(ISender mediator,
-        CreateSurveyCommand command, CancellationToken cancellationToken)
+    private static async
+        Task<Results<CreatedAtRoute<SurveyModel>, ProblemHttpResult,
+            UnprocessableEntity<IDictionary<string, string[]>>>> CreateSurvey(ISender mediator,
+            CreateSurveyCommand command, CancellationToken cancellationToken)
     {
         try
         {
             var result = await mediator.Send(command, cancellationToken);
 
             if (result.IsSuccess)
-            {
                 return TypedResults.CreatedAtRoute(result.Value, nameof(GetSurvey), new { id = result.Value.Id });
-            }
 
             return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
                 statusCode: StatusCodes.Status400BadRequest);

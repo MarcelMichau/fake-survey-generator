@@ -10,15 +10,24 @@ using Polly.Timeout;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Identity;
 
-internal sealed class OAuthUserInfoService(HttpClient client, ILogger<OAuthUserInfoService> logger,
-        IConfiguration configuration, ICache<OAuthUser> cache, ITokenProviderService tokenProviderService)
+internal sealed class OAuthUserInfoService(
+    HttpClient client,
+    ILogger<OAuthUserInfoService> logger,
+    IConfiguration configuration,
+    ICache<OAuthUser> cache,
+    ITokenProviderService tokenProviderService)
     : IUserService
 {
-    private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
-    private readonly ILogger _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly IConfiguration _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     private readonly ICache<OAuthUser> _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-    private readonly ITokenProviderService _tokenProviderService = tokenProviderService ?? throw new ArgumentNullException(nameof(tokenProviderService));
+    private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
+
+    private readonly IConfiguration _configuration =
+        configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+    private readonly ILogger _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+    private readonly ITokenProviderService _tokenProviderService =
+        tokenProviderService ?? throw new ArgumentNullException(nameof(tokenProviderService));
 
     public string GetUserIdentity()
     {
@@ -57,7 +66,8 @@ internal sealed class OAuthUserInfoService(HttpClient client, ILogger<OAuthUserI
     private async Task<Result<UserInfoResponse>> GetUserInfoFromIdentityProvider(string? accessToken,
         CancellationToken cancellationToken)
     {
-        var identityProviderUrl = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL") ?? throw new InvalidOperationException("IDENTITY_PROVIDER_URL not found in config");
+        var identityProviderUrl = _configuration.GetValue<string>("IDENTITY_PROVIDER_URL") ??
+                                  throw new InvalidOperationException("IDENTITY_PROVIDER_URL not found in config");
 
         try
         {

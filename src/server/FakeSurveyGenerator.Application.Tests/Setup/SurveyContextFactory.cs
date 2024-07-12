@@ -27,9 +27,11 @@ public static class SurveyContextFactory
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockUserService, fakeTimeProvider);
+        var auditableEntitySaveChangesInterceptor =
+            new AuditableEntitySaveChangesInterceptor(mockUserService, fakeTimeProvider);
 
-        var context = new SurveyContext(options, Substitute.For<IDomainEventService>(), auditableEntitySaveChangesInterceptor, NullLogger<SurveyContext>.Instance);
+        var context = new SurveyContext(options, Substitute.For<IDomainEventService>(),
+            auditableEntitySaveChangesInterceptor, NullLogger<SurveyContext>.Instance);
 
         context.Database.EnsureCreated();
 

@@ -30,20 +30,23 @@ public sealed class SurveyEndpointsTests
     }
 
     [Fact]
-    public async Task GivenAuthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenSuccessfulResponseWithNewlyCreatedSurveyShouldBeReturned()
+    public async Task
+        GivenAuthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenSuccessfulResponseWithNewlyCreatedSurveyShouldBeReturned()
     {
         var newUser = await RegisterNewUser();
         var newSurvey = await CreateSurvey();
 
-        Assert.Equal(350, newSurvey.Options.Sum(option => option.NumberOfVotes));
-        Assert.Equal("How awesome is this?", newSurvey.Topic);
-        Assert.True(newSurvey.Options.All(option => option.NumberOfVotes > 0));
-        Assert.False(newSurvey.CreatedOn == DateTimeOffset.MinValue);
-        Assert.Equal(newUser.ExternalUserId, newSurvey.CreatedBy);
+        newSurvey.Options.Sum(option => option.NumberOfVotes).Should().Be(350);
+        newSurvey.Topic.Should().Be("How awesome is this?");
+        newSurvey.RespondentType.Should().Be("Individuals");
+        newSurvey.Options.Should().AllSatisfy(option => { option.NumberOfVotes.Should().BeGreaterThan(0); });
+        newSurvey.CreatedOn.Should().NotBe(DateTimeOffset.MinValue);
+        newSurvey.CreatedBy.Should().Be(newUser.ExternalUserId);
     }
 
     [Fact]
-    public async Task GivenUnauthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnauthorizedResponseShouldBeReturned()
+    public async Task
+        GivenUnauthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnauthorizedResponseShouldBeReturned()
     {
         var createSurveyCommand = new CreateSurveyCommand("How unauthorized is this?", 400, "Unauthorized users",
             new List<SurveyOptionDto>
@@ -64,7 +67,8 @@ public sealed class SurveyEndpointsTests
     }
 
     [Fact]
-    public async Task GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnprocessableEntityResponseShouldBeReturned()
+    public async Task
+        GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnprocessableEntityResponseShouldBeReturned()
     {
         var createSurveyCommand = new CreateSurveyCommand("", 0, "",
             new List<SurveyOptionDto>

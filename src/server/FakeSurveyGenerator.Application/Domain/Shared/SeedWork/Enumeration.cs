@@ -4,14 +4,22 @@ namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 
 public abstract class Enumeration : IComparable
 {
-    public string Name { get; }
-
-    public int Id { get; }
-
     protected Enumeration(int id, string name)
     {
         Id = id;
         Name = name;
+    }
+
+    public string Name { get; }
+
+    public int Id { get; }
+
+    public int CompareTo(object? other)
+    {
+        if (other is null)
+            throw new InvalidOperationException($"Tried to compare a null {nameof(Enumeration)} to another");
+
+        return Id.CompareTo(((Enumeration)other).Id);
     }
 
     public override string ToString()
@@ -22,25 +30,20 @@ public abstract class Enumeration : IComparable
     public static IEnumerable<T> GetAll<T>() where T : Enumeration, new()
     {
         var type = typeof(T);
-        var fields = type.GetTypeInfo().GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+        var fields = type.GetTypeInfo()
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
         foreach (var info in fields)
         {
             var instance = new T();
 
-            if (info.GetValue(instance) is T locatedValue)
-            {
-                yield return locatedValue;
-            }
+            if (info.GetValue(instance) is T locatedValue) yield return locatedValue;
         }
     }
 
     public override bool Equals(object? obj)
     {
-        if (obj is not Enumeration otherValue)
-        {
-            return false;
-        }
+        if (obj is not Enumeration otherValue) return false;
 
         var typeMatches = GetType() == obj.GetType();
         var valueMatches = Id.Equals(otherValue.Id);
@@ -80,14 +83,5 @@ public abstract class Enumeration : IComparable
         var message = $"'{value}' is not a valid {description} in {typeof(T)}";
 
         throw new InvalidOperationException(message);
-
-    }
-
-    public int CompareTo(object? other)
-    {
-        if (other is null)
-            throw new InvalidOperationException($"Tried to compare a null {nameof(Enumeration)} to another");
-
-        return Id.CompareTo(((Enumeration)other).Id);
     }
 }

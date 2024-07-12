@@ -3,19 +3,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Api.Data;
 
-internal sealed class DatabaseCreationHostedService(IServiceProvider serviceProvider, IHostEnvironment hostEnvironment,
-        ILogger<DatabaseCreationHostedService> logger)
+internal sealed class DatabaseCreationHostedService(
+    IServiceProvider serviceProvider,
+    IHostEnvironment hostEnvironment,
+    ILogger<DatabaseCreationHostedService> logger)
     : IHostedService
 {
-    private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-    private readonly IHostEnvironment _hostEnvironment = hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
-    private readonly ILogger<DatabaseCreationHostedService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IHostEnvironment _hostEnvironment =
+        hostEnvironment ?? throw new ArgumentNullException(nameof(hostEnvironment));
+
+    private readonly ILogger<DatabaseCreationHostedService> _logger =
+        logger ?? throw new ArgumentNullException(nameof(logger));
+
+    private readonly IServiceProvider _serviceProvider =
+        serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        if (!_hostEnvironment.IsDevelopment()) // Only migrate database on startup when running in Development environment
+        if (!_hostEnvironment
+                .IsDevelopment()) // Only migrate database on startup when running in Development environment
         {
-            _logger.LogInformation("Skipping database creation/migration as application is not running in Development environment");
+            _logger.LogInformation(
+                "Skipping database creation/migration as application is not running in Development environment");
             return;
         }
 
@@ -23,7 +32,8 @@ internal sealed class DatabaseCreationHostedService(IServiceProvider serviceProv
 
         await using var context = scope.ServiceProvider.GetRequiredService<SurveyContext>();
 
-        if (context.Database.IsSqlServer()) // Do not migrate database when running integration tests with in-memory database
+        if (context.Database
+            .IsSqlServer()) // Do not migrate database when running integration tests with in-memory database
         {
             _logger.LogInformation("Creating/Migrating Database...");
 
@@ -38,5 +48,8 @@ internal sealed class DatabaseCreationHostedService(IServiceProvider serviceProv
         }
     }
 
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 }

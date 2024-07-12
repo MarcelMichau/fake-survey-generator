@@ -9,11 +9,15 @@ public static class DatabaseSeed
 {
     public static async Task SeedSampleData(SurveyContext context)
     {
-        var testOwner = new User(NonEmptyString.Create("Test User"), NonEmptyString.Create("test.user@test.com"), NonEmptyString.Create("test-id"));
+        var testOwner = new User(NonEmptyString.Create("Test User"), NonEmptyString.Create("test.user@test.com"),
+            NonEmptyString.Create("test-id"));
 
-        var survey1 = new Survey(testOwner, NonEmptyString.Create("Test Topic 1"), 10, NonEmptyString.Create("Testers"));
-        var survey2 = new Survey(testOwner, NonEmptyString.Create("Test Topic 2"), 20, NonEmptyString.Create("More Testers"));
-        var survey3 = new Survey(testOwner, NonEmptyString.Create("Test Topic 3"), 30, NonEmptyString.Create("Even More Testers"));
+        var survey1 = new Survey(testOwner, NonEmptyString.Create("Test Topic 1"), 10,
+            NonEmptyString.Create("Testers"));
+        var survey2 = new Survey(testOwner, NonEmptyString.Create("Test Topic 2"), 20,
+            NonEmptyString.Create("More Testers"));
+        var survey3 = new Survey(testOwner, NonEmptyString.Create("Test Topic 3"), 30,
+            NonEmptyString.Create("Even More Testers"));
 
         survey1.AddSurveyOption(NonEmptyString.Create("Test Option 1"));
 

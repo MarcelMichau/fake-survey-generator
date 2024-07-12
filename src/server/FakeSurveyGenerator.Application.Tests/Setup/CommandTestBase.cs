@@ -4,14 +4,14 @@ namespace FakeSurveyGenerator.Application.Tests.Setup;
 
 public class CommandTestBase : IDisposable
 {
-    protected SurveyContext Context { get; }
-
     protected CommandTestBase()
     {
         Context = SurveyContextFactory.Create();
 
         SurveyContextFactory.SeedSampleData(Context).GetAwaiter().GetResult();
     }
+
+    protected SurveyContext Context { get; }
 
     public void Dispose()
     {

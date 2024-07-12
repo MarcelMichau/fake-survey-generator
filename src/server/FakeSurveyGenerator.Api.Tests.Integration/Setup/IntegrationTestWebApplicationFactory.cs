@@ -11,7 +11,8 @@ using NSubstitute;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
-public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings settings) : WebApplicationFactory<Program>
+public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings settings)
+    : WebApplicationFactory<Program>
 {
     private readonly TestContainerSettings _settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
@@ -21,12 +22,14 @@ public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings s
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                {"ASPNETCORE_ENVIRONMENT", "Production"}, // Run integration tests as close as possible to how code will be run in Production
-                {"SKIP_DAPR", "true"}, // Do not configure Dapr components for integration tests
-                
-                {"ConnectionStrings:database", _settings.SqlServerConnectionString},
-                {"ConnectionStrings:cache", _settings.RedisConnectionString},
-                {"IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com"}
+                {
+                    "ASPNETCORE_ENVIRONMENT", "Production"
+                }, // Run integration tests as close as possible to how code will be run in Production
+                { "SKIP_DAPR", "true" }, // Do not configure Dapr components for integration tests
+
+                { "ConnectionStrings:database", _settings.SqlServerConnectionString },
+                { "ConnectionStrings:cache", _settings.RedisConnectionString },
+                { "IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com" }
             }!);
         });
 
@@ -35,10 +38,7 @@ public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings s
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureLogging(logging =>
-        {
-            logging.ClearProviders();
-        });
+        builder.ConfigureLogging(logging => { logging.ClearProviders(); });
 
         builder.ConfigureTestServices(ConfigureMockServices);
     }

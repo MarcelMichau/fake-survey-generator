@@ -6,7 +6,8 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Identity;
 
 internal sealed class JwtBearerTokenProviderService(IHttpContextAccessor httpContextAccessor) : ITokenProviderService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+    private readonly IHttpContextAccessor _httpContextAccessor =
+        httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
 
     public string? GetToken()
     {
@@ -16,6 +17,9 @@ internal sealed class JwtBearerTokenProviderService(IHttpContextAccessor httpCon
         if (_httpContextAccessor.HttpContext.User.Identity is { IsAuthenticated: false })
             throw new InvalidOperationException("Cannot retrieve a token for an unauthorized user");
 
-        return AuthenticationHeaderValue.TryParse(_httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization], out var result) ? result.Parameter : null;
+        return AuthenticationHeaderValue.TryParse(
+            _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization], out var result)
+            ? result.Parameter
+            : null;
     }
 }

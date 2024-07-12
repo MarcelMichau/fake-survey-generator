@@ -5,5 +5,8 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Caching;
 
 internal sealed class CacheFactory(IServiceProvider serviceProvider) : ICacheFactory
 {
-    public ICache<T> GetCache<T>() => serviceProvider.GetRequiredService<ICache<T>>();
+    public ICache<T> GetCache<T>()
+    {
+        return serviceProvider.GetRequiredService<ICache<T>>();
+    }
 }

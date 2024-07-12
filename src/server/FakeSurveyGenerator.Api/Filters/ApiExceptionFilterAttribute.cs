@@ -6,11 +6,12 @@ namespace FakeSurveyGenerator.Api.Filters;
 
 public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {
-    private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
-    {
-        // Register known exception types and handlers.
-        { typeof(ValidationException), HandleValidationException }
-    };
+    private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers =
+        new Dictionary<Type, Action<ExceptionContext>>
+        {
+            // Register known exception types and handlers.
+            { typeof(ValidationException), HandleValidationException }
+        };
 
     public override void OnException(ExceptionContext context)
     {
@@ -52,7 +53,9 @@ public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
         var exception = context.Exception as ValidationException;
 
-        var details = new ValidationProblemDetails(exception?.Errors ?? throw new InvalidOperationException($"Errors property on {nameof(ValidationException)} was not set"))
+        var details = new ValidationProblemDetails(exception?.Errors ??
+                                                   throw new InvalidOperationException(
+                                                       $"Errors property on {nameof(ValidationException)} was not set"))
         {
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
         };

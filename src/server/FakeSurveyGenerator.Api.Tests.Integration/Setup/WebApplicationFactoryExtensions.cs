@@ -20,7 +20,7 @@ public static class WebApplicationFactoryExtensions
         {
             builder.ConfigureLogging(lb =>
                 lb.Services.AddSingleton<ILoggerProvider>(new XUnitLoggerProvider(testOutputHelper,
-                    appendScope: false)));
+                    false)));
         });
     }
 

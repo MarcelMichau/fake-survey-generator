@@ -38,7 +38,9 @@ public sealed class UserEndpointsTests(IntegrationTestFixture fixture, ITestOutp
 
         var newUser = await RegisterNewUser(client);
 
-        var result = await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={newUser.ExternalUserId}");
+        var result =
+            await client.GetFromJsonAsync<UserRegistrationStatusModel>(
+                $"api/user/isRegistered?userId={newUser.ExternalUserId}");
 
         result!.IsUserRegistered.Should().BeTrue();
     }
@@ -50,13 +52,15 @@ public sealed class UserEndpointsTests(IntegrationTestFixture fixture, ITestOutp
 
         var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
 
-        var result = await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
+        var result =
+            await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
 
         result!.IsUserRegistered.Should().BeFalse();
     }
 
     [Fact]
-    public async Task GivenAuthenticatedNewUser_WhenCallingRegisterUser_ThenSuccessfulResponseWithNewlyRegisteredUserShouldBeReturned()
+    public async Task
+        GivenAuthenticatedNewUser_WhenCallingRegisterUser_ThenSuccessfulResponseWithNewlyRegisteredUserShouldBeReturned()
     {
         var expectedUser = _fixture.Create<TestUser>();
 

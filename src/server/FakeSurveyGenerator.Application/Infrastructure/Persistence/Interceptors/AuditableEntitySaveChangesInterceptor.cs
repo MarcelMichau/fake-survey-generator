@@ -5,11 +5,13 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Persistence.Interceptors;
-public sealed class AuditableEntitySaveChangesInterceptor(IUserService userService,
+
+public sealed class AuditableEntitySaveChangesInterceptor(
+    IUserService userService,
     TimeProvider timeProvider) : SaveChangesInterceptor
 {
-    private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
     private readonly TimeProvider _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
+    private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
@@ -18,7 +20,8 @@ public sealed class AuditableEntitySaveChangesInterceptor(IUserService userServi
         return base.SavingChanges(eventData, result);
     }
 
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData,
+        InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
         if (eventData.Context != null) UpdateEntities(eventData.Context);
 
@@ -46,10 +49,11 @@ public sealed class AuditableEntitySaveChangesInterceptor(IUserService userServi
 
 public static class Extensions
 {
-    public static bool HasChangedOwnedEntities(this EntityEntry entry) =>
-        entry.References.Any(r =>
+    public static bool HasChangedOwnedEntities(this EntityEntry entry)
+    {
+        return entry.References.Any(r =>
             r.TargetEntry != null &&
             r.TargetEntry.Metadata.IsOwned() &&
             r.TargetEntry.State is EntityState.Added or EntityState.Modified);
+    }
 }
-

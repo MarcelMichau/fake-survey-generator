@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Features.Users;
+
 public sealed record GetUserQuery(int Id) : IRequest<Result<UserModel, Error>>;
 
 public sealed class GetUserQueryHandler(SurveyContext context) : IRequestHandler<GetUserQuery, Result<UserModel, Error>>

@@ -7,15 +7,12 @@ namespace FakeSurveyGenerator.Application.Domain.Users;
 
 public sealed class User : AuditableEntity, IAggregateRoot
 {
-    public NonEmptyString DisplayName { get; } = null!;
-    public NonEmptyString EmailAddress { get; } = null!;
-    public NonEmptyString ExternalUserId { get; } = null!;
-
     private readonly List<Survey> _ownedSurveys = [];
-    public IReadOnlyList<Survey> OwnedSurveys => _ownedSurveys.ToList();
 
     [UsedImplicitly]
-    private User() { } // Necessary for Entity Framework Core
+    private User()
+    {
+    } // Necessary for Entity Framework Core
 
     public User(NonEmptyString displayName, NonEmptyString emailAddress, NonEmptyString externalUserId)
     {
@@ -23,4 +20,9 @@ public sealed class User : AuditableEntity, IAggregateRoot
         EmailAddress = emailAddress;
         ExternalUserId = externalUserId;
     }
+
+    public NonEmptyString DisplayName { get; } = null!;
+    public NonEmptyString EmailAddress { get; } = null!;
+    public NonEmptyString ExternalUserId { get; } = null!;
+    public IReadOnlyList<Survey> OwnedSurveys => _ownedSurveys.ToList();
 }
