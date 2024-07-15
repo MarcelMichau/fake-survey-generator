@@ -11,22 +11,6 @@
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Enable NuGet package auditing -->
-    <NuGetAudit>true</NuGetAudit>
-
-    <!-- Audit direct and transitive packages -->
-    <NuGetAuditMode>all</NuGetAuditMode>
-
-    <!-- Report low, moderate, high and critical advisories -->
-    <NuGetAuditLevel>low</NuGetAuditLevel>
-
-    <!-- Fails the build on CI or on release when a vulnerability is detected -->
-    <WarningsAsErrors Condition="$(ContinuousIntegrationBuild) == 'true' OR '$(Configuration)' == 'Release'">
-      (WarningsAsErrors);NU1900;NU1901;NU1902;NU1903;NU1904
-    </WarningsAsErrors>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1"/>
     <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.2.0"/>
