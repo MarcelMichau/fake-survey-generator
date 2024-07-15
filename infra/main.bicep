@@ -80,8 +80,6 @@ module dnsZone 'modules/dnsZone.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
-var azureSqlPassword = 'C0mpl3x!ity-${uniqueString(subscription().id, fakeSurveyGeneratorResourceGroup.id, '${abbrs.sqlServers}${applicationName}')}'
-
 module keyVault 'modules/keyVault.bicep' = {
   name: 'keyVault'
   params: {
@@ -93,10 +91,6 @@ module keyVault 'modules/keyVault.bicep' = {
         {
           secretName: 'HealthCheckSecret'
           secretValue: 'healthy'
-        }
-        {
-          secretName: 'SqlAdminPassword'
-          secretValue: azureSqlPassword
         }
       ]
     }
