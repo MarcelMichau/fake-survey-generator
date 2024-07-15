@@ -6,12 +6,30 @@
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Enable NuGet package auditing -->
+    <NuGetAudit>true</NuGetAudit>
+
+    <!-- Audit direct and transitive packages -->
+    <NuGetAuditMode>all</NuGetAuditMode>
+
+    <!-- Report low, moderate, high and critical advisories -->
+    <NuGetAuditLevel>low</NuGetAuditLevel>
+
+    <!-- Fails the build on CI or on release when a vulnerability is detected -->
+    <WarningsAsErrors Condition="$(ContinuousIntegrationBuild) == 'true' OR '$(Configuration)' == 'Release'">
+      (WarningsAsErrors);NU1900;NU1901;NU1902;NU1903;NU1904
+    </WarningsAsErrors>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.NodeJs" Version="8.0.2"/>
     <PackageReference Include="Aspire.Hosting.SqlServer" Version="8.0.2"/>
     <PackageReference Include="Aspire.Hosting.Redis" Version="8.0.2"/>
     <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.2"/>
     <PackageReference Include="Aspire.Hosting.Dapr" Version="8.0.2"/>
+    <PackageReference Include="System.Text.Json" Version="8.0.4" /> <!-- Fix transitive vulnerability -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FakeSurveyGenerator.Api\FakeSurveyGenerator.Api.csproj"/>
