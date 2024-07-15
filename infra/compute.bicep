@@ -26,7 +26,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   name: managedIdentityName
 }
 
-resource redisCache 'Microsoft.Cache/redis@2023-08-01' existing = {
+resource redisCache 'Microsoft.Cache/redis@2024-04-01-preview' existing = {
   name: redisCacheName
 }
 
