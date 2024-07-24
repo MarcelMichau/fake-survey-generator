@@ -22,7 +22,7 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:latest")
+            .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
             .Build();
 
     private IServiceScopeFactory? _serviceScopeFactory;
