@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence;
+﻿using DotNet.Testcontainers.Builders;
+using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,9 +10,7 @@ using Testcontainers.Redis;
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 [CollectionDefinition(nameof(IntegrationTestFixture))]
-public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture>
-{
-}
+public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture>;
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
@@ -22,7 +21,8 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
+            .WithImage("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-20.04")
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools18/bin/sqlcmd", "-C", "-Q", "SELECT 1;"))
             .Build();
 
     private IServiceScopeFactory? _serviceScopeFactory;
