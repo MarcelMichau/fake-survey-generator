@@ -2,17 +2,11 @@
 
 namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 
-public abstract class Enumeration : IComparable
+public abstract class Enumeration(int id, string name) : IComparable
 {
-    protected Enumeration(int id, string name)
-    {
-        Id = id;
-        Name = name;
-    }
+    public string Name { get; } = name;
 
-    public string Name { get; }
-
-    public int Id { get; }
+    public int Id { get; } = id;
 
     public int CompareTo(object? other)
     {

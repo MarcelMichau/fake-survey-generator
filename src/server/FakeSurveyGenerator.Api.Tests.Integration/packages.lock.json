@@ -259,30 +259,28 @@
       },
       "Dapr.AspNetCore": {
         "type": "Transitive",
-        "resolved": "1.13.1",
-        "contentHash": "SAs6nLGFkurA4lfXS00Uo0L7fJs4AA1/TsjXiVtWIDMoEZfyabJK3o/jv190pHiiUGuZvJPr+8igJ9zEj1C71A==",
+        "resolved": "1.14.0",
+        "contentHash": "CtP5zOR29Ft8qsrQ2R9001yc1FczUCowIuzeOKEPCe/kAKbCs4IwA7QXDzIbvkhqxT4JxniQMK/ASk7LBygghQ==",
         "dependencies": {
-          "Dapr.Client": "1.13.1",
-          "System.IO.Pipelines": "4.7.2"
+          "Dapr.Client": "1.14.0"
         }
       },
       "Dapr.Client": {
         "type": "Transitive",
-        "resolved": "1.13.1",
-        "contentHash": "kQRO+vMnNg9YK4bqQAVsM0PZeiyQDB8bBNIFdW79CqH1camlANPP1kkflokDpBAC3T2ddXDujIsIfDArzEm0hQ==",
+        "resolved": "1.14.0",
+        "contentHash": "gvoxV+nKOLHTeDx+WLwV79GJ/ldJuCsRrFmyxq4NodIeE9XfEi5z08Nc+EAwn1NibD3Wi4B0CPZpm+El+UKFCA==",
         "dependencies": {
           "Google.Api.CommonProtos": "2.2.0",
           "Google.Protobuf": "3.15.0",
-          "Grpc.Net.Client": "2.52.0",
-          "System.Net.Http.Json": "5.0.0"
+          "Grpc.Net.Client": "2.52.0"
         }
       },
       "Dapr.Extensions.Configuration": {
         "type": "Transitive",
-        "resolved": "1.13.1",
-        "contentHash": "k63hlNOkK6yQBJ3pKV1WNwRCg6V5Le3hPqgSpVNhrVB0YqIJJDWrBoQ5Gk4DmjCORRUWrwrTFe59HZb1V1kXIg==",
+        "resolved": "1.14.0",
+        "contentHash": "WiEWmMv6VvOrHU8uFTSpjYNTJHcPACi/IIEcsKgxNITksqHhMPGSo2xFd7ebXYaRYVB2O2wawMsoCFYBCgEcHg==",
         "dependencies": {
-          "Dapr.Client": "1.13.1",
+          "Dapr.Client": "1.14.0",
           "Microsoft.Extensions.Configuration": "3.1.2"
         }
       },
@@ -2394,8 +2392,8 @@
         "dependencies": {
           "AspNetCore.HealthChecks.UI.Client": "[8.0.1, )",
           "Azure.Monitor.OpenTelemetry.AspNetCore": "[1.2.0, )",
-          "Dapr.AspNetCore": "[1.13.1, )",
-          "Dapr.Extensions.Configuration": "[1.13.1, )",
+          "Dapr.AspNetCore": "[1.14.0, )",
+          "Dapr.Extensions.Configuration": "[1.14.0, )",
           "FakeSurveyGenerator.Application": "[1.0.0, )",
           "FakeSurveyGenerator.ServiceDefaults": "[1.0.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[8.0.8, )",

@@ -2,7 +2,7 @@
 
 public abstract class Entity : IHasDomainEvents
 {
-    private readonly List<DomainEvent> _domainEvents = new();
+    private readonly List<DomainEvent> _domainEvents = [];
     private int? _requestedHashCode;
     public virtual int Id { get; protected set; }
     public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
