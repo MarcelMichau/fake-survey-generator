@@ -12,17 +12,16 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 [CollectionDefinition(nameof(IntegrationTestFixture))]
 public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture>;
 
-public class IntegrationTestFixture : IAsyncLifetime
+public abstract class IntegrationTestFixture : IAsyncLifetime
 {
     private readonly RedisContainer _cacheContainer =
         new RedisBuilder()
-            .WithImage("redis:latest")
+            .WithImage("redis:7-alpine")
             .Build();
 
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-20.04")
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("/opt/mssql-tools18/bin/sqlcmd", "-C", "-Q", "SELECT 1;"))
+            .WithImage("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04")
             .Build();
 
     private IServiceScopeFactory? _serviceScopeFactory;
