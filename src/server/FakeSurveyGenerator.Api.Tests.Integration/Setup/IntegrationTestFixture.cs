@@ -12,7 +12,7 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 [CollectionDefinition(nameof(IntegrationTestFixture))]
 public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture>;
 
-public abstract class IntegrationTestFixture : IAsyncLifetime
+public class IntegrationTestFixture : IAsyncLifetime
 {
     private readonly RedisContainer _cacheContainer =
         new RedisBuilder()
