@@ -261,7 +261,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                azd provision --no-prompt --no-state
+                azd provision --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
               AZURE_ENV_NAME: $(azureEnvName)
