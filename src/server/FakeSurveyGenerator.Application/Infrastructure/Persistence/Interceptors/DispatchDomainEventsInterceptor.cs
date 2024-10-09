@@ -26,7 +26,7 @@ internal class DispatchDomainEventsInterceptor(IMediator mediator, ILogger<Dispa
         if (context == null) return;
 
         var entities = context.ChangeTracker
-            .Entries<IHasDomainEvents>()
+            .Entries<Entity>()
             .Where(e => e.Entity.DomainEvents.Count != 0)
             .Select(e => e.Entity);
 

@@ -1,6 +1,6 @@
 ﻿namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 
-public abstract class Entity : IHasDomainEvents
+public abstract class Entity
 {
     private readonly List<DomainEvent> _domainEvents = [];
     private int? _requestedHashCode;
