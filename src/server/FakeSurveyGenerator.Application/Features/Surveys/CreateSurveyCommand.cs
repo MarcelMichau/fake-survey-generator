@@ -3,7 +3,6 @@ using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Features.Notifications;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
-using FakeSurveyGenerator.Application.Shared.DomainEvents;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
@@ -116,14 +115,13 @@ public sealed class CreateSurveyCommandHandler(
 
 public sealed class
     SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
-    : INotificationHandler<
-        DomainEventNotification<SurveyCreatedDomainEvent>>
+    : INotificationHandler<SurveyCreatedDomainEvent>
 {
-    public async Task Handle(DomainEventNotification<SurveyCreatedDomainEvent> notification,
+    public async Task Handle(SurveyCreatedDomainEvent notification,
         CancellationToken cancellationToken)
     {
         await notificationService.SendMessage(
             new MessageModel("System", "Whom It May Concern", "New Survey Created",
-                $"Survey with ID: {notification.DomainEvent.Survey.Id} created"), cancellationToken);
+                $"Survey with ID: {notification.Survey.Id} created"), cancellationToken);
     }
 }

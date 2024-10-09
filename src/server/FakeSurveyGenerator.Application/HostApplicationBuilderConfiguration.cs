@@ -1,11 +1,9 @@
 ﻿using System.Reflection;
 using FakeSurveyGenerator.Application.Infrastructure.Caching;
-using FakeSurveyGenerator.Application.Infrastructure.DomainEvents;
 using FakeSurveyGenerator.Application.Infrastructure.Identity;
 using FakeSurveyGenerator.Application.Infrastructure.Notifications;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Behaviours;
-using FakeSurveyGenerator.Application.Shared.DomainEvents;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using FluentValidation;
@@ -40,8 +38,6 @@ public static class HostApplicationBuilderConfiguration
 
         builder.AddDatabaseConfiguration(builder.Configuration);
         builder.AddCacheConfiguration();
-
-        builder.Services.AddScoped<IDomainEventService, DomainEventService>();
 
         return builder;
     }
