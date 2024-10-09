@@ -1,5 +1,6 @@
 ﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,10 +18,14 @@ internal static class DatabaseConfigurationExtensions
                                throw new InvalidOperationException(
                                    $"Connection String for '{connectionName}' was not found in config");
 
-        builder.Services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntitySaveChangesInterceptor>();
+        builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
 
-        builder.Services.AddDbContext<SurveyContext>
-        (options => { options.UseSqlServer(connectionString); }
+        builder.Services.AddDbContext<SurveyContext>((sp, options) =>
+            {
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                options.UseSqlServer(connectionString);
+            }
         );
 
         builder.EnrichSqlServerDbContext<SurveyContext>();

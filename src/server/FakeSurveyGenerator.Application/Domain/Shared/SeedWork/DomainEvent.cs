@@ -1,14 +1,8 @@
-﻿namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
+﻿using MediatR;
 
-public interface IHasDomainEvents
-{
-    public IReadOnlyCollection<DomainEvent> DomainEvents { get; }
-    void AddDomainEvent(DomainEvent eventItem);
-    void RemoveDomainEvent(DomainEvent eventItem);
-    void ClearDomainEvents();
-}
+namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 
-public abstract class DomainEvent
+public abstract class DomainEvent : INotification
 {
     public DateTimeOffset DateOccurred { get; protected set; } = DateTimeOffset.Now;
 }

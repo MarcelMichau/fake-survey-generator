@@ -1,7 +1,6 @@
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
@@ -15,6 +14,6 @@ public sealed class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Sur
 
         var builder = new DbContextOptionsBuilder<SurveyContext>();
         builder.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(SurveyContext).Assembly.FullName));
-        return new SurveyContext(builder.Options, NullLogger<SurveyContext>.Instance);
+        return new SurveyContext(builder.Options);
     }
 }
