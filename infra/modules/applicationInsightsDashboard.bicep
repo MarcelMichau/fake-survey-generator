@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 param tags object = {}
 
 // 2020-09-01-preview because that is the latest valid version
-resource applicationInsightsDashboard 'Microsoft.Portal/dashboards@2020-09-01-preview' = {
+resource applicationInsightsDashboard 'Microsoft.Portal/dashboards@2022-12-01-preview' = {
   name: name
   location: location
   tags: tags

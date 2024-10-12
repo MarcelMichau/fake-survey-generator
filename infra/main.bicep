@@ -20,7 +20,7 @@ var tags = { 'azd-env-name': environment }
 
 var abbrs = loadJsonContent('abbreviations.json')
 
-resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: '${abbrs.resourcesResourceGroups}${applicationName}'
   location: location
   tags: tags
