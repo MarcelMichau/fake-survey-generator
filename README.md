@@ -63,7 +63,7 @@ Here are some of the features incorporated into this project:
   Core Web API
 - Using a distributed [Redis](https://redis.io/) cache
 - Configuring SQL Server retry policies
-- Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience?view=dotnet-plat-ext-8.0) for resilient HTTP requests
+- Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience?view=dotnet-plat-ext-9.0) for resilient HTTP requests
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
 - Configuring [Azure Monitor OpenTelemetry](https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable) for telemetry
@@ -136,10 +136,10 @@ The server side consists of the following main components:
 The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API
-    - .NET 8.0
-    - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 8.0 Web API
+    - .NET 9.0
+    - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 9.0 Web API
     - [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
-    - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 8.0
+    - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 9.0
       with [Code-First Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
     - [Dapper](https://github.com/StackExchange/Dapper)
     - [Redis](https://redis.io/)
@@ -150,8 +150,8 @@ The server side makes use of the following tools, libraries & frameworks:
     - [Docker](https://www.docker.com/)
     - [NSubstitute](https://nsubstitute.github.io/)
 - Fake Survey Generator Worker
-    - .NET 8.0
-    - ASP.NET Core 8.0 Worker Service
+    - .NET 9.0
+    - ASP.NET Core 9.0 Worker Service
 
 ### Client
 
