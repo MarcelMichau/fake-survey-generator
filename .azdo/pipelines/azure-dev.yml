@@ -59,7 +59,7 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/server nbgv --version 3.7.62-alpha
+              arguments: install --tool-path ./src/server nbgv --version 3.7.77-alpha
             displayName: Install NBGV tool
 
           - script: ./nbgv cloud -a
@@ -85,10 +85,6 @@ stages:
             inputs:
               packageType: "sdk"
               useGlobalJson: true
-
-          - script: |
-              dotnet workload install aspire
-            displayName: Install .NET Aspire Workload
 
           - task: Cache@2
             enabled: false
@@ -151,10 +147,6 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
-          - script: |
-              dotnet workload install aspire
-            displayName: Install .NET Aspire Workload
-
           - task: Cache@2
             enabled: false
             displayName: Cache
@@ -215,7 +207,7 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/client/ui nbgv --version 3.7.62-alpha
+              arguments: install --tool-path ./src/client/ui nbgv --version 3.7.77-alpha
 
           - script: ./nbgv cloud -a
             workingDirectory: src/client/ui
