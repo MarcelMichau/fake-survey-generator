@@ -1,7 +1,7 @@
 FROM oven/bun:alpine as build
 ARG VITE_APP_VERSION
 WORKDIR /usr/src/app
-COPY src/client/ui/package.json src/client/ui/package-lock.json ./
+COPY src/client/ui/bun.lockb ./
 RUN bun i
 COPY src/client/ui/. ./
 RUN bun run build
