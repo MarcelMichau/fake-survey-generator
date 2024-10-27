@@ -10,6 +10,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/server/Directory.Build.props", "src/server/"]
+COPY ["src/server/Directory.Packages.props", "src/server/"]
 COPY ["src/server/version.json", "src/server/"]
 COPY ["src/server/FakeSurveyGenerator.Api/FakeSurveyGenerator.Api.csproj", "src/server/FakeSurveyGenerator.Api/"]
 COPY ["src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj", "src/server/FakeSurveyGenerator.Application/"]

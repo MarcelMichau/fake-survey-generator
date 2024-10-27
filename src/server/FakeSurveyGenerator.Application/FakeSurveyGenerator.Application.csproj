@@ -9,34 +9,34 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.1.24511.1" />
-    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.0.0-rc.1.24511.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" Version="8.0.1" />
-    <PackageReference Include="Azure.Identity" Version="1.13.0" />
+    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" />
+    <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
+    <PackageReference Include="Azure.Identity" />
     <!-- Fix transitive vulnerability -->
-    <PackageReference Include="CSharpFunctionalExtensions" Version="3.1.0" />
-    <PackageReference Include="Dapper" Version="2.1.44" />
-    <PackageReference Include="FluentValidation" Version="11.10.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
-    <PackageReference Include="IdentityModel" Version="7.0.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0-preview.9.24507.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-rc.2.24474.1">
+    <PackageReference Include="CSharpFunctionalExtensions" />
+    <PackageReference Include="Dapper" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="IdentityModel" />
+    <PackageReference Include="JetBrains.Annotations" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.2.24474.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0-rc.2.24474.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0-rc.2.24474.3" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.0-rc.2.24473.5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+    <PackageReference Include="System.Formats.Asn1" />
     <!-- Fix transitive vulnerability -->
-    <PackageReference Include="System.Runtime.Caching" Version="9.0.0-rc.2.24473.5" />
+    <PackageReference Include="System.Runtime.Caching" />
     <!-- Fix transitive vulnerability -->
-    <PackageReference Include="System.Text.Json" Version="9.0.0-rc.2.24473.5" />
+    <PackageReference Include="System.Text.Json" />
     <!-- Fix transitive vulnerability -->
     <!-- Fix transitive vulnerability -->
   </ItemGroup>

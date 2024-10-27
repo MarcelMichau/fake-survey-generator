@@ -9,7 +9,7 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Runtime.Caching" Version="9.0.0-rc.2.24473.5" />
+    <PackageReference Include="System.Runtime.Caching" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj" />
