@@ -34,11 +34,11 @@
       },
       "FluentAssertions": {
         "type": "Direct",
-        "requested": "[7.0.0-alpha.4, )",
-        "resolved": "7.0.0-alpha.4",
-        "contentHash": "xf+oTq7E0Iz/Z8mx2zAdGjmxVxCL4os5KmazFar59k1cPQNLKFnqTOXHZvL8Je7KaEyVjXaBi2q6s7Xr1D0E1w==",
+        "requested": "[7.0.0-alpha.5, )",
+        "resolved": "7.0.0-alpha.5",
+        "contentHash": "ilnik0Xln54qZS7EK3JQO57csmcMwChsRkGkJcTKMKvwp9MlREYsemsQ1/EQa+Xt1Q4di8xdgOStf8PCcTNg7w==",
         "dependencies": {
-          "System.Configuration.ConfigurationManager": "4.4.0"
+          "System.Configuration.ConfigurationManager": "6.0.1"
         }
       },
       "Meziantou.Extensions.Logging.Xunit": {
@@ -80,9 +80,9 @@
       },
       "NSubstitute": {
         "type": "Direct",
-        "requested": "[5.1.0, )",
-        "resolved": "5.1.0",
-        "contentHash": "ZCqOP3Kpp2ea7QcLyjMU4wzE+0wmrMN35PQMsdPOHYc2IrvjmusG9hICOiqiOTPKN0gJon6wyCn6ZuGHdNs9hQ==",
+        "requested": "[5.3.0, )",
+        "resolved": "5.3.0",
+        "contentHash": "lJ47Cps5Qzr86N99lcwd+OUvQma7+fBgr8+Mn+aOC0WrlqMNkdivaYD9IvnZ5Mqo6Ky3LS7ZI+tUq1/s9ERd0Q==",
         "dependencies": {
           "Castle.Core": "5.1.1"
         }
@@ -150,20 +150,20 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[3.10.0, )",
-        "resolved": "3.10.0",
-        "contentHash": "8FDr/j1RUN7sCDJnInXT19llmuDUXy4zB7uY9sjYXnBX6LduIamFimOkrwFY2BhzxTwvnVjiDw9acDBPQjQqvQ==",
+        "requested": "[4.0.0, )",
+        "resolved": "4.0.0",
+        "contentHash": "HausfOB3+UDDujygP2laXCUiNtrKrWJMeKnpTvP4F9JP0GswSsYlJS/mKEWw8ZXSpUd31K8enGZ7wW0HHeyg0w==",
         "dependencies": {
-          "Testcontainers": "3.10.0"
+          "Testcontainers": "4.0.0"
         }
       },
       "Testcontainers.Redis": {
         "type": "Direct",
-        "requested": "[3.10.0, )",
-        "resolved": "3.10.0",
-        "contentHash": "MLOZd/OJNG9SoZHbWR7Pr8Luh5fYSQ3kfbqZgz30uETmpR93sgDWnaXoyWL+QqRvOk0361/WRuBxwlhH0qtCBg==",
+        "requested": "[4.0.0, )",
+        "resolved": "4.0.0",
+        "contentHash": "wLzqkoouIwolvO7/u9d7RUTzNGUhS02VagqBZZ+5F+TvnsrVh4hdDw2yMfzt1cdBEZrVbZHI94Owh8RRLJvA4Q==",
         "dependencies": {
-          "Testcontainers": "3.10.0"
+          "Testcontainers": "4.0.0"
         }
       },
       "xunit": {
@@ -2030,8 +2030,8 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "3.10.0",
-        "contentHash": "4oFyiUPCOM3s/sKDnIcOJZIn664d/8+fPvODDlfbb0QAfQqHlqjc2kIoFOLAt3oJRZP9/FJtTvcNvp9j7h4UBA==",
+        "resolved": "4.0.0",
+        "contentHash": "wLG4Ls/A4jNB7b2ZrhtCUCHFBinDXohgvZ54fJB+kLVkxrqSuyQHdKwlIwPLgLSVGfPaMIAkZOEFVDSoEa1VxA==",
         "dependencies": {
           "Docker.DotNet": "3.125.15",
           "Docker.DotNet.X509": "3.125.15",

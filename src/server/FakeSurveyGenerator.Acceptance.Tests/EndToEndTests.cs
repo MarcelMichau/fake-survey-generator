@@ -10,7 +10,7 @@ public class EndToEndTests(ITestOutputHelper output)
     private const string UiProjectName = "fake-survey-generator-ui";
 
     // If Playwright fails with a "not installed" error, run the following command from the repo root directory:
-    // pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net8.0\playwright.ps1 install
+    // pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net9.0\playwright.ps1 install
     [Fact]
     public async Task GivenRunningApp_WhenOpeningUiWithPlaywright_ThenIndexPageIsDisplayed()
     {
