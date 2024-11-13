@@ -41,13 +41,14 @@ public sealed class GetSurveyDetailQueryHandler(
 
         var survey = await _surveyContext.Surveys
             .Include(s => s.Owner)
+            .SelectToModel()
             .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
 
         if (survey is null)
             return Errors.General.NotFound(nameof(Survey), request.Id);
 
-        await _cache.SetAsync(cacheKey, survey.MapToModel(), 60, cancellationToken);
+        await _cache.SetAsync(cacheKey, survey, 60, cancellationToken);
 
-        return survey.MapToModel();
+        return survey;
     }
 }

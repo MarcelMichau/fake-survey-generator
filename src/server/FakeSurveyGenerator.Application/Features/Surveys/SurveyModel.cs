@@ -33,4 +33,22 @@ public static class SurveyModelMappingExtensions
             ModifiedOn = survey.ModifiedOn
         };
     }
+
+    public static IQueryable<SurveyModel> SelectToModel(this IQueryable<Survey> surveys)
+    {
+        return surveys.Select(survey => new SurveyModel
+        {
+            Id = survey.Id,
+            OwnerId = survey.Owner.Id,
+            Topic = survey.Topic,
+            RespondentType = survey.RespondentType,
+            NumberOfRespondents = survey.NumberOfRespondents,
+            IsRigged = survey.IsRigged,
+            Options = survey.Options.Select(option => option.MapToModel()).ToList(),
+            CreatedBy = survey.CreatedBy,
+            CreatedOn = survey.CreatedOn,
+            ModifiedBy = survey.ModifiedBy,
+            ModifiedOn = survey.ModifiedOn
+        });
+    }
 }
