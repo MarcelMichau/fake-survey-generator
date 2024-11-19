@@ -74,9 +74,9 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "Direct",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "cLVWFoYqn7xI7LVAIgnxr1CNCPFjqM8Q5ya8pbYST1ZdDg6SZxEoyQx8tpe5hkib0+cVyruv82IUiKk3fMEG7w=="
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "fl+czRDrht65YvopYcUOLJPamhnREHQ1hXZgT8Pk4GwzR3ra6zYRiSxTZNZgGwewCMR6vSWYUuEeeLIsoKMIww=="
       },
       "Dapper": {
         "type": "Direct",
@@ -92,11 +92,11 @@
       },
       "FluentValidation.DependencyInjectionExtensions": {
         "type": "Direct",
-        "requested": "[11.10.0, )",
-        "resolved": "11.10.0",
-        "contentHash": "hIe+i6P+ZUxFh6lJOBXRs4EGE/thcub0Lpdk2FF2/JBKJUqDqE2xDnBIiqTMkpXLoekgBN0SlhJT0vpeNr1J6g==",
+        "requested": "[11.11.0, )",
+        "resolved": "11.11.0",
+        "contentHash": "viTKWaMbL3yJYgGI0DiCeavNbE9UPMWFVK2XS9nYXGbm3NDMd0/L5ER4wBzmTtW3BYh3SrlSXm9RACiKZ6stlA==",
         "dependencies": {
-          "FluentValidation": "11.10.0",
+          "FluentValidation": "11.11.0",
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
       },
@@ -165,6 +165,18 @@
         "contentHash": "qjw+3/CaWiWnyVblvKHY11rQKH5eHQDSbtxjgxVhxGJrOpmjZ3JxtD0pjwkr4y/ELubsXr6xDfBcRJSkX/9hWQ==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Design": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Caching.Hybrid": {
+        "type": "Direct",
+        "requested": "[9.0.0-preview.9.24556.5, )",
+        "resolved": "9.0.0-preview.9.24556.5",
+        "contentHash": "ktYy1ZK6V1mqdHQdZIVjHiWZG/pPZmjDa9SWmlMh9uUUPgOeFT+Uzfh6UUu6Fty4N7jsNKK81WL2dDkXr0nfZw==",
+        "dependencies": {
+          "Microsoft.Extensions.Caching.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Caching.Memory": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0"
         }
       },
       "Microsoft.Extensions.Caching.StackExchangeRedis": {

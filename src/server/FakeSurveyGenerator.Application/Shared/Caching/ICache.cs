@@ -2,8 +2,7 @@
 
 public interface ICache<T>
 {
-    Task<T?> GetAsync(string key, CancellationToken cancellationToken);
-    Task RemoveAsync(string key, CancellationToken cancellationToken);
-    Task SetAsync(string key, T item, int minutesToCache, CancellationToken cancellationToken);
-    Task<(bool, T? value)> TryGetValueAsync(string key, CancellationToken cancellationToken);
+    ValueTask<T> GetOrCreateAsync(string key, Func<CancellationToken, ValueTask<T>> factory, CancellationToken cancellationToken);
+    ValueTask RemoveAsync(string key, CancellationToken cancellationToken);
+    ValueTask SetAsync(string key, T item, int minutesToCache, CancellationToken cancellationToken);
 }

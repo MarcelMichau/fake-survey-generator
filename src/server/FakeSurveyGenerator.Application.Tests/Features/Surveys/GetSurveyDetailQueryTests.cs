@@ -5,15 +5,14 @@ using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Tests.Setup;
 using FluentAssertions;
-using NSubstitute;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
 
 [Collection(nameof(QueryTestFixture))]
 public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 {
-    private readonly ICache<SurveyModel> _cache = Substitute.For<ICache<SurveyModel>>();
     private readonly SurveyContext _surveyContext = fixture.Context;
+    private readonly ICache<SurveyModel?> _cache = QueryTestFixture.GetCache<SurveyModel?>();
 
     [Fact]
     public async Task GivenExistingSurveyId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()

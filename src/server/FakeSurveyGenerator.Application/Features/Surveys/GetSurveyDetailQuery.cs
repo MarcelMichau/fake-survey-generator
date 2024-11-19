@@ -21,10 +21,10 @@ public sealed class GetSurveyDetailQueryValidator : AbstractValidator<GetSurveyD
 
 public sealed class GetSurveyDetailQueryHandler(
     SurveyContext surveyContext,
-    ICache<SurveyModel> cache)
+    ICache<SurveyModel?> cache)
     : IRequestHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>>
 {
-    private readonly ICache<SurveyModel> _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    private readonly ICache<SurveyModel?> _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
     private readonly SurveyContext _surveyContext =
         surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
@@ -34,20 +34,17 @@ public sealed class GetSurveyDetailQueryHandler(
     {
         var cacheKey = $"{request.Id}";
 
-        var (isCached, cachedSurvey) = await _cache.TryGetValueAsync(cacheKey, cancellationToken);
-
-        if (isCached)
-            return cachedSurvey!;
-
-        var survey = await _surveyContext.Surveys
-            .Include(s => s.Owner)
-            .SelectToModel()
-            .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
+        var survey = await _cache.GetOrCreateAsync(cacheKey, async token =>
+        {
+            var survey = await _surveyContext.Surveys
+                .Include(s => s.Owner)
+                .SelectToModel()
+                .FirstOrDefaultAsync(s => s.Id == request.Id, token);
+            return survey;
+        }, cancellationToken);
 
         if (survey is null)
             return Errors.General.NotFound(nameof(Survey), request.Id);
-
-        await _cache.SetAsync(cacheKey, survey, 60, cancellationToken);
 
         return survey;
     }

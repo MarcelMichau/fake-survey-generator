@@ -42,25 +42,21 @@ internal sealed class OAuthUserInfoService(
 
         var cacheKey = $"{new JwtSecurityToken(accessToken).Subject}";
 
-        var (isCached, cachedUserInfo) = await _cache.TryGetValueAsync(cacheKey, cancellationToken);
+        return await _cache.GetOrCreateAsync(cacheKey, async token =>
+        {
+            var (_, isFailure, value) = await GetUserInfoFromIdentityProvider(accessToken, token);
 
-        if (isCached)
-            return cachedUserInfo!;
+            if (isFailure)
+                throw new InvalidOperationException("Failed to get user info from Identity Provider");
 
-        var (_, isFailure, value) = await GetUserInfoFromIdentityProvider(accessToken, cancellationToken);
+            var id = value.Claims.First(claim => claim.Type == "sub").Value;
+            var name = value.Claims.First(claim => claim.Type == "name").Value;
+            var email = value.Claims.First(claim => claim.Type == "email").Value;
 
-        if (isFailure)
-            return new UnidentifiedUser();
+            var userInfo = new OAuthUser(id, name, email);
 
-        var id = value.Claims.First(claim => claim.Type == "sub").Value;
-        var name = value.Claims.First(claim => claim.Type == "name").Value;
-        var email = value.Claims.First(claim => claim.Type == "email").Value;
-
-        var userInfo = new OAuthUser(id, name, email);
-
-        await _cache.SetAsync(cacheKey, userInfo, 60, cancellationToken);
-
-        return userInfo;
+            return userInfo;
+        }, cancellationToken: cancellationToken);
     }
 
     private async Task<Result<UserInfoResponse>> GetUserInfoFromIdentityProvider(string? accessToken,

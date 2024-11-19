@@ -20,7 +20,7 @@ public sealed class CacheTests(IntegrationTestFixture testFixture, ITestOutputHe
 
         const string cacheKey = "brand-new-key";
 
-        var cachedValue = await cache.GetAsync(cacheKey, CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
 
         cachedValue.Should().BeNull();
     }
@@ -35,7 +35,7 @@ public sealed class CacheTests(IntegrationTestFixture testFixture, ITestOutputHe
 
         await cache.SetAsync(cacheKey, expectedValue, 1, CancellationToken.None);
 
-        var cachedValue = await cache.GetAsync(cacheKey, CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
 
         cachedValue.Should().Be(expectedValue);
     }
@@ -51,7 +51,7 @@ public sealed class CacheTests(IntegrationTestFixture testFixture, ITestOutputHe
 
         await cache.RemoveAsync(cacheKey, CancellationToken.None);
 
-        var cachedValue = await cache.GetAsync(cacheKey, CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
 
         cachedValue.Should().BeNull();
     }
