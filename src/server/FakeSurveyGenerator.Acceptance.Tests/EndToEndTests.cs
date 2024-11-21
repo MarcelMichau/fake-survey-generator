@@ -20,19 +20,33 @@ public class EndToEndTests(ITestOutputHelper output)
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
 
+        output.WriteLine("App Host Started");
+
         var httpClient = app.CreateHttpClient(UiProjectName);
 
         var playwright = await Playwright.CreateAsync();
+
+        output.WriteLine("Launching Browser...");
+
         var browser = await playwright.Chromium.LaunchAsync();
+
+        output.WriteLine("Browser Launched");
+
         var context = await browser.NewContextAsync();
         var page = await context.NewPageAsync();
 
-        await page.GotoAsync($"{httpClient.BaseAddress}");
+        var url = $"{httpClient.BaseAddress}";
+
+        output.WriteLine($"Navigating to {url}");
+
+        await page.GotoAsync(url);
 
         var title = await page.TextContentAsync("h1");
         title.Should().Be("Fake Survey Generator");
 
+        output.WriteLine("Closing Browser...");
         await browser.CloseAsync();
+        output.WriteLine("Browser Closed");
         playwright.Dispose();
     }
 }
