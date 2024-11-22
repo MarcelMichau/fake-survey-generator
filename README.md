@@ -80,7 +80,7 @@ Here are some of the features incorporated into this project:
 - Using [Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)
   authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework
   Core
-- Running a microservice application locally using [Docker Compose](https://docs.docker.com/compose/)
+- Running a microservice application locally using [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
 - Using Azure Pipelines
   with [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview) to build &
   deploy a microservice application
@@ -173,7 +173,7 @@ The client side makes use of the following tools, libraries & frameworks:
 
 ### Common
 
-The application is built for Docker, Docker Compose. For local development, Docker Compose is used when debugging the
+The application is built for containers & .NET Aspire. For local development, the .NET Aspire App host is used when debugging the
 application with Visual Studio/Rider.
 
 The hosted version of the application is deployed here: https://fakesurveygenerator.mysecondarydomain.com
