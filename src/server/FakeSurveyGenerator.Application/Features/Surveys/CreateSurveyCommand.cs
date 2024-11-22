@@ -14,27 +14,18 @@ namespace FakeSurveyGenerator.Application.Features.Surveys;
 
 public sealed record CreateSurveyCommand() : IRequest<Result<SurveyModel, Error>>
 {
-    public CreateSurveyCommand(string surveyTopic, int numberOfRespondents, string respondentType,
-        IEnumerable<SurveyOptionDto> surveyOptions) : this()
-    {
-        SurveyTopic = surveyTopic;
-        NumberOfRespondents = numberOfRespondents;
-        RespondentType = respondentType;
-        SurveyOptions = surveyOptions;
-    }
+    public required string SurveyTopic { get; init; }
 
-    public string SurveyTopic { get; init; } = null!;
+    public required int NumberOfRespondents { get; init; }
 
-    public int NumberOfRespondents { get; init; }
+    public required string RespondentType { get; init; }
 
-    public string RespondentType { get; init; } = null!;
-
-    public IEnumerable<SurveyOptionDto> SurveyOptions { get; init; } = [];
+    public required IEnumerable<SurveyOptionDto> SurveyOptions { get; init; } = [];
 }
 
 public sealed record SurveyOptionDto
 {
-    public string OptionText { get; init; } = null!;
+    public required string OptionText { get; init; }
     public int PreferredNumberOfVotes { get; init; }
 }
 

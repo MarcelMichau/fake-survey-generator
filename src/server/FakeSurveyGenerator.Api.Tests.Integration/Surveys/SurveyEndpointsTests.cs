@@ -48,8 +48,12 @@ public sealed class SurveyEndpointsTests
     public async Task
         GivenUnauthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnauthorizedResponseShouldBeReturned()
     {
-        var createSurveyCommand = new CreateSurveyCommand("How unauthorized is this?", 400, "Unauthorized users",
-            new List<SurveyOptionDto>
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "How unauthorized is this?",
+            NumberOfRespondents = 400,
+            RespondentType = "Unauthorized users",
+            SurveyOptions = new List<SurveyOptionDto>
             {
                 new()
                 {
@@ -59,7 +63,8 @@ public sealed class SurveyEndpointsTests
                 {
                     OptionText = "Completely Unauthorized"
                 }
-            });
+            }
+        };
 
         using var response = await _unauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
@@ -70,14 +75,19 @@ public sealed class SurveyEndpointsTests
     public async Task
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnprocessableEntityResponseShouldBeReturned()
     {
-        var createSurveyCommand = new CreateSurveyCommand("", 0, "",
-            new List<SurveyOptionDto>
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "",
+            NumberOfRespondents = 0,
+            RespondentType = "",
+            SurveyOptions = new List<SurveyOptionDto>
             {
                 new()
                 {
                     OptionText = ""
                 }
-            });
+            }
+        };
 
         using var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
@@ -150,8 +160,12 @@ public sealed class SurveyEndpointsTests
 
     private async Task<SurveyModel> CreateSurvey()
     {
-        var createSurveyCommand = new CreateSurveyCommand("How awesome is this?", 350, "Individuals",
-            new List<SurveyOptionDto>
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "How awesome is this?",
+            NumberOfRespondents = 350,
+            RespondentType = "Individuals",
+            SurveyOptions = new List<SurveyOptionDto>
             {
                 new()
                 {
@@ -161,7 +175,8 @@ public sealed class SurveyEndpointsTests
                 {
                     OptionText = "Not so much"
                 }
-            });
+            }
+        };
 
         var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 

@@ -21,23 +21,22 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
     [Fact]
     public async Task GivenValidCreateSurveyCommand_WhenCallingHandle_ThenNewSurveyShouldBeReturned()
     {
-        var topic = _fixture.Create<string>();
-        var numberOfRespondents = _fixture.Create<int>();
-        var respondentType = _fixture.Create<string>();
-
-        var options = new List<SurveyOptionDto>
+        var createSurveyCommand = new CreateSurveyCommand
         {
-            new()
-            {
-                OptionText = _fixture.Create<string>()
-            },
-            new()
-            {
-                OptionText = _fixture.Create<string>()
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = _fixture.Create<int>(),
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = new List<SurveyOptionDto> {
+                new()
+                {
+                    OptionText = _fixture.Create<string>()
+                },
+                new()
+                {
+                    OptionText = _fixture.Create<string>()
+                }
             }
         };
-
-        var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
         var sut = new CreateSurveyCommandHandler(Context, _mockUserService);
 
@@ -45,34 +44,33 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
 
         var survey = result.Value;
 
-        survey.Topic.Should().Be(topic);
-        survey.NumberOfRespondents.Should().Be(numberOfRespondents);
-        survey.RespondentType.Should().Be(respondentType);
+        survey.Topic.Should().Be(createSurveyCommand.SurveyTopic);
+        survey.NumberOfRespondents.Should().Be(createSurveyCommand.NumberOfRespondents);
+        survey.RespondentType.Should().Be(createSurveyCommand.RespondentType);
     }
 
     [Fact]
     public async Task
         GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
     {
-        var topic = _fixture.Create<string>();
-        const int numberOfRespondents = 500;
-        var respondentType = _fixture.Create<string>();
-
-        var options = new List<SurveyOptionDto>
+        var createSurveyCommand = new CreateSurveyCommand
         {
-            new()
-            {
-                OptionText = _fixture.Create<string>(),
-                PreferredNumberOfVotes = 100
-            },
-            new()
-            {
-                OptionText = _fixture.Create<string>(),
-                PreferredNumberOfVotes = 400
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = 500,
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = new List<SurveyOptionDto> {
+                new()
+                {
+                    OptionText = _fixture.Create<string>(),
+                    PreferredNumberOfVotes = 100
+                },
+                new()
+                {
+                    OptionText = _fixture.Create<string>(),
+                    PreferredNumberOfVotes = 400
+                }
             }
         };
-
-        var createSurveyCommand = new CreateSurveyCommand(topic, numberOfRespondents, respondentType, options);
 
         var sut = new CreateSurveyCommandHandler(Context, _mockUserService);
 
@@ -80,9 +78,9 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
 
         var survey = result.Value;
 
-        survey.Topic.Should().Be(topic);
-        survey.NumberOfRespondents.Should().Be(numberOfRespondents);
-        survey.RespondentType.Should().Be(respondentType);
+        survey.Topic.Should().Be(createSurveyCommand.SurveyTopic);
+        survey.NumberOfRespondents.Should().Be(createSurveyCommand.NumberOfRespondents);
+        survey.RespondentType.Should().Be(createSurveyCommand.RespondentType);
         survey.IsRigged.Should().BeTrue();
 
         survey.Options.Should().HaveCount(2);

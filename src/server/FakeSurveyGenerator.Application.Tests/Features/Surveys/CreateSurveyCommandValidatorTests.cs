@@ -12,14 +12,20 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenValidCreateSurveyCommand_WhenValidatingCommand_ThenIsValidShouldBeTrue()
     {
-        var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(),
-        [
-            new SurveyOptionDto
+        var command = new CreateSurveyCommand
+        {
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = 1,
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = new List<SurveyOptionDto>
             {
-                OptionText = _fixture.Create<string>(),
-                PreferredNumberOfVotes = _fixture.Create<int>()
+                new()
+                {
+                    OptionText = _fixture.Create<string>(),
+                    PreferredNumberOfVotes = _fixture.Create<int>()
+                }
             }
-        ]);
+        };
 
         var validator = new CreateSurveyCommandValidator();
 
@@ -31,14 +37,20 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenBlankSurveyTopic_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
-        var command = new CreateSurveyCommand("", 1, _fixture.Create<string>(),
-        [
-            new SurveyOptionDto
+        var command = new CreateSurveyCommand
+        {
+            SurveyTopic = "",
+            NumberOfRespondents = 1,
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = new List<SurveyOptionDto>
             {
-                OptionText = _fixture.Create<string>(),
-                PreferredNumberOfVotes = 1
+                new()
+                {
+                    OptionText = _fixture.Create<string>(),
+                    PreferredNumberOfVotes = 1
+                }
             }
-        ]);
+        };
 
         var validator = new CreateSurveyCommandValidator();
 
@@ -51,14 +63,20 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenZeroNumberOfRespondents_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
-        var command = new CreateSurveyCommand(_fixture.Create<string>(), 0, _fixture.Create<string>(),
-        [
-            new SurveyOptionDto
+        var command = new CreateSurveyCommand
+        {
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = 0,
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = new List<SurveyOptionDto>
             {
-                OptionText = _fixture.Create<string>(),
-                PreferredNumberOfVotes = 1
+                new()
+                {
+                    OptionText = _fixture.Create<string>(),
+                    PreferredNumberOfVotes = 1
+                }
             }
-        ]);
+        };
 
         var validator = new CreateSurveyCommandValidator();
 
@@ -71,14 +89,20 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenEmptyRespondentType_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
-        var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, "",
-        [
-            new SurveyOptionDto
+        var command = new CreateSurveyCommand
+        {
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = 1,
+            RespondentType = "",
+            SurveyOptions = new List<SurveyOptionDto>
             {
-                OptionText = _fixture.Create<string>(),
-                PreferredNumberOfVotes = 1
+                new()
+                {
+                    OptionText = _fixture.Create<string>(),
+                    PreferredNumberOfVotes = 1
+                }
             }
-        ]);
+        };
 
         var validator = new CreateSurveyCommandValidator();
 
@@ -91,7 +115,13 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenEmptySurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
-        var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), []);
+        var command = new CreateSurveyCommand
+        {
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = 1,
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = new List<SurveyOptionDto>()
+        };
 
         var validator = new CreateSurveyCommandValidator();
 
@@ -104,7 +134,13 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenNullSurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
-        var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(), []);
+        var command = new CreateSurveyCommand
+        {
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = 1,
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = null
+        };
 
         var validator = new CreateSurveyCommandValidator();
 
@@ -117,13 +153,19 @@ public sealed class CreateSurveyCommandValidatorTests
     [Fact]
     public void GivenEmptySurveyOptionText_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
-        var command = new CreateSurveyCommand(_fixture.Create<string>(), 1, _fixture.Create<string>(),
-        [
-            new SurveyOptionDto
+        var command = new CreateSurveyCommand
+        {
+            SurveyTopic = _fixture.Create<string>(),
+            NumberOfRespondents = 1,
+            RespondentType = _fixture.Create<string>(),
+            SurveyOptions = new List<SurveyOptionDto>
             {
-                OptionText = ""
+                new()
+                {
+                    OptionText = ""
+                }
             }
-        ]);
+        };
 
         var validator = new CreateSurveyCommandValidator();
 
