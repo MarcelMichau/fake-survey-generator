@@ -8,9 +8,12 @@ ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, "sql-
 
 var database = builder.AddSqlServer("sql-server")
     .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("database");
 
-var cache = builder.AddRedis("cache");
+var cache = builder.AddRedis("cache")
+    .WithRedisInsight()
+    .WithLifetime(ContainerLifetime.Persistent);
 
 var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", "https")
     .WithReference(database)
