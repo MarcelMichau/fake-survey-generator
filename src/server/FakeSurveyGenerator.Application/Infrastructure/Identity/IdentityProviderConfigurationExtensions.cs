@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.Identity;
 
-internal static class IdentityProviderServiceCollectionExtensions
+internal static class IdentityProviderConfigurationExtensions
 {
     private static readonly string[] IdentityProviderTags = ["identity-provider", "ready"];
 

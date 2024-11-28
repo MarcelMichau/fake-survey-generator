@@ -12,7 +12,10 @@ var database = builder.AddSqlServer("sql-server")
     .AddDatabase("database");
 
 var cache = builder.AddRedis("cache")
-    .WithRedisInsight()
+    .WithRedisInsight(configure =>
+    {
+        configure.WithLifetime(ContainerLifetime.Persistent);
+    })
     .WithLifetime(ContainerLifetime.Persistent);
 
 var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", "https")

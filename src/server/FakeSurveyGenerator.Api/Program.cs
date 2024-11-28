@@ -10,6 +10,7 @@ using FakeSurveyGenerator.Api.Users;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthorization();
+builder.Services.AddProblemDetails();
 
 builder
     .AddServiceDefaults()

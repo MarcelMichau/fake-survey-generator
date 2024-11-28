@@ -139,7 +139,7 @@ public sealed class CreateSurveyCommandValidatorTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = 1,
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = null
+            SurveyOptions = null!
         };
 
         var validator = new CreateSurveyCommandValidator();
