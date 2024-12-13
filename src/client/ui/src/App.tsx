@@ -1,3 +1,4 @@
+import type React from "react";
 import { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import NavBar from "./components/NavBar";
@@ -9,7 +10,7 @@ import Alert from "./components/Alert";
 import Footer from "./components/Footer";
 import type * as Types from "./types";
 
-const App = (): JSX.Element => {
+const App = (): React.JSX.Element => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const { getAccessTokenSilently, user, isAuthenticated, isLoading } =
 		useAuth0();
