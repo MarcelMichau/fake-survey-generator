@@ -70,9 +70,9 @@
       },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.7.77-alpha, )",
-        "resolved": "3.7.77-alpha",
-        "contentHash": "CBTGnS7Xps4YWCXH1TVYMgA3V4DryySsvOEjJ4lBObIP8NxXRFDdxlYaWmxu6+iuBSuXmKoUfQBQkm1NgZ0YMw=="
+        "requested": "[3.7.112, )",
+        "resolved": "3.7.112",
+        "contentHash": "j0jcfnTjvhytRanVR34Gaj6RFKk8EDmVhRW7929nWjCo8tzBxsa3XmFmbSGDA6nWXGhfehTixWhPgGWAbz+NQA=="
       },
       "xunit": {
         "type": "Direct",
@@ -91,10 +91,10 @@
         "resolved": "3.0.0",
         "contentHash": "HggUqjQJe8PtDxcP25Q+CnR6Lz4oX3GElhD9V4oU2+75x9HI6A6sxbfKGS4UwU4t4yJaS9fBmAuriz8bQApNjw=="
       },
-      "Aspire.Dashboard.Sdk.linux-x64": {
+      "Aspire.Dashboard.Sdk.win-x64": {
         "type": "Transitive",
         "resolved": "9.0.0",
-        "contentHash": "H/EmpV4ERya0dm1kmzu2qQzuL6HIiX4aT/foXvi6ynlqEUX9nl2zAYYjVnrkRwHoBev4ScXhx41b5FjhsiktTA=="
+        "contentHash": "ulspusO89H3sVbJHRK3V6JzB0H8hBcXmVVVDYxUWcEiAIxzOaJgneJDx3oJdQ3mhAfeap/K9s1p4ZH6GCIm+Ow=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -122,10 +122,10 @@
           "Polly.Core": "8.4.2"
         }
       },
-      "Aspire.Hosting.Orchestration.linux-x64": {
+      "Aspire.Hosting.Orchestration.win-x64": {
         "type": "Transitive",
         "resolved": "9.0.0",
-        "contentHash": "4MBl+WGzgk5OR3FOGI8SILaDu7im5ZFMeUcZe4dsRNGATp6SUdO+dDR3AzbXKCEOVE5xI80dJRiUi5Necwq/2Q=="
+        "contentHash": "EffdkYWjOdd9IRlNujCXVkHdPJVAJgsb0SWo5kbshNGaHaiKXX6B7Y23VoATlYgG4iv7xeOgVdjcF7kf5lZy9Q=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -1001,11 +1001,11 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.linux-x64": "[9.0.0, )",
+          "Aspire.Dashboard.Sdk.win-x64": "[9.0.0, )",
           "Aspire.Hosting.AppHost": "[9.0.0, )",
           "Aspire.Hosting.Dapr": "[9.0.0, )",
           "Aspire.Hosting.NodeJs": "[9.0.0, )",
-          "Aspire.Hosting.Orchestration.linux-x64": "[9.0.0, )",
+          "Aspire.Hosting.Orchestration.win-x64": "[9.0.0, )",
           "Aspire.Hosting.Redis": "[9.0.0, )",
           "Aspire.Hosting.SqlServer": "[9.0.0, )",
           "System.Text.Json": "[9.0.0, )"

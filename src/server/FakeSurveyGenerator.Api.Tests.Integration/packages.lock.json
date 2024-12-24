@@ -74,9 +74,9 @@
       },
       "Nerdbank.GitVersioning": {
         "type": "Direct",
-        "requested": "[3.7.77-alpha, )",
-        "resolved": "3.7.77-alpha",
-        "contentHash": "CBTGnS7Xps4YWCXH1TVYMgA3V4DryySsvOEjJ4lBObIP8NxXRFDdxlYaWmxu6+iuBSuXmKoUfQBQkm1NgZ0YMw=="
+        "requested": "[3.7.112, )",
+        "resolved": "3.7.112",
+        "contentHash": "j0jcfnTjvhytRanVR34Gaj6RFKk8EDmVhRW7929nWjCo8tzBxsa3XmFmbSGDA6nWXGhfehTixWhPgGWAbz+NQA=="
       },
       "NSubstitute": {
         "type": "Direct",
@@ -212,11 +212,10 @@
       },
       "AspNetCore.HealthChecks.UI.Core": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "Vn00MOJ1I0HSqyP7Bt9v0pr0AIgbrXMjL/KFwW+sRwLRogOtep8BWGimd8XYRCbCDLrAi7VSArU02f6pEIw69w==",
+        "resolved": "9.0.0",
+        "contentHash": "TVriy4hgYnhfqz6NAzv8qe62Q8wf82iKUL6WV9selqeFZTq1ILi39Sic6sFQegRysvAVcnxKP/vY8z9Fk8x6XQ==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.0"
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.11"
         }
       },
       "Azure.Core": {
@@ -1553,11 +1552,8 @@
       },
       "System.Net.Http.Json": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "48Bxrd6zcGeQzS4GMEDVjuqCcAw/9wcEWnIu48FQJ5IzfKPiMR1nGtz9LrvGzU4+3TLbx/9FDlGmCUeLin1Eqg==",
-        "dependencies": {
-          "System.Text.Json": "8.0.0"
-        }
+        "resolved": "8.0.1",
+        "contentHash": "F423ZLoJFYg1s6iA+Y7BLflVKjEK5XEA2+Z9CHbxJEUtS3+R5pgnFN499QzriRjYpOu6kS2Crd2YBkOFDHrblg=="
       },
       "System.Net.Primitives": {
         "type": "Transitive",
@@ -2077,7 +2073,7 @@
       "fakesurveygenerator.api": {
         "type": "Project",
         "dependencies": {
-          "AspNetCore.HealthChecks.UI.Client": "[8.0.1, )",
+          "AspNetCore.HealthChecks.UI.Client": "[9.0.0, )",
           "Azure.Monitor.OpenTelemetry.AspNetCore": "[1.3.0-beta.2, )",
           "Dapr.AspNetCore": "[1.14.0, )",
           "Dapr.Extensions.Configuration": "[1.14.0, )",
@@ -2093,11 +2089,11 @@
       "fakesurveygenerator.application": {
         "type": "Project",
         "dependencies": {
-          "AspNetCore.HealthChecks.OpenIdConnectServer": "[8.0.1, )",
+          "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
           "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[9.0.0, )",
           "Aspire.StackExchange.Redis.DistributedCaching": "[9.0.0, )",
           "Azure.Identity": "[1.13.1, )",
-          "CSharpFunctionalExtensions": "[3.2.0, )",
+          "CSharpFunctionalExtensions": "[3.3.0, )",
           "Dapper": "[2.1.44, )",
           "FluentValidation": "[11.11.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[11.11.0, )",
@@ -2172,23 +2168,22 @@
       },
       "AspNetCore.HealthChecks.OpenIdConnectServer": {
         "type": "CentralTransitive",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "nzvrckN00hWlDaNheypsf8VQoWwnP7wCmGdnAtwI06wc1MOVNVzJPrRGX5bMQ1TjKG8zuZerWtX6Vpj5KPUtsA==",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "hf56lCDdEGLWKqu9EkSY2clQejjqC0nOgvWpA08RUucTPX5r3L/PjT+sLQj2YFXS4+Lezgoo6sNJh8ekgIOKMg==",
         "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.0",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.11",
           "Microsoft.Extensions.Http": "8.0.0",
-          "System.Net.Http.Json": "8.0.0"
+          "System.Net.Http.Json": "8.0.1"
         }
       },
       "AspNetCore.HealthChecks.UI.Client": {
         "type": "CentralTransitive",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "nhC6KIoB/EtTbH3uGm2J6EHEUyTJuETUARFePbmrnA+zjbwsirzIVUQl46qIjvyPABhK0e7Rk+AxcRqC6zikqA==",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "1Ub3Wvvbz7CMuFNWgLEc9qqQibiMoovDML/WHrwr5J83RPgtI20giCR92s/ipLgu7IIuqw+W/y7WpIeHqAICxg==",
         "dependencies": {
-          "AspNetCore.HealthChecks.UI.Core": "8.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.0"
+          "AspNetCore.HealthChecks.UI.Core": "9.0.0"
         }
       },
       "Azure.Monitor.OpenTelemetry.AspNetCore": {
@@ -2206,9 +2201,9 @@
       },
       "CSharpFunctionalExtensions": {
         "type": "CentralTransitive",
-        "requested": "[3.2.0, )",
-        "resolved": "3.2.0",
-        "contentHash": "fl+czRDrht65YvopYcUOLJPamhnREHQ1hXZgT8Pk4GwzR3ra6zYRiSxTZNZgGwewCMR6vSWYUuEeeLIsoKMIww=="
+        "requested": "[3.3.0, )",
+        "resolved": "3.3.0",
+        "contentHash": "T/NPsNlErSw4V9sFcu1wXdWUNyX9FatSRen2DmhLo520MFFLevM9z9QC82HzbXWlwZX9P8tkv0ydJxv7B3zkEg=="
       },
       "Dapper": {
         "type": "CentralTransitive",

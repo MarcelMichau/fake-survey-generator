@@ -28,7 +28,7 @@ internal static class IdentityProviderConfigurationExtensions
     private static IHealthChecksBuilder AddIdentityProviderHealthCheck(this IHealthChecksBuilder healthChecksBuilder,
         IConfiguration configuration)
     {
-        healthChecksBuilder.AddIdentityServer(
+        healthChecksBuilder.AddOpenIdConnectServer(
             new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
             name: "IdentityProvider-check",
             tags: IdentityProviderTags,
