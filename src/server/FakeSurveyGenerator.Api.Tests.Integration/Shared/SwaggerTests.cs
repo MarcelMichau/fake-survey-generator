@@ -1,24 +1,25 @@
-﻿//using FakeSurveyGenerator.Api.Tests.Integration.Setup;
-//using Xunit.Abstractions;
+﻿using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
-//namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
+namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 
-//[Collection(nameof(IntegrationTestFixture))]
-//public sealed class SwaggerTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
-//{
-//    private readonly HttpClient _client = testFixture.Factory!.WithLoggerOutput(testOutputHelper).CreateClient();
+public sealed class SwaggerTests
+{
+    [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
+    public required IntegrationTestFixture TestFixture { get; init; }
 
-//    [Test]
-//    public async Task GivenAnyUser_WhenMakingRequestToSwaggerUiRoute_ThenSuccessResponseShouldBeReturned()
-//    {
-//        var response = await _client.GetAsync("/swagger");
-//        response.EnsureSuccessStatusCode();
-//    }
+    private HttpClient Client => TestFixture.Factory!.CreateClient();
 
-//    [Test]
-//    public async Task GivenAnyUser_WhenMakingRequestToSwaggerJsonRoute_ThenSuccessResponseShouldBeReturned()
-//    {
-//        var response = await _client.GetAsync("/swagger/v1/swagger.json");
-//        response.EnsureSuccessStatusCode();
-//    }
-//}
+    [Test]
+    public async Task GivenAnyUser_WhenMakingRequestToSwaggerUiRoute_ThenSuccessResponseShouldBeReturned()
+    {
+        var response = await Client.GetAsync("/swagger");
+        response.EnsureSuccessStatusCode();
+    }
+
+    [Test]
+    public async Task GivenAnyUser_WhenMakingRequestToSwaggerJsonRoute_ThenSuccessResponseShouldBeReturned()
+    {
+        var response = await Client.GetAsync("/swagger/v1/swagger.json");
+        response.EnsureSuccessStatusCode();
+    }
+}

@@ -1,58 +1,58 @@
-﻿//using FakeSurveyGenerator.Api.Tests.Integration.Setup;
-//using FakeSurveyGenerator.Application.Shared.Caching;
+﻿using FakeSurveyGenerator.Api.Tests.Integration.Setup;
+using FakeSurveyGenerator.Application.Shared.Caching;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
-//using Microsoft.AspNetCore.Mvc.Testing;
-//using Microsoft.Extensions.DependencyInjection;
-//using Xunit.Abstractions;
+namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 
-//namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
+public sealed class CacheTests
+{
+    [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
+    public required IntegrationTestFixture TestFixture { get; init; }
 
-//[Collection(nameof(IntegrationTestFixture))]
-//public sealed class CacheTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
-//{
-//    private readonly WebApplicationFactory<Program>? _clientFactory =
-//        testFixture.Factory!.WithLoggerOutput(testOutputHelper);
+    private WebApplicationFactory<Program> ClientFactory =>
+        TestFixture.Factory!;
 
-//    [Test]
-//    public async Task GivenADistributedCache_WhenGettingAnItemThatIsNotCached_ThenCachedValueShouldBeNull()
-//    {
-//        var cache = _clientFactory!.Services.GetRequiredService<ICache<string>>();
+    [Test]
+    public async Task GivenADistributedCache_WhenGettingAnItemThatIsNotCached_ThenCachedValueShouldBeNull()
+    {
+        var cache = ClientFactory!.Services.GetRequiredService<ICache<string>>();
 
-//        const string cacheKey = "brand-new-key";
+        const string cacheKey = "brand-new-key";
 
-//        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
 
-//        cachedValue.Should().BeNull();
-//    }
+        await Assert.That(cachedValue).IsNull();
+    }
 
-//    [Test]
-//    public async Task GivenADistributedCache_WhenGettingAnItemThatIsCached_ThenCachedValueShouldBeReturned()
-//    {
-//        var cache = _clientFactory!.Services.GetRequiredService<ICache<string>>();
+    [Test]
+    public async Task GivenADistributedCache_WhenGettingAnItemThatIsCached_ThenCachedValueShouldBeReturned()
+    {
+        var cache = ClientFactory!.Services.GetRequiredService<ICache<string>>();
 
-//        const string cacheKey = "test-key";
-//        const string expectedValue = "test-value";
+        const string cacheKey = "test-key";
+        const string expectedValue = "test-value";
 
-//        await cache.SetAsync(cacheKey, expectedValue, 1, CancellationToken.None);
+        await cache.SetAsync(cacheKey, expectedValue, 1, CancellationToken.None);
 
-//        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
 
-//        cachedValue.Should().Be(expectedValue);
-//    }
+        await Assert.That(cachedValue).IsEqualTo(expectedValue);
+    }
 
-//    [Test]
-//    public async Task GivenADistributedCache_WhenRemovingAnItemFromCache_ThenItemShouldNoLongerBeInCache()
-//    {
-//        var cache = _clientFactory!.Services.GetRequiredService<ICache<string>>();
+    [Test]
+    public async Task GivenADistributedCache_WhenRemovingAnItemFromCache_ThenItemShouldNoLongerBeInCache()
+    {
+        var cache = ClientFactory!.Services.GetRequiredService<ICache<string>>();
 
-//        const string cacheKey = "test-key";
+        const string cacheKey = "test-key";
 
-//        await cache.SetAsync(cacheKey, "test-value", 1, CancellationToken.None);
+        await cache.SetAsync(cacheKey, "test-value", 1, CancellationToken.None);
 
-//        await cache.RemoveAsync(cacheKey, CancellationToken.None);
+        await cache.RemoveAsync(cacheKey, CancellationToken.None);
 
-//        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, (_) => new ValueTask<string>(), CancellationToken.None);
 
-//        cachedValue.Should().BeNull();
-//    }
-//}
+        await Assert.That(cachedValue).IsNull();
+    }
+}
