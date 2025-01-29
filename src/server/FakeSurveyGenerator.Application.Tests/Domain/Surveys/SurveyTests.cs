@@ -1,9 +1,10 @@
 using AutoFixture;
 using AutoFixture.Idioms;
+using EnumerableAsyncProcessor.Extensions;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Domain.Users;
-using FluentAssertions;
+using TUnit.Assertions.AssertConditions.Throws;
 
 namespace FakeSurveyGenerator.Application.Tests.Domain.Surveys;
 
@@ -11,8 +12,8 @@ public sealed class SurveyTests
 {
     private readonly Fixture _fixture = new();
 
-    [Fact]
-    public void GivenValidSurveyDetail_WhenCreatingSurvey_ThenValidSurveyIsCreated()
+    [Test]
+    public async Task GivenValidSurveyDetail_WhenCreatingSurvey_ThenValidSurveyIsCreated()
     {
         var topic = _fixture.Create<NonEmptyString>();
         var numberOfRespondents = _fixture.Create<int>();
@@ -20,32 +21,33 @@ public sealed class SurveyTests
 
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
-        survey.Topic.Value.Should().Be(topic);
-        survey.NumberOfRespondents.Should().Be(numberOfRespondents);
-        survey.RespondentType.Value.Should().Be(respondentType);
+        await Assert.That(survey.Topic.Value).IsEqualTo(topic);
+        await Assert.That(survey.NumberOfRespondents).IsEqualTo(numberOfRespondents);
+        await Assert.That(survey.RespondentType.Value).IsEqualTo(respondentType);
     }
 
-    [Fact]
+    [Test]
     public void GivenSomeEmptyFields_WhenCreatingSurvey_ThenExceptionShouldBeThrown()
     {
         var assertion = _fixture.Create<GuardClauseAssertion>();
         assertion.Verify(typeof(Survey).GetConstructors());
     }
 
-    [Fact]
-    public void GivenNoRespondents_WhenCreatingSurvey_ThenSurveyDomainExceptionShouldBeThrown()
+    [Test]
+    public async Task GivenNoRespondents_WhenCreatingSurvey_ThenSurveyDomainExceptionShouldBeThrown()
     {
         var topic = _fixture.Create<NonEmptyString>();
         const int numberOfRespondents = 0;
         var respondentType = _fixture.Create<NonEmptyString>();
 
-        var act = () => { _ = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType); };
-
-        act.Should().ThrowExactly<SurveyDomainException>();
+        await Assert.That(() =>
+        {
+            _ = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
-    [Fact]
-    public void GivenValidOption_WhenAddingOptionToSurvey_ShouldAddOptionToSurveyOptionsList()
+    [Test]
+    public async Task GivenValidOption_WhenAddingOptionToSurvey_ShouldAddOptionToSurveyOptionsList()
     {
         var topic = _fixture.Create<NonEmptyString>();
         var numberOfRespondents = _fixture.Create<int>();
@@ -59,47 +61,43 @@ public sealed class SurveyTests
         survey.AddSurveyOption(option1);
         survey.AddSurveyOption(option2);
 
-        survey.Options.Count.Should().Be(2);
-        survey.Options[0].OptionText.Value.Should().Be(option1);
-        survey.Options[^1].OptionText.Value.Should().Be(option2);
+        await Assert.That(survey.Options.Count).IsEqualTo(2);
+        await Assert.That(survey.Options[0].OptionText.Value).IsEqualTo(option1);
+        await Assert.That(survey.Options[^1].OptionText.Value).IsEqualTo(option2);
     }
 
-    [Fact]
-    public void GivenEmptyOption_WhenAddingOptionToSurvey_ThenExceptionShouldBeThrown()
+    [Test]
+    public async Task GivenEmptyOption_WhenAddingOptionToSurvey_ThenExceptionShouldBeThrown()
     {
         var topic = _fixture.Create<NonEmptyString>();
         var numberOfRespondents = _fixture.Create<int>();
         var respondentType = _fixture.Create<NonEmptyString>();
 
-        var act = () =>
+        await Assert.That(() =>
         {
             var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
             survey.AddSurveyOption(NonEmptyString.Create(""));
-        };
-
-        act.Should().Throw<Exception>();
+        }).ThrowsException();
     }
 
-    [Fact]
-    public void GivenSurveyWithNoOption_WhenCalculatingOutcome_ThenSurveyDomainExceptionShouldBeThrown()
+    [Test]
+    public async Task GivenSurveyWithNoOption_WhenCalculatingOutcome_ThenSurveyDomainExceptionShouldBeThrown()
     {
         var topic = _fixture.Create<NonEmptyString>();
         var numberOfRespondents = _fixture.Create<int>();
         var respondentType = _fixture.Create<NonEmptyString>();
 
-        var act = () =>
+        await Assert.That(() =>
         {
             var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
             survey.CalculateOutcome();
-        };
-
-        act.Should().ThrowExactly<SurveyDomainException>();
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
-    [Fact]
-    public void GivenSurveyWithOptions_WhenCalculatingOutcome_ThenOptionNumberOfVotesShouldBeDistributedEvenly()
+    [Test]
+    public async Task GivenSurveyWithOptions_WhenCalculatingOutcome_ThenOptionNumberOfVotesShouldBeDistributedEvenly()
     {
         var topic = _fixture.Create<NonEmptyString>();
         var numberOfRespondents = _fixture.Create<int>();
@@ -112,11 +110,11 @@ public sealed class SurveyTests
 
         survey.CalculateOutcome();
 
-        survey.Options.Sum(option => option.NumberOfVotes).Should().Be(numberOfRespondents);
+        await Assert.That(survey.Options.Sum(option => option.NumberOfVotes)).IsEqualTo(numberOfRespondents);
     }
 
-    [Fact]
-    public void GivenSurveyWithOptions_WhenCalculatingOneSidedOutcome_ThenOneOptionShouldReceiveAllVotes()
+    [Test]
+    public async Task GivenSurveyWithOptions_WhenCalculatingOneSidedOutcome_ThenOneOptionShouldReceiveAllVotes()
     {
         var topic = _fixture.Create<NonEmptyString>();
         var numberOfRespondents = _fixture.Create<int>();
@@ -129,11 +127,11 @@ public sealed class SurveyTests
 
         survey.CalculateOneSidedOutcome();
 
-        survey.Options.Max(option => option.NumberOfVotes).Should().Be(numberOfRespondents);
+        await Assert.That(survey.Options.Max(option => option.NumberOfVotes)).IsEqualTo(numberOfRespondents);
     }
 
-    [Fact]
-    public void
+    [Test]
+    public async Task
         GivenSurveyWithOptionsHavingPreferredNumberOfVotes_WhenCalculatingOutcome_ThenEachOptionShouldHaveExpectedPreferredNumberOfVotes()
     {
         var topic = _fixture.Create<NonEmptyString>();
@@ -147,14 +145,14 @@ public sealed class SurveyTests
 
         survey.CalculateOutcome();
 
-        survey.Options[0].NumberOfVotes.Should().Be(600);
-        survey.Options[^1].NumberOfVotes.Should().Be(400);
+        await Assert.That(survey.Options[0].NumberOfVotes).IsEqualTo(600);
+        await Assert.That(survey.Options[^1].NumberOfVotes).IsEqualTo(400);
 
-        survey.IsRigged.Should().BeTrue();
+        await Assert.That(survey.IsRigged).IsTrue();
     }
 
-    [Fact]
-    public void
+    [Test]
+    public async Task
         GivenSurveyWithOneOptionHavingPreferredNumberOfVotesExceedingTotalRespondents_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
     {
         var topic = _fixture.Create<NonEmptyString>();
@@ -165,13 +163,14 @@ public sealed class SurveyTests
 
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents - 1);
 
-        var act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
-
-        act.Should().ThrowExactly<SurveyDomainException>();
+        await Assert.That(() =>
+        {
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1);
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
-    [Fact]
-    public void
+    [Test]
+    public async Task
         GivenSurveyWithOptionsWhereCombinedPreferredNumberOfVotesExceedTotalRespondents_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
     {
         var topic = _fixture.Create<NonEmptyString>();
@@ -182,13 +181,14 @@ public sealed class SurveyTests
 
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents);
 
-        var act = () => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); };
-
-        act.Should().ThrowExactly<SurveyDomainException>();
+        await Assert.That(() =>
+        {
+            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1);
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
-    [Fact]
-    public void
+    [Test]
+    public async Task
         GivenValidSurveyDetail_WhenCreatingSurvey_ThenValidSurveyIsCreatedWithSurveyCreatedEventAddedToDomainEvents()
     {
         var topic = _fixture.Create<NonEmptyString>();
@@ -200,10 +200,13 @@ public sealed class SurveyTests
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
 
-        survey.DomainEvents.Should().AllBeOfType<SurveyCreatedDomainEvent>();
+        survey.DomainEvents.ForEachAsync(async surveyDomainEvent =>
+        {
+            await Assert.That(surveyDomainEvent).IsTypeOf<SurveyCreatedDomainEvent>();
+        });
 
         var surveyCreatedEvent = (SurveyCreatedDomainEvent)survey.DomainEvents.First();
 
-        surveyCreatedEvent.Survey.Should().Be(survey);
+        await Assert.That(surveyCreatedEvent.Survey).IsEqualTo(survey);
     }
 }

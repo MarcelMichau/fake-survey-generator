@@ -1,21 +1,20 @@
 ﻿using FakeSurveyGenerator.Application.Shared.Exceptions;
-using FluentAssertions;
 using FluentValidation.Results;
 
 namespace FakeSurveyGenerator.Application.Tests.Shared;
 
 public sealed class ValidationExceptionTests
 {
-    [Fact]
-    public void DefaultConstructorCreatesAnEmptyErrorDictionary()
+    [Test]
+    public async Task DefaultConstructorCreatesAnEmptyErrorDictionary()
     {
         var actual = new ValidationException().Errors;
 
-        actual.Keys.Should().BeEquivalentTo(Array.Empty<string>());
+        await Assert.That(actual.Keys).IsEquivalentTo(Array.Empty<string>());
     }
 
-    [Fact]
-    public void SingleValidationFailureCreatesASingleElementErrorDictionary()
+    [Test]
+    public async Task SingleValidationFailureCreatesASingleElementErrorDictionary()
     {
         var failures = new List<ValidationFailure>
         {
@@ -24,12 +23,12 @@ public sealed class ValidationExceptionTests
 
         var actual = new ValidationException(failures).Errors;
 
-        actual.Keys.Should().BeEquivalentTo("Age");
-        actual["Age"].Should().BeEquivalentTo("must be over 18");
+        await Assert.That(actual.Keys).IsEquivalentTo(new[] { "Age" });
+        await Assert.That(actual["Age"]).IsEquivalentTo(new [] { "must be over 18" });
     }
 
-    [Fact]
-    public void
+    [Test]
+    public async Task
         MultipleValidationFailureForMultiplePropertiesCreatesAMultipleElementErrorDictionaryEachWithMultipleValues()
     {
         var failures = new List<ValidationFailure>
@@ -44,11 +43,14 @@ public sealed class ValidationExceptionTests
 
         var actual = new ValidationException(failures).Errors;
 
-        actual.Keys.Should().BeEquivalentTo("Age", "Password");
+        await Assert.That(actual.Keys).IsEquivalentTo(new[] { "Age", "Password" });
 
-        actual["Age"].Should().BeEquivalentTo("must be 18 or older", "must be 25 or younger");
+        await Assert.That(actual["Age"]).IsEquivalentTo(new[] { "must be 18 or older", "must be 25 or younger" });
 
-        actual["Password"].Should().BeEquivalentTo("must contain at least 8 characters", "must contain a digit",
-            "must contain upper case letter", "must contain lower case letter");
+        await Assert.That(actual["Password"]).IsEquivalentTo(new[]
+        {
+            "must contain at least 8 characters", "must contain a digit",
+            "must contain upper case letter", "must contain lower case letter"
+        });
     }
 }

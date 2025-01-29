@@ -1,17 +1,18 @@
 ﻿using FakeSurveyGenerator.Api.Tests.Integration.Setup;
-using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Admin;
 
-[Collection(nameof(IntegrationTestFixture))]
-public sealed class AdminEndpointsTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
+public sealed class AdminEndpointsTests
 {
-    private readonly HttpClient _client = testFixture.Factory!.WithLoggerOutput(testOutputHelper).CreateClient();
+    [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
+    public required IntegrationTestFixture TestFixture { get; init; }
 
-    [Fact]
+    private HttpClient Client => TestFixture.Factory!.CreateClient();
+
+    [Test]
     public async Task Get_Should_Return_Ok()
     {
-        var response = await _client.GetAsync("/api/admin/ping");
+        var response = await Client.GetAsync("/api/admin/ping");
         response.EnsureSuccessStatusCode();
     }
 }

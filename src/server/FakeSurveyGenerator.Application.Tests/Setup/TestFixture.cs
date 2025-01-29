@@ -1,10 +1,11 @@
 ﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Caching;
 using NSubstitute;
+using TUnit.Core.Interfaces;
 
 namespace FakeSurveyGenerator.Application.Tests.Setup;
 
-public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
+public sealed class TestFixture : IAsyncInitializer, IAsyncDisposable
 {
     public SurveyContext Context { get; } = SurveyContextFactory.Create();
 
@@ -26,16 +27,9 @@ public sealed class QueryTestFixture : IAsyncLifetime, IDisposable
         await SurveyContextFactory.SeedSampleData(Context);
     }
 
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
-
-    public void Dispose()
+    public ValueTask DisposeAsync()
     {
         SurveyContextFactory.Destroy(Context);
+        return ValueTask.CompletedTask;
     }
 }
-
-[CollectionDefinition(nameof(QueryTestFixture))]
-public class QueryCollection : ICollectionFixture<QueryTestFixture>;

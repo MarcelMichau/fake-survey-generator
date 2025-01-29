@@ -1,50 +1,48 @@
 ﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Surveys;
-using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Tests.Setup;
-using FluentAssertions;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
 
-[Collection(nameof(QueryTestFixture))]
-public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
+public sealed class GetSurveyDetailQueryTests
 {
-    private readonly SurveyContext _surveyContext = fixture.Context;
-    private readonly ICache<SurveyModel?> _cache = QueryTestFixture.GetCache<SurveyModel?>();
+    [ClassDataSource<TestFixture>]
+    public required TestFixture Fixture { get; init; }
+    private static ICache<SurveyModel?> Cache => TestFixture.GetCache<SurveyModel?>();
 
-    [Fact]
+    [Test]
     public async Task GivenExistingSurveyId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
     {
         const int id = 1;
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Should().BeOfType<Result<SurveyModel, Error>>();
+        await Assert.That((object)result).IsTypeOf<Result<SurveyModel, Error>>();
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyIdShouldMatchGivenSurveyId()
     {
         const int id = 1;
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var survey = result.Value;
 
-        survey.Id.Should().Be(id);
+        await Assert.That(survey.Id).IsEqualTo(id);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyTopicShouldMatchExpectedValue()
     {
         const int id = 1;
@@ -52,16 +50,16 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var survey = result.Value;
 
-        survey.Topic.Should().Be(expectedTopicText);
+        await Assert.That(survey.Topic).IsEqualTo(expectedTopicText);
     }
 
-    [Fact]
+    [Test]
     public async Task
         GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyNumberOfRespondentsShouldMatchExpectedValue()
     {
@@ -70,16 +68,16 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var survey = result.Value;
 
-        survey.NumberOfRespondents.Should().Be(expectedNumberOfRespondents);
+        await Assert.That(survey.NumberOfRespondents).IsEqualTo(expectedNumberOfRespondents);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingSurveyId_WhenCallingHandle_ThenReturnedSurveyRespondentTypeShouldMatchExpectedValue()
     {
         const int id = 1;
@@ -87,26 +85,26 @@ public sealed class GetSurveyDetailQueryTests(QueryTestFixture fixture)
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var survey = result.Value;
 
-        survey.RespondentType.Should().Be(expectedTopicText);
+        await Assert.That(survey.RespondentType).IsEqualTo(expectedTopicText);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenSurveyIdWhichDoesNotExist_WhenCallingHandle_ThenResponseShouldIndicateNotFoundError()
     {
         const int id = 100;
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(_surveyContext, _cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Error.Should().Be(Errors.General.NotFound());
+        await Assert.That(result.Error).IsEqualTo(Errors.General.NotFound());
     }
 }

@@ -5,13 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Respawn;
 using Testcontainers.MsSql;
 using Testcontainers.Redis;
+using TUnit.Core.Interfaces;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
-[CollectionDefinition(nameof(IntegrationTestFixture))]
-public class IntegrationTestFixtureCollection : ICollectionFixture<IntegrationTestFixture>;
-
-public class IntegrationTestFixture : IAsyncLifetime
+public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 {
     private readonly RedisContainer _cacheContainer =
         new RedisBuilder()
@@ -54,7 +52,7 @@ public class IntegrationTestFixture : IAsyncLifetime
         await respawner.ResetAsync(connectionString);
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         await _dbContainer.DisposeAsync();
         await _cacheContainer.DisposeAsync();

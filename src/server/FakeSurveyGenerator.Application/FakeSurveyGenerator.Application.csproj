@@ -7,7 +7,6 @@
     <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" />
     <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
     <PackageReference Include="Azure.Identity" />
-    <!-- Fix transitive vulnerability -->
     <PackageReference Include="CSharpFunctionalExtensions" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="FluentValidation" />
@@ -28,11 +27,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
     <PackageReference Include="System.Formats.Asn1" />
-    <!-- Fix transitive vulnerability -->
     <PackageReference Include="System.Runtime.Caching" />
-    <!-- Fix transitive vulnerability -->
     <PackageReference Include="System.Text.Json" />
-    <!-- Fix transitive vulnerability -->
-    <!-- Fix transitive vulnerability -->
   </ItemGroup>
 </Project>
