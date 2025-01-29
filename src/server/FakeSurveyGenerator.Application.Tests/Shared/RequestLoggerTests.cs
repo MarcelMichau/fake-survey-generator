@@ -11,7 +11,7 @@ public sealed class RequestLoggerTests
     private readonly ILogger<CreateSurveyCommand> _logger = Substitute.For<ILogger<CreateSurveyCommand>>();
     private readonly IUserService _userService = Substitute.For<IUserService>();
 
-    [Fact]
+    [Test]
     public async Task ShouldCallGetUserIdentityOnce()
     {
         var requestLogger = new LoggingBehaviour<CreateSurveyCommand>(_logger, _userService);

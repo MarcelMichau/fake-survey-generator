@@ -4,37 +4,34 @@ using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.TestHelpers;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Users;
 
-[Collection(nameof(IntegrationTestFixture))]
-public sealed class UserEndpointsTests(IntegrationTestFixture fixture, ITestOutputHelper testOutputHelper)
+public sealed class UserEndpointsTests
 {
-    private readonly WebApplicationFactory<Program>? _factory = fixture.Factory!.WithLoggerOutput(testOutputHelper);
+    [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
+    public required IntegrationTestFixture TestFixture { get; init; }
     private readonly IFixture _fixture = new Fixture();
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUserId_WhenCallingGetUser_ThenExistingUserShouldBeReturned()
     {
-        var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
+        var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
 
         var newUser = await RegisterNewUser(client);
 
         var user = await client.GetFromJsonAsync<UserModel>($"api/user/{newUser.Id}");
 
-        user!.Id.Should().Be(newUser.Id);
-        user.DisplayName.Should().Be(newUser.DisplayName);
-        user.EmailAddress.Should().Be(newUser.EmailAddress);
-        user.ExternalUserId.Should().Be(newUser.ExternalUserId);
+        await Assert.That(user!.Id).IsEqualTo(newUser.Id);
+        await Assert.That(user.DisplayName).IsEqualTo(newUser.DisplayName);
+        await Assert.That(user.EmailAddress).IsEqualTo(newUser.EmailAddress);
+        await Assert.That(user.ExternalUserId).IsEqualTo(newUser.ExternalUserId);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingRegisteredUser_WhenCallingIsUserRegistered_ThenResponseShouldBeTrue()
     {
-        var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
+        var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
 
         var newUser = await RegisterNewUser(client);
 
@@ -42,49 +39,49 @@ public sealed class UserEndpointsTests(IntegrationTestFixture fixture, ITestOutp
             await client.GetFromJsonAsync<UserRegistrationStatusModel>(
                 $"api/user/isRegistered?userId={newUser.ExternalUserId}");
 
-        result!.IsUserRegistered.Should().BeTrue();
+        await Assert.That(result!.IsUserRegistered).IsTrue();
     }
 
-    [Fact]
+    [Test]
     public async Task GivenNewUser_WhenCallingIsUserRegistered_ThenResponseShouldBeFalse()
     {
         const string userId = "non-existent-id";
 
-        var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
+        var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
 
         var result =
             await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
 
-        result!.IsUserRegistered.Should().BeFalse();
+        await Assert.That(result!.IsUserRegistered).IsFalse();
     }
 
-    [Fact]
+    [Test]
     public async Task
         GivenAuthenticatedNewUser_WhenCallingRegisterUser_ThenSuccessfulResponseWithNewlyRegisteredUserShouldBeReturned()
     {
         var expectedUser = _fixture.Create<TestUser>();
 
-        var client = _factory.WithSpecificUser(expectedUser);
+        var client = TestFixture.Factory.WithSpecificUser(expectedUser);
 
         var user = await RegisterNewUser(client);
 
-        user.Id.Should().BePositive();
-        user.DisplayName.Should().Be(expectedUser.DisplayName);
-        user.EmailAddress.Should().Be(expectedUser.EmailAddress);
-        user.ExternalUserId.Should().Be(expectedUser.Id);
+        await Assert.That(user.Id).IsPositive();
+        await Assert.That(user.DisplayName).IsEqualTo(expectedUser.DisplayName);
+        await Assert.That(user.EmailAddress).IsEqualTo(expectedUser.EmailAddress);
+        await Assert.That(user.ExternalUserId).IsEqualTo(expectedUser.Id);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUser_WhenCallingRegisterUser_ThenBadRequestResponseShouldBeReturned()
     {
-        var client = _factory.WithSpecificUser(_fixture.Create<TestUser>());
+        var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
 
         var _ = await RegisterNewUser(client);
         var registerUserCommand = new RegisterUserCommand();
 
         var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand);
 
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
     }
 
     private static async Task<UserModel> RegisterNewUser(HttpClient client)

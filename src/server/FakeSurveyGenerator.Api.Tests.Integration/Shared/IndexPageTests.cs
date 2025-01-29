@@ -1,17 +1,18 @@
 ﻿using FakeSurveyGenerator.Api.Tests.Integration.Setup;
-using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 
-[Collection(nameof(IntegrationTestFixture))]
-public sealed class IndexPageTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
+public sealed class IndexPageTests
 {
-    private readonly HttpClient _client = testFixture.Factory!.WithLoggerOutput(testOutputHelper).CreateClient();
+    [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
+    public required IntegrationTestFixture TestFixture { get; init; }
 
-    [Fact]
+    private HttpClient Client => TestFixture.Factory!.CreateClient();
+
+    [Test]
     public async Task GivenAnyUser_WhenMakingRequestToRootRoute_ThenIndexPageShouldBeReturned()
     {
-        var response = await _client.GetAsync("/");
+        var response = await Client.GetAsync("/");
         response.EnsureSuccessStatusCode();
     }
 }

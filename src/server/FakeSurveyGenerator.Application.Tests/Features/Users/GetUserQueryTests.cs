@@ -1,48 +1,46 @@
 ﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Users;
-using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Tests.Setup;
-using FluentAssertions;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Users;
 
-[Collection(nameof(QueryTestFixture))]
-public sealed class GetUserQueryTests(QueryTestFixture fixture)
+public sealed class GetUserQueryTests
 {
-    private readonly SurveyContext _surveyContext = fixture.Context;
+    [ClassDataSource<TestFixture>]
+    public required TestFixture Fixture { get; init; }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUserId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
     {
         const int id = 1;
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext);
+        var handler = new GetUserQueryHandler(Fixture.Context);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Should().BeOfType<Result<UserModel, Error>>();
+        await Assert.That((object)result).IsTypeOf<Result<UserModel, Error>>();
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedUserIdShouldMatchGivenUserId()
     {
         const int id = 1;
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext);
+        var handler = new GetUserQueryHandler(Fixture.Context);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var user = result.Value;
 
-        user.Id.Should().Be(id);
+        await Assert.That(user.Id).IsEqualTo(id);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedDisplayNameShouldMatchExpectedValue()
     {
         const int id = 1;
@@ -50,16 +48,16 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext);
+        var handler = new GetUserQueryHandler(Fixture.Context);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var user = result.Value;
 
-        user.DisplayName.Should().Be(expectedDisplayName);
+        await Assert.That(user.DisplayName).IsEqualTo(expectedDisplayName);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedEmailAddressShouldMatchExpectedValue()
     {
         const int id = 1;
@@ -67,16 +65,16 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext);
+        var handler = new GetUserQueryHandler(Fixture.Context);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var user = result.Value;
 
-        user.EmailAddress.Should().Be(expectedEmailAddress);
+        await Assert.That(user.EmailAddress).IsEqualTo(expectedEmailAddress);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUserId_WhenCallingHandle_ThenReturnedExternalUserIdShouldMatchExpectedValue()
     {
         const int id = 1;
@@ -84,12 +82,12 @@ public sealed class GetUserQueryTests(QueryTestFixture fixture)
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(_surveyContext);
+        var handler = new GetUserQueryHandler(Fixture.Context);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         var user = result.Value;
 
-        user.ExternalUserId.Should().Be(expectedExternalUserId);
+        await Assert.That(user.ExternalUserId).IsEqualTo(expectedExternalUserId);
     }
 }

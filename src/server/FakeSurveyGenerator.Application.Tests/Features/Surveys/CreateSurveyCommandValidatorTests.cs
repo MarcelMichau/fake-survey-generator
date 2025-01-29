@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using FakeSurveyGenerator.Application.Features.Surveys;
-using FluentAssertions;
+
 using FluentValidation.TestHelper;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
@@ -9,8 +9,8 @@ public sealed class CreateSurveyCommandValidatorTests
 {
     private readonly IFixture _fixture = new Fixture();
 
-    [Fact]
-    public void GivenValidCreateSurveyCommand_WhenValidatingCommand_ThenIsValidShouldBeTrue()
+    [Test]
+    public async Task GivenValidCreateSurveyCommand_WhenValidatingCommand_ThenIsValidShouldBeTrue()
     {
         var command = new CreateSurveyCommand
         {
@@ -31,11 +31,11 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var result = validator.TestValidate(command);
 
-        result.IsValid.Should().BeTrue();
+        await Assert.That(result.IsValid).IsTrue();
     }
 
-    [Fact]
-    public void GivenBlankSurveyTopic_WhenValidatingCommand_ThenIsValidShouldBeFalse()
+    [Test]
+    public async Task GivenBlankSurveyTopic_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
         var command = new CreateSurveyCommand
         {
@@ -56,12 +56,12 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var result = validator.TestValidate(command);
 
-        result.IsValid.Should().BeFalse();
+        await Assert.That(result.IsValid).IsFalse();
         result.ShouldHaveValidationErrorFor(c => c.SurveyTopic);
     }
 
-    [Fact]
-    public void GivenZeroNumberOfRespondents_WhenValidatingCommand_ThenIsValidShouldBeFalse()
+    [Test]
+    public async Task GivenZeroNumberOfRespondents_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
         var command = new CreateSurveyCommand
         {
@@ -82,12 +82,12 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var result = validator.TestValidate(command);
 
-        result.IsValid.Should().BeFalse();
+        await Assert.That(result.IsValid).IsFalse();
         result.ShouldHaveValidationErrorFor(c => c.NumberOfRespondents);
     }
 
-    [Fact]
-    public void GivenEmptyRespondentType_WhenValidatingCommand_ThenIsValidShouldBeFalse()
+    [Test]
+    public async Task GivenEmptyRespondentType_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
         var command = new CreateSurveyCommand
         {
@@ -108,12 +108,12 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var result = validator.TestValidate(command);
 
-        result.IsValid.Should().BeFalse();
+        await Assert.That(result.IsValid).IsFalse();
         result.ShouldHaveValidationErrorFor(c => c.RespondentType);
     }
 
-    [Fact]
-    public void GivenEmptySurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
+    [Test]
+    public async Task GivenEmptySurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
         var command = new CreateSurveyCommand
         {
@@ -127,12 +127,12 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var result = validator.TestValidate(command);
 
-        result.IsValid.Should().BeFalse();
+        await Assert.That(result.IsValid).IsFalse();
         result.ShouldHaveValidationErrorFor(c => c.SurveyOptions);
     }
 
-    [Fact]
-    public void GivenNullSurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
+    [Test]
+    public async Task GivenNullSurveyOptions_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
         var command = new CreateSurveyCommand
         {
@@ -146,12 +146,12 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var result = validator.TestValidate(command);
 
-        result.IsValid.Should().BeFalse();
+        await Assert.That(result.IsValid).IsFalse();
         result.ShouldHaveValidationErrorFor(c => c.SurveyOptions);
     }
 
-    [Fact]
-    public void GivenEmptySurveyOptionText_WhenValidatingCommand_ThenIsValidShouldBeFalse()
+    [Test]
+    public async Task GivenEmptySurveyOptionText_WhenValidatingCommand_ThenIsValidShouldBeFalse()
     {
         var command = new CreateSurveyCommand
         {
@@ -171,7 +171,7 @@ public sealed class CreateSurveyCommandValidatorTests
 
         var result = validator.TestValidate(command);
 
-        result.IsValid.Should().BeFalse();
+        await Assert.That(result.IsValid).IsFalse();
         result.ShouldHaveValidationErrorFor("SurveyOptions[0].OptionText");
     }
 }

@@ -3,13 +3,15 @@ using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.TestHelpers;
 using FakeSurveyGenerator.Application.Tests.Setup;
-using FluentAssertions;
 using NSubstitute;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
 
-public sealed class CreateSurveyCommandTests : CommandTestBase
+public sealed class CreateSurveyCommandTests
 {
+    [ClassDataSource<TestFixture>]
+    public required TestFixture Fixture { get; init; }
+
     private readonly Fixture _fixture = new();
     private readonly IUserService _mockUserService = Substitute.For<IUserService>();
 
@@ -18,7 +20,7 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
         _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenValidCreateSurveyCommand_WhenCallingHandle_ThenNewSurveyShouldBeReturned()
     {
         var createSurveyCommand = new CreateSurveyCommand
@@ -38,18 +40,18 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
             }
         };
 
-        var sut = new CreateSurveyCommandHandler(Context, _mockUserService);
+        var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService);
 
         var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
         var survey = result.Value;
 
-        survey.Topic.Should().Be(createSurveyCommand.SurveyTopic);
-        survey.NumberOfRespondents.Should().Be(createSurveyCommand.NumberOfRespondents);
-        survey.RespondentType.Should().Be(createSurveyCommand.RespondentType);
+        await Assert.That(survey.Topic).IsEqualTo(createSurveyCommand.SurveyTopic);
+        await Assert.That(survey.NumberOfRespondents).IsEqualTo(createSurveyCommand.NumberOfRespondents);
+        await Assert.That(survey.RespondentType).IsEqualTo(createSurveyCommand.RespondentType);
     }
 
-    [Fact]
+    [Test]
     public async Task
         GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
     {
@@ -72,20 +74,21 @@ public sealed class CreateSurveyCommandTests : CommandTestBase
             }
         };
 
-        var sut = new CreateSurveyCommandHandler(Context, _mockUserService);
+        var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService);
 
         var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
         var survey = result.Value;
 
-        survey.Topic.Should().Be(createSurveyCommand.SurveyTopic);
-        survey.NumberOfRespondents.Should().Be(createSurveyCommand.NumberOfRespondents);
-        survey.RespondentType.Should().Be(createSurveyCommand.RespondentType);
-        survey.IsRigged.Should().BeTrue();
+        await Assert.That(survey.Topic).IsEqualTo(createSurveyCommand.SurveyTopic);
+        await Assert.That(survey.NumberOfRespondents).IsEqualTo(createSurveyCommand.NumberOfRespondents);
+        await Assert.That(survey.RespondentType).IsEqualTo(createSurveyCommand.RespondentType);
 
-        survey.Options.Should().HaveCount(2);
+        await Assert.That(survey.IsRigged).IsTrue();
 
-        survey.Options.Should().SatisfyRespectively(firstOption => { firstOption.NumberOfVotes.Should().Be(100); },
-            secondOption => { secondOption.NumberOfVotes.Should().Be(400); });
+        await Assert.That(survey.Options.Count).IsEqualTo(2);
+
+        await Assert.That(survey.Options[0].NumberOfVotes).IsEqualTo(100);
+        await Assert.That(survey.Options[1].NumberOfVotes).IsEqualTo(400);
     }
 }

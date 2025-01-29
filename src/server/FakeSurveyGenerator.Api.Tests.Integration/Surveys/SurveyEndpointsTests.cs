@@ -5,46 +5,43 @@ using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.TestHelpers;
-using FluentAssertions;
-using Xunit.Abstractions;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Surveys;
 
-[Collection(nameof(IntegrationTestFixture))]
 public sealed class SurveyEndpointsTests
 {
-    private readonly HttpClient _authenticatedClient;
-    private readonly HttpClient _unauthenticatedClient;
+    [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
+    public required IntegrationTestFixture TestFixture { get; init; }
+    private readonly TestUser _testUser;
 
-    public SurveyEndpointsTests(IntegrationTestFixture testFixture, ITestOutputHelper testOutputHelper)
+    private HttpClient AuthenticatedClient => TestFixture.Factory!
+        .WithSpecificUser(_testUser);
+
+    private HttpClient UnauthenticatedClient => TestFixture.Factory!
+        .CreateClient();
+
+    public SurveyEndpointsTests()
     {
         var fixture = new Fixture();
-
-        _authenticatedClient = testFixture.Factory!
-            .WithLoggerOutput(testOutputHelper)
-            .WithSpecificUser(fixture.Create<TestUser>());
-
-        _unauthenticatedClient = testFixture.Factory!
-            .WithLoggerOutput(testOutputHelper)
-            .CreateClient();
+        _testUser = fixture.Create<TestUser>();
     }
 
-    [Fact]
+    [Test]
     public async Task
         GivenAuthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenSuccessfulResponseWithNewlyCreatedSurveyShouldBeReturned()
     {
         var newUser = await RegisterNewUser();
         var newSurvey = await CreateSurvey();
 
-        newSurvey.Options.Sum(option => option.NumberOfVotes).Should().Be(350);
-        newSurvey.Topic.Should().Be("How awesome is this?");
-        newSurvey.RespondentType.Should().Be("Individuals");
-        newSurvey.Options.Should().OnlyContain(option => option.NumberOfVotes > 0);
-        newSurvey.CreatedOn.Should().NotBe(DateTimeOffset.MinValue);
-        newSurvey.CreatedBy.Should().Be(newUser.ExternalUserId);
+        await Assert.That(newSurvey.Options.Sum(option => option.NumberOfVotes)).IsEqualTo(350);
+        await Assert.That(newSurvey.Topic).IsEqualTo("How awesome is this?");
+        await Assert.That(newSurvey.RespondentType).IsEqualTo("Individuals");
+        await Assert.That(newSurvey.Options.All(option => option.NumberOfVotes > 0)).IsTrue();
+        await Assert.That(newSurvey.CreatedOn).IsNotEqualTo(default);
+        await Assert.That(newSurvey.CreatedBy).IsEqualTo(newUser.ExternalUserId);
     }
 
-    [Fact]
+    [Test]
     public async Task
         GivenUnauthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnauthorizedResponseShouldBeReturned()
     {
@@ -66,12 +63,12 @@ public sealed class SurveyEndpointsTests
             }
         };
 
-        using var response = await _unauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+        using var response = await UnauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
     }
 
-    [Fact]
+    [Test]
     public async Task
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnprocessableEntityResponseShouldBeReturned()
     {
@@ -89,68 +86,63 @@ public sealed class SurveyEndpointsTests
             }
         };
 
-        using var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
-        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingSurveyId_WhenCallingGetSurvey_ThenExistingSurveyShouldBeReturned()
     {
         var owner = await RegisterNewUser();
         var newSurvey = await CreateSurvey();
 
-        var survey = await _authenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{newSurvey.Id}");
+        var survey = await AuthenticatedClient.GetFromJsonAsync<SurveyModel>($"api/survey/{newSurvey.Id}");
 
-        survey!.Id.Should().Be(newSurvey.Id);
-        survey.OwnerId.Should().Be(owner.Id);
-        survey.Topic.Should().Be(newSurvey.Topic);
-        survey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
-        survey.RespondentType.Should().Be(newSurvey.RespondentType);
+        await Assert.That(survey!.Id).IsEqualTo(newSurvey.Id);
+        await Assert.That(survey.OwnerId).IsEqualTo(owner.Id);
+        await Assert.That(survey.Topic).IsEqualTo(newSurvey.Topic);
+        await Assert.That(survey.NumberOfRespondents).IsEqualTo(newSurvey.NumberOfRespondents);
+        await Assert.That(survey.RespondentType).IsEqualTo(newSurvey.RespondentType);
 
-        survey.Options.Should().SatisfyRespectively(firstOption =>
-        {
-            firstOption.OptionText.Should().Be(newSurvey.Options.First().OptionText);
-        }, secondOption =>
-        {
-            secondOption.OptionText.Should().Be(newSurvey.Options.Last().OptionText);
-        });
+        await Assert.That(survey.Options.First().OptionText).IsEqualTo(newSurvey.Options.First().OptionText);
+        await Assert.That(survey.Options.Last().OptionText).IsEqualTo(newSurvey.Options.Last().OptionText);
     }
 
-    [Fact]
+    [Test]
     public async Task GivenExistingUserWithSurveys_WhenCallingGetUserSurveys_ThenExistingSurveysShouldBeReturned()
     {
         await RegisterNewUser();
         var newSurvey = await CreateSurvey();
 
-        var surveys = await _authenticatedClient.GetFromJsonAsync<List<UserSurveyModel>>("api/survey/user");
+        var surveys = await AuthenticatedClient.GetFromJsonAsync<List<UserSurveyModel>>("api/survey/user");
 
-        surveys!.Count.Should().BeGreaterThan(0);
+        await Assert.That(surveys!.Count).IsGreaterThan(0);
 
         var createdSurvey = surveys.First(s => s.Id == newSurvey.Id);
 
-        createdSurvey!.Id.Should().Be(newSurvey.Id);
-        createdSurvey.Topic.Should().Be(newSurvey.Topic);
-        createdSurvey.NumberOfRespondents.Should().Be(newSurvey.NumberOfRespondents);
-        createdSurvey.RespondentType.Should().Be(newSurvey.RespondentType);
-        createdSurvey.WinningOptionNumberOfVotes.Should().Be(newSurvey.Options.Max(o => o.NumberOfVotes));
+        await Assert.That(createdSurvey.Id).IsEqualTo(newSurvey.Id);
+        await Assert.That(createdSurvey.Topic).IsEqualTo(newSurvey.Topic);
+        await Assert.That(createdSurvey.NumberOfRespondents).IsEqualTo(newSurvey.NumberOfRespondents);
+        await Assert.That(createdSurvey.RespondentType).IsEqualTo(newSurvey.RespondentType);
+        await Assert.That(createdSurvey.WinningOptionNumberOfVotes).IsEqualTo(newSurvey.Options.Max(o => o.NumberOfVotes));
     }
 
-    [Fact]
+    [Test]
     public async Task GivenNonExistentSurveyId_WhenCallingGetSurvey_ThenNotFoundResponseShouldBeReturned()
     {
         const int surveyId = 9000000;
 
-        var response = await _authenticatedClient.GetAsync($"api/survey/{surveyId}");
+        var response = await AuthenticatedClient.GetAsync($"api/survey/{surveyId}");
 
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 
     private async Task<UserModel> RegisterNewUser()
     {
         var registerUserCommand = new RegisterUserCommand();
 
-        var response = await _authenticatedClient.PostAsJsonAsync("/api/user/register", registerUserCommand);
+        var response = await AuthenticatedClient.PostAsJsonAsync("/api/user/register", registerUserCommand);
 
         response.EnsureSuccessStatusCode();
 
@@ -178,7 +170,7 @@ public sealed class SurveyEndpointsTests
             }
         };
 
-        var response = await _authenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+        var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
         response.EnsureSuccessStatusCode();
 
