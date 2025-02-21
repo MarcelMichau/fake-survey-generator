@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace FakeSurveyGenerator.Application.Shared.Behaviours;
 
@@ -9,25 +9,31 @@ public sealed class PerformanceBehaviour<TRequest, TResponse>(ILogger<TRequest> 
     where TRequest : IRequest<TResponse>
 {
     private readonly ILogger<TRequest> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    private readonly Stopwatch _timer = new();
 
     public async Task<TResponse> Handle(TRequest request,
         RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        _timer.Start();
+        var startTime = Stopwatch.GetTimestamp();
 
         var response = await next();
 
-        _timer.Stop();
+        var diff = Stopwatch.GetElapsedTime(startTime);
 
-        if (_timer.ElapsedMilliseconds <= 500) return response;
+        if (diff.Milliseconds <= 500) return response;
 
         var name = typeof(TRequest).Name;
 
-        _logger.LogWarning(
-            "Fake Survey Generator Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
-            name, _timer.ElapsedMilliseconds, request);
+        _logger.LogLongRunningRequest(name, diff.Milliseconds, request);
 
         return response;
     }
+}
+
+public static partial class PerformanceBehaviourLogging
+{
+    [LoggerMessage(
+        EventId = 0,
+        Level = LogLevel.Warning,
+        Message = "Fake Survey Generator Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}")]
+    public static partial void LogLongRunningRequest(this ILogger logger, string name, int elapsedMilliseconds, object request);
 }

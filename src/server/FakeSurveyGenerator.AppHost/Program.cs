@@ -4,8 +4,6 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, "sql-server-password");
-
 var database = builder.AddSqlServer("sql-server")
     .WithDataVolume()
     .AddDatabase("database");

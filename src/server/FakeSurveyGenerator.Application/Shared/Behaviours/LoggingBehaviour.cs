@@ -15,9 +15,17 @@ public sealed class LoggingBehaviour<TRequest>(ILogger<TRequest> logger, IUserSe
     {
         var name = typeof(TRequest).Name;
 
-        _logger.LogInformation("Fake Survey Generator Request: {Name} {@Request} {@CurrentUserIdentity}",
-            name, request, _userService.GetUserIdentity());
+        _logger.LogRequest( name, request, _userService.GetUserIdentity());
 
         return Task.CompletedTask;
     }
+}
+
+public static partial class LoggingBehaviourLogging
+{
+    [LoggerMessage(
+        EventId = 0,
+        Level = LogLevel.Information,
+        Message = "Fake Survey Generator Request: {Name} {@Request} {@CurrentUserIdentity}")]
+    public static partial void LogRequest(this ILogger logger, string name, object request, string currentUserIdentity);
 }

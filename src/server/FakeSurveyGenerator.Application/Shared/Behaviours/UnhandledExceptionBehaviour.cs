@@ -20,10 +20,18 @@ public sealed class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRe
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogError(ex, "Fake Survey Generator Request: Unhandled Exception for Request {Name} {@Request}",
-                requestName, request);
+            _logger.LogUnhandledException(ex, requestName, request);
 
             throw;
         }
     }
+}
+
+public static partial class UnhandledExceptionBehaviourLogging
+{
+    [LoggerMessage(
+        EventId = 0,
+        Level = LogLevel.Error,
+        Message = "Fake Survey Generator Request: Unhandled Exception for Request {Name} {@Request}")]
+    public static partial void LogUnhandledException(this ILogger logger, Exception ex, string name, object request);
 }
