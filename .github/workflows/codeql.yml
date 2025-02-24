@@ -80,7 +80,7 @@ jobs:
 
       - name: Build
         if: matrix.language == 'csharp'
-        run: dotnet build FakeSurveyGenerator.sln
+        run: dotnet build FakeSurveyGenerator.slnx
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

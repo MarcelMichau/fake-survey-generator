@@ -101,7 +101,7 @@ stages:
               command: "build"
               arguments: "--configuration $(buildConfiguration)"
               projects: |
-                FakeSurveyGenerator.sln
+                FakeSurveyGenerator.slnx
             displayName: "Build Solution"
 
           - task: DotNetCoreCLI@2
@@ -162,7 +162,7 @@ stages:
               command: "build"
               arguments: "--configuration $(buildConfiguration)"
               projects: |
-                FakeSurveyGenerator.sln
+                FakeSurveyGenerator.slnx
             displayName: "Build Solution"
 
           - task: PowerShell@2

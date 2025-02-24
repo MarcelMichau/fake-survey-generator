@@ -217,7 +217,7 @@ In order to run FSG on your local machine, you will need the following prerequis
 - [Dapr CLI](https://docs.dapr.io/getting-started/install-dapr-cli/)
 - [Visual Studio 2022 v17.10 or higher](https://visualstudio.microsoft.com/vs/)
 
-1. Open `FakeSurveyGenerator.sln` in Visual Studio:
+1. Open `FakeSurveyGenerator.slnx` in Visual Studio:
 
 2. Ensure that the `FakeSurveyGenerator.AppHost` project is selected as the startup project
 
