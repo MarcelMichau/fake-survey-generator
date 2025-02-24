@@ -157,12 +157,8 @@ stages:
                 nuget
               path: "$(NUGET_PACKAGES)"
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "build"
-              arguments: "--configuration $(buildConfiguration)"
-              projects: |
-                FakeSurveyGenerator.slnx
+          - pwsh: |
+              dotnet build FakeSurveyGenerator.slnx --configuration $(buildConfiguration)
             displayName: "Build Solution"
 
           - task: PowerShell@2
