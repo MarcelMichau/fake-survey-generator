@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
 
-public sealed record CreateSurveyCommand() : IRequest<Result<SurveyModel, Error>>
+public sealed record CreateSurveyCommand : IRequest<Result<SurveyModel, Error>>
 {
     public required string SurveyTopic { get; init; }
 

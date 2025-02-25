@@ -20,7 +20,7 @@ public sealed class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRe
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogUnhandledException(ex, requestName, request);
+            _logger.LogUnhandledException(ex, requestName);
 
             throw;
         }
@@ -32,6 +32,6 @@ public static partial class UnhandledExceptionBehaviourLogging
     [LoggerMessage(
         EventId = 0,
         Level = LogLevel.Error,
-        Message = "Fake Survey Generator Request: Unhandled Exception for Request {Name} {@Request}")]
-    public static partial void LogUnhandledException(this ILogger logger, Exception ex, string name, object request);
+        Message = "Fake Survey Generator Request: Unhandled Exception for Request {Name}")]
+    public static partial void LogUnhandledException(this ILogger logger, Exception ex, string name);
 }

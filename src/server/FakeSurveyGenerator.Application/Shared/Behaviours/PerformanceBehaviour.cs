@@ -23,7 +23,7 @@ public sealed class PerformanceBehaviour<TRequest, TResponse>(ILogger<TRequest> 
 
         var name = typeof(TRequest).Name;
 
-        _logger.LogLongRunningRequest(name, diff.Milliseconds, request);
+        _logger.LogLongRunningRequest(name, diff.Milliseconds);
 
         return response;
     }
@@ -34,6 +34,6 @@ public static partial class PerformanceBehaviourLogging
     [LoggerMessage(
         EventId = 0,
         Level = LogLevel.Warning,
-        Message = "Fake Survey Generator Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}")]
-    public static partial void LogLongRunningRequest(this ILogger logger, string name, int elapsedMilliseconds, object request);
+        Message = "Fake Survey Generator Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds)")]
+    public static partial void LogLongRunningRequest(this ILogger logger, string name, int elapsedMilliseconds);
 }
