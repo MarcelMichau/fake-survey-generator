@@ -72,7 +72,7 @@ stages:
             displayName: "Set SemVer Version Tag from NBGV"
 
       - job: Build
-        displayName: "Build"
+        displayName: "Build + Test"
         pool:
           vmImage: "ubuntu-latest"
 
@@ -159,7 +159,7 @@ stages:
 
           - task: PowerShell@2
             inputs:
-              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net8.0/playwright.ps1"
+              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net9.0/playwright.ps1"
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
