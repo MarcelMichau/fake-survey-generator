@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0-rc.1.24511.1" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.1.0" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -11,7 +11,7 @@
     <PackageReference Include="Aspire.Hosting.SqlServer" />
     <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="Aspire.Hosting.AppHost" />
-    <PackageReference Include="Aspire.Hosting.Dapr" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" />
     <PackageReference Include="System.Text.Json" />
     <!-- Fix transitive vulnerability -->
   </ItemGroup>
