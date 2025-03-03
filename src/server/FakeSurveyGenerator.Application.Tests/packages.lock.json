@@ -1680,9 +1680,9 @@
           "Azure.Identity": "[1.13.2, )",
           "CSharpFunctionalExtensions": "[3.5.1, )",
           "Dapper": "[2.1.66, )",
+          "Duende.IdentityModel": "[7.0.0, )",
           "FluentValidation": "[11.11.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[11.11.0, )",
-          "IdentityModel": "[7.0.0, )",
           "JetBrains.Annotations": "[2024.3.0, )",
           "MediatR": "[12.4.1, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[9.0.2, )",
@@ -1785,6 +1785,12 @@
         "resolved": "2.1.66",
         "contentHash": "/q77jUgDOS+bzkmk3Vy9SiWMaetTw+NOoPAV0xPBsGVAyljd5S6P+4RUW7R3ZUGGr9lDRyPKgAMj2UAOwvqZYw=="
       },
+      "Duende.IdentityModel": {
+        "type": "CentralTransitive",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "h6xvWQi9bASgroNh+6Z/BpSUpKTy/sSuc2l4twi0igSY0X0z7Y8eYMGMHB7trwdT56EGlWeXLA6qAb8VOg8ATA=="
+      },
       "FluentValidation": {
         "type": "CentralTransitive",
         "requested": "[11.11.0, )",
@@ -1800,12 +1806,6 @@
           "FluentValidation": "11.11.0",
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
-      },
-      "IdentityModel": {
-        "type": "CentralTransitive",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "to99aLL5Gev1GOb2gUao/UZXT/uXMyjEmHPNrf/vJI2HBD1LMCTeC4SBCe/cqMIB12V9v+eSieq7ff0lju9pOQ=="
       },
       "JetBrains.Annotations": {
         "type": "CentralTransitive",

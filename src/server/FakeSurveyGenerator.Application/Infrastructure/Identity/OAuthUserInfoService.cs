@@ -2,7 +2,7 @@
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Identity;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
