@@ -28,7 +28,7 @@ This is a .NET | C# | React | TypeScript full-stack application of moderate comp
 playground for experimentation. Simply put: This is where I mess around with code. It is heavily inspired by
 the [.NET Microservices: Architecture for Containerized .NET Applications](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/)
 book, as well as its companion reference
-application [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers). It also incorporates various
+application [eShopOnAzure](https://github.com/Azure-Samples/eShopOnAzure). It also incorporates various
 elements from different repos & blog posts which served as inspiration.
 
 It is built using Vertical Slice Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (
