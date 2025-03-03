@@ -105,12 +105,12 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[0.15.3, )",
-        "resolved": "0.15.3",
-        "contentHash": "Go63DMtSCWQiXExNT/heSctpt7WNxtDty8P9F2GlgFbC/IlqK4b02bO7N6G2GNA6fXqahy8cSa9Mhrx5sW5RvQ==",
+        "requested": "[0.16.4, )",
+        "resolved": "0.16.4",
+        "contentHash": "H7xx5OT3ZXWGnSwVsp3PKoU+nZURxZOp3ZlJivq9sEgGwvkwnSLvm9NaVAQ2+cVLUyH4RzmCdusc1oULEXI3/Q==",
         "dependencies": {
-          "TUnit.Assertions": "0.15.3",
-          "TUnit.Engine": "0.15.3"
+          "TUnit.Assertions": "0.16.4",
+          "TUnit.Engine": "0.16.4"
         }
       },
       "Albedo": {
@@ -1651,24 +1651,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "0.15.3",
-        "contentHash": "lNdsvoQb0lUO8MT8rbKksXUPRpFGR01WpTYHT7Mcmk6FQi5xo6icA6mfV+0TKuA4ib1zQv6c2sN/J2l9zhNatQ=="
+        "resolved": "0.16.4",
+        "contentHash": "bVidzQb5SENCaW/u2W4JCq/1Dktqr7VqpiOmUdzFjxXb/9ALH+UunXiXjiWXEI8iSOJO30STbImbs3MqQ/4xcg=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "0.15.3",
-        "contentHash": "+5NaeTtcjigLNICDnhk23Q73kSWMKJf0yucfxf1KO38lE+ZLP4cjHlT3fNSQwt2IHRNLiRi769lfiQ/jj70DsQ=="
+        "resolved": "0.16.4",
+        "contentHash": "bFkRktJ/IdgoDqCf14mrJaRviZAJyXHhgCusbon8eplqz9a2bMRnV/6L2oGCUyQsN7HbJPO/PgJ4clXHSuRNvw=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "0.15.3",
-        "contentHash": "Q4NW4lN23RjJQiP43nwAL3+HG9P0o8pXncfUoYY7k67E4Ut4NJEW35Nj3MSZmA8FZEae/AcR4S0z+PadYnw5rg==",
+        "resolved": "0.16.4",
+        "contentHash": "20I2+Z9bu8R4QjozWap3xHwgSORfrnvTf5l7rZY0u/tydUUeNECPRj54MMQqQIyMG38JEHf/1A3V08j8bwdE2g==",
         "dependencies": {
           "EnumerableAsyncProcessor": "2.1.0",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "1.4.3",
           "Microsoft.Testing.Platform": "1.4.3",
           "Microsoft.Testing.Platform.MSBuild": "1.4.3",
-          "TUnit.Core": "0.15.3"
+          "TUnit.Core": "0.16.4"
         }
       },
       "fakesurveygenerator.application": {
