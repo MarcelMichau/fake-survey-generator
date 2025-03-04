@@ -38,24 +38,22 @@ internal sealed class OAuthUserInfoService(
 
     public async Task<IUser> GetUserInfo(CancellationToken cancellationToken)
     {
-        var accessToken = _tokenProviderService.GetToken();
+        var cacheKey = GetUserIdentity();
 
-        var cacheKey = $"{new JwtSecurityToken(accessToken).Subject}";
+        var accessToken = _tokenProviderService.GetToken();
 
         return await _cache.GetOrCreateAsync(cacheKey, async token =>
         {
-            var (_, isFailure, value) = await GetUserInfoFromIdentityProvider(accessToken, token);
+            var (_, isFailure, userInfo, error) = await GetUserInfoFromIdentityProvider(accessToken, token);
 
             if (isFailure)
-                throw new InvalidOperationException("Failed to get user info from Identity Provider");
+                throw new InvalidOperationException($"Failed to get user info from Identity Provider: {error}");
 
-            var id = value.Claims.First(claim => claim.Type == "sub").Value;
-            var name = value.Claims.First(claim => claim.Type == "name").Value;
-            var email = value.Claims.First(claim => claim.Type == "email").Value;
+            var id = userInfo.Claims.First(claim => claim.Type == "sub").Value;
+            var name = userInfo.Claims.First(claim => claim.Type == "name").Value;
+            var email = userInfo.Claims.First(claim => claim.Type == "email").Value;
 
-            var userInfo = new OAuthUser(id, name, email);
-
-            return userInfo;
+            return new OAuthUser(id, name, email);
         }, cancellationToken: cancellationToken);
     }
 
@@ -70,6 +68,9 @@ internal sealed class OAuthUserInfoService(
             _client.BaseAddress = new Uri(identityProviderUrl);
 
             var disco = await _client.GetDiscoveryDocumentAsync(identityProviderUrl, cancellationToken);
+
+            if (disco.IsError)
+                return Result.Failure<UserInfoResponse>($"Discovery document error: {disco.Error}");
 
             var userInfoResponse = await _client.GetUserInfoAsync(new UserInfoRequest
             {
@@ -96,7 +97,7 @@ internal sealed class OAuthUserInfoService(
         {
             _logger.LogError(e, "An error occurred with the request to {IdentityProviderUrl}",
                 identityProviderUrl);
-            return Result.Failure<UserInfoResponse>("Unknown Error");
+            return Result.Failure<UserInfoResponse>($"Unknown Error: {e.Message}");
         }
     }
 }
