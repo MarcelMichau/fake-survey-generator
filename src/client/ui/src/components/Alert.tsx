@@ -14,7 +14,7 @@ const Alert = ({ title, message, type = "success" }: AlertProps) => {
 
 	return (
 		<div
-			className={`${classes} border text-gray-200 px-4 py-3 my-4 rounded relative`}
+			className={`${classes} border text-gray-200 px-4 py-3 my-4 rounded-sm relative`}
 			role="alert"
 		>
 			<div>

@@ -9,7 +9,7 @@ const NavBar = () => {
 
 	return (
 		<nav className="flex items-center justify-between flex-wrap bg-indigo-600 p-6">
-			<div className="flex items-center flex-shrink-0 text-white mr-6">
+			<div className="flex items-center shrink-0 text-white mr-6">
 				<span className="font-semibold text-xl tracking-tight">
 					Fake Survey Generator
 					<FontAwesomeIcon icon={faPollH} className="ml-2" />
@@ -18,7 +18,7 @@ const NavBar = () => {
 			<div className="block lg:hidden">
 				<button
 					type="button"
-					className="flex items-center px-3 py-2 border rounded text-indigo-200 border-indigo-400 hover:text-white hover:border-white"
+					className="flex items-center px-3 py-2 border rounded-sm text-indigo-200 border-indigo-400 hover:text-white hover:border-white"
 					onClick={() => setCollapsed(!collapsed)}
 				>
 					<svg
@@ -34,9 +34,9 @@ const NavBar = () => {
 			<div
 				className={`w-full ${
 					collapsed ? "hidden" : "block"
-				} flex-grow lg:flex lg:items-center lg:w-auto`}
+				} grow lg:flex lg:items-center lg:w-auto`}
 			>
-				<div className="text-sm lg:flex-grow">
+				<div className="text-sm lg:grow">
 					<a
 						href="/swagger"
 						className="block mt-4 lg:inline-block lg:mt-0 text-indigo-200 hover:text-white mr-4"

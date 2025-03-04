@@ -39,7 +39,7 @@ const Button = ({
 	return (
 		<button
 			type={type}
-			className={`align-baseline px-4 py-2 rounded text-white ${classes} focus:ring ${additionalClasses.join(
+			className={`align-baseline px-4 py-2 rounded text-white ${classes} focus:ring-3 ${additionalClasses.join(
 				" ",
 			)}`}
 			onClick={onClick}

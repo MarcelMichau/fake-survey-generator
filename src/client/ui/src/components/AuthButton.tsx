@@ -7,7 +7,7 @@ const AuthButton = () => {
 		useAuth0();
 
 	const commonClasses =
-		"inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-600 hover:bg-white mt-4 lg:mt-0";
+		"inline-block text-sm px-4 py-2 leading-none border rounded-sm text-white border-white hover:border-transparent hover:text-indigo-600 hover:bg-white mt-4 lg:mt-0";
 
 	return (
 		<span>
