@@ -14,7 +14,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>
     /// <summary>
     /// The unique identifier of the entity
     /// </summary>
-    public virtual TId Id { get; protected set; } = default!;
+    public virtual TId Id { get; protected init; } = default!;
 
     /// <summary>
     /// Domain events raised by this entity
