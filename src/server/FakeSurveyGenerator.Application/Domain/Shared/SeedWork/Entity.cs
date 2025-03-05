@@ -6,7 +6,7 @@ namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 /// Base class for all domain entities with a strongly-typed identifier
 /// </summary>
 /// <typeparam name="TId">The type of the entity's identifier</typeparam>
-public abstract class Entity<TId> : IHasDomainEvents, IEquatable<Entity<TId>>
+public abstract class Entity<TId> : IEquatable<Entity<TId>>
 {
     private readonly Lazy<int> _requestedHashCode;
     private readonly List<DomainEvent> _domainEvents = [];
