@@ -104,11 +104,16 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: "--no-restore -- --coverage --report-trx --results-directory $(Agent.TempDirectory)"
+              arguments: "--no-restore --coverage --report-trx"
               projects: |
                 src/server/FakeSurveyGenerator.Application.Tests
                 src/server/FakeSurveyGenerator.Api.Tests.Integration
             displayName: "Run Unit + Integration Tests"
+
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
+            displayName: "Publish Code Coverage Results"
 
           - script: |
               dotnet tool restore
