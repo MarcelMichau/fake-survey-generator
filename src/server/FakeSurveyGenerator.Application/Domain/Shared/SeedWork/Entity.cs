@@ -124,3 +124,9 @@ public abstract class Entity<TId> : IHasDomainEvents, IEquatable<Entity<TId>>
         return !(left == right);
     }
 }
+
+/// <summary>
+/// Base class for all domain entities with an int identifier
+/// Provided for backward compatibility
+/// </summary>
+public abstract class Entity : Entity<int>;
