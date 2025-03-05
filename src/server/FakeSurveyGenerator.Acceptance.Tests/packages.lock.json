@@ -59,12 +59,12 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[0.16.4, )",
-        "resolved": "0.16.4",
-        "contentHash": "H7xx5OT3ZXWGnSwVsp3PKoU+nZURxZOp3ZlJivq9sEgGwvkwnSLvm9NaVAQ2+cVLUyH4RzmCdusc1oULEXI3/Q==",
+        "requested": "[0.16.13, )",
+        "resolved": "0.16.13",
+        "contentHash": "nRNjgFs+hJNLtE/olu+B8P75/h07+Awx+hpEzlJgAi9xbloUWdIg3PeAjLysK6DKu0ULn68CQpq1E9LT9nyK5w==",
         "dependencies": {
-          "TUnit.Assertions": "0.16.4",
-          "TUnit.Engine": "0.16.4"
+          "TUnit.Assertions": "0.16.13",
+          "TUnit.Engine": "0.16.13"
         }
       },
       "Aspire.Dashboard.Sdk.win-x64": {
@@ -961,24 +961,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "0.16.4",
-        "contentHash": "bVidzQb5SENCaW/u2W4JCq/1Dktqr7VqpiOmUdzFjxXb/9ALH+UunXiXjiWXEI8iSOJO30STbImbs3MqQ/4xcg=="
+        "resolved": "0.16.13",
+        "contentHash": "3Gksv+Z/0ubh2KMdYRwOFnwT7kqZM7mbz9c0pCamIGHFsq3OQnTyI31gYNYu0Dsoh73nQDVP0gm39ijLQE2rOw=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "0.16.4",
-        "contentHash": "bFkRktJ/IdgoDqCf14mrJaRviZAJyXHhgCusbon8eplqz9a2bMRnV/6L2oGCUyQsN7HbJPO/PgJ4clXHSuRNvw=="
+        "resolved": "0.16.13",
+        "contentHash": "Zg82V/Y/B5mjmSiN625H65qlhYOtei+88rrV19wRIIitVXjdkei0OMbT/KqgvGmeNrAxbhNt+AzmAIn7a620UQ=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "0.16.4",
-        "contentHash": "20I2+Z9bu8R4QjozWap3xHwgSORfrnvTf5l7rZY0u/tydUUeNECPRj54MMQqQIyMG38JEHf/1A3V08j8bwdE2g==",
+        "resolved": "0.16.13",
+        "contentHash": "W7xYBhs6JwcJFcxIbAeO4lk3W377EM5sWd7zr4FpDK8V0u3Tr+D0EXY0WOLHqiT9grcB8x9Lk4o+8GQUu69hIw==",
         "dependencies": {
           "EnumerableAsyncProcessor": "2.1.0",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "1.4.3",
           "Microsoft.Testing.Platform": "1.4.3",
           "Microsoft.Testing.Platform.MSBuild": "1.4.3",
-          "TUnit.Core": "0.16.4"
+          "TUnit.Core": "0.16.13"
         }
       },
       "YamlDotNet": {
@@ -995,7 +995,7 @@
           "Aspire.Hosting.Orchestration.win-x64": "[9.1.0, )",
           "Aspire.Hosting.Redis": "[9.1.0, )",
           "Aspire.Hosting.SqlServer": "[9.1.0, )",
-          "CommunityToolkit.Aspire.Hosting.Dapr": "[9.2.0, )",
+          "CommunityToolkit.Aspire.Hosting.Dapr": "[9.2.1, )",
           "System.Text.Json": "[9.0.2, )"
         }
       },
@@ -1137,9 +1137,9 @@
       },
       "CommunityToolkit.Aspire.Hosting.Dapr": {
         "type": "CentralTransitive",
-        "requested": "[9.2.0, )",
-        "resolved": "9.2.0",
-        "contentHash": "OKR3mzjoKIWsm+LsoDROI1i0OK4RTfgIdllo+DHiwyiHuWOm0N8OgR3ZjXJKjdwvk+bFWPZwOiYJmm1gPRs4CA==",
+        "requested": "[9.2.1, )",
+        "resolved": "9.2.1",
+        "contentHash": "Lw7mEkc3bhhWZzc+/aL2L31ZaDBPNmtL8En8bYsX+mU0QgaoHANPpEl974TFw0crXgFw6EfKfUZ1HNZw03eggQ==",
         "dependencies": {
           "Aspire.Hosting": "9.1.0"
         }
