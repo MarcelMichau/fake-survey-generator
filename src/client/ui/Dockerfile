@@ -1,4 +1,4 @@
-FROM oven/bun:alpine as build
+FROM oven/bun AS build
 ARG VITE_APP_VERSION
 WORKDIR /usr/src/app
 COPY src/client/ui/package.json src/client/ui/bun.lockb ./
