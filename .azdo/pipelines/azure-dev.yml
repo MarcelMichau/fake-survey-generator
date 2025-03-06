@@ -110,11 +110,6 @@ stages:
                 src/server/FakeSurveyGenerator.Api.Tests.Integration
             displayName: "Run Unit + Integration Tests"
 
-          - task: PublishCodeCoverageResults@2
-            inputs:
-              summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
-            displayName: "Publish Code Coverage Results"
-
           - script: |
               dotnet tool restore
               dotnet dotnet-ef migrations script --no-build --verbose -o DbMigrationScript.sql -i
