@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Api.Shared;
+﻿using System.ComponentModel;
+using FakeSurveyGenerator.Api.Shared;
 using FakeSurveyGenerator.Application.Features.Users;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -7,7 +8,7 @@ namespace FakeSurveyGenerator.Api.Users;
 
 internal static class UserEndpoints
 {
-    internal static void MapUserEndpoints(this WebApplication app)
+    internal static void MapUserEndpoints(this IEndpointRouteBuilder app)
     {
         var userGroup = app.MapGroup("/api/user")
             .RequireAuthorization();
@@ -15,12 +16,7 @@ internal static class UserEndpoints
         userGroup.MapGet("/{id:int}", GetUser)
             .WithName(nameof(GetUser))
             .WithSummary("Retrieves a specific User")
-            .WithOpenApi(generatedOperation =>
-            {
-                var parameter = generatedOperation.Parameters[0];
-                parameter.Description = "Primary key of the User";
-                return generatedOperation;
-            });
+            .WithOpenApi();
 
         userGroup.MapGet("isRegistered", IsRegistered)
             .WithName(nameof(IsRegistered))
@@ -39,7 +35,7 @@ internal static class UserEndpoints
             .WithOpenApi();
     }
 
-    private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(ISender mediator, int id,
+    private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(ISender mediator,[Description("Primary key of the User")] int id,
         CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetUserQuery(id), cancellationToken);

@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Api.Shared;
+﻿using System.ComponentModel;
+using FakeSurveyGenerator.Api.Shared;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Exceptions;
 using MediatR;
@@ -8,7 +9,7 @@ namespace FakeSurveyGenerator.Api.Surveys;
 
 internal static class SurveyEndpoints
 {
-    internal static void MapSurveyEndpoints(this WebApplication app)
+    internal static void MapSurveyEndpoints(this IEndpointRouteBuilder app)
     {
         var surveyGroup = app.MapGroup("/api/survey")
             .RequireAuthorization();
@@ -16,12 +17,7 @@ internal static class SurveyEndpoints
         surveyGroup.MapGet("/{id:int}", GetSurvey)
             .WithName(nameof(GetSurvey))
             .WithSummary("Retrieves a specific Survey")
-            .WithOpenApi(generatedOperation =>
-            {
-                var parameter = generatedOperation.Parameters[0];
-                parameter.Description = "Primary key of the Survey";
-                return generatedOperation;
-            });
+            .WithOpenApi();
 
         surveyGroup.MapGet("/user", GetUserSurveys)
             .WithName(nameof(GetUserSurveys))
@@ -34,7 +30,7 @@ internal static class SurveyEndpoints
             .WithOpenApi();
     }
 
-    private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(ISender mediator, int id,
+    private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(ISender mediator,[Description("Primary key of the Survey")] int id,
         CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new GetSurveyDetailQuery(id), cancellationToken);

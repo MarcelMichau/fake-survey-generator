@@ -2,7 +2,7 @@
 
 internal static class AdminEndpoints
 {
-    internal static void MapAdminEndpoints(this WebApplication app)
+    internal static void MapAdminEndpoints(this IEndpointRouteBuilder app)
     {
         var adminGroup = app.MapGroup("/api/admin");
 

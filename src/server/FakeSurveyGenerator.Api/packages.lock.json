@@ -1115,9 +1115,9 @@
           "Microsoft.Extensions.ServiceDiscovery": "[9.1.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.11.2, )",
           "OpenTelemetry.Extensions.Hosting": "[1.11.2, )",
-          "OpenTelemetry.Instrumentation.AspNetCore": "[1.11.0, )",
-          "OpenTelemetry.Instrumentation.Http": "[1.11.0, )",
-          "OpenTelemetry.Instrumentation.Runtime": "[1.11.0, )"
+          "OpenTelemetry.Instrumentation.AspNetCore": "[1.11.1, )",
+          "OpenTelemetry.Instrumentation.Http": "[1.11.1, )",
+          "OpenTelemetry.Instrumentation.Runtime": "[1.11.1, )"
         }
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
@@ -1328,31 +1328,31 @@
       },
       "OpenTelemetry.Instrumentation.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[1.11.0, )",
-        "resolved": "1.11.0",
-        "contentHash": "pBTdlyIGZVfYyB9yizO393RyQgJk+4ViGt+vQb9JI3Qwk9LW6mXreL1oUfVqHCbbSJp2vyMacYxXVBSvtZiBXg==",
+        "requested": "[1.11.1, )",
+        "resolved": "1.11.1",
+        "contentHash": "KAzLOcCGi6TviuJWx0+QSgjVCrEnWDayN3aFSHoKzINPx/Tfwd9MIePUUDXQ+xHzrwon8IfExIDT1+UyIf3hoA==",
         "dependencies": {
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.11.1, 2.0.0)"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.11.2, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.Http": {
         "type": "CentralTransitive",
-        "requested": "[1.11.0, )",
-        "resolved": "1.11.0",
-        "contentHash": "1ncYPNmMaYNPX664uo3FlmSVGETBKQbBvarbGgB5ZynERTFmCsZ7UqefvVe3vnPYOIAGOjbMAbprYF2BfMielg==",
+        "requested": "[1.11.1, )",
+        "resolved": "1.11.1",
+        "contentHash": "hyZ3H8HxtQPvipBPdkN6tJWSCvY06XVyLbKlHuJlPrlV/lQJ/QuEBKYTXqcSa21LE/Th4HV+Choxi8eTu74xyw==",
         "dependencies": {
           "Microsoft.Extensions.Configuration": "9.0.0",
           "Microsoft.Extensions.Options": "9.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.11.1, 2.0.0)"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.11.2, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.Runtime": {
         "type": "CentralTransitive",
-        "requested": "[1.11.0, )",
-        "resolved": "1.11.0",
-        "contentHash": "M8OgwhCQ9EWxM/JAHtxgiEIrCgR+HJWwA3aqrYHAL/HjbGdHkgs4XWbVLTqgOVCY/4W8Tau7FCWm7WEOzsU1cg==",
+        "requested": "[1.11.1, )",
+        "resolved": "1.11.1",
+        "contentHash": "fSAeBd8SEiWGAeCV9+p4y3QaUEn+1qOhp+VEOAEIQl2lh2j5rUM0sPRiI6PBhPjmWRn+Cm6heqXx5dsQTpBBXw==",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.11.1, 2.0.0)"
+          "OpenTelemetry.Api": "[1.11.2, 2.0.0)"
         }
       },
       "System.Formats.Asn1": {
