@@ -160,12 +160,12 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[0.18.60, )",
-        "resolved": "0.18.60",
-        "contentHash": "p7O6hmCGIrfoART3JnVNKHqZq4CV+E9qx0x7nGyIfhmIf0hnuxKNbpXum9DrgGriZIKfNJi5b4x5CGbb9Id9Ag==",
+        "requested": "[0.19.32, )",
+        "resolved": "0.19.32",
+        "contentHash": "WstDMEabiiG0GkFj1YSmOsXrO6RY6bvi5pznMRl99bsRAKKoN15vKppn9upr0AIa6yI/RVfo/pWR449WZA7wHw==",
         "dependencies": {
-          "TUnit.Assertions": "0.18.60",
-          "TUnit.Engine": "0.18.60"
+          "TUnit.Assertions": "0.19.32",
+          "TUnit.Engine": "0.19.32"
         }
       },
       "Aspire.StackExchange.Redis": {
@@ -1250,24 +1250,24 @@
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "+8Y4pVTWbnzotIk6d6rcwsHGpCchPDqqrvYkyGlI3go+pFaKM+4eX30iCyI0hvr0RMtObJCFhK6aDtlQFbEF1g==",
+        "resolved": "8.1.0",
+        "contentHash": "TRpBDdWh/6IzXHOLKVEuZSuhcdc8OIwhr8dyLnWvEh6FO4f0KiATAzr8yzHspcCFzCc/CONpvUCq4DzazpP6Og==",
         "dependencies": {
           "Microsoft.OpenApi": "1.6.23"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "skCeIQ93yMcUm1PQby5qitFM6KLIlLMj4/i8JHy86x2OFzxTNaaas2kUg6rNV3JvucFvYCNyImg7NMtZHErSzQ==",
+        "resolved": "8.1.0",
+        "contentHash": "sXAUNodmnzrJb1qmgdLY6HgTDsgagXCn6p+qygW2wP0BjcvdZZA6GdDgtuc8iQON9ekrp7m5G0Zc09lvuNhc/A==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "8.0.0"
+          "Swashbuckle.AspNetCore.Swagger": "8.1.0"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerUI": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "IMqmgclFiZL2QIfopOmWYofZzckrl+SdMt1h4mKC0jc94F+uzt3IHA3YFC0CGlwBqTTSnxHqNUKomNTeAhZbYA=="
+        "resolved": "8.1.0",
+        "contentHash": "PYyTbYrEz1q8N8ZpCFzY5hOkvP5gv9oIml06wrrrjGRFvVXyCF/b58FRI/9mnRKRBAmWKZR5pqhmJBzvsVveSQ=="
       },
       "System.AppContext": {
         "type": "Transitive",
@@ -2077,24 +2077,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "0.18.60",
-        "contentHash": "glExJDTuD68A2emkQvlwx2t4vr584iDKSv3O1Madpbq2ADNKeKROFulFG6ZoZk1QwOK7QCYtmuvqtW5PbNIBHg=="
+        "resolved": "0.19.32",
+        "contentHash": "NKpNzMtySgWFM1yzqWoLSKC1nM6w9+oVhgiSmQm/B63QwZXcyiUtjVejNrJpg1683k3eglPZuWG3+4I+cvWBkg=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "0.18.60",
-        "contentHash": "55Uy+OMCRo6d0Z8eCzFmQDsADRTxE9vVHTKDx2cnGUESwpamC6TdQHiuvdrxRUFDq8vV/AeGye5Godc59c46oA=="
+        "resolved": "0.19.32",
+        "contentHash": "M3O8wjFoTEyBNN/nKGkZeMRX+WYhH4mRlBZMVs0YuHDcDMm5GiJEX1Hr51iJkyn5oMhi5mNRgh3H4L8yDVETcg=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "0.18.60",
-        "contentHash": "Y9aHHgIL79PoEsWDTD8GzG4nYNcqjLLOlyhdsVjallaNG6yR8E/5XFxxpOCuUWRZGzL4G7Vx+TmBhXXgknxb+Q==",
+        "resolved": "0.19.32",
+        "contentHash": "WEFHUKILosWaox4v5uqNRJ6SJqhrzQw4xsN270gThHj+pUH2vFzCczTNanK1jxktPdZhBDqTiZwkjKsBJkRWEA==",
         "dependencies": {
           "EnumerableAsyncProcessor": "2.1.0",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "1.6.3",
           "Microsoft.Testing.Platform": "1.6.3",
           "Microsoft.Testing.Platform.MSBuild": "1.4.3",
-          "TUnit.Core": "0.18.60"
+          "TUnit.Core": "0.19.32"
         }
       },
       "fakesurveygenerator.api": {
@@ -2109,7 +2109,7 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[9.0.3, )",
           "Microsoft.AspNetCore.OpenApi": "[9.0.3, )",
           "NetEscapades.AspNetCore.SecurityHeaders": "[0.24.0, )",
-          "Swashbuckle.AspNetCore": "[8.0.0, )",
+          "Swashbuckle.AspNetCore": "[8.1.0, )",
           "System.Runtime.Caching": "[9.0.3, )"
         }
       },
@@ -2458,14 +2458,14 @@
       },
       "Swashbuckle.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "K9FzGTxmwfD+7sVf/FTq/TZFHBTXcROgdcg7gLFwKwgvXwaqTtjGVdam27j0kYfgZZyWlOKr+abmtyd2nAd5eA==",
+        "requested": "[8.1.0, )",
+        "resolved": "8.1.0",
+        "contentHash": "8NJwXskWNBhX4IntitP1VP68hzhQ9Sex4mR9ZbqCuuUsaWlfrMA+yDIYDFsbHlB2NQ6Gt27AT15BWo9jxHj1tg==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "6.0.5",
-          "Swashbuckle.AspNetCore.Swagger": "8.0.0",
-          "Swashbuckle.AspNetCore.SwaggerGen": "8.0.0",
-          "Swashbuckle.AspNetCore.SwaggerUI": "8.0.0"
+          "Swashbuckle.AspNetCore.Swagger": "8.1.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "8.1.0",
+          "Swashbuckle.AspNetCore.SwaggerUI": "8.1.0"
         }
       },
       "System.Formats.Asn1": {
