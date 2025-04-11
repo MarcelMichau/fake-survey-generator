@@ -7,7 +7,7 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Caching;
 internal sealed class Cache<T>(HybridCache cache, ILogger<Cache<T>> logger)
     : ICache<T>
 {
-    private readonly HybridCache _cache = cache;
+    private readonly HybridCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     private readonly string _cacheKeyPrefix = $"{typeof(T).Namespace}:{typeof(T).Name}:";
 
     public async ValueTask<T> GetOrCreateAsync(string key, Func<CancellationToken, ValueTask<T>> factory, CancellationToken cancellationToken)

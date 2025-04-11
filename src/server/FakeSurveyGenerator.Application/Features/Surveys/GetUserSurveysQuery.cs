@@ -66,11 +66,11 @@ public sealed class
 
 public sealed record UserSurveyModel
 {
-    public int Id { get; init; }
-    public string Topic { get; init; } = null!;
-    public string RespondentType { get; init; } = null!;
-    public int NumberOfRespondents { get; init; }
-    public int NumberOfOptions { get; init; }
-    public string WinningOption { get; init; } = null!;
-    public int WinningOptionNumberOfVotes { get; init; }
+    public required int Id { get; init; }
+    public required string Topic { get; init; }
+    public required string RespondentType { get; init; }
+    public required int NumberOfRespondents { get; init; }
+    public required int NumberOfOptions { get; init; }
+    public required string WinningOption { get; init; }
+    public required int WinningOptionNumberOfVotes { get; init; }
 }

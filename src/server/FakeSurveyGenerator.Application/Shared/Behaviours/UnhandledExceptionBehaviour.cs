@@ -14,7 +14,7 @@ public sealed class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRe
     {
         try
         {
-            return await next();
+            return await next(cancellationToken);
         }
         catch (Exception ex)
         {

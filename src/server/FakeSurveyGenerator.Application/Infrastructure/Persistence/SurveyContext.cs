@@ -8,8 +8,6 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
 public sealed class SurveyContext : DbContext
 {
-    public const string DefaultSchema = "Survey";
-
     public SurveyContext(DbContextOptions options) : base(options)
     {
         ArgumentNullException.ThrowIfNull(options);
@@ -21,6 +19,8 @@ public sealed class SurveyContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        modelBuilder.HasDefaultSchema("Survey");
 
         base.OnModelCreating(modelBuilder);
     }

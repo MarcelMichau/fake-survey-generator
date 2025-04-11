@@ -15,7 +15,7 @@ public sealed class PerformanceBehaviour<TRequest, TResponse>(ILogger<TRequest> 
     {
         var startTime = Stopwatch.GetTimestamp();
 
-        var response = await next();
+        var response = await next(cancellationToken);
 
         var diff = Stopwatch.GetElapsedTime(startTime);
 
