@@ -9,12 +9,11 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
 internal static class DatabaseConfigurationExtensions
 {
-    public static IHostApplicationBuilder AddDatabaseConfiguration(this IHostApplicationBuilder builder,
-        IConfiguration configuration)
+    public static IHostApplicationBuilder AddDatabaseConfiguration(this IHostApplicationBuilder builder)
     {
         const string connectionName = "database";
 
-        var connectionString = configuration.GetConnectionString(connectionName) ??
+        var connectionString = builder.Configuration.GetConnectionString(connectionName) ??
                                throw new InvalidOperationException(
                                    $"Connection String for '{connectionName}' was not found in config");
 

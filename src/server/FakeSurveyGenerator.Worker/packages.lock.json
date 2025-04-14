@@ -662,7 +662,7 @@
           "MediatR": "[12.5.0, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[9.0.4, )",
           "Microsoft.Extensions.Caching.Hybrid": "[9.4.0, )",
-          "Microsoft.Extensions.Caching.StackExchangeRedis": "[9.0.4, )",
+          "Microsoft.Extensions.Caching.StackExchangeRedis": "[9.0.2, )",
           "Microsoft.Extensions.Http.Resilience": "[9.4.0, )"
         }
       },
@@ -814,13 +814,13 @@
       },
       "Microsoft.Extensions.Caching.StackExchangeRedis": {
         "type": "CentralTransitive",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "lcZqeIJS095n2D48clHx2U76oKgyz29NjcnNRsOPtz7PURJKNVx/cEglo5fM9zrAK3kfBZMi4gErbXsGCH/QpA==",
+        "requested": "[9.0.2, )",
+        "resolved": "9.0.2",
+        "contentHash": "DVIRRhNlSPOcOh01ZjtByHk4PxgQnMEBn+Sy9Nr29Z1NLw0OR7egXqHA/jSGDGs2HOwONhDlTKl7OGZl6wDWsg==",
         "dependencies": {
-          "Microsoft.Extensions.Caching.Abstractions": "9.0.4",
-          "Microsoft.Extensions.Logging.Abstractions": "9.0.4",
-          "Microsoft.Extensions.Options": "9.0.4",
+          "Microsoft.Extensions.Caching.Abstractions": "9.0.2",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.2",
+          "Microsoft.Extensions.Options": "9.0.2",
           "StackExchange.Redis": "2.7.27"
         }
       },

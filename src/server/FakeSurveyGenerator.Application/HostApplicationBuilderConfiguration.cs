@@ -36,7 +36,7 @@ public static class HostApplicationBuilderConfiguration
 
         builder.Services.AddScoped<INotificationService, NotificationService>();
 
-        builder.AddDatabaseConfiguration(builder.Configuration);
+        builder.AddDatabaseConfiguration();
         builder.AddCacheConfiguration();
 
         return builder;
