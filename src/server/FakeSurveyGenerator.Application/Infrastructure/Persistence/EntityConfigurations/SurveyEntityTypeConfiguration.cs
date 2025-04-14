@@ -8,18 +8,14 @@ internal sealed class SurveyEntityTypeConfiguration : AuditableEntityTypeConfigu
 {
     public override void Configure(EntityTypeBuilder<Survey> builder)
     {
-        const string tableName = "Survey";
-        const string sequenceName = $"{tableName}Seq";
-
-        builder
-            .ToTable(tableName, SurveyContext.DefaultSchema);
+        builder.ToTable("Survey");
 
         builder
             .HasKey(s => s.Id);
 
         builder
             .Property(s => s.Id)
-            .UseHiLo(sequenceName, SurveyContext.DefaultSchema);
+            .UseHiLo("SurveySeq");
 
         builder
             .Ignore(s => s.DomainEvents);
@@ -39,10 +35,7 @@ internal sealed class SurveyEntityTypeConfiguration : AuditableEntityTypeConfigu
         builder
             .OwnsMany(s => s.Options, ownedNavigationBuilder =>
             {
-                const string surveyOptionTableName = "SurveyOption";
-
-                ownedNavigationBuilder
-                    .ToTable(surveyOptionTableName, SurveyContext.DefaultSchema);
+                ownedNavigationBuilder.ToTable("SurveyOption");
 
                 ownedNavigationBuilder
                     .Property(o => o.OptionText)

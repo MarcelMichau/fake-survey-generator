@@ -24,6 +24,12 @@ var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", 
         });
     });
 
+var worker = builder.AddProject<FakeSurveyGenerator_Worker>("fake-survey-generator-worker")
+    .WithReference(database)
+    .WaitFor(database)
+    .WithReference(cache)
+    .WaitFor(cache);
+
 builder.AddNpmApp("fake-survey-generator-ui", "../../client/ui", "dev")
     .WithReference(api)
     .WaitFor(api)

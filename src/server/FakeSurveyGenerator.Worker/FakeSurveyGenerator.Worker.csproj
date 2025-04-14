@@ -5,9 +5,6 @@
     <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Runtime.Caching" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\FakeSurveyGenerator.Application\FakeSurveyGenerator.Application.csproj" />
   </ItemGroup>
 </Project>

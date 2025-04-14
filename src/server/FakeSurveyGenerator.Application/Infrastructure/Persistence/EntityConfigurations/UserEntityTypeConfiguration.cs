@@ -8,18 +8,14 @@ internal sealed class UserEntityTypeConfiguration : AuditableEntityTypeConfigura
 {
     public override void Configure(EntityTypeBuilder<User> builder)
     {
-        const string tableName = "User";
-        const string sequenceName = $"{tableName}Seq";
-
-        builder
-            .ToTable(tableName, SurveyContext.DefaultSchema);
+        builder.ToTable("User");
 
         builder
             .HasKey(u => u.Id);
 
         builder
             .Property(u => u.Id)
-            .UseHiLo(sequenceName, SurveyContext.DefaultSchema);
+            .UseHiLo("UserSeq");
 
         builder
             .Ignore(u => u.DomainEvents);

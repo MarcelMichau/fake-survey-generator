@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 namespace FakeSurveyGenerator.Api.Data;
 
 internal sealed class DatabaseCreationHostedService(
-    IServiceProvider serviceProvider,
     IHostEnvironment hostEnvironment,
-    ILogger<DatabaseCreationHostedService> logger)
+    ILogger<DatabaseCreationHostedService> logger,
+    IServiceScopeFactory serviceScopeFactory)
     : IHostedService
 {
     private readonly IHostEnvironment _hostEnvironment =
@@ -15,8 +15,8 @@ internal sealed class DatabaseCreationHostedService(
     private readonly ILogger<DatabaseCreationHostedService> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
-    private readonly IServiceProvider _serviceProvider =
-        serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    private readonly IServiceScopeFactory _serviceScopeFactory =
+        serviceScopeFactory ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -28,7 +28,7 @@ internal sealed class DatabaseCreationHostedService(
             return;
         }
 
-        var scope = _serviceProvider.CreateScope();
+        var scope = _serviceScopeFactory.CreateScope();
 
         await using var context = scope.ServiceProvider.GetRequiredService<SurveyContext>();
 

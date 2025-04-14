@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.1.0" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.0" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <IsAspireHost>true</IsAspireHost>
     <UserSecretsId>344dcbd6-b205-4e8d-b485-561e1bcadbc2</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
@@ -12,10 +11,9 @@
     <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" />
-    <PackageReference Include="System.Text.Json" />
-    <!-- Fix transitive vulnerability -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FakeSurveyGenerator.Api\FakeSurveyGenerator.Api.csproj" />
+    <ProjectReference Include="..\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj" />
   </ItemGroup>
 </Project>
