@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useAuth0 } from "@auth0/auth0-react";
 import type * as Types from "../types";
@@ -12,13 +12,21 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export type GetSurveyProps = {
 	loading: boolean;
+	newSurveyId: number | null;
 };
 
-const GetSurvey = ({ loading }: GetSurveyProps) => {
+const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 	const { getAccessTokenSilently } = useAuth0();
 	const [surveyId, setSurveyId] = useState(0);
 	const [surveyDetail, setSurveyDetail] = useState({} as Types.SurveyModel);
 	const [errorMessage, setErrorMessage] = useState("");
+
+	useEffect(() => {
+		if (newSurveyId) {
+			setSurveyId(newSurveyId);
+			fetchSurvey(newSurveyId);
+		}
+	}, [newSurveyId]);
 
 	const resetMessage = (): void => {
 		setErrorMessage("");

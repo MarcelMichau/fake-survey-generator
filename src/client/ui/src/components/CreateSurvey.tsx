@@ -16,15 +16,19 @@ import {
 
 type CreateSurveyProps = {
 	loading: boolean;
+	onSurveyCreated?: (surveyId: number) => void;
 };
 
-const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
+const CreateSurvey = ({
+	loading,
+	onSurveyCreated,
+}: CreateSurveyProps): React.ReactElement => {
 	const { getAccessTokenSilently } = useAuth0();
 	const [respondentType, setRespondentType] = useState("");
 	const [topic, setTopic] = useState("");
 	const [numberOfRespondents, setNumberOfRespondents] = useState(0);
 	const [options, setOptions] = useState([
-		{ id: 1, optionText: "" },
+		{ id: 1, optionText: "", preferredNumberOfVotes: 0 },
 	] as Types.SurveyOptionModel[]);
 
 	const [errorMessage, setErrorMessage] = useState("");
@@ -35,6 +39,15 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
 		setSuccessMessage("");
 		setErrorMessage("");
 		setValidationErrors([]);
+	};
+
+	const resetForm = (): void => {
+		setRespondentType("");
+		setTopic("");
+		setNumberOfRespondents(0);
+		setOptions([
+			{ id: 1, optionText: "", preferredNumberOfVotes: 0 },
+		] as Types.SurveyOptionModel[]);
 	};
 
 	const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
@@ -70,6 +83,11 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
 		);
 		setErrorMessage("");
 		setValidationErrors([]);
+		resetForm();
+
+		if (onSurveyCreated) {
+			onSurveyCreated(data.id);
+		}
 	};
 
 	const updateOption = (optionId: number, optionText: string) => {
@@ -85,7 +103,22 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
 		);
 	};
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+	const updatePreferredVotes = (optionId: number, preferredVotes: number) => {
+		setOptions(
+			options.map((option) => {
+				if (option.id !== optionId) return option;
+
+				return {
+					...option,
+					preferredNumberOfVotes: preferredVotes,
+				};
+			}),
+		);
+	};
+
+	const onSubmit = async (
+		e: React.FormEvent<HTMLFormElement>,
+	): Promise<void> => {
 		e.preventDefault();
 		const surveyCommand: Types.CreateSurveyCommand = {
 			surveyTopic: topic,
@@ -95,16 +128,12 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
 				(option) =>
 					({
 						optionText: option.optionText,
+						preferredNumberOfVotes: option.preferredNumberOfVotes,
 					}) as Types.SurveyOptionDto,
 			),
 		};
 
-		createSurvey(surveyCommand);
-
-		setRespondentType("");
-		setTopic("");
-		setNumberOfRespondents(0);
-		setOptions([{ id: 1, optionText: "" }] as Types.SurveyOptionModel[]);
+		await createSurvey(surveyCommand);
 	};
 
 	return (
@@ -169,6 +198,37 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
 									</Button>
 								)}
 							</Field>
+							<div className="ml-4 mt-1 mb-3">
+								<label
+									htmlFor={`preferred-votes-${option.id}`}
+									className="block text-gray-500 text-sm mb-1"
+								>
+									{loading ? <Skeleton width={100} /> : "Preferred Votes"}
+								</label>
+								<input
+									id={`preferred-votes-${option.id}`}
+									type="number"
+									min="0"
+									max={numberOfRespondents}
+									value={option.preferredNumberOfVotes}
+									onChange={(e) => {
+										const value = Number.parseInt(e.target.value, 10);
+										updatePreferredVotes(
+											option.id,
+											Number.isNaN(value) ? 0 : value,
+										);
+									}}
+									disabled={loading}
+									className="bg-gray-700 focus:outline-none focus:shadow-outline border border-gray-700 rounded py-1 px-2 block w-32 appearance-none leading-normal text-gray-200 focus:border-indigo-500"
+								/>
+								<p className="text-gray-500 text-xs mt-1">
+									{loading ? (
+										<Skeleton width={200} />
+									) : (
+										`Set to 0 for random distribution or specify the desired number of votes (max: ${numberOfRespondents})`
+									)}
+								</p>
+							</div>
 						</div>
 					))}
 					<div className="my-2">
@@ -176,7 +236,11 @@ const CreateSurvey = ({ loading }: CreateSurveyProps): React.ReactElement => {
 							onClick={() =>
 								setOptions([
 									...options,
-									{ id: options.length + 1, optionText: "" },
+									{
+										id: options.length + 1,
+										optionText: "",
+										preferredNumberOfVotes: 0,
+									},
 								] as Types.SurveyOptionModel[])
 							}
 							loading={loading}

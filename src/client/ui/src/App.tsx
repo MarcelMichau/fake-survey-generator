@@ -12,6 +12,7 @@ import type * as Types from "./types";
 
 const App = (): React.JSX.Element => {
 	const [errorMessage, setErrorMessage] = useState("");
+	const [newSurveyId, setNewSurveyId] = useState<number | null>(null);
 	const { getAccessTokenSilently, user, isAuthenticated, isLoading } =
 		useAuth0();
 
@@ -80,10 +81,13 @@ const App = (): React.JSX.Element => {
 				) : (
 					<div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mb-4">
 						<div>
-							<CreateSurvey loading={isLoading} />
+							<CreateSurvey
+								loading={isLoading}
+								onSurveyCreated={setNewSurveyId}
+							/>
 						</div>
 						<div>
-							<GetSurvey loading={isLoading} />
+							<GetSurvey loading={isLoading} newSurveyId={newSurveyId} />
 							{errorMessage !== "" && (
 								<Alert
 									type="error"
