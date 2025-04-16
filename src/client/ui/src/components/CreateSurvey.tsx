@@ -41,6 +41,15 @@ const CreateSurvey = ({
 		setValidationErrors([]);
 	};
 
+	const resetForm = (): void => {
+		setRespondentType("");
+		setTopic("");
+		setNumberOfRespondents(0);
+		setOptions([
+			{ id: 1, optionText: "", preferredNumberOfVotes: 0 },
+		] as Types.SurveyOptionModel[]);
+	};
+
 	const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
 		resetMessages();
 
@@ -74,6 +83,7 @@ const CreateSurvey = ({
 		);
 		setErrorMessage("");
 		setValidationErrors([]);
+		resetForm();
 
 		if (onSurveyCreated) {
 			onSurveyCreated(data.id);
@@ -106,7 +116,9 @@ const CreateSurvey = ({
 		);
 	};
 
-	const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+	const onSubmit = async (
+		e: React.FormEvent<HTMLFormElement>,
+	): Promise<void> => {
 		e.preventDefault();
 		const surveyCommand: Types.CreateSurveyCommand = {
 			surveyTopic: topic,
@@ -121,14 +133,7 @@ const CreateSurvey = ({
 			),
 		};
 
-		createSurvey(surveyCommand);
-
-		setRespondentType("");
-		setTopic("");
-		setNumberOfRespondents(0);
-		setOptions([
-			{ id: 1, optionText: "", preferredNumberOfVotes: 0 },
-		] as Types.SurveyOptionModel[]);
+		await createSurvey(surveyCommand);
 	};
 
 	return (
