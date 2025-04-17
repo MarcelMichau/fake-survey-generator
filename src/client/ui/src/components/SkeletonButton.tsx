@@ -23,27 +23,28 @@ const SkeletonButton = ({
 	additionalClasses = [],
 	children,
 }: SkeletonButtonProps) => {
-	const colourMap = {
+	const styleMap = {
 		primary: {
-			classes: "bg-green-500 hover:bg-green-400 active:bg-green-600",
 			hexValue: "#48bb78",
 		},
 		secondary: {
-			classes: "bg-blue-500 hover:bg-blue-400 active:bg-blue-600",
 			hexValue: "#4299e1",
 		},
 		destructive: {
-			classes: "bg-red-500 hover:bg-red-400 active:bg-red-600",
 			hexValue: "#f56565",
 		},
 	};
 
-	const hexColour = colourMap[actionType].hexValue;
+	const hexColour = styleMap[actionType].hexValue;
 
 	return (
 		<SkeletonTheme baseColor="#2d3748" highlightColor={hexColour}>
 			{loading ? (
-				<Skeleton height={40} width={150} className="px-4 py-2" />
+				<Skeleton
+					height={44}
+					width={150}
+					className="px-5 py-2.5 rounded-md shadow-md"
+				/>
 			) : (
 				<Button
 					type={type}

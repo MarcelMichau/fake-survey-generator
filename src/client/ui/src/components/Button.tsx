@@ -19,27 +19,30 @@ const Button = ({
 	additionalClasses = [],
 	children,
 }: ButtonProps) => {
-	const colourMap = {
+	const styleMap = {
 		primary: {
-			classes: "bg-green-500 hover:bg-green-400 active:bg-green-600",
+			classes:
+				"bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 active:from-green-600 active:to-emerald-700",
 			hexValue: "#48bb78",
 		},
 		secondary: {
-			classes: "bg-blue-500 hover:bg-blue-400 active:bg-blue-600",
+			classes:
+				"bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 active:from-blue-600 active:to-indigo-700",
 			hexValue: "#4299e1",
 		},
 		destructive: {
-			classes: "bg-red-500 hover:bg-red-400 active:bg-red-600",
+			classes:
+				"bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-400 hover:to-rose-500 active:from-red-600 active:to-rose-700",
 			hexValue: "#f56565",
 		},
 	};
 
-	const classes = colourMap[actionType].classes;
+	const classes = styleMap[actionType].classes;
 
 	return (
 		<button
 			type={type}
-			className={`align-baseline px-4 py-2 rounded text-white ${classes} focus:ring-3 ${additionalClasses.join(
+			className={`align-baseline px-5 py-2.5 rounded-md text-white font-medium ${classes} focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-opacity-60 focus:outline-none shadow-md transition-all duration-200 ease-in-out transform hover:scale-[1.02] ${additionalClasses.join(
 				" ",
 			)}`}
 			onClick={onClick}

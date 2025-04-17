@@ -15,15 +15,19 @@ type FieldProps<T extends FieldValue> = {
 function Field<T extends FieldValue>(props: FieldProps<T>) {
 	return (
 		<SkeletonTheme baseColor="#2d3748" highlightColor="#4a5568">
-			<label className="block text-gray-400">
+			<label
+				className="block text-gray-300 font-medium mb-1"
+				htmlFor="field-input"
+			>
 				{props.loading ? <Skeleton width={250} /> : props.label}
 				<div>
 					{props.loading ? (
-						<Skeleton height={38} className="py-2 mt-1 mb-3" />
+						<Skeleton height={42} className="py-2 mt-1 mb-3" />
 					) : (
 						<>
 							<input
-								className="appearance-none border border-gray-700 rounded-sm w-full lg:w-1/2 py-2 px-3 text-gray-200 bg-gray-700 leading-tight focus:outline-hidden focus:ring-3 mt-1 mb-3"
+								id="field-input"
+								className="appearance-none border border-gray-600 rounded-md w-full lg:w-2/3 py-2.5 px-4 text-gray-100 bg-gray-700/70 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-400 transition-all duration-200 mt-1 mb-3 placeholder:text-gray-400 shadow-sm backdrop-blur-sm"
 								type="text"
 								value={props.value}
 								placeholder={props.placeholder}
