@@ -43,6 +43,8 @@ variables:
 stages:
   - stage: BuildTestApi
     displayName: "Build + Test API"
+    variables:
+      buildConfiguration: "Release"
     jobs:
       - job: VersionSetup
         displayName: "Set Version Tags"
@@ -75,10 +77,6 @@ stages:
         displayName: "Build + Test"
         pool:
           vmImage: "ubuntu-latest"
-
-        variables:
-          buildConfiguration: "Release"
-
         steps:
           - task: UseDotNet@2
             displayName: "Install .NET SDK"
@@ -127,10 +125,6 @@ stages:
         condition: ${{ eq(parameters.runAcceptanceTests, true) }} # .NET Aspire Tests hang in the pipeline so this is here until it is fixed
         pool:
           vmImage: "ubuntu-latest"
-
-        variables:
-          buildConfiguration: "Release"
-
         steps:
           - task: UseDotNet@2
             displayName: "Install .NET SDK"
