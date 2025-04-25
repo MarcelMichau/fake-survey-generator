@@ -10,8 +10,8 @@
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "9.2.0",
-        "contentHash": "lGF465Mjlx11/ImEA7NH82fLISAtbpmt88/7uitaJOv/qDh5VdiyxYlqhE25cyEKNC0J4CGJUKKEHooGXnpuQw==",
+        "resolved": "9.2.1",
+        "contentHash": "0mOS4dgXFdVFKuu1xQ8B4dLh0bVH/n/NyY7U0G6v7uRt79EC3nfu0TanaR3sMnSkJDY5FJe5zdB/iEwFydGM4w==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
@@ -650,8 +650,8 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[9.2.0, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[9.2.0, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[9.2.1, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[9.2.1, )",
           "Azure.Identity": "[1.13.2, )",
           "CSharpFunctionalExtensions": "[3.6.0, )",
           "Dapper": "[2.1.66, )",
@@ -668,9 +668,9 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "CentralTransitive",
-        "requested": "[9.2.0, )",
-        "resolved": "9.2.0",
-        "contentHash": "DDDHRpQ/CE89QT1Fc8/mhW2jY2TtsxYOcPGwvxW0iJ3j1KAdC02cUEhD0Jodl1QQCQiHXJwuif757JRKHVQpfA==",
+        "requested": "[9.2.1, )",
+        "resolved": "9.2.1",
+        "contentHash": "StM8aa0EwYq6kC7UyupfjngIDiQXb1CzleurIW4bxZ3uvkiI5C1w5lCMVlWeW73cagAb1gVXEpE+RuGHmfrbzg==",
         "dependencies": {
           "Azure.Core": "1.44.1",
           "Azure.Identity": "1.13.2",
@@ -692,12 +692,12 @@
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "CentralTransitive",
-        "requested": "[9.2.0, )",
-        "resolved": "9.2.0",
-        "contentHash": "v8vuIDmzZB8Q/Os/2MYfq7Yd6PGgFmQ4VT9AgzxpMKrzBfNNFpU5twx0RzVl6uiGkShoMlUVlhiD6NUIPBcpLg==",
+        "requested": "[9.2.1, )",
+        "resolved": "9.2.1",
+        "contentHash": "953Kl0PiL14EOEXVoHkprMndt0wSZCEE+7D8jKQq4GZd8szCjQ0IrEON/D3yrjDa30lUNQfSJB0OJ9W3PLRO5Q==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
-          "Aspire.StackExchange.Redis": "9.2.0",
+          "Aspire.StackExchange.Redis": "9.2.1",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "8.0.15",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.Extensions.Configuration.Binder": "8.0.2",
