@@ -11,7 +11,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 {
     private readonly List<SurveyOption> _options = [];
 
-    private IVoteDistribution _selectedVoteDistribution = null!;
+    private IVoteDistribution _selectedVoteDistribution = new RandomVoteDistribution();
 
     [UsedImplicitly]
     private Survey()
@@ -37,11 +37,13 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     public NonEmptyString Topic { get; } = null!;
     public NonEmptyString RespondentType { get; } = null!;
     public int NumberOfRespondents { get; }
-    public IReadOnlyList<SurveyOption> Options => _options.ToList();
+    public IReadOnlyList<SurveyOption> Options => _options.AsReadOnly();
     public bool IsRigged => _options.Any(option => option.IsRigged);
 
     public void AddSurveyOption(NonEmptyString optionText)
     {
+        ThrowIfDuplicateOptions(optionText);
+
         var newOption = new SurveyOption(optionText);
 
         _options.Add(newOption);
@@ -49,6 +51,8 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public void AddSurveyOption(NonEmptyString optionText, int preferredNumberOfVotes)
     {
+        ThrowIfDuplicateOptions(optionText);
+        
         if (preferredNumberOfVotes > NumberOfRespondents ||
             _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes > NumberOfRespondents)
             throw new SurveyDomainException(
@@ -61,13 +65,15 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public void AddSurveyOptions(IEnumerable<SurveyOption> options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         foreach (var surveyOption in options)
             AddSurveyOption(surveyOption.OptionText, surveyOption.PreferredNumberOfVotes);
     }
 
     public void CalculateOutcome()
     {
-        CheckForZeroOptions();
+        ThrowIfNoOptions();
         DetermineVoteDistributionStrategy();
 
         _selectedVoteDistribution.DistributeVotes(this);
@@ -75,16 +81,22 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public void CalculateOneSidedOutcome()
     {
-        CheckForZeroOptions();
+        ThrowIfNoOptions();
         _selectedVoteDistribution = new OneSidedVoteDistribution();
 
         _selectedVoteDistribution.DistributeVotes(this);
     }
 
-    private void CheckForZeroOptions()
+    private void ThrowIfNoOptions()
     {
         if (_options.Count == 0)
-            throw new SurveyDomainException("Cannot calculate the outcome of a Survey with no Options");
+            throw new SurveyDomainException($"Cannot calculate the outcome of a Survey with no Options for Survey with Topic: {Topic}");
+    }
+    
+    private void ThrowIfDuplicateOptions(NonEmptyString optionText)
+    {
+        if (_options.Any(o => string.Equals(o.OptionText, optionText, StringComparison.OrdinalIgnoreCase)))
+            throw new SurveyDomainException("Duplicate survey option.");
     }
 
     private void DetermineVoteDistributionStrategy()

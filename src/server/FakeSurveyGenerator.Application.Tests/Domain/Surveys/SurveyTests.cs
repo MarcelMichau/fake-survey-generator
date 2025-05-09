@@ -82,6 +82,129 @@ public sealed class SurveyTests
     }
 
     [Test]
+    public async Task GivenDuplicateOption_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
+    {
+        // Arrange
+        var topic = _fixture.Create<NonEmptyString>();
+        var numberOfRespondents = _fixture.Create<int>();
+        var respondentType = _fixture.Create<NonEmptyString>();
+
+        var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
+        
+        // Use a specific value to ensure we can create an exact duplicate
+        var optionText = NonEmptyString.Create("Duplicate Option");
+        
+        // Add the first option
+        survey.AddSurveyOption(optionText);
+        
+        // Act & Assert - Adding the same option should throw
+        await Assert.That(() =>
+        {
+            survey.AddSurveyOption(optionText);
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
+    }
+    
+    [Test]
+    public async Task GivenDuplicateOptionWithDifferentCase_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
+    {
+        // Arrange
+        var topic = _fixture.Create<NonEmptyString>();
+        var numberOfRespondents = _fixture.Create<int>();
+        var respondentType = _fixture.Create<NonEmptyString>();
+
+        var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
+        
+        // Add the first option in lowercase
+        survey.AddSurveyOption(NonEmptyString.Create("duplicate case insensitive"));
+        
+        // Act & Assert - Adding the same option in different case should throw
+        await Assert.That(() =>
+        {
+            survey.AddSurveyOption(NonEmptyString.Create("DUPLICATE CASE INSENSITIVE"));
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
+    }
+    
+    [Test]
+    public async Task GivenDuplicateOptionWithPreferredVotes_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
+    {
+        // Arrange
+        var topic = _fixture.Create<NonEmptyString>();
+        var numberOfRespondents = 100;
+        var respondentType = _fixture.Create<NonEmptyString>();
+
+        var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
+        
+        // Add the first option
+        var optionText = NonEmptyString.Create("Option with votes");
+        survey.AddSurveyOption(optionText);
+        
+        // Act & Assert - Adding the same option with preferred votes should also throw
+        await Assert.That(() =>
+        {
+            survey.AddSurveyOption(optionText, 50);
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>().HasMessageEqualTo("Duplicate survey option.");
+    }
+
+    [Test]
+    public async Task GivenNullOptionCollection_WhenAddingSurveyOptions_ThenArgumentNullExceptionShouldBeThrown()
+    {
+        // Arrange
+        var topic = _fixture.Create<NonEmptyString>();
+        var numberOfRespondents = _fixture.Create<int>();
+        var respondentType = _fixture.Create<NonEmptyString>();
+
+        var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
+        
+        // Act & Assert
+        await Assert.That(() =>
+        {
+            survey.AddSurveyOptions(null!);
+        }).ThrowsException().And.IsTypeOf<ArgumentNullException>();
+    }
+    
+    [Test]
+    public async Task GivenEmptyOptionCollection_WhenAddingSurveyOptions_ThenNoOptionsShouldBeAdded()
+    {
+        // Arrange
+        var topic = _fixture.Create<NonEmptyString>();
+        var numberOfRespondents = _fixture.Create<int>();
+        var respondentType = _fixture.Create<NonEmptyString>();
+
+        var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
+        
+        // Act
+        survey.AddSurveyOptions(Enumerable.Empty<SurveyOption>());
+        
+        // Assert
+        await Assert.That(survey.Options.Count).IsEqualTo(0);
+    }
+    
+    [Test]
+    public async Task GivenValidOptionCollection_WhenAddingSurveyOptions_ThenAllOptionsShouldBeAdded()
+    {
+        // Arrange
+        var topic = _fixture.Create<NonEmptyString>();
+        var numberOfRespondents = 100;
+        var respondentType = _fixture.Create<NonEmptyString>();
+
+        var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
+        
+        var options = new List<SurveyOption>
+        {
+            new(NonEmptyString.Create("Option 1"), 30),
+            new(NonEmptyString.Create("Option 2"), 20),
+            new(NonEmptyString.Create("Option 3"), 50)
+        };
+        
+        // Act
+        survey.AddSurveyOptions(options);
+        
+        // Assert
+        await Assert.That(survey.Options.Count).IsEqualTo(3);
+        await Assert.That(survey.Options.Sum(o => o.PreferredNumberOfVotes)).IsEqualTo(100);
+    }
+
+    [Test]
     public async Task GivenSurveyWithNoOption_WhenCalculatingOutcome_ThenSurveyDomainExceptionShouldBeThrown()
     {
         var topic = _fixture.Create<NonEmptyString>();
