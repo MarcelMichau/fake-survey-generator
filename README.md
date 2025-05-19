@@ -45,7 +45,7 @@ Here are some of the features incorporated into this project:
 
 - Observable, production ready, distributed application support
   using [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
-- Unit & Integration tests for a CQRS/DDD project with [XUnit](https://xunit.net/)
+- Unit & Integration tests for a CQRS/DDD project with [TUnit](https://tunit.dev)
 - Target production database for integration tests
   using [Testcontainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
 - E2E acceptance tests
@@ -61,8 +61,7 @@ Here are some of the features incorporated into this project:
   using [NetEscapades.AspNetCore.SecurityHeaders](https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders)
 - Using [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services) in ASP.NET
   Core Web API
-- Using a distributed [Redis](https://redis.io/) cache
-- Configuring SQL Server retry policies
+- Using a distributed [Redis](https://redis.io/) 
 - Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience?view=dotnet-plat-ext-9.0) for resilient HTTP requests
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
