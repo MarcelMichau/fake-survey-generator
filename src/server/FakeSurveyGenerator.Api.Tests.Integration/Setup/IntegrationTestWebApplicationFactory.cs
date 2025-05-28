@@ -22,9 +22,6 @@ public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings s
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                {
-                    "ASPNETCORE_ENVIRONMENT", "Production"
-                }, // Run integration tests as close as possible to how code will be run in Production
                 { "SKIP_DAPR", "true" }, // Do not configure Dapr components for integration tests
 
                 { "ConnectionStrings:database", _settings.SqlServerConnectionString },

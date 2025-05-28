@@ -13,12 +13,12 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 {
     private readonly RedisContainer _cacheContainer =
         new RedisBuilder()
-            .WithImage("redis:7-alpine")
+            .WithImage("redis:8-alpine")
             .Build();
 
     private readonly MsSqlContainer _dbContainer =
         new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04")
+            .WithImage("mcr.microsoft.com/mssql/server:2025-latest")
             .Build();
 
     private IServiceScopeFactory? _serviceScopeFactory;

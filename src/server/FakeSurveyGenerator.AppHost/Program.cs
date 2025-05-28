@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using CommunityToolkit.Aspire.Hosting.Dapr;
 using Projects;
 
@@ -20,7 +19,7 @@ var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", 
     {
         options.WithOptions(new DaprSidecarOptions
         {
-            ResourcesPaths = ImmutableHashSet.Create("../../../dapr/components")
+            ResourcesPaths = ["../../../dapr/components"]
         });
     });
 
