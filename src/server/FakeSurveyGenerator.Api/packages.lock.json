@@ -1067,14 +1067,14 @@
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
           "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[9.3.1, )",
           "Aspire.StackExchange.Redis.DistributedCaching": "[9.3.1, )",
-          "Azure.Identity": "[1.14.0, )",
+          "Azure.Identity": "[1.14.1, )",
           "CSharpFunctionalExtensions": "[3.6.0, )",
           "Dapper": "[2.1.66, )",
-          "Duende.IdentityModel": "[7.0.0, )",
+          "Duende.IdentityModel": "[7.1.0, )",
           "FluentValidation": "[12.0.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[12.0.0, )",
           "JetBrains.Annotations": "[2024.3.0, )",
-          "MediatR": "[12.5.0, )",
+          "MediatR": "[12.5.0, 13.0.0)",
           "Microsoft.EntityFrameworkCore.SqlServer": "[9.0.6, )",
           "Microsoft.Extensions.Caching.Hybrid": "[9.6.0, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[9.0.6, )",
@@ -1151,9 +1151,9 @@
       },
       "Azure.Identity": {
         "type": "CentralTransitive",
-        "requested": "[1.14.0, )",
-        "resolved": "1.14.0",
-        "contentHash": "xQ6mpNhifb8W/KG2BclhbJWAupvE3JF8lPEBF8t59Q5sc1yN0Ci+dvS0qXtc6m9auxwYpmc8rhOmK541dcGwmA==",
+        "requested": "[1.14.1, )",
+        "resolved": "1.14.1",
+        "contentHash": "qqZL9kBS/vi9dGqs3w4jfrHzg+Nk0Ko0lZh/rhYRrb0rMcc5A2VprLFNI24g/bT2A6bO1Og93Llc+pMhplxNLA==",
         "dependencies": {
           "Azure.Core": "1.46.1",
           "Microsoft.Identity.Client": "4.71.1",
@@ -1175,9 +1175,9 @@
       },
       "Duende.IdentityModel": {
         "type": "CentralTransitive",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "h6xvWQi9bASgroNh+6Z/BpSUpKTy/sSuc2l4twi0igSY0X0z7Y8eYMGMHB7trwdT56EGlWeXLA6qAb8VOg8ATA=="
+        "requested": "[7.1.0, )",
+        "resolved": "7.1.0",
+        "contentHash": "Ihn2LiHZfiGD0Qu6aKngK5xtqOocZcS88khVG0Xv7uObfzilevAvXHDhAqpvWiZNIXPeCD6SA5Wy/rfP0U4brA=="
       },
       "FluentValidation": {
         "type": "CentralTransitive",
@@ -1203,7 +1203,7 @@
       },
       "MediatR": {
         "type": "CentralTransitive",
-        "requested": "[12.5.0, )",
+        "requested": "[12.5.0, 13.0.0)",
         "resolved": "12.5.0",
         "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
         "dependencies": {

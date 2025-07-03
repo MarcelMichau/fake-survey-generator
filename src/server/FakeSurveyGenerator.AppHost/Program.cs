@@ -15,6 +15,8 @@ var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", 
     .WaitFor(database)
     .WithReference(cache)
     .WaitFor(cache)
+    .WithHttpHealthCheck("health/live")
+    .WithHttpHealthCheck("health/ready")
     .WithDaprSidecar(options =>
     {
         options.WithOptions(new DaprSidecarOptions
