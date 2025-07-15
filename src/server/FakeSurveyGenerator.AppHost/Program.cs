@@ -31,7 +31,8 @@ var worker = builder.AddProject<FakeSurveyGenerator_Worker>("fake-survey-generat
     .WithReference(cache)
     .WaitFor(cache);
 
-builder.AddNpmApp("fake-survey-generator-ui", "../../client/ui", "dev")
+builder.AddBunApp("fake-survey-generator-ui", "../../client/ui", "dev")
+    .WithBunPackageInstallation()
     .WithReference(api)
     .WaitFor(api)
     .WithEndpoint(targetPort: 3000, port: 3000, scheme: "https", env: "PORT", isProxied: false)

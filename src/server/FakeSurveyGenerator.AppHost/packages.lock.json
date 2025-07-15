@@ -39,37 +39,6 @@
           "System.IO.Hashing": "9.0.4"
         }
       },
-      "Aspire.Hosting.NodeJs": {
-        "type": "Direct",
-        "requested": "[9.3.1, )",
-        "resolved": "9.3.1",
-        "contentHash": "tsmL/wwIO4GqY3v/ZPVJGkGLgLolCsXhxs+X7gJWYlAWL3yJMLS9srLn3UhVlcVA9kjOyWgOvSCmxLsxn7zfZg==",
-        "dependencies": {
-          "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "9.3.1",
-          "Google.Protobuf": "3.30.2",
-          "Grpc.AspNetCore": "2.71.0",
-          "Grpc.Net.ClientFactory": "2.71.0",
-          "Grpc.Tools": "2.72.0",
-          "Humanizer.Core": "2.14.1",
-          "JsonPatch.Net": "3.3.0",
-          "KubernetesClient": "16.0.7",
-          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Configuration.Binder": "8.0.2",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.15",
-          "Microsoft.Extensions.Hosting": "8.0.1",
-          "Microsoft.Extensions.Hosting.Abstractions": "8.0.1",
-          "Microsoft.Extensions.Http": "8.0.1",
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
-          "Microsoft.Extensions.Options": "8.0.2",
-          "Microsoft.Extensions.Primitives": "8.0.0",
-          "Newtonsoft.Json": "13.0.3",
-          "Polly.Core": "8.5.2",
-          "StreamJsonRpc": "2.21.69",
-          "System.IO.Hashing": "9.0.4"
-        }
-      },
       "Aspire.Hosting.Orchestration.win-x64": {
         "type": "Direct",
         "requested": "[9.3.1, )",
@@ -144,13 +113,22 @@
           "System.IO.Hashing": "9.0.4"
         }
       },
+      "CommunityToolkit.Aspire.Hosting.Bun": {
+        "type": "Direct",
+        "requested": "[9.6.0, )",
+        "resolved": "9.6.0",
+        "contentHash": "awaQyas6MVLNx1mZ5kANYuIZ4RJP8CymzbP/f4V/oiCohbWlxTxOpmuehvUcveQpu5UpvTVMtm2bWRjQNzgJ8g==",
+        "dependencies": {
+          "Aspire.Hosting": "9.3.1"
+        }
+      },
       "CommunityToolkit.Aspire.Hosting.Dapr": {
         "type": "Direct",
-        "requested": "[9.5.0, )",
-        "resolved": "9.5.0",
-        "contentHash": "2K17gq4xYIUVi7yEYCUMy6BuEcm4ZQcRSIgH+LRG4/7EtUAIZAEW3Kf/qaFSl4ZG9lBHGvjFULLW+3hQSezorQ==",
+        "requested": "[9.6.0, )",
+        "resolved": "9.6.0",
+        "contentHash": "2Snags6PzWbohldcDG4JNQnxXA1O2mO+LEcGbmBiCtBGRe9bfhXMsuIEfuisddpuIvWoO3+Oz8LyCBTaLM0H4w==",
         "dependencies": {
-          "Aspire.Hosting": "9.3.0",
+          "Aspire.Hosting": "9.3.1",
           "YamlDotNet": "16.3.0"
         }
       },
@@ -709,8 +687,8 @@
       },
       "Microsoft.Identity.Client": {
         "type": "Transitive",
-        "resolved": "4.71.1",
-        "contentHash": "SgvSBcMRvmEEyV10pcvxNVUbwYoShmj/9pxXFVr3AFjE26IUzuwYLtLgt58xkEnT0xJBjfObaXxcol3BMtmEAg==",
+        "resolved": "4.73.1",
+        "contentHash": "NnDLS8QwYqO5ZZecL2oioi1LUqjh5Ewk4bMLzbgiXJbQmZhDLtKwLxL3DpGMlQAJ2G4KgEnvGPKa+OOgffeJbw==",
         "dependencies": {
           "Microsoft.IdentityModel.Abstractions": "6.35.0",
           "System.Diagnostics.DiagnosticSource": "6.0.1"
@@ -718,10 +696,10 @@
       },
       "Microsoft.Identity.Client.Extensions.Msal": {
         "type": "Transitive",
-        "resolved": "4.71.1",
-        "contentHash": "PGOHaoQhKBKnXy1kfW+Gu9/rxStKsqR+UZKeVv4XAsATdzmfj9y9kkUOftIjVFvxP3oh2Sk7v65ylS0K/qYADA==",
+        "resolved": "4.73.1",
+        "contentHash": "xDztAiV2F0wI0W8FLKv5cbaBefyLD6JVaAsvgSN7bjWNCzGYzHbcOEIP5s4TJXUpQzMfUyBsFl1mC6Zmgpz0PQ==",
         "dependencies": {
-          "Microsoft.Identity.Client": "4.71.1",
+          "Microsoft.Identity.Client": "4.73.1",
           "System.Security.Cryptography.ProtectedData": "4.5.0"
         }
       },
@@ -929,13 +907,13 @@
       },
       "Azure.Identity": {
         "type": "CentralTransitive",
-        "requested": "[1.14.1, )",
-        "resolved": "1.14.1",
-        "contentHash": "qqZL9kBS/vi9dGqs3w4jfrHzg+Nk0Ko0lZh/rhYRrb0rMcc5A2VprLFNI24g/bT2A6bO1Og93Llc+pMhplxNLA==",
+        "requested": "[1.14.2, )",
+        "resolved": "1.14.2",
+        "contentHash": "YhNMwOTwT+I2wIcJKSdP0ADyB2aK+JaYWZxO8LSRDm5w77LFr0ykR9xmt2ZV5T1gaI7xU6iNFIh/yW1dAlpddQ==",
         "dependencies": {
           "Azure.Core": "1.46.1",
-          "Microsoft.Identity.Client": "4.71.1",
-          "Microsoft.Identity.Client.Extensions.Msal": "4.71.1",
+          "Microsoft.Identity.Client": "4.73.1",
+          "Microsoft.Identity.Client.Extensions.Msal": "4.73.1",
           "System.Memory": "4.5.5"
         }
       }
