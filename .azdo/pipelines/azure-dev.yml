@@ -214,7 +214,7 @@ stages:
           apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
           uiSemVerVersionTag: $[stageDependencies.BuildUi.Build.outputs['SetVersionTag.VersionTag']]
         steps:
-          - task: setup-azd@0
+          - task: setup-azd@1
             displayName: Install azd
 
           - pwsh: |
