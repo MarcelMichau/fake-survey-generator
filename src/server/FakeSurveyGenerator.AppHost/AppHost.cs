@@ -1,3 +1,4 @@
+using Aspire.Hosting.Yarp.Transforms;
 using CommunityToolkit.Aspire.Hosting.Dapr;
 using Projects;
 
@@ -31,11 +32,18 @@ var worker = builder.AddProject<FakeSurveyGenerator_Worker>("fake-survey-generat
     .WithReference(cache)
     .WaitFor(cache);
 
-builder.AddBunApp("fake-survey-generator-ui", "../../client/ui", "dev")
+var ui = builder.AddBunApp("fake-survey-generator-ui", "../../client/ui", "dev")
     .WithBunPackageInstallation()
     .WithReference(api)
     .WaitFor(api)
-    .WithEndpoint(targetPort: 3000, port: 3000, scheme: "https", env: "PORT", isProxied: false)
+    .WithEndpoint(targetPort: 3000, scheme: "https", env: "PORT", name: "https")
     .PublishAsDockerFile();
+
+var gateway = builder.AddProject<FakeSurveyGenerator_Gateway>("gateway")
+    .WithReference(api)
+    .WaitFor(api)
+    .WithReference(ui.GetEndpoint("https"))
+    .WaitFor(ui)
+    .WithExternalHttpEndpoints();
 
 builder.Build().Run();
