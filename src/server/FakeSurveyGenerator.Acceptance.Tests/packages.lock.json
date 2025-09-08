@@ -39,9 +39,9 @@
       },
       "Microsoft.Playwright": {
         "type": "Direct",
-        "requested": "[1.54.0, )",
-        "resolved": "1.54.0",
-        "contentHash": "u/ftvv1mdusX2R+4u0XINaRw10w9oGhxZePjkFgNZhpG/hUaOg/0npgavXh3mlO1u8b06v+XQKuvOYdsieHMZg==",
+        "requested": "[1.55.0, )",
+        "resolved": "1.55.0",
+        "contentHash": "iPVHeRI5EZB1gK43MC/qnINvGUV3pYh/PJn5wNmeaiZ4ARlFAfK3azf46c7/kx/lmVaknZ5rSNT1F8SZgSaWSQ==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "System.ComponentModel.Annotations": "5.0.0",
@@ -86,10 +86,10 @@
           "TUnit.Engine": "0.57.24"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Transitive",
         "resolved": "9.4.1",
-        "contentHash": "uTjcBB9UugN6i83ZSryOFg+uYLj8O9H8kMVzPpbwANUC6Xkay8woOADfX7zdhi3LNxa2RkuT9qi9ZOJyNKC3uA=="
+        "contentHash": "N1OTD6hZe6kM6m3JsDB/FuSMfH3ZRs1fT/w1cjD186qX7KLK/qN7Q4ManwwbNNeEz2tbd08uZTDQZ2DpNe25QA=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -121,10 +121,10 @@
           "System.IO.Hashing": "9.0.7"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Transitive",
         "resolved": "9.4.1",
-        "contentHash": "viY5JCGEqTjzDnlp7fy6lPcWCFjd5VfxAOyeDT5esHzEH85keC+8r9xTlT7jUc5jeukDZCg/Qh3xJ4hncoetAQ=="
+        "contentHash": "JyRt+l2wq4qB4zzuwS3fK+HOm7rResLhd6y7J1QFVm5zj84F0T23YWXBuiVXqJnQ7wJAHhCEGVziJwHxAxLGPA=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -1085,9 +1085,9 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[9.4.1, )",
+          "Aspire.Dashboard.Sdk.linux-x64": "[9.4.1, )",
           "Aspire.Hosting.AppHost": "[9.4.1, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[9.4.1, )",
+          "Aspire.Hosting.Orchestration.linux-x64": "[9.4.1, )",
           "Aspire.Hosting.Redis": "[9.4.1, )",
           "Aspire.Hosting.SqlServer": "[9.4.1, )",
           "CommunityToolkit.Aspire.Hosting.Bun": "[9.7.2, )",
