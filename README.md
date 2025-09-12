@@ -52,17 +52,17 @@ Here are some of the features incorporated into this project:
   using [.NET Aspire Test Projects](https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/testing) & [Playwright for .NET](https://playwright.dev/dotnet/)
 - Implementing health checks for various components
   using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
-- Adding [Swagger](https://swagger.io/) to an ASP.NET Core Web API
-  using [Swashbuckle.AspNetCore](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
+- Adding [OpenAPI](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/overview) to an ASP.NET Core Web API
+  with [Scalar](https://github.com/scalar/scalar) for API documentation
 - Adding [OpenID Connect](https://openid.net/connect/) for Authentication
-- Adding OpenID Connect to Swagger UI
+- Adding OpenID Connect to Scalar
 - Securing an ASP.NET Core Web API using JWT Bearer authentication
 - Adding security headers to API responses
   using [NetEscapades.AspNetCore.SecurityHeaders](https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders)
 - Using [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services) in ASP.NET
   Core Web API
 - Using a distributed [Redis](https://redis.io/) 
-- Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience?view=dotnet-plat-ext-9.0) for resilient HTTP requests
+- Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience) for resilient HTTP requests
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
 - Configuring [Azure Monitor OpenTelemetry](https://learn.microsoft.com/en-us/azure/azure-monitor/app/opentelemetry-enable) for telemetry
@@ -135,22 +135,22 @@ The server side consists of the following main components:
 The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API
-    - .NET 9.0
-    - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 9.0 Web API
+    - .NET 10.0
+    - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) 10.0 Web API
     - [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
-    - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 9.0
+    - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) 10.0
       with [Code-First Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
     - [Dapper](https://github.com/StackExchange/Dapper)
     - [Redis](https://redis.io/)
-    - [Swagger](https://swagger.io/)
+    - [Scalar](https://scalar.com/)
     - [MediatR](https://github.com/jbogard/MediatR)
     - [FluentValidation](https://fluentvalidation.net/)
     - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
     - [Docker](https://www.docker.com/)
     - [NSubstitute](https://nsubstitute.github.io/)
 - Fake Survey Generator Worker
-    - .NET 9.0
-    - ASP.NET Core 9.0 Worker Service
+    - .NET 10.0
+    - ASP.NET Core 10.0 Worker Service
 
 ### Client
 
@@ -179,7 +179,7 @@ The hosted version of the application is deployed here: https://fakesurveygenera
 
 The following endpoints are accessible:
 
-- [/swagger](https://fakesurveygenerator.mysecondarydomain.com/swagger/index.html) - The Swagger documentation page for
+- [/openapi](https://fakesurveygenerator.mysecondarydomain.com/api-docs) - The OpenAPI documentation page for
   the API
 - [/health/live](https://fakesurveygenerator.mysecondarydomain.com/health/live) - Health Checks endpoint used by Azure
   Front Door health probe

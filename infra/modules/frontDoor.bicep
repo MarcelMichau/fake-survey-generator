@@ -121,8 +121,8 @@ resource profile 'Microsoft.Cdn/profiles@2024-02-01' = {
         patternsToMatch: [
           '/api/*'
           '/health/*'
-          '/swagger'
-          '/swagger/*'
+          '/api-docs'
+          '/openapi/*'
         ]
         forwardingProtocol: 'HttpsOnly'
         linkToDefaultDomain: 'Enabled'

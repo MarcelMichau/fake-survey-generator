@@ -8,19 +8,16 @@ internal static class AdminEndpoints
 
         adminGroup.MapGet("/version", GetVersionInformation)
             .WithName(nameof(GetVersionInformation))
-            .WithSummary("Returns API version information")
-            .WithOpenApi();
+            .WithSummary("Returns API version information");
 
         adminGroup.MapGet("/ping", Ping)
             .WithName(nameof(Ping))
-            .WithSummary("Returns a 200 OK Result. Used for testing network latency and as a sanity check")
-            .WithOpenApi();
+            .WithSummary("Returns a 200 OK Result. Used for testing network latency and as a sanity check");
 
         adminGroup.MapGet("/secret-test", SecretTest)
             .WithName(nameof(SecretTest))
             .WithSummary(
-                "Retrieves a test secret from Dapr Secret Store. Uses local file in Development & Azure Key Vault in Production")
-            .WithOpenApi();
+                "Retrieves a test secret from Dapr Secret Store. Uses local file in Development & Azure Key Vault in Production");
     }
 
     private static IResult GetVersionInformation()
