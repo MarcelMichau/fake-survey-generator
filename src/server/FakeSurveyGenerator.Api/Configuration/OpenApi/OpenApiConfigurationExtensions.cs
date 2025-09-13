@@ -18,7 +18,7 @@ internal static class OpenApiConfigurationExtensions
         return builder;
     }
 
-    public static IApplicationBuilder UseSwaggerConfiguration(this WebApplication app)
+    public static IApplicationBuilder UseOpenApiConfiguration(this WebApplication app)
     {
         app.MapOpenApi();
 

@@ -41,7 +41,7 @@ app.UseHttpsRedirection();
 
 app.UseHealthChecksConfiguration();
 
-app.UseSwaggerConfiguration();
+app.UseOpenApiConfiguration();
 
 app.MapAdminEndpoints();
 app.MapSurveyEndpoints();
