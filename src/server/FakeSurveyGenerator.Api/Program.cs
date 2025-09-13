@@ -3,7 +3,7 @@ using Dapr.Extensions.Configuration;
 using FakeSurveyGenerator.Api.Admin;
 using FakeSurveyGenerator.Api.Configuration;
 using FakeSurveyGenerator.Api.Configuration.HealthChecks;
-using FakeSurveyGenerator.Api.Configuration.Swagger;
+using FakeSurveyGenerator.Api.Configuration.OpenApi;
 using FakeSurveyGenerator.Api.Surveys;
 using FakeSurveyGenerator.Api.Users;
 
@@ -16,7 +16,7 @@ builder
     .AddServiceDefaults()
     .AddTelemetryConfiguration()
     .AddDaprConfiguration()
-    .AddSwaggerConfiguration()
+    .AddOpenApiConfiguration()
     .AddAuthenticationConfiguration()
     .AddForwardedHeadersConfiguration()
     .AddApiBehaviourConfiguration()
@@ -27,7 +27,11 @@ if (!builder.Configuration.GetValue<bool>("SKIP_DAPR"))
 
 var app = builder.Build();
 
-app.UseSecurityHeaders();
+var policyCollection = new HeaderPolicyCollection()
+     .AddCrossOriginOpenerPolicy(x => x.UnsafeNone()); // Required for OpenAPI Docs Sign-In with PKCE to work in browsers
+
+app.UseSecurityHeaders(policyCollection);
+
 app.UseForwardedHeaders();
 
 app.UseDefaultFiles();
@@ -37,7 +41,7 @@ app.UseHttpsRedirection();
 
 app.UseHealthChecksConfiguration();
 
-app.UseSwaggerConfiguration();
+app.UseOpenApiConfiguration();
 
 app.MapAdminEndpoints();
 app.MapSurveyEndpoints();
@@ -46,5 +50,3 @@ app.MapUserEndpoints();
 app.MapDefaultEndpoints();
 
 app.Run();
-
-public partial class Program;

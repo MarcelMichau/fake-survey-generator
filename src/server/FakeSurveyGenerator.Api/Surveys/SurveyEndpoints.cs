@@ -16,18 +16,15 @@ internal static class SurveyEndpoints
 
         surveyGroup.MapGet("/{id:int}", GetSurvey)
             .WithName(nameof(GetSurvey))
-            .WithSummary("Retrieves a specific Survey")
-            .WithOpenApi();
+            .WithSummary("Retrieves a specific Survey");
 
         surveyGroup.MapGet("/user", GetUserSurveys)
             .WithName(nameof(GetUserSurveys))
-            .WithSummary("Retrieves all Surveys created by the current user")
-            .WithOpenApi();
+            .WithSummary("Retrieves all Surveys created by the current user");
 
         surveyGroup.MapPost("", CreateSurvey)
             .WithName(nameof(CreateSurvey))
-            .WithSummary("Creates a new Survey")
-            .WithOpenApi();
+            .WithSummary("Creates a new Survey");
     }
 
     private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(ISender mediator,[Description("Primary key of the Survey")] int id,

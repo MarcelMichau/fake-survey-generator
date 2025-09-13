@@ -38,10 +38,10 @@ const NavBar = () => {
 			>
 				<div className="text-sm lg:grow">
 					<a
-						href="/swagger"
+						href="/api-docs"
 						className="block mt-4 lg:inline-block lg:mt-0 text-indigo-200 hover:text-white mr-4"
 					>
-						API Swagger
+						OpenAPI Docs
 					</a>
 					<a
 						href="/health/ready"

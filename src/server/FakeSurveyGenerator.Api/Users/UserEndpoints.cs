@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using FakeSurveyGenerator.Api.Shared;
 using FakeSurveyGenerator.Application.Features.Users;
 using MediatR;
@@ -15,24 +16,15 @@ internal static class UserEndpoints
 
         userGroup.MapGet("/{id:int}", GetUser)
             .WithName(nameof(GetUser))
-            .WithSummary("Retrieves a specific User")
-            .WithOpenApi();
+            .WithSummary("Retrieves a specific User");
 
         userGroup.MapGet("isRegistered", IsRegistered)
             .WithName(nameof(IsRegistered))
-            .WithSummary("Checks whether or not a User with a specific UserId is already registered in the system")
-            .WithOpenApi(generatedOperation =>
-            {
-                var parameter = generatedOperation.Parameters[0];
-                parameter.Description = "The external user identifier";
-                parameter.Required = true;
-                return generatedOperation;
-            });
+            .WithSummary("Checks whether or not a User with a specific UserId is already registered in the system");
 
         userGroup.MapPost("register", Register)
             .WithName(nameof(Register))
-            .WithSummary("Registers a new User, using the information from the access token")
-            .WithOpenApi();
+            .WithSummary("Registers a new User, using the information from the access token");
     }
 
     private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(ISender mediator,[Description("Primary key of the User")] int id,
@@ -43,7 +35,7 @@ internal static class UserEndpoints
         return ResultExtensions.FromResult(result);
     }
 
-    private static async Task<IResult> IsRegistered(ISender mediator, string userId,
+    private static async Task<IResult> IsRegistered(ISender mediator, [Description("The external user identifier")] [Required] string userId,
         CancellationToken cancellationToken)
     {
         var result = await mediator.Send(new IsUserRegisteredQuery(userId), cancellationToken);

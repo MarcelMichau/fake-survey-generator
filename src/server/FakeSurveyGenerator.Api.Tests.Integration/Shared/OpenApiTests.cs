@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 
-public sealed class SwaggerTests
+public sealed class OpenApiTests
 {
     [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
     public required IntegrationTestFixture TestFixture { get; init; }
@@ -10,16 +10,16 @@ public sealed class SwaggerTests
     private HttpClient Client => TestFixture.Factory!.CreateClient();
 
     [Test]
-    public async Task GivenAnyUser_WhenMakingRequestToSwaggerUiRoute_ThenSuccessResponseShouldBeReturned()
+    public async Task GivenAnyUser_WhenMakingRequestToApiDocsRoute_ThenSuccessResponseShouldBeReturned()
     {
-        var response = await Client.GetAsync("/swagger");
+        var response = await Client.GetAsync("/api-docs");
         response.EnsureSuccessStatusCode();
     }
 
     [Test]
-    public async Task GivenAnyUser_WhenMakingRequestToSwaggerJsonRoute_ThenSuccessResponseShouldBeReturned()
+    public async Task GivenAnyUser_WhenMakingRequestToOpenApiJsonRoute_ThenSuccessResponseShouldBeReturned()
     {
-        var response = await Client.GetAsync("/swagger/v1/swagger.json");
+        var response = await Client.GetAsync("/openapi/v1.json");
         response.EnsureSuccessStatusCode();
     }
 }
