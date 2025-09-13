@@ -57,7 +57,7 @@ resource dnsZone 'Microsoft.Network/dnsZones@2023-07-01-preview' existing = {
   }
 }
 
-resource profile 'Microsoft.Cdn/profiles@2024-02-01' = {
+resource profile 'Microsoft.Cdn/profiles@2025-06-01' = {
   name: profileName
   tags: tags
   location: 'global'

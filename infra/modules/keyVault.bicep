@@ -17,7 +17,7 @@ param secretsObject object
 @description('Subnet Resource ID for the infrastructure subnet')
 param subnetResourceId string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
   name: name
   tags: tags
   location: location
@@ -42,7 +42,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
     }
   }
 
-  resource secrets 'secrets@2024-04-01-preview' = [
+  resource secrets 'secrets@2024-12-01-preview' = [
     for i in range(0, length(secretsObject.secrets)): {
       name: secretsObject.secrets[i].secretName
       properties: {

@@ -13,11 +13,11 @@ param logAnalyticsName string
 @description('Subnet Resource ID for the infrastructure subnet')
 param subnetResourceId string
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
   name: logAnalyticsName
 }
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-preview' = {
   name: containerAppEnvName
   location: location
   tags: tags

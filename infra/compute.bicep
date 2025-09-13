@@ -18,23 +18,23 @@ param uiContainerAppExists bool
 param apiContainerImage string = ''
 param uiContainerImage string = ''
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-05-01-preview' existing = {
   name: containerRegistryName
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' existing = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: managedIdentityName
 }
 
-resource redisCache 'Microsoft.Cache/redis@2024-04-01-preview' existing = {
+resource redisCache 'Microsoft.Cache/redis@2024-11-01' existing = {
   name: redisCacheName
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource sqlServer 'Microsoft.Sql/servers@2024-11-01-preview' existing = {
   name: sqlServerName
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-08-01-preview' existing = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2024-11-01-preview' existing = {
   name: sqlDatabaseName
 }
 
@@ -42,7 +42,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   name: applicationInsightsName
 }
 
-resource existingUiContainerApp 'Microsoft.App/containerApps@2024-03-01' existing = if (uiContainerAppExists) {
+resource existingUiContainerApp 'Microsoft.App/containerApps@2025-02-02-preview' existing = if (uiContainerAppExists) {
   name: uiContainerAppName
 }
 

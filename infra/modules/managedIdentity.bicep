@@ -30,7 +30,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: keyVaultName
 }
 
@@ -44,7 +44,7 @@ resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
   }
 }
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-05-01-preview' existing = {
   name: containerRegistryName
 }
 

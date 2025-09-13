@@ -22,7 +22,7 @@ param azureAdAdministratorTenantId string = subscription().tenantId
 @description('Subnet Resource ID for the infrastructure subnet')
 param subnetResourceId string
 
-resource sqlServer 'Microsoft.Sql/servers@2023-08-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2024-11-01-preview' = {
   name: serverName
   tags: tags
   location: location
