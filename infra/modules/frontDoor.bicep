@@ -121,7 +121,7 @@ resource profile 'Microsoft.Cdn/profiles@2025-06-01' = {
         patternsToMatch: [
           '/api/*'
           '/health/*'
-          '/api-docs'
+          '/api-docs/*'
           '/openapi/*'
         ]
         forwardingProtocol: 'HttpsOnly'
