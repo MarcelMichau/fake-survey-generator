@@ -135,7 +135,7 @@ The server side consists of the following main components:
 The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API
-    - .NET 10.0
+    - .NET 10
     - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) Web API
     - [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
     - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)
@@ -149,7 +149,7 @@ The server side makes use of the following tools, libraries & frameworks:
     - [Docker](https://www.docker.com/)
     - [NSubstitute](https://nsubstitute.github.io/)
 - Fake Survey Generator Worker
-    - .NET 10.0
+    - .NET 10
     - ASP.NET Core Worker Service
 
 ### Client
