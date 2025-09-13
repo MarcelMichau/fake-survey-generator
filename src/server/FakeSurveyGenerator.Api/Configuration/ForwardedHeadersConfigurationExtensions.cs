@@ -10,7 +10,7 @@ internal static class ForwardedHeadersConfigurationExtensions
         {
             options.ForwardedHeaders = ForwardedHeaders.All;
 
-            options.KnownNetworks.Clear();
+            options.KnownIPNetworks.Clear();
             options.KnownProxies.Clear();
 
             options.AllowedHosts =
