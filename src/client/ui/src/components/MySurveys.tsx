@@ -14,20 +14,27 @@ export type MySurveysProps = {
 
 const MySurveys = ({ loading }: MySurveysProps) => {
 	const { getAccessTokenSilently } = useAuth0();
-	const [userSurveys, setUserSurveys] = useState({} as Types.UserSurveyModel[]);
+	const [userSurveys, setUserSurveys] = useState<Types.UserSurveyModel[]>([]);
+	const [isSearching, setIsSearching] = useState(false);
 
 	const fetchSurveys = async () => {
-		const token = await getAccessTokenSilently();
+		setIsSearching(true);
 
-		const response = await fetch("api/survey/user", {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
+		try {
+			const token = await getAccessTokenSilently();
 
-		const data: Types.UserSurveyModel[] = await response.json();
+			const response = await fetch("api/survey/user", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 
-		setUserSurveys(data);
+			const data: Types.UserSurveyModel[] = await response.json();
+
+			setUserSurveys(data);
+		} finally {
+			setIsSearching(false);
+		}
 	};
 
 	const submitForm = async (e: React.FormEvent) => {
@@ -55,8 +62,13 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 					{loading ? <Skeleton width={100} /> : <span>My Surveys</span>}
 				</h2>
 				<form onSubmit={submitForm}>
-					<SkeletonButton onClick={submitForm} loading={loading}>
-						Get My Surveys
+					<SkeletonButton
+						onClick={submitForm}
+						loading={loading}
+						type="submit"
+						additionalClasses={isSearching ? ["opacity-80", "cursor-not-allowed"] : []}
+					>
+						{isSearching ? "Searching..." : "Get My Surveys"}
 						<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
 					</SkeletonButton>
 				</form>
