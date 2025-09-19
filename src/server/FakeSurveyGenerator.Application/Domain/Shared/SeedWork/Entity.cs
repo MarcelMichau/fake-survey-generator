@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using FakeSurveyGenerator.Application.EventBus;
+using FakeSurveyGenerator.Application.DomainEvents;
 
 namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 

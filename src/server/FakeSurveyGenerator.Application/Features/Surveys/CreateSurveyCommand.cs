@@ -2,7 +2,7 @@
 using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Surveys;
-using FakeSurveyGenerator.Application.EventBus;
+using FakeSurveyGenerator.Application.DomainEvents;
 using FakeSurveyGenerator.Application.Features.Notifications;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
@@ -114,18 +114,12 @@ public sealed class CreateSurveyCommandHandler(
     }
 }
 
-public sealed class SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService, SurveyContext surveyContext)
+public sealed class SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
     : IDomainEventHandler<SurveyCreatedDomainEvent>
 {
     private readonly INotificationService _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
     public async Task HandleAsync(SurveyCreatedDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        var survey = await surveyContext.Surveys.FindAsync([domainEvent.Survey.Id], cancellationToken);
-
-        survey.AddSurveyOption(NonEmptyString.Create("Test Option"));
-
-        await surveyContext.SaveChangesAsync(cancellationToken);
-        
         await _notificationService.SendMessage(
             new MessageModel("System", "Whom It May Concern", "New Survey Created",
                 $"Survey with ID: {domainEvent.Survey.Id} created"), cancellationToken);

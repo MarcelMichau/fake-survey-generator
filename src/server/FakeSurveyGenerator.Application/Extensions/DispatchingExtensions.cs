@@ -2,7 +2,7 @@ using System.Reflection;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Domain.Surveys;
-using FakeSurveyGenerator.Application.EventBus;
+using FakeSurveyGenerator.Application.DomainEvents;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.Shared.Errors;
@@ -27,8 +27,7 @@ public static class DispatchingExtensions
         
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         
-        // Register the in-process event bus
-        services.AddScoped<IEventBus, InMemoryEventBus>();
+        services.AddScoped<IEventBus, DomainEventPublisher>();
         
         return services;
     }

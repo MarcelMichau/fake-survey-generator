@@ -1,36 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace FakeSurveyGenerator.Application.EventBus;
+namespace FakeSurveyGenerator.Application.DomainEvents;
 
-public interface IDomainEvent
-{
-    Guid Id { get; }
-    DateTimeOffset OccurredAt { get; }
-}
-
-public abstract record DomainEvent : IDomainEvent
-{
-    public Guid Id { get; init; } = Guid.NewGuid();
-    public DateTimeOffset OccurredAt { get; init; } = DateTimeOffset.UtcNow;
-}
-
-public interface IDomainEventHandler<in TEvent> where TEvent : IDomainEvent
-{
-    Task HandleAsync(TEvent domainEvent, CancellationToken cancellationToken = default);
-}
-
-public interface IEventBus
-{
-    Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default) where TEvent : IDomainEvent;
-    Task PublishAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default);
-}
-
-public sealed class InMemoryEventBus(IServiceProvider serviceProvider, ILogger<InMemoryEventBus> logger)
+public sealed class DomainEventPublisher(IServiceProvider serviceProvider, ILogger<DomainEventPublisher> logger)
     : IEventBus
 {
     private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-    private readonly ILogger<InMemoryEventBus> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly ILogger<DomainEventPublisher> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default) 
         where TEvent : IDomainEvent
@@ -54,8 +31,7 @@ public sealed class InMemoryEventBus(IServiceProvider serviceProvider, ILogger<I
         var eventType = domainEvent.GetType();
         var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
 
-        using var scope = _serviceProvider.CreateScope();
-        var handlers = scope.ServiceProvider.GetServices(handlerType).ToList();
+        var handlers = _serviceProvider.GetServices(handlerType).ToList();
 
         if (handlers.Count == 0)
         {
@@ -70,12 +46,15 @@ public sealed class InMemoryEventBus(IServiceProvider serviceProvider, ILogger<I
                 var method = handlerType.GetMethod(nameof(IDomainEventHandler<>.HandleAsync));
                 if (method != null)
                 {
-                    _logger.LogDebug("Executing handler {HandlerType} for event {EventType}", 
-                        handler.GetType().Name, eventType.Name);
+                    if (handler != null)
+                    {
+                        _logger.LogDebug("Executing handler {HandlerType} for event {EventType}",
+                            handler.GetType().Name, eventType.Name);
 
-                    var result = method.Invoke(handler, [domainEvent, cancellationToken]);
-                    if (result is Task task)
-                        await task;
+                        var result = method.Invoke(handler, [domainEvent, cancellationToken]);
+                        if (result is Task task)
+                            await task;
+                    }
                 }
             }
             catch (Exception ex)

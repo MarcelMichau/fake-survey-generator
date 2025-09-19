@@ -1,5 +1,5 @@
 ﻿using FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
-using FakeSurveyGenerator.Application.EventBus;
+using FakeSurveyGenerator.Application.DomainEvents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
-using FakeSurveyGenerator.Application.EventBus;
+using FakeSurveyGenerator.Application.DomainEvents;
 
 namespace FakeSurveyGenerator.Application.Tests.Domain.SeedWork;
 
