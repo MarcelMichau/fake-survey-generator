@@ -1,6 +1,4 @@
-using System.Threading.Channels;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Application.EventBus;
@@ -28,71 +26,27 @@ public interface IEventBus
     Task PublishAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default);
 }
 
-public sealed class InMemoryEventBus : IEventBus, IDisposable
+public sealed class InMemoryEventBus(IServiceProvider serviceProvider, ILogger<InMemoryEventBus> logger)
+    : IEventBus
 {
-    private readonly Channel<IDomainEvent> _channel;
-    private readonly ChannelWriter<IDomainEvent> _writer;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<InMemoryEventBus> _logger;
-
-    public InMemoryEventBus(IServiceProvider serviceProvider, ILogger<InMemoryEventBus> logger)
-    {
-        var options = new BoundedChannelOptions(1000)
-        {
-            FullMode = BoundedChannelFullMode.Wait,
-            SingleReader = false,
-            SingleWriter = false
-        };
-        
-        _channel = Channel.CreateBounded<IDomainEvent>(options);
-        _writer = _channel.Writer;
-        _serviceProvider = serviceProvider;
-        _logger = logger;
-    }
+    private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    private readonly ILogger<InMemoryEventBus> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default) 
         where TEvent : IDomainEvent
     {
-        await _writer.WriteAsync(domainEvent, cancellationToken);
-        _logger.LogDebug("Published domain event: {EventType} with ID: {EventId}", 
+        _logger.LogDebug("Publishing domain event: {EventType} with ID: {EventId}", 
             typeof(TEvent).Name, domainEvent.Id);
+
+        await ProcessEvent(domainEvent, cancellationToken);
     }
 
     public async Task PublishAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        await _writer.WriteAsync(domainEvent, cancellationToken);
-        _logger.LogDebug("Published domain event: {EventType} with ID: {EventId}", 
+        _logger.LogDebug("Publishing domain event: {EventType} with ID: {EventId}", 
             domainEvent.GetType().Name, domainEvent.Id);
-    }
 
-    public ChannelReader<IDomainEvent> Reader => _channel.Reader;
-
-    public void Dispose()
-    {
-        _writer.Complete();
-    }
-}
-
-public sealed class DomainEventProcessor(
-    InMemoryEventBus eventBus,
-    IServiceProvider serviceProvider,
-    ILogger<DomainEventProcessor> logger)
-    : BackgroundService
-{
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        await foreach (var domainEvent in eventBus.Reader.ReadAllAsync(stoppingToken))
-        {
-            try
-            {
-                await ProcessEvent(domainEvent, stoppingToken);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error processing domain event: {EventType} with ID: {EventId}", 
-                    domainEvent.GetType().Name, domainEvent.Id);
-            }
-        }
+        await ProcessEvent(domainEvent, cancellationToken);
     }
 
     private async Task ProcessEvent(IDomainEvent domainEvent, CancellationToken cancellationToken)
@@ -100,8 +54,14 @@ public sealed class DomainEventProcessor(
         var eventType = domainEvent.GetType();
         var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
 
-        using var scope = serviceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var handlers = scope.ServiceProvider.GetServices(handlerType).ToList();
+
+        if (handlers.Count == 0)
+        {
+            _logger.LogDebug("No handlers found for domain event: {EventType}", eventType.Name);
+            return;
+        }
 
         var handleTasks = handlers.Select(async handler =>
         {
@@ -110,6 +70,9 @@ public sealed class DomainEventProcessor(
                 var method = handlerType.GetMethod(nameof(IDomainEventHandler<>.HandleAsync));
                 if (method != null)
                 {
+                    _logger.LogDebug("Executing handler {HandlerType} for event {EventType}", 
+                        handler.GetType().Name, eventType.Name);
+
                     var result = method.Invoke(handler, [domainEvent, cancellationToken]);
                     if (result is Task task)
                         await task;
@@ -117,15 +80,15 @@ public sealed class DomainEventProcessor(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Handler {HandlerType} failed to process event {EventType}", 
-                    handler?.GetType().Name, eventType.Name);
+                _logger.LogError(ex, "Handler {HandlerType} failed to process event {EventType} with ID: {EventId}", 
+                    handler?.GetType().Name, eventType.Name, domainEvent.Id);
                 throw;
             }
         });
 
         await Task.WhenAll(handleTasks);
         
-        logger.LogDebug("Processed domain event: {EventType} with {HandlerCount} handlers", 
-            eventType.Name, handlers.Count());
+        _logger.LogDebug("Processed domain event: {EventType} with {HandlerCount} handlers", 
+            eventType.Name, handlers.Count);
     }
 }

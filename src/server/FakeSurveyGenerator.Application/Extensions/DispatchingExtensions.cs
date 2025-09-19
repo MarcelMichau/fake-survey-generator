@@ -27,9 +27,8 @@ public static class DispatchingExtensions
         
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         
-        services.AddSingleton<InMemoryEventBus>();
-        services.AddSingleton<IEventBus>(provider => provider.GetRequiredService<InMemoryEventBus>());
-        services.AddHostedService<DomainEventProcessor>();
+        // Register the in-process event bus
+        services.AddScoped<IEventBus, InMemoryEventBus>();
         
         return services;
     }
