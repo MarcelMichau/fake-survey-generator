@@ -2,6 +2,9 @@
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Tests.Setup;
+using FluentValidation;
+using FluentValidation.Results;
+using NSubstitute;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Users;
 
@@ -9,6 +12,14 @@ public sealed class GetUserQueryTests
 {
     [ClassDataSource<TestFixture>]
     public required TestFixture Fixture { get; init; }
+    private readonly IValidator<GetUserQuery> _mockValidator = Substitute.For<IValidator<GetUserQuery>>();
+
+    public GetUserQueryTests()
+    {
+        // Setup mock validator to always return successful validation
+        _mockValidator.ValidateAsync(Arg.Any<GetUserQuery>(), Arg.Any<CancellationToken>())
+            .Returns(new ValidationResult());
+    }
 
     [Test]
     public async Task GivenExistingUserId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
@@ -17,7 +28,7 @@ public sealed class GetUserQueryTests
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(Fixture.Context);
+        var handler = new GetUserQueryHandler(Fixture.Context, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -31,7 +42,7 @@ public sealed class GetUserQueryTests
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(Fixture.Context);
+        var handler = new GetUserQueryHandler(Fixture.Context, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -48,7 +59,7 @@ public sealed class GetUserQueryTests
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(Fixture.Context);
+        var handler = new GetUserQueryHandler(Fixture.Context, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -65,7 +76,7 @@ public sealed class GetUserQueryTests
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(Fixture.Context);
+        var handler = new GetUserQueryHandler(Fixture.Context, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -82,7 +93,7 @@ public sealed class GetUserQueryTests
 
         var query = new GetUserQuery(id);
 
-        var handler = new GetUserQueryHandler(Fixture.Context);
+        var handler = new GetUserQueryHandler(Fixture.Context, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 

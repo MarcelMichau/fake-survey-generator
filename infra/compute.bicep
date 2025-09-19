@@ -89,6 +89,10 @@ var apiEnvironmentVariables = [
     value: 'Production'
   }
   {
+    name: 'ASPNETCORE_FORWARDEDHEADERS_ENABLED'
+    value: 'true'
+  }
+  {
     name: 'ConnectionStrings__database'
     value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabase.name};Encrypt=True;TrustServerCertificate=False;Authentication=Active Directory Managed Identity;User Id=${managedIdentity.properties.clientId};'
   }

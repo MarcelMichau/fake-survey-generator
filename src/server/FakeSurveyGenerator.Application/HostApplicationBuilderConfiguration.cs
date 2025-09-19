@@ -1,12 +1,10 @@
-﻿using System.Reflection;
+﻿using FakeSurveyGenerator.Application.Extensions;
 using FakeSurveyGenerator.Application.Infrastructure.Caching;
 using FakeSurveyGenerator.Application.Infrastructure.Identity;
 using FakeSurveyGenerator.Application.Infrastructure.Notifications;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
-using FakeSurveyGenerator.Application.Shared.Behaviours;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -16,16 +14,7 @@ public static class HostApplicationBuilderConfiguration
 {
     public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddOpenRequestPreProcessor(typeof(LoggingBehaviour<>));
-            cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
-            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
-        });
-
-        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddDispatching();
 
         return builder;
     }
