@@ -266,15 +266,6 @@
           "Json.More.Net": "2.1.0"
         }
       },
-      "KubernetesClient": {
-        "type": "Transitive",
-        "resolved": "17.0.4",
-        "contentHash": "cpWJdHP2HM2/p+GCeZf5vdIZrmGcRmfJeCJYg7YCbyYrWvIPFdR0daFdBj1k1DDZ9hIgqf6h4EvXF8pz49lDAA==",
-        "dependencies": {
-          "Fractions": "7.3.0",
-          "YamlDotNet": "16.3.0"
-        }
-      },
       "MessagePack": {
         "type": "Transitive",
         "resolved": "2.5.192",
@@ -1152,6 +1143,16 @@
         "contentHash": "457/u6Gbp+R9GtTnQDIhydRQpkP0DeFL9uGorJFGByqHRyPklFhHZjQgxfqG75LlqwMLidWfoUJfq/V8sWcZ0Q==",
         "dependencies": {
           "Aspire.Hosting": "9.4.1",
+          "YamlDotNet": "16.3.0"
+        }
+      },
+      "KubernetesClient": {
+        "type": "CentralTransitive",
+        "requested": "[17.0.14, )",
+        "resolved": "17.0.14",
+        "contentHash": "FMGWjGtN8WEUKAAQxs96PK2tYvPrvwhoJzay/6HiByVTvHoJ0i9u7ykvYb7E3vLTSlfv26Q2Ktxr41zYCppu8A==",
+        "dependencies": {
+          "Fractions": "7.3.0",
           "YamlDotNet": "16.3.0"
         }
       },
