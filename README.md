@@ -61,7 +61,7 @@ Here are some of the features incorporated into this project:
   using [NetEscapades.AspNetCore.SecurityHeaders](https://github.com/andrewlock/NetEscapades.AspNetCore.SecurityHeaders)
 - Using [Hosted Services](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services) in ASP.NET
   Core Web API
-- Using a distributed [Redis](https://redis.io/) 
+- Using a distributed [Redis](https://redis.io/) cache
 - Using [Microsoft.Extensions.Http.Resilience](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.http.resilience) for resilient HTTP requests
 - Implementing [Forwarded Headers](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer) for hosting ASP.NET Core Web API behind a load balancer
 - Validation of commands using [FluentValidation](https://fluentvalidation.net/)
