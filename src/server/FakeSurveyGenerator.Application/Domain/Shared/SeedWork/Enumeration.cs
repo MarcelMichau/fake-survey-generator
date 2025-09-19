@@ -10,10 +10,7 @@ public abstract class Enumeration(int id, string name) : IComparable
 
     public int CompareTo(object? other)
     {
-        if (other is null)
-            throw new InvalidOperationException($"Tried to compare a null {nameof(Enumeration)} to another");
-
-        return Id.CompareTo(((Enumeration)other).Id);
+        return other is null ? throw new InvalidOperationException($"Tried to compare a null {nameof(Enumeration)} to another") : Id.CompareTo(((Enumeration)other).Id);
     }
 
     public override string ToString()

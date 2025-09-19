@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using FakeSurveyGenerator.Application.DomainEvents;
 
 namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 
@@ -9,7 +10,7 @@ namespace FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
 public abstract class Entity<TId> : IEquatable<Entity<TId>>
 {
     private readonly Lazy<int> _requestedHashCode;
-    private readonly List<DomainEvent> _domainEvents = [];
+    private readonly List<IDomainEvent> _domainEvents = [];
 
     /// <summary>
     /// The unique identifier of the entity
@@ -19,7 +20,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>
     /// <summary>
     /// Domain events raised by this entity
     /// </summary>
-    public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     protected Entity()
     {
@@ -32,7 +33,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>
     /// Adds a domain event to this entity
     /// </summary>
     /// <param name="domainEvent">The domain event to add</param>
-    public void AddDomainEvent(DomainEvent domainEvent)
+    public void AddDomainEvent(IDomainEvent domainEvent)
     {
         ArgumentNullException.ThrowIfNull(domainEvent);
         _domainEvents.Add(domainEvent);
@@ -42,7 +43,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>
     /// Removes a domain event from this entity
     /// </summary>
     /// <param name="domainEvent">The domain event to remove</param>
-    public void RemoveDomainEvent(DomainEvent domainEvent)
+    public void RemoveDomainEvent(IDomainEvent domainEvent)
     {
         ArgumentNullException.ThrowIfNull(domainEvent);
         _domainEvents.Remove(domainEvent);

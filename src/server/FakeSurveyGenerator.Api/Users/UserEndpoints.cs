@@ -1,9 +1,13 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Api.Filters;
 using FakeSurveyGenerator.Api.Shared;
+using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Features.Users;
-using MediatR;
+using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace FakeSurveyGenerator.Api.Users;
 
@@ -12,7 +16,8 @@ internal static class UserEndpoints
     internal static void MapUserEndpoints(this IEndpointRouteBuilder app)
     {
         var userGroup = app.MapGroup("/api/user")
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .AddEndpointFilter<RequestLoggingEndpointFilter>();
 
         userGroup.MapGet("/{id:int}", GetUser)
             .WithName(nameof(GetUser))
@@ -27,26 +32,31 @@ internal static class UserEndpoints
             .WithSummary("Registers a new User, using the information from the access token");
     }
 
-    private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(ISender mediator,[Description("Primary key of the User")] int id,
+    private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(
+        IQueryHandler<GetUserQuery, Result<UserModel, Error>> handler,
+        [Description("Primary key of the User")] int id,
         CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new GetUserQuery(id), cancellationToken);
+        var result = await handler.Handle(new GetUserQuery(id), cancellationToken);
 
-        return ResultExtensions.FromResult(result);
+        return ApiResultExtensions.FromResult(result);
     }
 
-    private static async Task<IResult> IsRegistered(ISender mediator, [Description("The external user identifier")] [Required] string userId,
+    private static async Task<IResult> IsRegistered(
+        IQueryHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel, Error>> handler,
+        [Description("The external user identifier")] [Required] string userId,
         CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new IsUserRegisteredQuery(userId), cancellationToken);
+        var result = await handler.Handle(new IsUserRegisteredQuery(userId), cancellationToken);
 
-        return ResultExtensions.FromResult(result);
+        return ApiResultExtensions.FromResult(result);
     }
 
-    private static async Task<Results<CreatedAtRoute<UserModel>, ProblemHttpResult>> Register(ISender mediator,
+    private static async Task<Results<CreatedAtRoute<UserModel>, ProblemHttpResult>> Register(
+        ICommandHandler<RegisterUserCommand, Result<UserModel, Error>> handler,
         CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new RegisterUserCommand(), cancellationToken);
+        var result = await handler.Handle(new RegisterUserCommand(), cancellationToken);
 
         if (result.IsSuccess)
             return TypedResults.CreatedAtRoute(result.Value, nameof(GetUser), new { id = result.Value.Id });

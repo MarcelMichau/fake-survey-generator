@@ -1,18 +1,19 @@
 ﻿using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Surveys;
+using FakeSurveyGenerator.Application.DomainEvents;
 using FakeSurveyGenerator.Application.Features.Notifications;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
 
-public sealed record CreateSurveyCommand : IRequest<Result<SurveyModel, Error>>
+public sealed record CreateSurveyCommand : ICommand<Result<SurveyModel, Error>>
 {
     public required string SurveyTopic { get; init; }
 
@@ -64,17 +65,26 @@ public sealed class SurveyOptionValidator : AbstractValidator<SurveyOptionDto>
 
 public sealed class CreateSurveyCommandHandler(
     SurveyContext surveyContext,
-    IUserService userService)
-    : IRequestHandler<CreateSurveyCommand, Result<SurveyModel, Error>>
+    IUserService userService,
+    IValidator<CreateSurveyCommand> validator)
+    : ICommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>>
 {
     private readonly SurveyContext _surveyContext =
         surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
 
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
+    private readonly IValidator<CreateSurveyCommand> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+
     public async Task<Result<SurveyModel, Error>> Handle(CreateSurveyCommand request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
+        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            return Errors.General.ValidationError(validationResult);
+        }
+
         try
         {
             var userInfo = await _userService.GetUserInfo(cancellationToken);
@@ -104,15 +114,14 @@ public sealed class CreateSurveyCommandHandler(
     }
 }
 
-public sealed class
-    SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
-    : INotificationHandler<SurveyCreatedDomainEvent>
+public sealed class SendNotificationWhenSurveyCreatedDomainEventHandler(INotificationService notificationService)
+    : IDomainEventHandler<SurveyCreatedDomainEvent>
 {
-    public async Task Handle(SurveyCreatedDomainEvent notification,
-        CancellationToken cancellationToken)
+    private readonly INotificationService _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
+    public async Task HandleAsync(SurveyCreatedDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        await notificationService.SendMessage(
+        await _notificationService.SendMessage(
             new MessageModel("System", "Whom It May Concern", "New Survey Created",
-                $"Survey with ID: {notification.Survey.Id} created"), cancellationToken);
+                $"Survey with ID: {domainEvent.Survey.Id} created"), cancellationToken);
     }
 }

@@ -3,6 +3,8 @@ using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.TestHelpers;
 using FakeSurveyGenerator.Application.Tests.Setup;
+using FluentValidation;
+using FluentValidation.Results;
 using NSubstitute;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
@@ -14,14 +16,19 @@ public sealed class CreateSurveyCommandTests
 
     private readonly Fixture _fixture = new();
     private readonly IUserService _mockUserService = Substitute.For<IUserService>();
+    private readonly IValidator<CreateSurveyCommand> _mockValidator = Substitute.For<IValidator<CreateSurveyCommand>>();
 
     public CreateSurveyCommandTests()
     {
         _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
+        
+        // Setup mock validator to always return successful validation
+        _mockValidator.ValidateAsync(Arg.Any<CreateSurveyCommand>(), Arg.Any<CancellationToken>())
+            .Returns(new ValidationResult());
     }
 
     [Test]
-    public async Task GivenValidCreateSurveyCommand_WhenCallingHandle_ThenNewSurveyShouldBeReturned()
+    public async Task GivenValidCreateSurveyCommand_WhenCallingExecuteAsync_ThenNewSurveyShouldBeReturned()
     {
         var createSurveyCommand = new CreateSurveyCommand
         {
@@ -40,7 +47,7 @@ public sealed class CreateSurveyCommandTests
             }
         };
 
-        var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService);
+        var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService, _mockValidator);
 
         var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 
@@ -53,7 +60,7 @@ public sealed class CreateSurveyCommandTests
 
     [Test]
     public async Task
-        GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingHandle_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
+        GivenCreateSurveyCommandHavingSurveyOptionsWithPreferredNumberOfVotes_WhenCallingExecuteAsync_ThenReturnedSurveyOptionsShouldHaveMatchingNumberOfVotes()
     {
         var createSurveyCommand = new CreateSurveyCommand
         {
@@ -74,7 +81,7 @@ public sealed class CreateSurveyCommandTests
             }
         };
 
-        var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService);
+        var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService, _mockValidator);
 
         var result = await sut.Handle(createSurveyCommand, CancellationToken.None);
 

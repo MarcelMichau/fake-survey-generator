@@ -5,7 +5,7 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace FakeSurveyGenerator.Api.Shared;
 
-public static class ResultExtensions
+public static class ApiResultExtensions
 {
     public static IResult FromResult<T>(Result<T> result)
     {

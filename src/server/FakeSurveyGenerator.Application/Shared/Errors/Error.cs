@@ -2,7 +2,7 @@
 
 namespace FakeSurveyGenerator.Application.Shared.Errors;
 
-public sealed class Error : ValueObject
+public class Error : ValueObject
 {
     internal Error(string code, string message)
     {
@@ -17,4 +17,15 @@ public sealed class Error : ValueObject
     {
         yield return Code;
     }
+}
+
+public sealed class ValidationError : Error
+{
+    internal ValidationError(IDictionary<string, string[]> errors)
+        : base("validation.failed", "One or more validation failures have occurred.")
+    {
+        Errors = errors;
+    }
+
+    public IDictionary<string, string[]> Errors { get; }
 }

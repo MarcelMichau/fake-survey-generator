@@ -4,7 +4,6 @@ using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.TestHelpers;
 using FakeSurveyGenerator.Application.Tests.Setup;
-
 using NSubstitute;
 using RegisterUserCommandHandler = FakeSurveyGenerator.Application.Features.Users.RegisterUserCommandHandler;
 

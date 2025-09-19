@@ -1,20 +1,20 @@
 ﻿using CSharpFunctionalExtensions;
 using Dapper;
+using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
 
-public sealed record GetUserSurveysQuery : IRequest<Result<List<UserSurveyModel>, Error>>;
+public sealed record GetUserSurveysQuery : IQuery<Result<List<UserSurveyModel>, Error>>;
 
 public sealed class
     GetUserSurveysQueryHandler(
         IUserService userService,
         SurveyContext surveyContext)
-    : IRequestHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
+    : IQueryHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>>
 {
     private readonly SurveyContext _surveyContext =
         surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
@@ -22,7 +22,7 @@ public sealed class
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
     public async Task<Result<List<UserSurveyModel>, Error>> Handle(GetUserSurveysQuery request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var userInfo = await _userService.GetUserInfo(cancellationToken);
 

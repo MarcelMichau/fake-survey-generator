@@ -18,7 +18,6 @@ builder
     .AddDaprConfiguration()
     .AddOpenApiConfiguration()
     .AddAuthenticationConfiguration()
-    .AddForwardedHeadersConfiguration()
     .AddApiBehaviourConfiguration()
     .AddApplicationServicesConfiguration();
 

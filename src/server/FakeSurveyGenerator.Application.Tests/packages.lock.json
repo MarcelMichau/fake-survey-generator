@@ -67,12 +67,12 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[0.57.65, )",
-        "resolved": "0.57.65",
-        "contentHash": "iGF7xXXH+KwK7Ue/N1ZeiOGG2B21qCGH4zTDIcOoMMFT+/XiDkHdq7QrO2ON8j7x8wAxYTQzOHV5dD2Pz+jPDg==",
+        "requested": "[0.58.3, )",
+        "resolved": "0.58.3",
+        "contentHash": "UnnMyvtp8qs/fmb/zmpLPioVnc1OtW4nCTH9zz6x4lYEXuUx4M5DGZU/Sdh/1ph2mxocvwHUINYgeZeKLVpuZQ==",
         "dependencies": {
-          "TUnit.Assertions": "0.57.65",
-          "TUnit.Engine": "0.57.65"
+          "TUnit.Assertions": "0.58.3",
+          "TUnit.Engine": "0.58.3"
         }
       },
       "Albedo": {
@@ -137,11 +137,6 @@
         "dependencies": {
           "NETStandard.Library": "1.6.1"
         }
-      },
-      "MediatR.Contracts": {
-        "type": "Transitive",
-        "resolved": "2.0.1",
-        "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
@@ -715,24 +710,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "0.57.65",
-        "contentHash": "2wIWM/DgR0sSkQrnrnEoewWOPhObIpHv7z714+Vw9B+rRwNyNWOEcIcH6W35dGhv9AW+BHNaxoPE3/bC+GfEKQ=="
+        "resolved": "0.58.3",
+        "contentHash": "KwQJS6yj7G2aLVxm6esbiWJ3K/2cwtFzl+pmWwADdKlIphepCuR6cAUHbh0rb4xIExnGlPePG7Vhj+ilBzhDDg=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "0.57.65",
-        "contentHash": "hDuW+M94NiQBJUyvS9OjUy5q9cGs5AlVyel6Du2n01k9OsD3jt79OUi88m37MpCF1VQaMX50ny8n6N55r8KCJg=="
+        "resolved": "0.58.3",
+        "contentHash": "JwCQM1O1MU/ulSLGbbpEI1PRP2miw78z1DpKxi5AJvhtNWzMAO1nzvnmpzAbHAh/tUCZWU5uHY4hl93qA9vsgg=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "0.57.65",
-        "contentHash": "aOBJWQmGOK8cOpKw3EGRtdekhYks6f4Js4ZPWyRiht1IrT/JenvJBfZdsR2w8Sib+iPMOnH+q6GDOWa8Sctq+w==",
+        "resolved": "0.58.3",
+        "contentHash": "fR6an42TvQ2jOF0AXgTUUngeSCMpmw8ittMn9DzO8Eji2ZhmMbzHtcyaLEgoA+q8HVjTkVrMZxg4xV/1B/4jHw==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "1.8.4",
           "Microsoft.Testing.Platform": "1.8.4",
           "Microsoft.Testing.Platform.MSBuild": "1.4.3",
-          "TUnit.Core": "0.57.65"
+          "TUnit.Core": "0.58.3"
         }
       },
       "fakesurveygenerator.application": {
@@ -748,7 +743,6 @@
           "FluentValidation": "[12.0.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[12.0.0, )",
           "JetBrains.Annotations": "[2025.2.2, )",
-          "MediatR": "[12.5.0, 13.0.0)",
           "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.0-rc.1.25451.107, )",
           "Microsoft.Extensions.Caching.Hybrid": "[9.9.0, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[10.0.0-rc.1.25451.107, )",
@@ -868,16 +862,6 @@
         "requested": "[2025.2.2, )",
         "resolved": "2025.2.2",
         "contentHash": "0X56ZRizuHdrnPpgXjWV7f2tQO1FlQg5O1967OGKnI/4ZRNOK642J8L7brM1nYvrxTTU5TP1yRyXLRLaXLPQ8A=="
-      },
-      "MediatR": {
-        "type": "CentralTransitive",
-        "requested": "[12.5.0, 13.0.0)",
-        "resolved": "12.5.0",
-        "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
-        "dependencies": {
-          "MediatR.Contracts": "[2.0.1, 3.0.0)",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
-        }
       },
       "Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "CentralTransitive",

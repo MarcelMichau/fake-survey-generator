@@ -1,19 +1,21 @@
 ﻿using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Users;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Features.Users;
 
 // This command has no properties as all the data needed to register a user is retrieved from the request context.
-public sealed record RegisterUserCommand : IRequest<Result<UserModel, Error>>;
+public sealed record RegisterUserCommand : ICommand<Result<UserModel, Error>>;
 
-public sealed class RegisterUserCommandHandler(IUserService userService, SurveyContext surveyContext)
-    : IRequestHandler<RegisterUserCommand, Result<UserModel, Error>>
+public sealed class RegisterUserCommandHandler(
+    IUserService userService, 
+    SurveyContext surveyContext)
+    : ICommandHandler<RegisterUserCommand, Result<UserModel, Error>>
 {
     private readonly SurveyContext _surveyContext =
         surveyContext ?? throw new ArgumentNullException(nameof(surveyContext));
@@ -21,7 +23,7 @@ public sealed class RegisterUserCommandHandler(IUserService userService, SurveyC
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
     public async Task<Result<UserModel, Error>> Handle(RegisterUserCommand request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var userInfo = await _userService.GetUserInfo(cancellationToken);
 

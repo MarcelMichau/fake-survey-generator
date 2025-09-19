@@ -3,6 +3,9 @@ using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Tests.Setup;
+using FluentValidation;
+using FluentValidation.Results;
+using NSubstitute;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
 
@@ -11,6 +14,14 @@ public sealed class GetSurveyDetailQueryTests
     [ClassDataSource<TestFixture>]
     public required TestFixture Fixture { get; init; }
     private static ICache<SurveyModel?> Cache => TestFixture.GetCache<SurveyModel?>();
+    private readonly IValidator<GetSurveyDetailQuery> _mockValidator = Substitute.For<IValidator<GetSurveyDetailQuery>>();
+
+    public GetSurveyDetailQueryTests()
+    {
+        // Setup mock validator to always return successful validation
+        _mockValidator.ValidateAsync(Arg.Any<GetSurveyDetailQuery>(), Arg.Any<CancellationToken>())
+            .Returns(new ValidationResult());
+    }
 
     [Test]
     public async Task GivenExistingSurveyId_WhenCallingHandle_ThenExpectedResultTypeShouldBeReturned()
@@ -19,7 +30,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -33,7 +44,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -50,7 +61,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -68,7 +79,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -85,7 +96,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -101,7 +112,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 

@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using FakeSurveyGenerator.Application.Domain.Shared.SeedWork;
-using TUnit.Assertions.AssertConditions.Throws;
+using FakeSurveyGenerator.Application.DomainEvents;
 
 namespace FakeSurveyGenerator.Application.Tests.Domain.SeedWork;
 
@@ -31,10 +31,7 @@ public sealed class EntityTests
         }
     }
 
-    private class TestDomainEvent(string eventData) : DomainEvent
-    {
-        public string EventData { get; } = eventData;
-    }
+    private record TestDomainEvent(string EventData) : DomainEvent;
 
     private class DerivedTestEntityInt(int id) : TestEntityInt(id);
 
