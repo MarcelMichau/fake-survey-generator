@@ -18,7 +18,7 @@ internal static class DatabaseConfigurationExtensions
                                    $"Connection String for '{connectionName}' was not found in config");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntitySaveChangesInterceptor>();
-        builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        builder.Services.AddScoped<ISaveChangesInterceptor, PublishDomainEventsInterceptor>();
 
         builder.Services.AddDbContext<SurveyContext>((sp, options) =>
             {
