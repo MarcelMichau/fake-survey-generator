@@ -16,6 +16,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 	const { getAccessTokenSilently } = useAuth0();
 	const [userSurveys, setUserSurveys] = useState<Types.UserSurveyModel[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
+	const [hasFetched, setHasFetched] = useState(false);
 
 	const fetchSurveys = async () => {
 		setIsSearching(true);
@@ -32,6 +33,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 			const data: Types.UserSurveyModel[] = await response.json();
 
 			setUserSurveys(data);
+			setHasFetched(true);
 		} finally {
 			setIsSearching(false);
 		}
@@ -107,7 +109,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 						</tbody>
 					</table>
 				)}
-				{userSurveys?.length === 0 && (
+				{hasFetched && userSurveys?.length === 0 && (
 					<Alert
 						title="No Surveys"
 						message={"You have not created any surveys yet. :("}
