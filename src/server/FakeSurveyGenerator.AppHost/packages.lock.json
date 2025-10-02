@@ -309,6 +309,15 @@
           "Json.More.Net": "2.1.0"
         }
       },
+      "KubernetesClient": {
+        "type": "Transitive",
+        "resolved": "17.0.14",
+        "contentHash": "FMGWjGtN8WEUKAAQxs96PK2tYvPrvwhoJzay/6HiByVTvHoJ0i9u7ykvYb7E3vLTSlfv26Q2Ktxr41zYCppu8A==",
+        "dependencies": {
+          "Fractions": "7.3.0",
+          "YamlDotNet": "16.3.0"
+        }
+      },
       "MessagePack": {
         "type": "Transitive",
         "resolved": "2.5.192",
@@ -887,16 +896,6 @@
           "Azure.Core": "1.47.3",
           "Microsoft.Identity.Client": "4.76.0",
           "Microsoft.Identity.Client.Extensions.Msal": "4.76.0"
-        }
-      },
-      "KubernetesClient": {
-        "type": "CentralTransitive",
-        "requested": "[17.0.14, )",
-        "resolved": "17.0.14",
-        "contentHash": "FMGWjGtN8WEUKAAQxs96PK2tYvPrvwhoJzay/6HiByVTvHoJ0i9u7ykvYb7E3vLTSlfv26Q2Ktxr41zYCppu8A==",
-        "dependencies": {
-          "Fractions": "7.3.0",
-          "YamlDotNet": "16.3.0"
         }
       }
     }
