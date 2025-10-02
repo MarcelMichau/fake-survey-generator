@@ -14,7 +14,6 @@ builder.Services.AddProblemDetails();
 
 builder
     .AddServiceDefaults()
-    .AddTelemetryConfiguration()
     .AddDaprConfiguration()
     .AddOpenApiConfiguration()
     .AddAuthenticationConfiguration()
