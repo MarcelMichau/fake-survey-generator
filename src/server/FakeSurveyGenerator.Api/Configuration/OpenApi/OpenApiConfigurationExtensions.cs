@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using System.Net;
 
 namespace FakeSurveyGenerator.Api.Configuration.OpenApi;
+
 internal static class OpenApiConfigurationExtensions
 {
     public static IHostApplicationBuilder AddOpenApiConfiguration(this IHostApplicationBuilder builder)
@@ -20,6 +21,25 @@ internal static class OpenApiConfigurationExtensions
 
     public static IApplicationBuilder UseOpenApiConfiguration(this WebApplication app)
     {
+        // Get allowed IPs from configuration and convert to string array
+        var allowedIpsConfig = app.Configuration.GetSection("OpenApi:AllowedIPs").Get<string[]>() ?? [];
+        
+        // Apply IP filtering middleware only to OpenAPI routes
+        app.MapWhen(
+            context => context.Request.Path.StartsWithSegments("/openapi") ||
+                       context.Request.Path.StartsWithSegments("/api-docs"),
+            appBuilder =>
+            {
+                appBuilder.Use(async (context, next) =>
+                {
+                    var logger = context.RequestServices.GetRequiredService<ILogger<OpenApiIpAllowlistMiddleware>>();
+                    var middleware = new OpenApiIpAllowlistMiddleware(next, allowedIpsConfig, logger);
+                    await middleware.InvokeAsync(context);
+                });
+                appBuilder.UseRouting();
+                appBuilder.UseEndpoints(endpoints => { });
+            });
+
         app.MapOpenApi();
 
         app.MapScalarApiReference("/api-docs", options =>
@@ -48,6 +68,89 @@ internal static class OpenApiConfigurationExtensions
         return app;
     }
 }
+
+internal sealed class OpenApiIpAllowlistMiddleware(
+    RequestDelegate next,
+    string[] allowedIps,
+    ILogger<OpenApiIpAllowlistMiddleware> logger)
+{
+    private readonly HashSet<IPAddress> _allowedIps = ParseAllowedIps(allowedIps);
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        var remoteIp = GetClientIpAddress(context);
+
+        if (remoteIp == null || !IsIpAllowed(remoteIp))
+        {
+            logger.LogWarning("Access denied to OpenAPI documentation from IP: {RemoteIp}", remoteIp?.ToString() ?? "Unknown");
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsync("Access denied: IP address not in allowlist");
+            return;
+        }
+
+        logger.LogDebug("Access granted to OpenAPI documentation from IP: {RemoteIp}", remoteIp);
+        await next(context);
+    }
+
+    private static HashSet<IPAddress> ParseAllowedIps(string[] allowedIps)
+    {
+        var parsedIps = new HashSet<IPAddress>
+        {
+            // Always allow localhost variations for development
+            IPAddress.Loopback, // 127.0.0.1
+            IPAddress.IPv6Loopback // ::1
+        };
+
+        foreach (var ip in allowedIps)
+        {
+            if (string.IsNullOrWhiteSpace(ip)) continue;
+
+            if (IPAddress.TryParse(ip.Trim(), out var parsedIp))
+            {
+                parsedIps.Add(parsedIp);
+            }
+        }
+
+        return parsedIps;
+    }
+
+    private static IPAddress? GetClientIpAddress(HttpContext context)
+    {
+        // Check for forwarded IP first (when behind a proxy/load balancer)
+        var forwardedFor = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(forwardedFor))
+        {
+            var ips = forwardedFor.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (ips.Length > 0 && IPAddress.TryParse(ips[0].Trim(), out var forwardedIp))
+            {
+                return forwardedIp;
+            }
+        }
+
+        // Check X-Real-IP header
+        var realIp = context.Request.Headers["X-Real-IP"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(realIp) && IPAddress.TryParse(realIp, out var parsedRealIp))
+        {
+            return parsedRealIp;
+        }
+
+        // Fall back to connection remote IP
+        return context.Connection.RemoteIpAddress;
+    }
+
+    private bool IsIpAllowed(IPAddress clientIp)
+    {
+        return _allowedIps.Contains(clientIp) || IsLocalhost(clientIp);
+    }
+
+    private static bool IsLocalhost(IPAddress ip)
+    {
+        return IPAddress.IsLoopback(ip) ||
+               ip.Equals(IPAddress.Parse("127.0.0.1")) ||
+               ip.Equals(IPAddress.Parse("::1"));
+    }
+}
+
 
 internal sealed class OAuth2SecuritySchemeTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
 {
