@@ -24,21 +24,28 @@ internal static class OpenApiConfigurationExtensions
         // Get allowed IPs from configuration and convert to string array
         var allowedIpsConfig = app.Configuration.GetSection("OpenApi:AllowedIPs").Get<string[]>() ?? [];
         
-        // Apply IP filtering middleware only to OpenAPI routes
-        app.MapWhen(
-            context => context.Request.Path.StartsWithSegments("/openapi") ||
-                       context.Request.Path.StartsWithSegments("/api-docs"),
-            appBuilder =>
-            {
-                appBuilder.Use(async (context, next) =>
+        // Only apply IP filtering middleware if there are actually valid IPs configured
+        var hasValidIps = allowedIpsConfig.Length > 0 && 
+                         allowedIpsConfig.Any(ip => !string.IsNullOrWhiteSpace(ip));
+        
+        if (hasValidIps)
+        {
+            // Apply IP filtering middleware only to OpenAPI routes
+            app.MapWhen(
+                context => context.Request.Path.StartsWithSegments("/openapi") ||
+                           context.Request.Path.StartsWithSegments("/api-docs"),
+                appBuilder =>
                 {
-                    var logger = context.RequestServices.GetRequiredService<ILogger<OpenApiIpAllowlistMiddleware>>();
-                    var middleware = new OpenApiIpAllowlistMiddleware(next, allowedIpsConfig, logger);
-                    await middleware.InvokeAsync(context);
+                    appBuilder.Use(async (context, next) =>
+                    {
+                        var logger = context.RequestServices.GetRequiredService<ILogger<OpenApiIpAllowlistMiddleware>>();
+                        var middleware = new OpenApiIpAllowlistMiddleware(next, allowedIpsConfig, logger);
+                        await middleware.InvokeAsync(context);
+                    });
+                    appBuilder.UseRouting();
+                    appBuilder.UseEndpoints(endpoints => { });
                 });
-                appBuilder.UseRouting();
-                appBuilder.UseEndpoints(endpoints => { });
-            });
+        }
 
         app.MapOpenApi();
 

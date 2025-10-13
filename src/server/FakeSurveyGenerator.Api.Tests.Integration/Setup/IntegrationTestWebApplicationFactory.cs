@@ -11,7 +11,7 @@ using NSubstitute;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
-public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings settings)
+public class IntegrationTestWebApplicationFactory(TestContainerSettings settings)
     : WebApplicationFactory<Program>
 {
     private readonly TestContainerSettings _settings = settings ?? throw new ArgumentNullException(nameof(settings));
