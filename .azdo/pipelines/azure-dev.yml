@@ -98,7 +98,7 @@ stages:
               dotnet build FakeSurveyGenerator.slnx --configuration $(buildConfiguration)
             displayName: "Build Solution"
 
-          - task: DotNetCoreCLI@2
+          - task: DotNetCoreCLI@2.263.0
             inputs:
               command: "test"
               publishTestResults: true
@@ -149,7 +149,7 @@ stages:
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
-          - task: DotNetCoreCLI@2
+          - task: DotNetCoreCLI@2.263.0
             inputs:
               command: "test"
               publishTestResults: true
