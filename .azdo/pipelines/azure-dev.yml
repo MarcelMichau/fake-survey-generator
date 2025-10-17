@@ -102,7 +102,7 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
+              arguments: '-- --no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
             displayName: "Run Unit + Integration Tests"
 
           - script: |
@@ -153,7 +153,7 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(*Acceptance*)/*/*/*" --ignore-exit-code 8'
+              arguments: '-- --no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(*Acceptance*)/*/*/*" --ignore-exit-code 8'
             displayName: "Run Acceptance (E2E) Tests"
 
   - stage: BuildUi
