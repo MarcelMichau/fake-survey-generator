@@ -98,19 +98,17 @@ stages:
               dotnet build FakeSurveyGenerator.slnx --configuration $(buildConfiguration)
             displayName: "Build Solution"
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "test"
-              publishTestResults: true
-              arguments: "--no-restore -- --coverage --report-trx --results-directory $(Agent.TempDirectory)"
-              projects: |
-                src/server/FakeSurveyGenerator.Application.Tests
-                src/server/FakeSurveyGenerator.Api.Tests.Integration
-            displayName: "Run Unit + Integration Tests"
+          # Tests commented out temporarily due to DotNetCoreCLI@2 task not using latest version which supports Microsoft.Testing.Platform
+          # - task: DotNetCoreCLI@2
+          #   inputs:
+          #     command: "test"
+          #     publishTestResults: true
+          #     arguments: '--no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
+          #   displayName: "Run Unit + Integration Tests"
 
           - script: |
               dotnet tool restore
-              dotnet dotnet-ef migrations script --no-build --verbose -o DbMigrationScript.sql -i
+              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
             workingDirectory: src/server/FakeSurveyGenerator.Application
             displayName: "Create Database Migration Script"
 
@@ -148,23 +146,17 @@ stages:
 
           - task: PowerShell@2
             inputs:
-              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net9.0/playwright.ps1"
+              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net10.0/playwright.ps1"
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "test"
-              publishTestResults: true
-              arguments: '--configuration $(buildConfiguration) --no-restore --collect "XPlat Code Coverage" --logger "console;verbosity=detailed"'
-              projects: |
-                src/server/FakeSurveyGenerator.Acceptance.Tests
-            displayName: "Run Acceptance (E2E) Tests"
-
-          - task: PublishCodeCoverageResults@2
-            inputs:
-              summaryFileLocation: $(Agent.TempDirectory)/**/coverage.cobertura.xml
-            displayName: "Publish Code Coverage Results"
+          # Tests commented out temporarily due to DotNetCoreCLI@2 task not using latest version which supports Microsoft.Testing.Platform
+          # - task: DotNetCoreCLI@2
+          #   inputs:
+          #     command: "test"
+          #     publishTestResults: true
+          #     arguments: '--no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(*Acceptance*)/*/*/*" --ignore-exit-code 8'
+          #   displayName: "Run Acceptance (E2E) Tests"
 
   - stage: BuildUi
     displayName: "Build UI"

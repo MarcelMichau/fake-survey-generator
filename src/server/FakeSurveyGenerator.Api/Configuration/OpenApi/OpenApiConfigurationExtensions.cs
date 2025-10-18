@@ -42,7 +42,7 @@ internal static class OpenApiConfigurationExtensions
                     flow.Pkce = Pkce.Sha256;
                     flow.SelectedScopes = ["openid", "profile", "email"];
                 })
-                .WithPersistentAuthentication();
+                .EnablePersistentAuthentication();
         });
 
         return app;
