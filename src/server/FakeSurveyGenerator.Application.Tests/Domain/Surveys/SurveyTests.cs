@@ -141,7 +141,7 @@ public sealed class SurveyTests
         await Assert.That(() =>
         {
             survey.AddSurveyOption(optionText, 50);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        }).ThrowsException().And.IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
     }
 
     [Test]
