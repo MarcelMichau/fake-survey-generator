@@ -80,30 +80,30 @@
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[4.7.0, )",
-        "resolved": "4.7.0",
-        "contentHash": "Ab59MbqLl++Yh1kCGmcLvY6csBfDA4Vf0I3wNtewbzbQgY/kKTNwXFfyw1pDYlSCK25qV8uH495nOd2yDRvYKA==",
+        "requested": "[4.8.0, )",
+        "resolved": "4.8.0",
+        "contentHash": "NOPbOViWvaEXiuh+fg9KoPUYsxt3hOAra1volUPSeWlLFCuS+3HLavaYaocybNOVBtNr0IeTIcQk96OqcMfAwQ==",
         "dependencies": {
-          "Testcontainers": "4.7.0"
+          "Testcontainers": "4.8.0"
         }
       },
       "Testcontainers.Redis": {
         "type": "Direct",
-        "requested": "[4.7.0, )",
-        "resolved": "4.7.0",
-        "contentHash": "3uVxB4V4L1wFZRw0mJVKqKBGi3HJWxPH20kRrPqNQ8ggQMaAuE9rYsJOlIrds8JW34MkI3+sFh3IgPlW/2qfMg==",
+        "requested": "[4.8.0, )",
+        "resolved": "4.8.0",
+        "contentHash": "Hy+qKnIBrbEkoiSSIvWSF6i4ECfo+o3mufqro6thjTGDo+ddviPRD+40hSNRqUQAbY/QdW/br6gLLbRjNNZBcA==",
         "dependencies": {
-          "Testcontainers": "4.7.0"
+          "Testcontainers": "4.8.0"
         }
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[0.73.19, )",
-        "resolved": "0.73.19",
-        "contentHash": "ckKRVg6a4GZEC/vW1xFNhDeJvT8I/qs09xZZJfdKGIvX7obddm8SuubtjWei0gk4FAJ23hgV701mMDqwLXH8Jw==",
+        "requested": "[0.74.2, )",
+        "resolved": "0.74.2",
+        "contentHash": "9xoCwPJg564wXnjGrlWLW7SpKvriMoqa8DuQC3Rf1uQjYtZ6C6B44wvkBtjqg207Jur95VntM0nmahpw88EvWg==",
         "dependencies": {
-          "TUnit.Assertions": "0.73.19",
-          "TUnit.Engine": "0.73.19"
+          "TUnit.Assertions": "0.74.2",
+          "TUnit.Engine": "0.74.2"
         }
       },
       "Aspire.StackExchange.Redis": {
@@ -229,18 +229,18 @@
       },
       "Docker.DotNet.Enhanced": {
         "type": "Transitive",
-        "resolved": "3.128.5",
-        "contentHash": "RmhcxDmS/zEuWhV9XA5M/xwFinfGe8IRyyNuEu/7EmnLam35dxlIXabi1Kp/MeEWr1fNPjPFrgxKieZfPeOOqw==",
+        "resolved": "3.129.0",
+        "contentHash": "+mTwpvdnCs0366AfuofuBhUFGHuGraWX+4am+NX93sL1tmLTCX6idDS8stDA6JG/5SYdx+UFn7BNu8H5Fjhj9g==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
         }
       },
       "Docker.DotNet.Enhanced.X509": {
         "type": "Transitive",
-        "resolved": "3.128.5",
-        "contentHash": "ofHQIPpv5HillvBZwk66wEGzHjV/G/771Ta1HjbOtcG8+Lv3bKNH19+fa+hgMzO4sZQCWGDIXygyDralePOKQA==",
+        "resolved": "3.129.0",
+        "contentHash": "UxMlIB7XX9jZKWUGk/hosD1VGlnb9BTcMzBkhba9ZvN3PZn/bLlhLSDLLFa29Wh/WUfsngpSfz+zuyfChr7Dqw==",
         "dependencies": {
-          "Docker.DotNet.Enhanced": "3.128.5"
+          "Docker.DotNet.Enhanced": "3.129.0"
         }
       },
       "EnumerableAsyncProcessor": {
@@ -1109,11 +1109,11 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "4.7.0",
-        "contentHash": "Nx4HR4e7XcKV5BVIqYdCpF8PAYFpukZ8QpoBe+sY9FL5q0RDtsy81MElVXIJVO4Wg3Q6j2f39QaF7i+2jf6YjA==",
+        "resolved": "4.8.0",
+        "contentHash": "P84aPfFCIxyc+yxwj8J1AjDyv+tnhDYosD3kouXdgxHTV2UPeRvck09l1WLqeVa170wyp6t319x9shzAx5wwvQ==",
         "dependencies": {
-          "Docker.DotNet.Enhanced": "3.128.5",
-          "Docker.DotNet.Enhanced.X509": "3.128.5",
+          "Docker.DotNet.Enhanced": "3.129.0",
+          "Docker.DotNet.Enhanced.X509": "3.129.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
           "SSH.NET": "2024.2.0",
           "SharpZipLib": "1.4.2"
@@ -1121,24 +1121,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "0.73.19",
-        "contentHash": "aXr10/qE79GDN6tZ2KJMddw4abjAtRQBxD8xKXeDNRmP2aObmKcjhEqw1t/S2RN1JGyFQqYqdKAX5ErECvdn7Q=="
+        "resolved": "0.74.2",
+        "contentHash": "SOtjdC/5l4hrGIJnUeSSE6FpjLdyE448aeAqwyJ0JrFqqy5rEian3M9VGLx5LWzMAj7Uz6sxAnwG/o0lGvXPKA=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "0.73.19",
-        "contentHash": "8faVToJVMC+ZSiDYpGRvT/qjIctkg1YFU8EQepJ5KBJ0LjwlCYURct4nzG4HMyFDDIz3ZuOfT7X2iYfEc0tUpQ=="
+        "resolved": "0.74.2",
+        "contentHash": "cc2ANEl5mRQLQvNcHHNy6WS7vIY0ye76qCDpJcx+Tkh3C26yyGKrgkcichlzefA6fVXLggQfCLxZvjjyONc1gw=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "0.73.19",
-        "contentHash": "waLGSK23D1/I2w025SG25eGaMT+YJ5D7EURs1YznRLYIEfDNqkb/nI99I82ph0wmGyVthHQgwY3+dgsLD6YIig==",
+        "resolved": "0.74.2",
+        "contentHash": "WE8C4F6dSje/mOsnh1zCqP6EZhmpuYSOPxPhKlvd754jzjFqEmfhKTY5+JOMPZhewjiOn1YAOcJYBZ339Cde/w==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.0.1",
           "Microsoft.Testing.Platform": "2.0.1",
           "Microsoft.Testing.Platform.MSBuild": "2.0.1",
-          "TUnit.Core": "0.73.19"
+          "TUnit.Core": "0.74.2"
         }
       },
       "fakesurveygenerator.api": {
