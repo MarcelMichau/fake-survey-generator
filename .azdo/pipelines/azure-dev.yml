@@ -106,6 +106,10 @@ stages:
           #     arguments: '--no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
           #   displayName: "Run Unit + Integration Tests"
 
+          - pwsh: |
+              dotnet test --no-restore --coverage --report-trx --results-directory $(Agent.TempDirectory) --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8
+            displayName: "Run Unit + Integration Tests"
+
           - script: |
               dotnet tool restore
               dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i

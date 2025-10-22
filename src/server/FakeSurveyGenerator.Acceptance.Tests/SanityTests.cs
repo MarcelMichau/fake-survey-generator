@@ -47,7 +47,7 @@ public class SanityTests
         Console.WriteLine("Running API Version Endpoint Test...");
 
         var response = await ApiClient.GetFromJsonAsync<VersionEndpointResponse>("api/admin/version");
-        await Assert.That(response!.AssemblyVersion).IsNotNullOrEmpty();
+        await Assert.That(response!.AssemblyVersion).IsNotNullOrWhiteSpace();
     }
 
     private record VersionEndpointResponse(string AssemblyVersion);
