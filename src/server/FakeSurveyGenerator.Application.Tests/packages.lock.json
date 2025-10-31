@@ -67,12 +67,14 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[0.80.0, )",
-        "resolved": "0.80.0",
-        "contentHash": "5eMEiPxGtVC+vbCU8brXy8ZCuEFVruev9B3PKry3Qjm1vGxNhog/4kzPBJupCS989ES7+vdRmaEfSNXE5QMNkA==",
+        "requested": "[0.87.8, )",
+        "resolved": "0.87.8",
+        "contentHash": "AWBVaAYaGBkYDGKdUr5L3tYn580Cmi0xtBb981XAyxtQCZKBQv5f4SoE4U5FxC5k3YTOpkXrw8X5bb3QzAw7ig==",
         "dependencies": {
-          "TUnit.Assertions": "0.80.0",
-          "TUnit.Engine": "0.80.0"
+          "Microsoft.Testing.Extensions.CodeCoverage": "18.1.0",
+          "Microsoft.Testing.Extensions.TrxReport": "2.0.1",
+          "TUnit.Assertions": "0.87.8",
+          "TUnit.Engine": "0.87.8"
         }
       },
       "Albedo": {
@@ -759,24 +761,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "0.80.0",
-        "contentHash": "X49Q+CUG8CVSh1No0P+6qEd14HsOiKmkEr4yOwIngoUVtijzkc0DfPBZk0kwfXQD5VLPEeJ/Ebbdof1I3kATzA=="
+        "resolved": "0.87.8",
+        "contentHash": "v4+6U8OD63DfsJIs1ZDXV5W38YqlBHfOtIC9gwMzyaFLyFhdIuthM2evmkVw59w0tIwZrN3t7CxZkX3u30NoUw=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "0.80.0",
-        "contentHash": "6K5pRAgJj42S0HQHXbwlg4hIaloTSXDaZRjl6aN2/IbnIxUhjhiytW/bAc87oA17aOBcU4cMfDUqKS2oLPx2bQ=="
+        "resolved": "0.87.8",
+        "contentHash": "BOjJgnuqN4fTEd5d21cwdD7IJMRn66M/qq8Uv2dwdCbEucaMgvdGicYrBwQcuk2GwY9Yq3l8aUTjtrw081I1kQ=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "0.80.0",
-        "contentHash": "IaBAOD4qI10GRwfPIYeBo1OpP3MAu3XYYDEdGi6eEagZ2og0abJ9/ZFBgvJDmWyk/qfDWPaUW2OkNd65dUZkvg==",
+        "resolved": "0.87.8",
+        "contentHash": "5/0f499JssFG37rIwfp404HJNJnEs3GUdIHRZVW7bMWZrrthVhC7X4mXjvGM/cD0BySTWxUUUqEd4VG8rpOzZA==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.0.1",
           "Microsoft.Testing.Platform": "2.0.1",
           "Microsoft.Testing.Platform.MSBuild": "2.0.1",
-          "TUnit.Core": "0.80.0"
+          "TUnit.Core": "0.87.8"
         }
       },
       "fakesurveygenerator.application": {
