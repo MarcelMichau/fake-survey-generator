@@ -4,6 +4,7 @@ using Projects;
 var builder = DistributedApplication.CreateBuilder(args);
 
 var database = builder.AddSqlServer("sql-server")
+    .WithDataVolume()
     .AddDatabase("database");
 
 var cache = builder.AddRedis("cache")
