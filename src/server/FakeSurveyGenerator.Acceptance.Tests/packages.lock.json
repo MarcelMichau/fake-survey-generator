@@ -87,10 +87,10 @@
           "TUnit.Engine": "1.2.3"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Transitive",
         "resolved": "13.0.0",
-        "contentHash": "eJPOJBv1rMhJoKllqWzqnO18uSYNY0Ja7u5D25XrHE9XSI2w5OGgFWJLs4gru7F/OeAdE26v8radfCQ3RVlakg=="
+        "contentHash": "BkeIEarHw5Wbr/GjTW6XEKNY6vvWsE9LzPpz3ljxvc/tTYfmslXllRm2L+h0qaEBHZ8rbKRkkhsqdXgfYeYmTA=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -122,10 +122,10 @@
           "System.IO.Hashing": "9.0.10"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Transitive",
         "resolved": "13.0.0",
-        "contentHash": "nWzmMDjYJhgT7LwNmDx1Ri4qNQT15wbcujW3CuyvBW/e0y20tyLUZG0/4N81Wzp53VjPFHetAGSNCS8jXQGy9Q=="
+        "contentHash": "1/cHvfaRFiM4Gof+3GCQEFSeAD8mYmxl7KB2U4xuGtm+DzY5JaH+ce9XPr7YUXDi91NOYJTHfm8ZL8L77bZfKQ=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -1018,9 +1018,9 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.0.0, )",
+          "Aspire.Dashboard.Sdk.linux-x64": "[13.0.0, )",
           "Aspire.Hosting.AppHost": "[13.0.0, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.0.0, )",
+          "Aspire.Hosting.Orchestration.linux-x64": "[13.0.0, )",
           "Aspire.Hosting.Redis": "[13.0.0, )",
           "Aspire.Hosting.SqlServer": "[13.0.0, )",
           "CommunityToolkit.Aspire.Hosting.Bun": "[9.9.0, )",
