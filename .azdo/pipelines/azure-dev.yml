@@ -215,7 +215,8 @@ stages:
 
           - pwsh: |
               azd config set auth.useAzCliAuth "true"
-            displayName: Configure AZD to Use AZ CLI Authentication
+              azd config set alpha.deployment.stacks on
+            displayName: Configure AZD
 
           - task: UseDotNet@2
             displayName: "Install .NET SDK"

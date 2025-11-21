@@ -49,6 +49,30 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
                 prefixRewrite: '/'
               }
             }
+            {
+              match: {
+                prefix: '/health'
+              }
+              action: {
+                prefixRewrite: '/'
+              }
+            }
+            {
+              match: {
+                prefix: '/api-docs'
+              }
+              action: {
+                prefixRewrite: '/'
+              }
+            }
+            {
+              match: {
+                prefix: '/openapi'
+              }
+              action: {
+                prefixRewrite: '/'
+              }
+            }
           ]
           targets: [
             {
@@ -61,15 +85,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
           routes: [
             {
               match: {
-                path: '/ui'
-              }
-              action: {
-                prefixRewrite: '/'
-              }
-            }
-            {
-              match: {
-                path: '/*'
+                prefix: '/'
               }
             }
           ]
