@@ -45,17 +45,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
               match: {
                 prefix: '/api'
               }
-              action: {
-                prefixRewrite: '/'
-              }
-            }
-            {
-              match: {
-                prefix: '/health'
-              }
-              action: {
-                prefixRewrite: '/'
-              }
             }
             {
               match: {
