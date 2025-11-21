@@ -69,7 +69,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
             }
             {
               match: {
-                path: '/'
+                path: '/*'
               }
             }
           ]
