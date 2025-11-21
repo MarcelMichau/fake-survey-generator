@@ -33,7 +33,57 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
       infrastructureSubnetId: subnetResourceId
     }
   }
+
+  resource httpRouteConfig 'httpRouteConfigs' = {
+    name: 'fakesurveygenerator'
+    properties: {
+      rules: [
+        {
+          description: 'API Rule'
+          routes: [
+            {
+              match: {
+                prefix: '/api'
+              }
+              action: {
+                prefixRewrite: '/'
+              }
+            }
+          ]
+          targets: [
+            {
+              containerApp: 'ca-fake-survey-generator-api'
+            }
+          ]
+        }
+        {
+          description: 'UI Rule'
+          routes: [
+            {
+              match: {
+                path: '/ui'
+              }
+              action: {
+                prefixRewrite: '/'
+              }
+            }
+            {
+              match: {
+                path: '/'
+              }
+            }
+          ]
+          targets: [
+            {
+              containerApp: 'ca-fake-survey-generator-ui'
+            }
+          ]
+        }
+      ]
+    }
+  }
 }
 
 output containerAppEnvironmentId string = containerAppEnvironment.id
 output containerAppEnvironmentName string = containerAppEnvironment.name
+output fqdn string = containerAppEnvironment::httpRouteConfig.properties.fqdn
