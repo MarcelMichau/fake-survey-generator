@@ -34,9 +34,26 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
     }
   }
 
+  resource managedCertificate 'managedCertificates' = {
+    name: 'fake-survey-generator-cert'
+    location: location
+    tags: tags
+    properties: {
+      subjectName: 'fakesurveygeneratortest.mysecondarydomain.com'
+      domainControlValidation: 'CNAME'
+    }
+  }
+
   resource httpRouteConfig 'httpRouteConfigs' = {
     name: 'fakesurveygenerator'
     properties: {
+      customDomains: [
+        {
+          name: 'fakesurveygeneratortest.mysecondarydomain.com'
+          bindingType: 'Auto'
+          certificateId: managedCertificate.id
+        }
+      ]
       rules: [
         {
           description: 'API Rule'
