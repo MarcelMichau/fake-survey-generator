@@ -42,6 +42,9 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
       subjectName: 'fakesurveygeneratortest.mysecondarydomain.com'
       domainControlValidation: 'CNAME'
     }
+    dependsOn: [
+      httpRouteConfig
+    ]
   }
 
   resource httpRouteConfig 'httpRouteConfigs' = {
@@ -51,7 +54,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
         {
           name: 'fakesurveygeneratortest.mysecondarydomain.com'
           bindingType: 'Auto'
-          certificateId: managedCertificate.id
         }
       ]
       rules: [
