@@ -40,7 +40,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-02-02-p
     tags: tags
     properties: {
       subjectName: 'fakesurveygeneratortest.mysecondarydomain.com'
-      domainControlValidation: 'CNAME'
+      domainControlValidation: 'TXT'
     }
     dependsOn: [
       httpRouteConfig
