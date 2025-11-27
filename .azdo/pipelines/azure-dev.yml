@@ -98,17 +98,12 @@ stages:
               dotnet build FakeSurveyGenerator.slnx --configuration $(buildConfiguration)
             displayName: "Build Solution"
 
-          # Tests commented out temporarily due to DotNetCoreCLI@2 task not using latest version which supports Microsoft.Testing.Platform
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
               publishTestResults: true
               arguments: '--no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
             displayName: "Run Unit + Integration Tests"
-
-          # - pwsh: |
-          #     dotnet test --no-restore --coverage --report-trx --results-directory $(Agent.TempDirectory) --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8
-          #   displayName: "Run Unit + Integration Tests"
 
           - script: |
               dotnet tool restore
