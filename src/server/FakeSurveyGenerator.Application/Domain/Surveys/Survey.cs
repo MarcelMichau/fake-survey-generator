@@ -52,6 +52,10 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     public void AddSurveyOption(NonEmptyString optionText, int preferredNumberOfVotes)
     {
         ThrowIfDuplicateOptions(optionText);
+
+        if (preferredNumberOfVotes < 0)
+            throw new SurveyDomainException(
+                $"Preferred number of votes cannot be negative: {preferredNumberOfVotes}");
         
         if (preferredNumberOfVotes > NumberOfRespondents ||
             _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes > NumberOfRespondents)
@@ -74,6 +78,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     public void CalculateOutcome()
     {
         ThrowIfNoOptions();
+        ResetVotes();
         DetermineVoteDistributionStrategy();
 
         _selectedVoteDistribution.DistributeVotes(this);
@@ -82,6 +87,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     public void CalculateOneSidedOutcome()
     {
         ThrowIfNoOptions();
+        ResetVotes();
         _selectedVoteDistribution = new OneSidedVoteDistribution();
 
         _selectedVoteDistribution.DistributeVotes(this);
@@ -95,8 +101,17 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     
     private void ThrowIfDuplicateOptions(NonEmptyString optionText)
     {
-        if (_options.Any(o => string.Equals(o.OptionText, optionText, StringComparison.OrdinalIgnoreCase)))
+        var trimmedText = optionText.Value.Trim();
+        if (_options.Any(o => string.Equals(o.OptionText.Value.Trim(), trimmedText, StringComparison.OrdinalIgnoreCase)))
             throw new SurveyDomainException("Duplicate survey option.");
+    }
+
+    private void ResetVotes()
+    {
+        foreach (var option in _options)
+        {
+            option.ResetVotes();
+        }
     }
 
     private void DetermineVoteDistributionStrategy()

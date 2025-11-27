@@ -31,4 +31,9 @@ public class SurveyOption
     {
         NumberOfVotes++;
     }
+
+    internal void ResetVotes()
+    {
+        NumberOfVotes = 0;
+    }
 }
