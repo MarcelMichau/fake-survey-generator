@@ -44,12 +44,16 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 
         await context.Database.MigrateAsync();
 
-        var respawner = await Respawner.CreateAsync(connectionString);
+        await using var connection = context.Database.GetDbConnection();
+        await connection.OpenAsync();
+
+        var respawner = await Respawner.CreateAsync(connection);
 
         var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
         await cache.RemoveAsync("FakeSurveyGenerator");
 
-        await respawner.ResetAsync(connectionString);
+        await respawner.ResetAsync(connection);
+        await connection.CloseAsync();
     }
 
     public async ValueTask DisposeAsync()
