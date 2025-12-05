@@ -69,7 +69,7 @@ resource sqlDatabaseRoles 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   kind: 'AzurePowerShell'
   properties: {
-    azPowerShellVersion: '14.5'
+    azPowerShellVersion: '14.4'
     retentionInterval: 'PT1H'
     environmentVariables: [
       {
