@@ -126,9 +126,10 @@ module azureSql 'modules/sql.bicep' = {
     tags: tags
     serverName: '${abbrs.sqlServers}${applicationName}'
     databaseName: '${abbrs.sqlServersDatabases}${applicationName}'
-    azureAdAdministratorLogin: sqlAzureAdAdministratorLogin
-    azureAdAdministratorObjectId: sqlAzureAdAdministratorObjectId
+    azureAdAdministratorLogin: managedIdentity.outputs.identityName
+    azureAdAdministratorObjectId: managedIdentity.outputs.principalId
     subnetResourceId: virtualNetwork.outputs.subnetId
+    managedIdentityId: managedIdentity.outputs.identityResourceId
   }
   scope: fakeSurveyGeneratorResourceGroup
 }

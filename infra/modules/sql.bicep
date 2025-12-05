@@ -22,6 +22,9 @@ param azureAdAdministratorTenantId string = subscription().tenantId
 @description('Subnet Resource ID for the infrastructure subnet')
 param subnetResourceId string
 
+@description('Managed Identity ID')
+param managedIdentityId string
+
 resource sqlServer 'Microsoft.Sql/servers@2024-11-01-preview' = {
   name: serverName
   tags: tags
@@ -52,6 +55,49 @@ resource sqlServer 'Microsoft.Sql/servers@2024-11-01-preview' = {
     properties: {
       virtualNetworkSubnetId: subnetResourceId
     }
+  }
+}
+
+resource sqlDatabaseRoles 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: take('script-${uniqueString('sql_server', azureAdAdministratorLogin, 'database', resourceGroup().id)}', 24)
+  location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentityId}': {}
+    }
+  }
+  kind: 'AzurePowerShell'
+  properties: {
+    azPowerShellVersion: '14.5'
+    retentionInterval: 'PT1H'
+    environmentVariables: [
+      {
+        name: 'DBNAME'
+        value: databaseName
+      }
+      {
+        name: 'DBSERVER'
+        value: sqlServer.properties.fullyQualifiedDomainName
+      }
+      {
+        name: 'PRINCIPALNAME'
+        value: azureAdAdministratorLogin
+      }
+      {
+        name: 'ID'
+        value: azureAdAdministratorObjectId
+      }
+      {
+        name: 'PIPELINEIDENTITYNAME'
+        value: deployer().userPrincipalName
+      }
+      {
+        name: 'PIPELINEIDENTITYID'
+        value: deployer().objectId
+      }
+    ]
+    scriptContent: loadTextContent('sql-deployment-script.ps1')
   }
 }
 
