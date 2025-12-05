@@ -90,7 +90,7 @@ resource sqlDatabaseRoles 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       }
       {
         name: 'PIPELINEIDENTITYNAME'
-        value: deployer().userPrincipalName
+        value: 'azure-devops'
       }
       {
         name: 'PIPELINEIDENTITYID'
