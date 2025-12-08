@@ -2,11 +2,11 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Direct",
         "requested": "[13.0.1, )",
         "resolved": "13.0.1",
-        "contentHash": "uIaDeh+kXfjsbWSYNd5CEt4pRRHx+TgrVcZkqhtXXLC9Npk0NMe0/bShrjubeu5+7ICHkGRW6q4Gna6upTEbUQ=="
+        "contentHash": "f/Vvx1GLmbSr/o6zxpWe+PwA98iVSfKA1yxHsyVHfL5BVaHAqiA+/0KRMFtAJppk3A8JEpCjcZztZfr6H3MeFA=="
       },
       "Aspire.Hosting.AppHost": {
         "type": "Direct",
@@ -40,21 +40,21 @@
           "System.IO.Hashing": "9.0.10"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Direct",
         "requested": "[13.0.1, )",
         "resolved": "13.0.1",
-        "contentHash": "et1EdPkeX4VOx65SxI0vPCVsP7+uh5Ai2eSiGSmCGjIbfdvCFmcEUSN6TMwroM4txhvUeew7QSIJ64jBGx9lvg=="
+        "contentHash": "IjSXLhjYSonWRHLIledR6WOYibmGw1YlUNPbcCwYm4B9q8AwkJpyL0ean44fCP38gD76FuBBGHyywyASvEbNHg=="
       },
       "Aspire.Hosting.Redis": {
         "type": "Direct",
-        "requested": "[13.0.1, )",
-        "resolved": "13.0.1",
-        "contentHash": "PYrOw7KHShLcpCULfirPDBle6CRe1nzcpJy/vbzr5atl2b59wxNF3TrgoV7/wDEHq/dDhcSpF67ElkylnGjpYg==",
+        "requested": "[13.0.2, )",
+        "resolved": "13.0.2",
+        "contentHash": "c8aPhpzF9BSNNMyqbwWDgddwroGgju+DTrQ32dPZQSKuI/N1gqURNz7Wzuc6TedQK+RVNiObnBTy64aJVQWhPg==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "13.0.1",
+          "Aspire.Hosting": "13.0.2",
           "Google.Protobuf": "3.33.0",
           "Grpc.AspNetCore": "2.71.0",
           "Grpc.Net.ClientFactory": "2.71.0",
@@ -144,8 +144,8 @@
       },
       "Aspire.Hosting": {
         "type": "Transitive",
-        "resolved": "13.0.1",
-        "contentHash": "i7ZgwLp8hs0S+SvYPigu4W8wzeVI9e9H9as3OlcBSfllW3HtpfEaCfLoVE9QfBQIbsn7KuyCBSti0hTJue+vGw==",
+        "resolved": "13.0.2",
+        "contentHash": "N6sNT/fg+b5qFLTJleQVWRnkkZVEpd3PXoUxOVelc4/HRcf7TL6z4tprNJGgeiRF0p8blVjCkwlYR+R30r/zSg==",
         "dependencies": {
           "AspNetCore.HealthChecks.Uris": "9.0.0",
           "Google.Protobuf": "3.33.0",
