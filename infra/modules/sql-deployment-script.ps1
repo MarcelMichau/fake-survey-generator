@@ -3,7 +3,7 @@ $sqlDatabaseName = "$env:DBNAME"
 $principalName = "$env:PRINCIPALNAME"
 $id = "$env:ID"
 $pipelineIdentityName = "$env:PIPELINEIDENTITYNAME"
-$pipelineIdentityId = "$env:PIPELINEIDENTITYID"
+$pipelineIdentityClientId = "$env:PIPELINEIDENTITYCLIENTID"
 
 # Install SqlServer module - using specific version to avoid breaking changes in 22.4.5.1 (see https://github.com/dotnet/aspire/issues/9926)
 Install-Module -Name SqlServer -RequiredVersion 22.3.0 -Force -AllowClobber -Scope CurrentUser
@@ -13,7 +13,7 @@ $sqlCmd = @"
 DECLARE @name SYSNAME = '$principalName';
 DECLARE @id UNIQUEIDENTIFIER = '$id';
 DECLARE @pipelineName SYSNAME = '$pipelineIdentityName';
-DECLARE @pipelineId UNIQUEIDENTIFIER = '$pipelineIdentityId';
+DECLARE @pipelineId UNIQUEIDENTIFIER = '$pipelineIdentityClientId';
 
 -- Convert the guid to the right type
 DECLARE @castId NVARCHAR(MAX) = CONVERT(VARCHAR(MAX), CONVERT (VARBINARY(16), @id), 1);

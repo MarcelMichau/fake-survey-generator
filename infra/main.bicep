@@ -130,6 +130,7 @@ module azureSql 'modules/sql.bicep' = {
     azureAdAdministratorObjectId: managedIdentity.outputs.principalId
     subnetResourceId: virtualNetwork.outputs.subnetId
     managedIdentityId: managedIdentity.outputs.identityResourceId
+    pipelineIdentityClientId: 'df54403d-edea-442f-bc25-99403859119c'
   }
   scope: fakeSurveyGeneratorResourceGroup
 }

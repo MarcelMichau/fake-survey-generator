@@ -25,6 +25,9 @@ param subnetResourceId string
 @description('Managed Identity ID')
 param managedIdentityId string
 
+@description('Pipeline Identity Client ID')
+param pipelineIdentityClientId string
+
 resource sqlServer 'Microsoft.Sql/servers@2024-11-01-preview' = {
   name: serverName
   tags: tags
@@ -93,8 +96,8 @@ resource sqlDatabaseRoles 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         value: 'azure-devops'
       }
       {
-        name: 'PIPELINEIDENTITYID'
-        value: deployer().objectId
+        name: 'PIPELINEIDENTITYCLIENTID'
+        value: pipelineIdentityClientId
       }
     ]
     scriptContent: loadTextContent('sql-deployment-script.ps1')
