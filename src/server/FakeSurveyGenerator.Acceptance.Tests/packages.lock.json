@@ -40,9 +40,9 @@
       },
       "Microsoft.Playwright": {
         "type": "Direct",
-        "requested": "[1.56.0, )",
-        "resolved": "1.56.0",
-        "contentHash": "DswyjEbhkTkQSyGnx2x1xhzwAztu/ckfOPZsT/fCA0HZVGdLkEWmf2u1FmUBWdT61do02VoMzp0dvA+oq7hKDg==",
+        "requested": "[1.57.0, )",
+        "resolved": "1.57.0",
+        "contentHash": "DJXmZ64wwgakSrVZxsFJS8/epLEfac2Xfij66a0xY/ggfKqHIOeWeRaQQ97qxwA3FdyVwU1nWjAqeZhOZFxYMw==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "System.ComponentModel.Annotations": "5.0.0"
@@ -87,10 +87,10 @@
           "TUnit.Engine": "1.3.15"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Transitive",
         "resolved": "13.0.1",
-        "contentHash": "uIaDeh+kXfjsbWSYNd5CEt4pRRHx+TgrVcZkqhtXXLC9Npk0NMe0/bShrjubeu5+7ICHkGRW6q4Gna6upTEbUQ=="
+        "contentHash": "f/Vvx1GLmbSr/o6zxpWe+PwA98iVSfKA1yxHsyVHfL5BVaHAqiA+/0KRMFtAJppk3A8JEpCjcZztZfr6H3MeFA=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -122,10 +122,10 @@
           "System.IO.Hashing": "9.0.10"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Transitive",
         "resolved": "13.0.1",
-        "contentHash": "et1EdPkeX4VOx65SxI0vPCVsP7+uh5Ai2eSiGSmCGjIbfdvCFmcEUSN6TMwroM4txhvUeew7QSIJ64jBGx9lvg=="
+        "contentHash": "IjSXLhjYSonWRHLIledR6WOYibmGw1YlUNPbcCwYm4B9q8AwkJpyL0ean44fCP38gD76FuBBGHyywyASvEbNHg=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -1018,9 +1018,9 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.0.1, )",
+          "Aspire.Dashboard.Sdk.linux-x64": "[13.0.1, )",
           "Aspire.Hosting.AppHost": "[13.0.1, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.0.1, )",
+          "Aspire.Hosting.Orchestration.linux-x64": "[13.0.1, )",
           "Aspire.Hosting.Redis": "[13.0.1, )",
           "Aspire.Hosting.SqlServer": "[13.0.1, )",
           "CommunityToolkit.Aspire.Hosting.Bun": "[13.0.0, )",
