@@ -503,7 +503,7 @@ public sealed class SurveyTests
         survey.AddSurveyOption(option);
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(1);
+        await Assert.That(survey.Options).Count().IsEqualTo(1);
         await Assert.That(survey.Options[0].OptionText.Value).IsEqualTo(longText);
     }
 
@@ -532,7 +532,7 @@ public sealed class SurveyTests
         survey.AddSurveyOption(option3);
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(3);
+        await Assert.That(survey.Options).Count().IsEqualTo(3);
         await Assert.That(survey.Options[0].OptionText.Value).IsEqualTo("First Option");
         await Assert.That(survey.Options[1].OptionText.Value).IsEqualTo("Second Option");
         await Assert.That(survey.Options[2].OptionText.Value).IsEqualTo("Third Option");
@@ -562,7 +562,7 @@ public sealed class SurveyTests
         survey.AddSurveyOption(newOption);
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(2);
+        await Assert.That(survey.Options).Count().IsEqualTo(2);
         await Assert.That(survey.Options[0].OptionText.Value).IsEqualTo("Existing Option");
         await Assert.That(survey.Options[1].OptionText.Value).IsEqualTo("New Option");
     }
@@ -589,7 +589,7 @@ public sealed class SurveyTests
         survey.AddSurveyOption(option1);
 
         // Assert - First option should be added
-        await Assert.That(survey.Options).Count().EqualTo(1);
+        await Assert.That(survey.Options).Count().IsEqualTo(1);
         await Assert.That(survey.Options[0].OptionText.Value).IsEqualTo(" Option ");
 
         // Act - Second option with different spacing should be treated as duplicate
@@ -1089,7 +1089,7 @@ public sealed class SurveyTests
         survey.CalculateOutcome();
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(1);
+        await Assert.That(survey.Options).Count().IsEqualTo(1);
         await Assert.That(survey.Options[0].NumberOfVotes).IsEqualTo(numberOfRespondents);
     }
 
@@ -1168,7 +1168,7 @@ public sealed class SurveyTests
         survey.CalculateOutcome();
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(1);
+        await Assert.That(survey.Options).Count().IsEqualTo(1);
         await Assert.That(survey.Options[0].NumberOfVotes).IsEqualTo(preferredVotes);
         await Assert.That(survey.IsRigged).IsTrue();
     }
@@ -1215,7 +1215,7 @@ public sealed class SurveyTests
         survey.AddSurveyOption(optionText, 0);
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(1);
+        await Assert.That(survey.Options).Count().IsEqualTo(1);
         await Assert.That(survey.Options[0].PreferredNumberOfVotes).IsEqualTo(0);
     }
 
@@ -1305,7 +1305,7 @@ public sealed class SurveyTests
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), 300);
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(3);
+        await Assert.That(survey.Options).Count().IsEqualTo(3);
         await Assert.That(survey.Options.Sum(o => o.PreferredNumberOfVotes)).IsEqualTo(1000);
     }
 
@@ -1350,7 +1350,7 @@ public sealed class SurveyTests
         survey.AddSurveyOption(optionText, numberOfRespondents);
 
         // Assert
-        await Assert.That(survey.Options).Count().EqualTo(1);
+        await Assert.That(survey.Options).Count().IsEqualTo(1);
         await Assert.That(survey.Options[0].PreferredNumberOfVotes).IsEqualTo(numberOfRespondents);
     }
 
