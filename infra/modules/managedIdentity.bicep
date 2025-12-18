@@ -24,13 +24,13 @@ var uniqueRoleGuidKeyVaultSecretsOfficer = guid(
 var acrPull = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
 var uniqueRoleGuidAcrPull = guid(resourceId('Microsoft.ContainerRegistry/registries', containerRegistryName), acrPull)
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: identityName
   tags: tags
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
   name: keyVaultName
 }
 
@@ -44,7 +44,7 @@ resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
   }
 }
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-05-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
   name: containerRegistryName
 }
 

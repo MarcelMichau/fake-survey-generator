@@ -18,7 +18,7 @@ param uiContainerAppExists bool
 param apiContainerImage string = ''
 param uiContainerImage string = ''
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-05-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
   name: containerRegistryName
 }
 
@@ -42,7 +42,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   name: applicationInsightsName
 }
 
-resource existingUiContainerApp 'Microsoft.App/containerApps@2025-02-02-preview' existing = if (uiContainerAppExists) {
+resource existingUiContainerApp 'Microsoft.App/containerApps@2025-10-02-preview' existing = if (uiContainerAppExists) {
   name: uiContainerAppName
 }
 
@@ -110,7 +110,7 @@ var apiEnvironmentVariables = [
   }
 ]
 
-resource existingApiContainerApp 'Microsoft.App/containerApps@2024-03-01' existing = if (apiContainerAppExists) {
+resource existingApiContainerApp 'Microsoft.App/containerApps@2025-10-02-preview' existing = if (apiContainerAppExists) {
   name: apiContainerAppName
 }
 

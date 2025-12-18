@@ -149,14 +149,6 @@ stages:
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
-          # Tests commented out temporarily due to DotNetCoreCLI@2 task not using latest version which supports Microsoft.Testing.Platform
-          # - task: DotNetCoreCLI@2
-          #   inputs:
-          #     command: "test"
-          #     publishTestResults: true
-          #     arguments: '--no-restore --coverage --report-trx --treenode-filter "/(*Tests*)&(*Acceptance*)/*/*/*" --ignore-exit-code 8'
-          #   displayName: "Run Acceptance (E2E) Tests"
-
   - stage: BuildUi
     displayName: "Build UI"
     dependsOn: []
