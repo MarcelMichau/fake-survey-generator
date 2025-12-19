@@ -1,11 +1,13 @@
 ﻿using Aspire.Hosting;
-using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using TUnit.Core.Interfaces;
 
 namespace FakeSurveyGenerator.Acceptance.Tests;
+
 public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
 {
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
     public DistributedApplication? App;
 
     public async Task InitializeAsync()
@@ -13,20 +15,24 @@ public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
         var appHost = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FakeSurveyGenerator_AppHost>();
 
+        appHost.Services.AddLogging(logging =>
+        {
+            logging.SetMinimumLevel(LogLevel.Debug);
+            // Override the logging filters from the app's configuration
+            logging.AddFilter(appHost.Environment.ApplicationName, LogLevel.Debug);
+            logging.AddFilter("Aspire.", LogLevel.Debug);
+        });
+
         appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
         {
             clientBuilder.AddStandardResilienceHandler();
         });
 
         App = await appHost.BuildAsync();
-        var resourceNotificationService = App.Services.GetRequiredService<ResourceNotificationService>();
-        await App.StartAsync();
 
-        await resourceNotificationService
-            .WaitForResourceAsync("ui", KnownResourceStates.Running)
-            .WaitAsync(TimeSpan.FromSeconds(30));
+        await App.StartAsync().WaitAsync(DefaultTimeout);
 
-        await App.StartAsync();
+        await App.ResourceNotifications.WaitForResourceHealthyAsync("ui").WaitAsync(DefaultTimeout);
     }
 
     public async ValueTask DisposeAsync()
