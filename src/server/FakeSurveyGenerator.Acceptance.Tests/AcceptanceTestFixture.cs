@@ -23,7 +23,7 @@ public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
         await App.StartAsync();
 
         await resourceNotificationService
-            .WaitForResourceAsync("fake-survey-generator-ui", KnownResourceStates.Running)
+            .WaitForResourceAsync("ui", KnownResourceStates.Running)
             .WaitAsync(TimeSpan.FromSeconds(30));
 
         await App.StartAsync();

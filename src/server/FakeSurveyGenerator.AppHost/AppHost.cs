@@ -10,13 +10,14 @@ var database = builder.AddSqlServer("sql-server")
 var cache = builder.AddRedis("cache")
     .WithRedisInsight();
 
-var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", "https")
+var api = builder.AddProject<FakeSurveyGenerator_Api>("api")
     .WithReference(database)
     .WaitFor(database)
     .WithReference(cache)
     .WaitFor(cache)
     .WithHttpHealthCheck("health/live")
     .WithHttpHealthCheck("health/ready")
+    .WithExternalHttpEndpoints()
     .WithDaprSidecar(options =>
     {
         options.WithOptions(new DaprSidecarOptions
@@ -25,17 +26,15 @@ var api = builder.AddProject<FakeSurveyGenerator_Api>("fakesurveygeneratorapi", 
         });
     });
 
-var worker = builder.AddProject<FakeSurveyGenerator_Worker>("fake-survey-generator-worker")
+var worker = builder.AddProject<FakeSurveyGenerator_Worker>("worker")
     .WithReference(database)
     .WaitFor(database)
     .WithReference(cache)
     .WaitFor(cache);
 
-builder.AddBunApp("fake-survey-generator-ui", "../../client/ui", "dev")
-    .WithBunPackageInstallation()
+builder.AddViteApp("ui", "../../client/ui")
     .WithReference(api)
     .WaitFor(api)
-    .WithEndpoint(targetPort: 3000, port: 3000, scheme: "https", env: "PORT", isProxied: false)
-    .PublishAsDockerFile();
+    .WithHttpsEndpoint(port: 3000, isProxied: false);
 
 builder.Build().Run();

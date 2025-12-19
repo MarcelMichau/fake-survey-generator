@@ -4,11 +4,9 @@ namespace FakeSurveyGenerator.Acceptance.Tests;
 
 public class EndToEndTests
 {
-    private const string UiProjectName = "fake-survey-generator-ui";
-
     [ClassDataSource<AcceptanceTestFixture>(Shared = SharedType.PerTestSession)]
     public required AcceptanceTestFixture TestFixture { get; init; }
-    private HttpClient UiClient => TestFixture.App!.CreateHttpClient(UiProjectName);
+    private HttpClient UiClient => TestFixture.App!.CreateHttpClient("ui", "https");
 
     // If Playwright fails with a "not installed" error, run the following command from the repo root directory:
     // pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net9.0\playwright.ps1 install

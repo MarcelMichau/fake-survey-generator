@@ -34,18 +34,18 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-p
     }
   }
 
-  resource managedCertificate 'managedCertificates' = {
-    name: 'fake-survey-generator-cert'
-    location: location
-    tags: tags
-    properties: {
-      subjectName: 'fakesurveygeneratortest.mysecondarydomain.com'
-      domainControlValidation: 'TXT'
-    }
-    dependsOn: [
-      httpRouteConfig
-    ]
-  }
+  // resource managedCertificate 'managedCertificates' = {
+  //   name: 'fake-survey-generator-cert'
+  //   location: location
+  //   tags: tags
+  //   properties: {
+  //     subjectName: 'fakesurveygeneratortest.mysecondarydomain.com'
+  //     domainControlValidation: 'TXT'
+  //   }
+  //   dependsOn: [
+  //     httpRouteConfig
+  //   ]
+  // }
 
   resource httpRouteConfig 'httpRouteConfigs' = {
     name: 'fakesurveygenerator'

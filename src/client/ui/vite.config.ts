@@ -10,11 +10,7 @@ export default defineConfig({
 		port: Number.parseInt(process.env.PORT ?? "5173"),
 		proxy: {
 			"/api": {
-				target:
-					process.env.services__fakesurveygeneratorapi__https__0 ||
-					process.env.services__fakesurveygeneratorapi__http__0,
-				changeOrigin: true,
-				secure: false,
+				target: process.env.API_HTTPS || process.env.API_HTTP
 			},
 		},
 	},

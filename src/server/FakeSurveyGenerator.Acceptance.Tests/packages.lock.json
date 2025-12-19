@@ -1022,10 +1022,10 @@
         "dependencies": {
           "Aspire.Dashboard.Sdk.win-x64": "[13.1.0, )",
           "Aspire.Hosting.AppHost": "[13.1.0, )",
+          "Aspire.Hosting.JavaScript": "[13.1.0, )",
           "Aspire.Hosting.Orchestration.win-x64": "[13.1.0, )",
           "Aspire.Hosting.Redis": "[13.1.0, )",
           "Aspire.Hosting.SqlServer": "[13.1.0, )",
-          "CommunityToolkit.Aspire.Hosting.Bun": "[13.0.0, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
         }
       },
@@ -1055,6 +1055,39 @@
           "Microsoft.Extensions.Logging.Abstractions": "10.0.1",
           "Microsoft.Extensions.Options": "10.0.1",
           "Microsoft.Extensions.Primitives": "10.0.1",
+          "Newtonsoft.Json": "13.0.4",
+          "Polly.Core": "8.6.4",
+          "Semver": "3.0.0",
+          "StreamJsonRpc": "2.22.23",
+          "System.IO.Hashing": "9.0.10"
+        }
+      },
+      "Aspire.Hosting.JavaScript": {
+        "type": "CentralTransitive",
+        "requested": "[13.1.0, )",
+        "resolved": "13.1.0",
+        "contentHash": "NGCcm6BBVwAhY1gcPh5XdO3kT291jeqoO8oa+82n4EVmHOGudxUNE652jo19LdSB8eJnxC1oYvB49gcU7KaTew==",
+        "dependencies": {
+          "AspNetCore.HealthChecks.Uris": "9.0.0",
+          "Aspire.Hosting": "13.1.0",
+          "Google.Protobuf": "3.33.0",
+          "Grpc.AspNetCore": "2.71.0",
+          "Grpc.Net.ClientFactory": "2.71.0",
+          "Grpc.Tools": "2.72.0",
+          "Humanizer.Core": "2.14.1",
+          "JsonPatch.Net": "3.3.0",
+          "KubernetesClient": "18.0.5",
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "8.0.2",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "8.0.22",
+          "Microsoft.Extensions.FileSystemGlobbing": "10.0.1",
+          "Microsoft.Extensions.Hosting": "8.0.1",
+          "Microsoft.Extensions.Hosting.Abstractions": "8.0.1",
+          "Microsoft.Extensions.Http": "8.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "Microsoft.Extensions.Options": "8.0.2",
+          "Microsoft.Extensions.Primitives": "8.0.0",
           "Newtonsoft.Json": "13.0.4",
           "Polly.Core": "8.6.4",
           "Semver": "3.0.0",
@@ -1144,15 +1177,6 @@
           "Azure.Core": "1.50.0",
           "Microsoft.Identity.Client": "4.78.0",
           "Microsoft.Identity.Client.Extensions.Msal": "4.78.0"
-        }
-      },
-      "CommunityToolkit.Aspire.Hosting.Bun": {
-        "type": "CentralTransitive",
-        "requested": "[13.0.0, )",
-        "resolved": "13.0.0",
-        "contentHash": "IqQWKh0hxDRecJHQ1Fvah49qPlW6eu52zrDknKP6z+kEyD4orx+dWKEx6c+dtcV1MxLcQR0u2nryQZeXqoDXVg==",
-        "dependencies": {
-          "Aspire.Hosting": "13.0.0"
         }
       },
       "CommunityToolkit.Aspire.Hosting.Dapr": {
