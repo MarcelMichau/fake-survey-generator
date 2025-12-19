@@ -12,38 +12,38 @@ public class SanityTests
     private HttpClient UiClient => TestFixture.App!.CreateHttpClient("ui", "https");
 
     [Test]
-    public async Task GivenRunningApp_WhenNavigatingToUiIndexPage_ThenResponseIsSuccessful()
+    public async Task GivenRunningApp_WhenNavigatingToUiIndexPage_ThenResponseIsSuccessful(CancellationToken cancellationToken)
     {
         Console.WriteLine("Running UI Index Page Test...");
 
-        var response = await UiClient.GetAsync("/");
+        var response = await UiClient.GetAsync("/", cancellationToken);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
     }
 
     [Test]
-    public async Task GivenRunningApp_WhenCallingApiHealthLiveEndpoint_ThenResponseIsSuccessful()
+    public async Task GivenRunningApp_WhenCallingApiHealthLiveEndpoint_ThenResponseIsSuccessful(CancellationToken cancellationToken)
     {
         Console.WriteLine("Running API Health Live Endpoint Test...");
 
-        var response = await ApiClient.GetAsync("health/live");
+        var response = await ApiClient.GetAsync("health/live", cancellationToken);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
     }
 
     [Test]
-    public async Task GivenRunningApp_WhenCallingApiHealthReadyEndpoint_ThenResponseIsSuccessful()
+    public async Task GivenRunningApp_WhenCallingApiHealthReadyEndpoint_ThenResponseIsSuccessful(CancellationToken cancellationToken)
     {
         Console.WriteLine("Running API Health Ready Endpoint Test...");
 
-        var response = await ApiClient.GetAsync("health/ready");
+        var response = await ApiClient.GetAsync("health/ready", cancellationToken);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
     }
 
     [Test]
-    public async Task GivenRunningApp_WhenCallingApiVersionEndpoint_ThenValidVersionIsReturned()
+    public async Task GivenRunningApp_WhenCallingApiVersionEndpoint_ThenValidVersionIsReturned(CancellationToken cancellationToken)
     {
         Console.WriteLine("Running API Version Endpoint Test...");
 
-        var response = await ApiClient.GetFromJsonAsync<VersionEndpointResponse>("api/admin/version");
+        var response = await ApiClient.GetFromJsonAsync<VersionEndpointResponse>("api/admin/version", cancellationToken: cancellationToken);
         await Assert.That(response!.AssemblyVersion).IsNotNullOrWhiteSpace();
     }
 

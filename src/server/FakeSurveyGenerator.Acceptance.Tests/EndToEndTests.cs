@@ -1,43 +1,27 @@
-﻿using Microsoft.Playwright;
+﻿using TUnit.Playwright;
 
 namespace FakeSurveyGenerator.Acceptance.Tests;
 
-public class EndToEndTests
+public class EndToEndTests : PageTest
 {
     [ClassDataSource<AcceptanceTestFixture>(Shared = SharedType.PerTestSession)]
     public required AcceptanceTestFixture TestFixture { get; init; }
     private HttpClient UiClient => TestFixture.App!.CreateHttpClient("ui", "https");
 
     // If Playwright fails with a "not installed" error, run the following command from the repo root directory:
-    // pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net9.0\playwright.ps1 install
+    // pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net10.0\playwright.ps1 install
     [Test]
-    public async Task GivenRunningApp_WhenOpeningUiWithPlaywright_ThenIndexPageIsDisplayed()
+    public async Task GivenRunningApp_WhenOpeningUiWithPlaywright_ThenIndexPageIsDisplayed(CancellationToken cancellationToken)
     {
         Console.WriteLine("Running Playwright UI Index Page Test...");
-
-        var playwright = await Playwright.CreateAsync();
-
-        Console.WriteLine("Launching Browser...");
-
-        var browser = await playwright.Chromium.LaunchAsync();
-
-        Console.WriteLine("Browser Launched");
-
-        var context = await browser.NewContextAsync();
-        var page = await context.NewPageAsync();
 
         var url = $"{UiClient.BaseAddress}";
 
         Console.WriteLine($"Navigating to {url}");
 
-        await page.GotoAsync(url);
+        await Page.GotoAsync(url);
 
-        var title = await page.TextContentAsync("h1");
+        var title = await Page.TextContentAsync("h1");
         await Assert.That(title).IsEqualTo("Fake Survey Generator");
-
-        Console.WriteLine("Closing Browser...");
-        await browser.CloseAsync();
-        Console.WriteLine("Browser Closed");
-        playwright.Dispose();
     }
 }
