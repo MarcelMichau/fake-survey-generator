@@ -131,6 +131,13 @@ stages:
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "test"
+              publishTestResults: true
+              arguments: '--no-build --coverage --treenode-filter "/(*Acceptance.Tests*)/*/*/*" --ignore-exit-code 8'
+            displayName: "Run Acceptance Tests"
+
   - stage: BuildUi
     displayName: "Build UI"
     dependsOn: []
