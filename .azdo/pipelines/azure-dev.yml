@@ -127,7 +127,7 @@ stages:
 
           - task: PowerShell@2
             inputs:
-              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/debug/net10.0/playwright.ps1"
+              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/Debug/net10.0/playwright.ps1"
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
