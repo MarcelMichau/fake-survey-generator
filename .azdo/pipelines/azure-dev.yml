@@ -125,6 +125,10 @@ stages:
               projects: "FakeSurveyGenerator.slnx"
             displayName: "Build Solution"
 
+          - script: |
+              wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+            displayName: "Install Dapr CLI"
+
           - task: PowerShell@2
             inputs:
               filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/Debug/net10.0/playwright.ps1"
