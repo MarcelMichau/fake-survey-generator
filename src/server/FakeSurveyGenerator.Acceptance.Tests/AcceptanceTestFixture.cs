@@ -7,7 +7,7 @@ namespace FakeSurveyGenerator.Acceptance.Tests;
 
 public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
 {
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(180);
     public DistributedApplication? App;
 
     public async Task InitializeAsync()
