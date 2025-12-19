@@ -140,9 +140,9 @@ stages:
             displayName: "Download Playwright Browsers"
 
           # https://github.com/dotnet/aspire/issues/13612
-          # - script: |
-          #     dotnet dev-certs https --trust
-          #   displayName: "Trust .NET Dev Certs"
+          - script: |
+              dotnet dev-certs https --trust
+            displayName: "Trust .NET Dev Certs"
 
           - task: DotNetCoreCLI@2
             inputs:
