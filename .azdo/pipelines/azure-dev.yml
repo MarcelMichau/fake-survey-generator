@@ -43,8 +43,6 @@ variables:
 stages:
   - stage: BuildTestApi
     displayName: "Build + Test API"
-    variables:
-      buildConfiguration: "Release"
     jobs:
       - job: VersionSetup
         displayName: "Set Version Tags"
@@ -84,25 +82,17 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
-          - task: Cache@2
-            enabled: false
-            displayName: Cache
+          - task: DotNetCoreCLI@2
             inputs:
-              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
-              restoreKeys: |
-                nuget | "$(Agent.OS)"
-                nuget
-              path: "$(NUGET_PACKAGES)"
-
-          - pwsh: |
-              dotnet build FakeSurveyGenerator.slnx --configuration $(buildConfiguration)
-            displayName: "Build Solution"
+              command: "build"
+              projects: "FakeSurveyGenerator.slnx"
+              displayName: "Build Solution"
 
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--no-restore --coverage --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
+              arguments: '--no-build --coverage --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
             displayName: "Run Unit + Integration Tests"
 
           - script: |
@@ -129,23 +119,15 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
-          - task: Cache@2
-            enabled: false
-            displayName: Cache
+          - task: DotNetCoreCLI@2
             inputs:
-              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**,!**/obj/**'
-              restoreKeys: |
-                nuget | "$(Agent.OS)"
-                nuget
-              path: "$(NUGET_PACKAGES)"
-
-          - pwsh: |
-              dotnet build FakeSurveyGenerator.slnx --configuration $(buildConfiguration)
-            displayName: "Build Solution"
+              command: "build"
+              projects: "FakeSurveyGenerator.slnx"
+              displayName: "Build Solution"
 
           - task: PowerShell@2
             inputs:
-              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/$(buildConfiguration)/net10.0/playwright.ps1"
+              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/debug/net10.0/playwright.ps1"
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
@@ -269,4 +251,3 @@ stages:
                     DatabaseName: "$(sqlDatabaseName)"
                     deployType: SqlTask
                     SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
-                    IpDetectionMethod: "AutoDetect"
