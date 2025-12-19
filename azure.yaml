@@ -15,7 +15,7 @@ services:
       tag: ${API_VERSION}
   ui:
     language: ts
-    project: ./src/client/ui
+    project: ./src/client/frontend
     host: containerapp
     dist: dist
     docker:

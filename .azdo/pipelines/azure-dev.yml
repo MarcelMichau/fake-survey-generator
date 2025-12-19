@@ -7,7 +7,7 @@ trigger:
     include:
       - .azdo/*
       - src/server/*
-      - src/client/ui/*
+      - src/client/frontend/*
       - infra/*
 
 pr:
@@ -22,7 +22,7 @@ pr:
     include:
       - .azdo/*
       - src/server/*
-      - src/client/ui/*
+      - src/client/frontend/*
       - infra/*
 
 parameters:
@@ -173,10 +173,10 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/client/ui nbgv --version 3.9.50
+              arguments: install --tool-path ./src/client/frontend nbgv --version 3.9.50
 
           - script: ./nbgv cloud -a
-            workingDirectory: src/client/ui
+            workingDirectory: src/client/frontend
             displayName: Set Build Number & Version Variables
 
           - script: |
