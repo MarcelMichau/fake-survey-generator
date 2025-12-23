@@ -78,30 +78,30 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[1.5.70, )",
-        "resolved": "1.5.70",
-        "contentHash": "8hrFKrZDS1PtVarY2i8NDots0aZ0g125MdKtvg1VeH9V4sZFVeCEYRtzyAeDMmpkYokTQ7uSK8XHYiynmcW4JQ==",
+        "requested": "[1.6.20, )",
+        "resolved": "1.6.20",
+        "contentHash": "qwTLE/5znCoEXd4vNTUqXpn56cGLm+RgCkdnbAp4YVQIl6bkRO4ZIMKQwrwlvzZWFyS2ZqEAS2NRI2+6qF/2vQ==",
         "dependencies": {
           "Microsoft.Testing.Extensions.CodeCoverage": "18.1.0",
           "Microsoft.Testing.Extensions.TrxReport": "2.0.2",
-          "TUnit.Assertions": "1.5.70",
-          "TUnit.Engine": "1.5.70"
+          "TUnit.Assertions": "1.6.20",
+          "TUnit.Engine": "1.6.20"
         }
       },
       "TUnit.Playwright": {
         "type": "Direct",
-        "requested": "[1.5.70, )",
-        "resolved": "1.5.70",
-        "contentHash": "tCxksJtDTfK2ZUh3I0XghlBW6mArx46kw00g3P2gqOBj3mxigeKt2AvoVyBNKq4yV99mqazyg6VpBjx0KODlZw==",
+        "requested": "[1.6.20, )",
+        "resolved": "1.6.20",
+        "contentHash": "PL17ReI5loCBXK/90ONDgfmhpIJBsQ/t49thayvCqYjMLIc5bRs+WbsvjCDa66rB5qawCj1336CLvACy6f6/CQ==",
         "dependencies": {
           "Microsoft.Playwright": "1.57.0",
-          "TUnit": "1.5.70"
+          "TUnit": "1.6.20"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Transitive",
         "resolved": "13.1.0",
-        "contentHash": "rrcsI8cankYCiUlj4Ev+os9uKcutUCv+9kvHQt85RiUX/ewXsloFZy0/depKWrzdJkdJuoTbYFRlSe43TKq6aQ=="
+        "contentHash": "gIvMR7NdVGw+mUpK9qZsGuuYfDp4CHvBDLlykSSP9pCh5XGlMgDNR3uOMfvKVlqH1hAsOuecvxEcfQ9kjufrWw=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -134,10 +134,10 @@
           "System.IO.Hashing": "9.0.10"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Transitive",
         "resolved": "13.1.0",
-        "contentHash": "3w2UahEauTq719LPJ/BCySh31kz26sfjuOkRF5E4VYy1Q3xLRV43+OIGI3C5sy8feUHjrYz+DDq3DQn/2fu+4g=="
+        "contentHash": "V8u8ukncoflImciXeHG03x1pWbOiR4z1bIl2lwOKgdy7/JshFrlEaabaNuGmAIZFdWEM/fsc/hVDjecQyHF2aQ=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -1002,24 +1002,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "1.5.70",
-        "contentHash": "Y50zqbXrSbLA8Y58d57r8uV+1/10+vYH7fzXW1PHqsOpPqO2GjAGq2EfpnApPPbN8p7ATwmFuX/qE46xRLMFHQ=="
+        "resolved": "1.6.20",
+        "contentHash": "TfkuZADV2LbIWXRabCtA+TNIe5UIXXFCOsqrDzYv1hVqMu1mhBlFt0ZaFvR3DLVQqiO9WzgRc6AUZxEP+186xQ=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "1.5.70",
-        "contentHash": "Bix7TCa2XLbGwu96uw2jBFhKEAxYgERWsjnuM9CqLFxGb0YPGVI3jdZmi/T6qpg1eAdZKKGFygT30m79y9urSg=="
+        "resolved": "1.6.20",
+        "contentHash": "VBzU3a4gfIRQNZocgWuvr9NG6zaw2JZ+Y3v2AzELs5Fv3H3E8qK3be5qQlfRT8ELX0ncwO+NNeMtRyuzgxj/Rg=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "1.5.70",
-        "contentHash": "hLxJ/DD12hkPykIVbgaDYMxVZyzWZHfOmnnYMqg4iAm/LAR3NrBjfkGLIpzyKztea9/WsIXjXfYZA5V7SY/Mjg==",
+        "resolved": "1.6.20",
+        "contentHash": "qBZWMmrdHFyxoyst5Ci5bb6H9XZe/eiz4HV9JxRyeitWpSsCXdrrjdT7htlRygtBwOfEOvhZw3wudZdZpiWEww==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.0.2",
           "Microsoft.Testing.Platform": "2.0.2",
           "Microsoft.Testing.Platform.MSBuild": "2.0.2",
-          "TUnit.Core": "1.5.70"
+          "TUnit.Core": "1.6.20"
         }
       },
       "YamlDotNet": {
@@ -1030,10 +1030,10 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.1.0, )",
+          "Aspire.Dashboard.Sdk.linux-x64": "[13.1.0, )",
           "Aspire.Hosting.AppHost": "[13.1.0, )",
           "Aspire.Hosting.JavaScript": "[13.1.0, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.1.0, )",
+          "Aspire.Hosting.Orchestration.linux-x64": "[13.1.0, )",
           "Aspire.Hosting.Redis": "[13.1.0, )",
           "Aspire.Hosting.SqlServer": "[13.1.0, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
