@@ -68,7 +68,9 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 						onClick={submitForm}
 						loading={loading}
 						type="submit"
-						additionalClasses={isSearching ? ["opacity-80", "cursor-not-allowed"] : []}
+						additionalClasses={
+							isSearching ? ["opacity-80", "cursor-not-allowed"] : []
+						}
 					>
 						{isSearching ? "Searching..." : "Get My Surveys"}
 						<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />

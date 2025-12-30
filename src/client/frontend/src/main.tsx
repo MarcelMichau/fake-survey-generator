@@ -1,5 +1,5 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import config from "./auth_config.json";
@@ -11,8 +11,8 @@ if (!rootElement) {
 	throw new Error("Root element not found");
 }
 
-ReactDOM.createRoot(rootElement).render(
-	<React.StrictMode>
+createRoot(rootElement).render(
+	<StrictMode>
 		<Auth0Provider
 			domain={config.domain}
 			clientId={config.clientId}
@@ -25,5 +25,5 @@ ReactDOM.createRoot(rootElement).render(
 		>
 			<App />
 		</Auth0Provider>
-	</React.StrictMode>,
+	</StrictMode>,
 );

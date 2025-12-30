@@ -9,7 +9,7 @@ export default defineConfig({
 		port: Number.parseInt(process.env.PORT ?? "5173"),
 		proxy: {
 			"/api": {
-				target: process.env.API_HTTPS || process.env.API_HTTP
+				target: process.env.API_HTTPS || process.env.API_HTTP,
 			},
 		},
 	},
