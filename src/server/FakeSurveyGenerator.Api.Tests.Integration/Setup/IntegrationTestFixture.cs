@@ -12,13 +12,11 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 {
     private readonly RedisContainer _cacheContainer =
-        new RedisBuilder()
-            .WithImage("redis:8-alpine")
+        new RedisBuilder("redis:8-alpine")
             .Build();
 
     private readonly MsSqlContainer _dbContainer =
-        new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2025-latest")
+        new MsSqlBuilder("mcr.microsoft.com/mssql/server:2025-latest")
             .Build();
 
     private IServiceScopeFactory? _serviceScopeFactory;
