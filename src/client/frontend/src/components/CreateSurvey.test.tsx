@@ -286,7 +286,38 @@ describe("CreateSurvey Component", () => {
       });
     });
 
-    it("should reset form after successful submission", async () => {
+    it("should reset form after successful submission when resetOnSuccess is true", async () => {
+      const user = userEvent.setup();
+      mockApiCall.mockResolvedValue({
+        ok: true,
+        status: 201,
+        json: async () => ({ id: 111, topic: "Test" }),
+      });
+
+      render(
+        <CreateSurvey loading={false} resetOnSuccess={true} />
+      );
+
+      const respondentInput = screen.getByPlaceholderText(
+        "Pragmatic Developers"
+      );
+      const questionInput = screen.getByPlaceholderText(
+        "Do you prefer tabs or spaces?"
+      );
+
+      await user.type(respondentInput, "Test");
+      await user.type(questionInput, "Test");
+
+      const submitButton = screen.getByRole("button", { name: /Create Survey/i });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(respondentInput).toHaveValue("");
+        expect(questionInput).toHaveValue("");
+      });
+    });
+
+    it("should not reset form after successful submission when onSurveyCreated is provided (default behavior)", async () => {
       const user = userEvent.setup();
       mockApiCall.mockResolvedValue({
         ok: true,
@@ -312,6 +343,45 @@ describe("CreateSurvey Component", () => {
       await user.click(submitButton);
 
       await waitFor(() => {
+        expect(mockOnSurveyCreated).toHaveBeenCalledWith(111);
+      });
+
+      // Form should NOT be reset when onSurveyCreated is provided
+      expect(respondentInput).toHaveValue("Test");
+      expect(questionInput).toHaveValue("Test");
+    });
+
+    it("should reset form after successful submission when resetOnSuccess is explicitly true with onSurveyCreated", async () => {
+      const user = userEvent.setup();
+      mockApiCall.mockResolvedValue({
+        ok: true,
+        status: 201,
+        json: async () => ({ id: 111, topic: "Test" }),
+      });
+
+      render(
+        <CreateSurvey 
+          loading={false} 
+          onSurveyCreated={mockOnSurveyCreated} 
+          resetOnSuccess={true}
+        />
+      );
+
+      const respondentInput = screen.getByPlaceholderText(
+        "Pragmatic Developers"
+      );
+      const questionInput = screen.getByPlaceholderText(
+        "Do you prefer tabs or spaces?"
+      );
+
+      await user.type(respondentInput, "Test");
+      await user.type(questionInput, "Test");
+
+      const submitButton = screen.getByRole("button", { name: /Create Survey/i });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(mockOnSurveyCreated).toHaveBeenCalledWith(111);
         expect(respondentInput).toHaveValue("");
         expect(questionInput).toHaveValue("");
       });

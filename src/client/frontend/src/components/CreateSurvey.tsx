@@ -17,6 +17,7 @@ import {
 type CreateSurveyProps = {
 	loading: boolean;
 	onSurveyCreated?: (surveyId: number) => void;
+	resetOnSuccess?: boolean;
 };
 
 // Form option type - doesn't include numberOfVotes which is only on response
@@ -64,6 +65,7 @@ const initialFormState: SurveyFormState = {
 const CreateSurvey = ({
 	loading,
 	onSurveyCreated,
+	resetOnSuccess = !onSurveyCreated,
 }: CreateSurveyProps): React.ReactElement => {
 	const { apiCall } = useApiCall();
 	const [formState, setFormState] = useState<SurveyFormState>(initialFormState);
@@ -213,7 +215,9 @@ const CreateSurvey = ({
 					ui: { isSubmitting: false },
 				}));
 
-				resetForm();
+				if (resetOnSuccess) {
+					resetForm();
+				}
 
 				if (onSurveyCreated) {
 					onSurveyCreated(data.id);
@@ -229,7 +233,7 @@ const CreateSurvey = ({
 				}));
 			}
 		},
-		[apiCall, resetMessages, resetForm, onSurveyCreated],
+		[apiCall, resetMessages, resetForm, resetOnSuccess, onSurveyCreated],
 	);
 
 	const onSubmit = async (
