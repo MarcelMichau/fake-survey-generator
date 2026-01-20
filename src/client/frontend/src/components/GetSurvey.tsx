@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import Field from "./Field";
 import SkeletonButton from "./SkeletonButton";
@@ -20,10 +20,12 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 	const { survey: surveyDetail, loading: isSearching, error: errorMessage } = useSurveyFetch(triggerFetch);
 
 	// Auto-fetch when newSurveyId changes (from CreateSurvey)
-	if (newSurveyId && triggerFetch !== newSurveyId) {
-		setSurveyIdInput(newSurveyId);
-		setTriggerFetch(newSurveyId);
-	}
+	useEffect(() => {
+		if (newSurveyId) {
+			setSurveyIdInput(newSurveyId);
+			setTriggerFetch(newSurveyId);
+		}
+	}, [newSurveyId]);
 
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();
