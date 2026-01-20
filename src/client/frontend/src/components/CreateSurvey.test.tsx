@@ -360,11 +360,7 @@ describe("CreateSurvey Component", () => {
       });
 
       render(
-        <CreateSurvey 
-          loading={false} 
-          onSurveyCreated={mockOnSurveyCreated} 
-          resetOnSuccess={true}
-        />
+        <CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} resetOnSuccess={true} />
       );
 
       const respondentInput = screen.getByPlaceholderText(
