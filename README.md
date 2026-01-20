@@ -43,12 +43,12 @@ Here are some of the features incorporated into this project:
 ### Application Features
 
 - Observable, production ready, distributed application support
-  using [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
+  using [Aspire](https://aspire.dev/)
 - Unit & Integration tests for a CQRS/DDD project with [TUnit](https://tunit.dev)
 - Target production database for integration tests
   using [Testcontainers for .NET](https://github.com/testcontainers/testcontainers-dotnet)
 - E2E acceptance tests
-  using [.NET Aspire Test Projects](https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/testing) & [Playwright for .NET](https://playwright.dev/dotnet/)
+  using [Aspire Test Projects](https://aspire.dev/testing/overview/) & [Playwright for .NET](https://playwright.dev/dotnet/)
 - Implementing health checks for various components
   using [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
 - Adding [OpenAPI](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/overview) to an ASP.NET Core Web API
@@ -78,7 +78,7 @@ Here are some of the features incorporated into this project:
 - Using [Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)
   authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework
   Core
-- Running a microservice application locally using [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
+- Running a microservice application locally using [Aspire](https://aspire.dev/get-started/what-is-aspire/)
 - Using Azure Pipelines
   with [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview) to build &
   deploy a microservice application
@@ -136,7 +136,7 @@ The server side makes use of the following tools, libraries & frameworks:
 - Fake Survey Generator API
     - .NET 10
     - [ASP.NET Core](https://docs.microsoft.com/en-gb/aspnet/core) Web API
-    - [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)
+    - [Aspire](https://aspire.dev/get-started/what-is-aspire/)
     - [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/)
       with [Code-First Migrations](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
     - [Dapper](https://github.com/StackExchange/Dapper)
@@ -169,7 +169,7 @@ The client side makes use of the following tools, libraries & frameworks:
 
 ### Common
 
-The application is built for containers & .NET Aspire. For local development, the .NET Aspire App host is used when debugging the
+The application is built for containers & Aspire. For local development, the Aspire App host is used when debugging the
 application with Visual Studio/Rider.
 
 The hosted version of the application is deployed here: https://fakesurveygenerator.mysecondarydomain.com
@@ -218,7 +218,7 @@ In order to run FSG on your local machine, you will need the following prerequis
 
 3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging
 
-4. The [.NET Aspire Dashboard](https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/overview) should
+4. The [Aspire Dashboard](https://aspire.dev/dashboard/overview/) should
    open automatically
 
 ## How do I contribute?
