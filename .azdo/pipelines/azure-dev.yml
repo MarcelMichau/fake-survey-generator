@@ -172,7 +172,7 @@ stages:
           - task: NodeTool@0
             displayName: "Install Node.js"
             inputs:
-              versionSpec: "18.x"
+              versionSpec: "25.x"
 
           - task: DotNetCoreCLI@2
             displayName: Install NBGV tool
