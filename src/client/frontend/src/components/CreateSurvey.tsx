@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import type * as Types from "../types";
 import Field from "./Field";
@@ -67,6 +67,8 @@ const CreateSurvey = ({
 }: CreateSurveyProps): React.ReactElement => {
 	const { apiCall } = useApiCall();
 	const [formState, setFormState] = useState<SurveyFormState>(initialFormState);
+	// Counter for generating unique option IDs - never decreases
+	const nextOptionIdRef = useRef(2);
 
 	const updateSurveyField = useCallback(
 		<K extends keyof SurveyFormState["survey"]>(
@@ -97,6 +99,7 @@ const CreateSurvey = ({
 
 	const resetForm = useCallback(() => {
 		setFormState(initialFormState);
+		nextOptionIdRef.current = 2; // Reset counter to 2 (next ID after initial option with ID 1)
 	}, []);
 
 	const updateOption = useCallback((optionId: number, optionText: string) => {
@@ -139,20 +142,24 @@ const CreateSurvey = ({
 	}, []);
 
 	const addOption = useCallback(() => {
-		setFormState((prev) => ({
-			...prev,
-			survey: {
-				...prev.survey,
-				options: [
-					...prev.survey.options,
-					{
-						id: Math.max(...prev.survey.options.map((o) => o.id), 0) + 1,
-						optionText: "",
-						preferredNumberOfVotes: 0,
-					},
-				],
-			},
-		}));
+		setFormState((prev) => {
+			const newId = nextOptionIdRef.current;
+			nextOptionIdRef.current += 1;
+			return {
+				...prev,
+				survey: {
+					...prev.survey,
+					options: [
+						...prev.survey.options,
+						{
+							id: newId,
+							optionText: "",
+							preferredNumberOfVotes: 0,
+						},
+					],
+				},
+			};
+		});
 	}, []);
 
 	const createSurvey = useCallback(

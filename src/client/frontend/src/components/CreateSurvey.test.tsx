@@ -112,6 +112,33 @@ describe("CreateSurvey Component", () => {
       expect(screen.queryByText("Remove #2")).not.toBeInTheDocument();
     });
 
+    it("should generate unique option IDs even after removing options", async () => {
+      const user = userEvent.setup();
+      render(
+        <CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />
+      );
+
+      const addButton = screen.getByRole("button", { name: /Add Option/i });
+
+      // Add option #2
+      await user.click(addButton);
+      expect(screen.getByRole("button", { name: /Remove #2/i })).toBeInTheDocument();
+
+      // Add option #3
+      await user.click(addButton);
+      expect(screen.getByRole("button", { name: /Remove #3/i })).toBeInTheDocument();
+
+      // Remove option #2
+      const removeButton2 = screen.getByRole("button", { name: /Remove #2/i });
+      await user.click(removeButton2);
+      expect(screen.queryByRole("button", { name: /Remove #2/i })).not.toBeInTheDocument();
+
+      // Add a new option - should be #4, not #2 (avoiding ID collision)
+      await user.click(addButton);
+      expect(screen.getByRole("button", { name: /Remove #4/i })).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Remove #2/i })).not.toBeInTheDocument();
+    });
+
     it("should update option text when user types in option field", async () => {
       const user = userEvent.setup();
       render(
