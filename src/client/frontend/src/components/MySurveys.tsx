@@ -1,10 +1,10 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { useAuth0 } from "@auth0/auth0-react";
 import type * as Types from "../types";
 import SkeletonButton from "./SkeletonButton";
 import Alert from "./Alert";
+import { useApiCall } from "../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -13,31 +13,37 @@ export type MySurveysProps = {
 };
 
 const MySurveys = ({ loading }: MySurveysProps) => {
-	const { getAccessTokenSilently } = useAuth0();
+	const { apiCall } = useApiCall();
 	const [userSurveys, setUserSurveys] = useState<Types.UserSurveyModel[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasFetched, setHasFetched] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
-	const fetchSurveys = async () => {
+	const fetchSurveys = useCallback(async () => {
 		setIsSearching(true);
+		setError(null);
 
 		try {
-			const token = await getAccessTokenSilently();
+			const response = await apiCall("api/survey/user");
 
-			const response = await fetch("api/survey/user", {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			if (!response.ok) {
+				setError("Failed to fetch surveys");
+				setUserSurveys([]);
+				return;
+			}
 
 			const data: Types.UserSurveyModel[] = await response.json();
-
 			setUserSurveys(data);
-			setHasFetched(true);
+		} catch (err) {
+			setError(
+				err instanceof Error ? err.message : "An unexpected error occurred",
+			);
+			setUserSurveys([]);
 		} finally {
 			setIsSearching(false);
+			setHasFetched(true);
 		}
-	};
+	}, [apiCall]);
 
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -117,11 +123,11 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 						message={"You have not created any surveys yet. :("}
 					/>
 				)}
-				{(userSurveys === null || userSurveys === undefined) && (
+				{error && (
 					<Alert
 						type="error"
 						title="Oh no! Something did not go as planned."
-						message="Please try again or create an issue on GitHub"
+						message={error}
 					/>
 				)}
 			</div>

@@ -151,11 +151,12 @@ stages:
               arguments: '--no-build --coverage --treenode-filter "/(*Acceptance.Tests*)/*/*/*" --ignore-exit-code 8'
             displayName: "Run Acceptance Tests"
 
-  - stage: BuildUi
-    displayName: "Build UI"
+  - stage: BuildTestUI
+    displayName: "Build + Test UI"
     dependsOn: []
     jobs:
-      - job: Build
+      - job: BuildAndTest
+        displayName: "Build + Test"
         pool:
           vmImage: "ubuntu-latest"
         variables:
@@ -168,6 +169,11 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
+          - task: NodeTool@0
+            displayName: "Install Node.js"
+            inputs:
+              versionSpec: "18.x"
+
           - task: DotNetCoreCLI@2
             displayName: Install NBGV tool
             inputs:
@@ -179,6 +185,19 @@ stages:
             workingDirectory: src/client/frontend
             displayName: Set Build Number & Version Variables
 
+          - task: Npm@1
+            displayName: "Install Frontend Dependencies"
+            inputs:
+              command: "install"
+              workingDir: "src/client/frontend"
+
+          - task: Npm@1
+            displayName: "Run Frontend Unit Tests"
+            inputs:
+              command: "custom"
+              workingDir: "src/client/frontend"
+              customCommand: "test -- --run"
+
           - script: |
               echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
             name: "SetVersionTag"
@@ -189,7 +208,7 @@ stages:
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - BuildTestApi
-      - BuildUi
+      - BuildTestUI
     jobs:
       - job: Deploy
         displayName: "Provision Infra + Deploy App"

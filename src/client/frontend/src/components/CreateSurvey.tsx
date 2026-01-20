@@ -1,12 +1,12 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { useAuth0 } from "@auth0/auth0-react";
 import type * as Types from "../types";
 import Field from "./Field";
 import Button from "./Button";
 import SkeletonButton from "./SkeletonButton";
 import Alert from "./Alert";
+import { useApiCall } from "../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faPlus,
@@ -19,112 +19,221 @@ type CreateSurveyProps = {
 	onSurveyCreated?: (surveyId: number) => void;
 };
 
+// Form option type - doesn't include numberOfVotes which is only on response
+interface FormSurveyOption {
+	id: number;
+	optionText: string;
+	preferredNumberOfVotes: number;
+}
+
+// Consolidated form state interface
+interface SurveyFormState {
+	survey: {
+		respondentType: string;
+		topic: string;
+		numberOfRespondents: number;
+		options: FormSurveyOption[];
+	};
+	messages: {
+		success: string;
+		error: string;
+		validationErrors: string[];
+	};
+	ui: {
+		isSubmitting: boolean;
+	};
+}
+
+const initialFormState: SurveyFormState = {
+	survey: {
+		respondentType: "",
+		topic: "",
+		numberOfRespondents: 0,
+		options: [{ id: 1, optionText: "", preferredNumberOfVotes: 0 }],
+	},
+	messages: {
+		success: "",
+		error: "",
+		validationErrors: [],
+	},
+	ui: {
+		isSubmitting: false,
+	},
+};
+
 const CreateSurvey = ({
 	loading,
 	onSurveyCreated,
 }: CreateSurveyProps): React.ReactElement => {
-	const { getAccessTokenSilently } = useAuth0();
-	const [respondentType, setRespondentType] = useState("");
-	const [topic, setTopic] = useState("");
-	const [numberOfRespondents, setNumberOfRespondents] = useState(0);
-	const [options, setOptions] = useState([
-		{ id: 1, optionText: "", preferredNumberOfVotes: 0 },
-	] as Types.SurveyOptionModel[]);
+	const { apiCall } = useApiCall();
+	const [formState, setFormState] = useState<SurveyFormState>(initialFormState);
 
-	const [errorMessage, setErrorMessage] = useState("");
-	const [successMessage, setSuccessMessage] = useState("");
-	const [validationErrors, setValidationErrors] = useState([] as string[]);
+	const updateSurveyField = useCallback(
+		<K extends keyof SurveyFormState["survey"]>(
+			key: K,
+			value: SurveyFormState["survey"][K],
+		) => {
+			setFormState((prev) => ({
+				...prev,
+				survey: {
+					...prev.survey,
+					[key]: value,
+				},
+			}));
+		},
+		[],
+	);
 
-	const resetMessages = (): void => {
-		setSuccessMessage("");
-		setErrorMessage("");
-		setValidationErrors([]);
-	};
-
-	const resetForm = (): void => {
-		setRespondentType("");
-		setTopic("");
-		setNumberOfRespondents(0);
-		setOptions([
-			{ id: 1, optionText: "", preferredNumberOfVotes: 0 },
-		] as Types.SurveyOptionModel[]);
-	};
-
-	const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
-		resetMessages();
-
-		const token = await getAccessTokenSilently();
-
-		const response = await fetch("api/survey", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
+	const resetMessages = useCallback(() => {
+		setFormState((prev) => ({
+			...prev,
+			messages: {
+				success: "",
+				error: "",
+				validationErrors: [],
 			},
-			body: JSON.stringify(surveyCommand),
-		});
+		}));
+	}, []);
 
-		if (response.status === 422) {
-			const data: Record<string, string[]> = await response.json();
+	const resetForm = useCallback(() => {
+		setFormState(initialFormState);
+	}, []);
 
-			setValidationErrors(Object.values(data).flat());
-			return;
-		}
+	const updateOption = useCallback((optionId: number, optionText: string) => {
+		setFormState((prev) => ({
+			...prev,
+			survey: {
+				...prev.survey,
+				options: prev.survey.options.map((option) =>
+					option.id === optionId ? { ...option, optionText } : option,
+				),
+			},
+		}));
+	}, []);
 
-		if (response.status !== 201) {
-			setErrorMessage("Please try again or create an issue on GitHub");
-			return;
-		}
+	const updatePreferredVotes = useCallback(
+		(optionId: number, preferredVotes: number) => {
+			setFormState((prev) => ({
+				...prev,
+				survey: {
+					...prev.survey,
+					options: prev.survey.options.map((option) =>
+						option.id === optionId
+							? { ...option, preferredNumberOfVotes: preferredVotes }
+							: option,
+					),
+				},
+			}));
+		},
+		[],
+	);
 
-		const data: Types.SurveyModel = await response.json();
+	const removeOption = useCallback((optionId: number) => {
+		setFormState((prev) => ({
+			...prev,
+			survey: {
+				...prev.survey,
+				options: prev.survey.options.filter((o) => o.id !== optionId),
+			},
+		}));
+	}, []);
 
-		setSuccessMessage(
-			`Survey created with ID: ${data.id}. Get the survey to see the outcome.`,
-		);
-		setErrorMessage("");
-		setValidationErrors([]);
-		resetForm();
+	const addOption = useCallback(() => {
+		setFormState((prev) => ({
+			...prev,
+			survey: {
+				...prev.survey,
+				options: [
+					...prev.survey.options,
+					{
+						id: Math.max(...prev.survey.options.map((o) => o.id), 0) + 1,
+						optionText: "",
+						preferredNumberOfVotes: 0,
+					},
+				],
+			},
+		}));
+	}, []);
 
-		if (onSurveyCreated) {
-			onSurveyCreated(data.id);
-		}
-	};
+	const createSurvey = useCallback(
+		async (surveyCommand: Types.CreateSurveyCommand) => {
+			resetMessages();
+			setFormState((prev) => ({
+				...prev,
+				ui: { isSubmitting: true },
+			}));
 
-	const updateOption = (optionId: number, optionText: string) => {
-		setOptions(
-			options.map((option) => {
-				if (option.id !== optionId) return option;
+			try {
+				const response = await apiCall("api/survey", {
+					method: "POST",
+					body: JSON.stringify(surveyCommand),
+				});
 
-				return {
-					...option,
-					optionText,
-				};
-			}),
-		);
-	};
+				if (response.status === 422) {
+					const data: Record<string, string[]> = await response.json();
+					setFormState((prev) => ({
+						...prev,
+						messages: {
+							...prev.messages,
+							validationErrors: Object.values(data).flat(),
+						},
+						ui: { isSubmitting: false },
+					}));
+					return;
+				}
 
-	const updatePreferredVotes = (optionId: number, preferredVotes: number) => {
-		setOptions(
-			options.map((option) => {
-				if (option.id !== optionId) return option;
+				if (response.status !== 201) {
+					setFormState((prev) => ({
+						...prev,
+						messages: {
+							...prev.messages,
+							error: "Please try again or create an issue on GitHub",
+						},
+						ui: { isSubmitting: false },
+					}));
+					return;
+				}
 
-				return {
-					...option,
-					preferredNumberOfVotes: preferredVotes,
-				};
-			}),
-		);
-	};
+				const data: Types.SurveyModel = await response.json();
+
+				setFormState((prev) => ({
+					...prev,
+					messages: {
+						success: `Survey created with ID: ${data.id}. Get the survey to see the outcome.`,
+						error: "",
+						validationErrors: [],
+					},
+					ui: { isSubmitting: false },
+				}));
+
+				resetForm();
+
+				if (onSurveyCreated) {
+					onSurveyCreated(data.id);
+				}
+			} catch (error) {
+				setFormState((prev) => ({
+					...prev,
+					messages: {
+						...prev.messages,
+						error: "An unexpected error occurred",
+					},
+					ui: { isSubmitting: false },
+				}));
+			}
+		},
+		[apiCall, resetMessages, resetForm, onSurveyCreated],
+	);
 
 	const onSubmit = async (
 		e: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
 		e.preventDefault();
 		const surveyCommand: Types.CreateSurveyCommand = {
-			surveyTopic: topic,
-			numberOfRespondents,
-			respondentType,
-			surveyOptions: options.map(
+			surveyTopic: formState.survey.topic,
+			numberOfRespondents: formState.survey.numberOfRespondents,
+			respondentType: formState.survey.respondentType,
+			surveyOptions: formState.survey.options.map(
 				(option) =>
 					({
 						optionText: option.optionText,
@@ -145,25 +254,26 @@ const CreateSurvey = ({
 				<form onSubmit={onSubmit}>
 					<Field
 						label="Target Audience (Respondent Type)"
-						value={respondentType}
-						onChange={(value) => setRespondentType(value)}
+						value={formState.survey.respondentType}
+						onChange={(value) => updateSurveyField("respondentType", value)}
 						loading={loading}
 						placeholder="Pragmatic Developers"
 					/>
 					<Field
 						label="Question (Survey Topic)"
-						value={topic}
-						onChange={(value) => setTopic(value)}
+						value={formState.survey.topic}
+						onChange={(value) => updateSurveyField("topic", value)}
 						loading={loading}
 						placeholder="Do you prefer tabs or spaces?"
 					/>
 					<Field
 						label="Number of Respondents"
-						value={numberOfRespondents}
+						value={formState.survey.numberOfRespondents}
 						onChange={(value) =>
-							setNumberOfRespondents(
+							updateSurveyField(
+								"numberOfRespondents",
 								Number.isNaN(Number(value))
-									? numberOfRespondents
+									? formState.survey.numberOfRespondents
 									: Number(value),
 							)
 						}
@@ -172,7 +282,7 @@ const CreateSurvey = ({
 					<span className="block text-gray-500">
 						{loading ? <Skeleton /> : <span>Options</span>}
 					</span>
-					{options.map((option, index) => (
+					{formState.survey.options.map((option, index) => (
 						<div key={option.id}>
 							<Field
 								label={`#${option.id}`}
@@ -186,11 +296,7 @@ const CreateSurvey = ({
 								{index > 0 && (
 									<Button
 										actionType="destructive"
-										onClick={() => {
-											setOptions([
-												...options.filter((o) => o.id !== option.id),
-											]);
-										}}
+										onClick={() => removeOption(option.id)}
 										additionalClasses={["lg:ml-4"]}
 									>
 										{`Remove #${option.id}`}
@@ -209,7 +315,7 @@ const CreateSurvey = ({
 									id={`preferred-votes-${option.id}`}
 									type="number"
 									min="0"
-									max={numberOfRespondents}
+									max={formState.survey.numberOfRespondents}
 									value={option.preferredNumberOfVotes}
 									onChange={(e) => {
 										const value = Number.parseInt(e.target.value, 10);
@@ -225,7 +331,7 @@ const CreateSurvey = ({
 									{loading ? (
 										<Skeleton width={200} />
 									) : (
-										`Set to 0 for random distribution or specify the desired number of votes (max: ${numberOfRespondents})`
+										`Set to 0 for random distribution or specify the desired number of votes (max: ${formState.survey.numberOfRespondents})`
 									)}
 								</p>
 							</div>
@@ -233,16 +339,7 @@ const CreateSurvey = ({
 					))}
 					<div className="my-2">
 						<SkeletonButton
-							onClick={() =>
-								setOptions([
-									...options,
-									{
-										id: options.length + 1,
-										optionText: "",
-										preferredNumberOfVotes: 0,
-									},
-								] as Types.SurveyOptionModel[])
-							}
+							onClick={addOption}
 							loading={loading}
 							actionType="secondary"
 						>
@@ -257,17 +354,17 @@ const CreateSurvey = ({
 					</div>
 				</form>
 				<div>
-					{successMessage !== "" && (
-						<Alert title="Survey Created" message={successMessage} />
+					{formState.messages.success !== "" && (
+						<Alert title="Survey Created" message={formState.messages.success} />
 					)}
-					{errorMessage !== "" && (
+					{formState.messages.error !== "" && (
 						<Alert
 							type="error"
 							title="Oh no! Something did not go as planned."
-							message={errorMessage}
+							message={formState.messages.error}
 						/>
 					)}
-					{validationErrors.map((error, index) => (
+					{formState.messages.validationErrors.map((error, index) => (
 						<Alert
 							// biome-ignore lint/suspicious/noArrayIndexKey: no unique identifier available
 							key={index}
