@@ -31,8 +31,7 @@ book, as well as its companion reference
 application [eShopOnAzure](https://github.com/Azure-Samples/eShopOnAzure). It also incorporates various
 elements from different repos & blog posts which served as inspiration.
 
-It is built using Vertical Slice Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (
-Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent
+It is built using Vertical Slice Architecture principles with CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) thrown into the mix. It doesn't follow these principles to the letter, but provides a decent
 example of how to apply the basics of these principles.
 
 It is heavily centered around the
@@ -143,7 +142,6 @@ The server side makes use of the following tools, libraries & frameworks:
     - [Dapper](https://github.com/StackExchange/Dapper)
     - [Redis](https://redis.io/)
     - [Scalar](https://scalar.com/)
-    - [MediatR](https://github.com/jbogard/MediatR)
     - [FluentValidation](https://fluentvalidation.net/)
     - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
     - [Docker](https://www.docker.com/)
@@ -167,7 +165,6 @@ The client side makes use of the following tools, libraries & frameworks:
 - [Tailwind CSS](https://tailwindcss.com/)
 - [PostCSS](https://postcss.org/)
 - [React Loading Skeleton](https://github.com/dvtng/react-loading-skeleton)
-- [NGINX](https://www.nginx.com/)
 - [Docker](https://www.docker.com/)
 
 ### Common
@@ -206,7 +203,6 @@ by [Auth0](https://auth0.com/). Currently supported connections are:
 
 - Auth0
 - Google
-- Microsoft
 
 ## How do I run this thing?
 
