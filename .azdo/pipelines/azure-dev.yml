@@ -216,7 +216,7 @@ stages:
           vmImage: "ubuntu-latest"
         variables:
           apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
-          uiSemVerVersionTag: $[stageDependencies.BuildUi.Build.outputs['SetVersionTag.VersionTag']]
+          uiSemVerVersionTag: $[stageDependencies.BuildTestUI.Build.outputs['SetVersionTag.VersionTag']]
         steps:
           - task: setup-azd@1
             displayName: Install azd
