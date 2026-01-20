@@ -78,10 +78,10 @@ Here are some of the features incorporated into this project:
 - Using [Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id)
   authentication to [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/) with Entity Framework
   Core
-- Running a microservice application locally using [Aspire](https://aspire.dev/get-started/what-is-aspire/)
+- Running a distributed application locally using [Aspire](https://aspire.dev/get-started/what-is-aspire/)
 - Using Azure Pipelines
   with [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview) to build &
-  deploy a microservice application
+  deploy a distributed application
   to [Azure Container Apps](https://azure.microsoft.com/en-us/services/container-apps/#overview)
 - Infrastructure as Code for Azure resources
   using [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview)
