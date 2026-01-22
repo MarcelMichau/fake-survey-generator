@@ -196,7 +196,15 @@ stages:
             inputs:
               command: "custom"
               workingDir: "src/client/frontend"
-              customCommand: "test -- --run"
+              customCommand: "test -- --run --reporter=junit --reporter=default --outputFile.junit=./test-results/junit.xml"
+
+          - task: PublishTestResults@2
+            displayName: "Publish Frontend Test Results"
+            inputs:
+              testResultsFormat: "JUnit"
+              testResultsFiles: "src/client/frontend/test-results/junit.xml"
+              failTaskOnFailedTests: true
+            condition: succeededOrFailed()
 
           - script: |
               echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
