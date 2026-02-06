@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using FakeSurveyGenerator.Api.Shared;
 using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Errors;
@@ -15,7 +14,8 @@ internal static class SurveyEndpoints
     {
         var surveyGroup = app.MapGroup("/api/survey")
             .RequireAuthorization()
-            .AddEndpointFilter<RequestLoggingEndpointFilter>();
+            .AddEndpointFilter<RequestLoggingEndpointFilter>()
+            .AddEndpointFilter<ValidationLoggingEndpointFilter>();
 
         surveyGroup.MapGet("/{id:int}", GetSurvey)
             .WithName(nameof(GetSurvey))
@@ -33,27 +33,30 @@ internal static class SurveyEndpoints
     private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(
         IQueryHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>> handler,
         [Description("Primary key of the Survey")] int id,
+        HttpContext httpContext,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(new GetSurveyDetailQuery(id), cancellationToken);
 
-        return ApiResultExtensions.FromResult(result);
+        return FromResultWithValidationLogging(httpContext, result);
     }
 
     private static async Task<Results<Ok<List<UserSurveyModel>>, ProblemHttpResult>> GetUserSurveys(
         IQueryHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>> handler,
+        HttpContext httpContext,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(new GetUserSurveysQuery(), cancellationToken);
 
-        return ApiResultExtensions.FromResult(result);
+        return FromResultWithValidationLogging(httpContext, result);
     }
 
     private static async
         Task<Results<CreatedAtRoute<SurveyModel>, ProblemHttpResult,
             UnprocessableEntity<IDictionary<string, string[]>>>> CreateSurvey(
             ICommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>> handler,
-            CreateSurveyCommand command, 
+            CreateSurveyCommand command,
+            HttpContext httpContext,
             CancellationToken cancellationToken)
     {
         var result = await handler.Handle(command, cancellationToken);
@@ -63,10 +66,33 @@ internal static class SurveyEndpoints
 
         if (result.Error is ValidationError validationError)
         {
+            httpContext.Items[ValidationLoggingEndpointFilter.ValidationErrorsKey] = validationError.Errors;
             return TypedResults.UnprocessableEntity(validationError.Errors);
         }
 
         return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
             statusCode: StatusCodes.Status400BadRequest);
+    }
+
+    private static Results<Ok<T>, ProblemHttpResult> FromResultWithValidationLogging<T>(
+        HttpContext httpContext,
+        Result<T, Error> result)
+    {
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok(result.Value);
+        }
+
+        if (result.Error is ValidationError validationError)
+        {
+            httpContext.Items[ValidationLoggingEndpointFilter.ValidationErrorsKey] = validationError.Errors;
+        }
+
+        var statusCode = Equals(result.Error, Errors.General.NotFound())
+            ? StatusCodes.Status404NotFound
+            : StatusCodes.Status400BadRequest;
+
+        return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
+            statusCode: statusCode);
     }
 }

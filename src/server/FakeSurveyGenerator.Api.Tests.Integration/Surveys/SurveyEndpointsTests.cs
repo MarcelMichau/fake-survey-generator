@@ -5,6 +5,7 @@ using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.TestHelpers;
+using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Surveys;
 
@@ -90,6 +91,79 @@ public sealed class SurveyEndpointsTests
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
     }
+
+    [Test]
+    public async Task
+        GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenValidationErrorsShouldBeLogged()
+    {
+        TestLogSink.Shared.Clear();
+
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "",
+            NumberOfRespondents = 0,
+            RespondentType = "",
+            SurveyOptions = new List<SurveyOptionDto>
+            {
+                new()
+                {
+                    OptionText = ""
+                }
+            }
+        };
+
+        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
+
+        var validationLog = TestLogSink.Shared.Entries.LastOrDefault(entry =>
+            entry.Level == LogLevel.Warning
+            && entry.EventId.Id == 1
+            && entry.Category == "FakeSurveyGenerator.Api.Filters.ValidationLoggingEndpointFilter");
+
+        await Assert.That(validationLog).IsNotNull();
+
+        // LoggerMessage payload doesn't include structured state in this test host, so validate via message text.
+        await Assert.That(validationLog!.Message.Contains("Validation failure on Endpoint: CreateSurvey")).IsTrue();
+        await Assert.That(validationLog.Message.Contains("User:")).IsTrue();
+        await Assert.That(validationLog.Message.Contains("Unknown Identity")).IsFalse();
+        await Assert.That(validationLog.Message.Contains("SurveyTopic")).IsTrue();
+        await Assert.That(validationLog.Message.Contains("SurveyOptions[0].OptionText")).IsTrue();
+    }
+
+    [Test]
+    public async Task
+        GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenRequestShouldBeLogged()
+    {
+        TestLogSink.Shared.Clear();
+
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "",
+            NumberOfRespondents = 0,
+            RespondentType = "",
+            SurveyOptions = new List<SurveyOptionDto>
+            {
+                new()
+                {
+                    OptionText = ""
+                }
+            }
+        };
+
+        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
+
+        var hasRequestLog = TestLogSink.Shared.Entries.Any(entry =>
+            entry.Category == "FakeSurveyGenerator.Api.Filters.RequestLoggingEndpointFilter"
+            && entry.Message.Contains("Request to Endpoint: CreateSurvey")
+            && entry.Message.Contains("User:")
+            && !entry.Message.Contains("Unknown Identity"));
+
+        await Assert.That(hasRequestLog).IsTrue();
+    }
+
 
     [Test]
     public async Task GivenExistingSurveyId_WhenCallingGetSurvey_ThenExistingSurveyShouldBeReturned()

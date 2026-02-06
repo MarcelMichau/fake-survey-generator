@@ -35,7 +35,12 @@ public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings s
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureLogging(logging => { logging.ClearProviders(); });
+        builder.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddProvider(new TestLoggerProvider(TestLogSink.Shared));
+            logging.SetMinimumLevel(LogLevel.Information);
+        });
 
         builder.ConfigureTestServices(ConfigureMockServices);
     }
