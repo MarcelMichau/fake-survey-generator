@@ -1,5 +1,6 @@
 using FakeSurveyGenerator.Application.Shared.Identity;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace FakeSurveyGenerator.Api.Filters;
 
@@ -21,24 +22,38 @@ public sealed class ValidationLoggingEndpointFilter(ILoggerFactory loggerFactory
         && value is IDictionary<string, string[]> errors
         && errors.Count > 0)
     {
-      var userIdentity = userService?.GetUserIdentity() ?? "Unknown Identity";
+      if (!_logger.IsEnabled(LogLevel.Warning))
+      {
+        return result;
+      }
 
-      _logger.LogValidationErrors(endpointName, userIdentity, errors);
+      var userIdentity = userService?.GetUserIdentity() ?? "Unknown Identity";
+      var state = BuildLogState(endpointName, userIdentity, errors);
+      var message = $"Validation failure on Endpoint: {endpointName} for User: {userIdentity}.";
+
+      _logger.Log(LogLevel.Warning, new EventId(1, "ValidationErrors"), state, null,
+          (_, _) => message);
     }
 
     return result;
   }
-}
 
-public static partial class ValidationLoggingEndpointFilterLogging
-{
-  [LoggerMessage(
-      EventId = 1,
-      Level = LogLevel.Warning,
-      Message = "Validation failure on Endpoint: {EndpointName} for User: {UserIdentity}. Errors: {Errors}")]
-  public static partial void LogValidationErrors(
-      this ILogger logger,
-      string endpointName,
-      string userIdentity,
-      IDictionary<string, string[]> errors);
+  private static IReadOnlyList<KeyValuePair<string, object?>> BuildLogState(
+    string endpointName,
+    string userIdentity,
+    IDictionary<string, string[]> errors)
+  {
+    var state = new List<KeyValuePair<string, object?>>
+    {
+        new("EndpointName", endpointName),
+        new("UserIdentity", userIdentity),
+    };
+
+    foreach (var error in errors.OrderBy(pair => pair.Key))
+    {
+      state.Add(new($"Error.{error.Key}", error.Value));
+    }
+
+    return state;
+  }
 }

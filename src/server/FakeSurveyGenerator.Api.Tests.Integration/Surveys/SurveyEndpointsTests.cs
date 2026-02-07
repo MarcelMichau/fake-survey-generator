@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Linq;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Surveys;
@@ -123,12 +124,22 @@ public sealed class SurveyEndpointsTests
 
         await Assert.That(validationLog).IsNotNull();
 
-        // LoggerMessage payload doesn't include structured state in this test host, so validate via message text.
         await Assert.That(validationLog!.Message.Contains("Validation failure on Endpoint: CreateSurvey")).IsTrue();
         await Assert.That(validationLog.Message.Contains("User:")).IsTrue();
         await Assert.That(validationLog.Message.Contains("Unknown Identity")).IsFalse();
-        await Assert.That(validationLog.Message.Contains("SurveyTopic")).IsTrue();
-        await Assert.That(validationLog.Message.Contains("SurveyOptions[0].OptionText")).IsTrue();
+
+        var state = validationLog.State;
+        await Assert.That(state).IsNotNull();
+        await Assert.That(HasStateKey(state, "Error.SurveyTopic")).IsTrue();
+        await Assert.That(HasStateKey(state, "Error.SurveyOptions[0].OptionText")).IsTrue();
+
+        var surveyTopicErrors = GetStateStringArray(state, "Error.SurveyTopic");
+        var optionTextErrors = GetStateStringArray(state, "Error.SurveyOptions[0].OptionText");
+
+        await Assert.That(surveyTopicErrors).IsNotNull();
+        await Assert.That(optionTextErrors).IsNotNull();
+        await Assert.That(surveyTopicErrors!.Length).IsGreaterThan(0);
+        await Assert.That(optionTextErrors!.Length).IsGreaterThan(0);
     }
 
     [Test]
@@ -250,5 +261,19 @@ public sealed class SurveyEndpointsTests
 
         var survey = await response.Content.ReadFromJsonAsync<SurveyModel>();
         return survey!;
+    }
+
+    private static bool HasStateKey(
+        IReadOnlyList<KeyValuePair<string, object?>> state,
+        string key)
+    {
+        return state.Any(item => item.Key == key);
+    }
+
+    private static string[]? GetStateStringArray(
+        IReadOnlyList<KeyValuePair<string, object?>> state,
+        string key)
+    {
+        return state.FirstOrDefault(item => item.Key == key).Value as string[];
     }
 }
