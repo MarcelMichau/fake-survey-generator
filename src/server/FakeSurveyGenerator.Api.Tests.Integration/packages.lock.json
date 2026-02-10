@@ -95,15 +95,15 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[1.12.144, )",
-        "resolved": "1.12.144",
-        "contentHash": "IaWp1eKtBUzHo/I7VvwAXnJdh1jvl6mloDGw7HLzwkz39pQNvQVlmra9Lqw+gCj+hqD7R+6Wf7Va8QbqQcfGYg==",
+        "requested": "[1.13.11, )",
+        "resolved": "1.13.11",
+        "contentHash": "wiX969wCeCxfnMAgSPIQum/fb/+odklSuULiPC4POwCp75XEzVGrmq59WCmCrp74/9bUQmkuSfqSftYMJ9Ni2g==",
         "dependencies": {
           "Microsoft.Testing.Extensions.CodeCoverage": "18.4.1",
-          "Microsoft.Testing.Extensions.Telemetry": "2.0.2",
-          "Microsoft.Testing.Extensions.TrxReport": "2.0.2",
-          "TUnit.Assertions": "1.12.144",
-          "TUnit.Engine": "1.12.144"
+          "Microsoft.Testing.Extensions.Telemetry": "2.1.0",
+          "Microsoft.Testing.Extensions.TrxReport": "2.1.0",
+          "TUnit.Assertions": "1.13.11",
+          "TUnit.Engine": "1.13.11"
         }
       },
       "Aspire.StackExchange.Redis": {
@@ -897,11 +897,11 @@
       },
       "Microsoft.Testing.Extensions.Telemetry": {
         "type": "Transitive",
-        "resolved": "2.0.2",
-        "contentHash": "H580BvHyuADoWzlH9zRk5fqVyGucm6mhph+k40CQc9O4ie+Buxa4Pk9Q92BEClqIICqi25J7fuMII9qFYYgKtw==",
+        "resolved": "2.1.0",
+        "contentHash": "5TwgTx2u7k9Al/xbZ18QXq4Hdy2xewkVTI6K3sk+jY2ykqUkIKNuj7rFu3GOV5KnEUkevhw6eZcyZs77STHJIA==",
         "dependencies": {
           "Microsoft.ApplicationInsights": "2.23.0",
-          "Microsoft.Testing.Platform": "2.0.2"
+          "Microsoft.Testing.Platform": "2.1.0"
         }
       },
       "Microsoft.Testing.Extensions.TrxReport.Abstractions": {
@@ -919,10 +919,10 @@
       },
       "Microsoft.Testing.Platform.MSBuild": {
         "type": "Transitive",
-        "resolved": "2.0.2",
-        "contentHash": "2zKkQKaUoaKgb/3AekboWOdLMh4upCo1nLWQnjGzp8r9YjiNOZRrzTsJQ3A4U03AcbH0evlIvFDKYSUqmTVuug==",
+        "resolved": "2.1.0",
+        "contentHash": "UpfPebXQtHGrWz21+YLHmJSm+5zsuPE9U9pfdCtoB+67g75fDmWlNgpkH2ZmdVhSwkjNIed9Icg8Iu63z2ei5Q==",
         "dependencies": {
-          "Microsoft.Testing.Platform": "2.0.2"
+          "Microsoft.Testing.Platform": "2.1.0"
         }
       },
       "NETStandard.Library": {
@@ -1088,24 +1088,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "1.12.144",
-        "contentHash": "dyHoyHjNIxNWXGmntJnxSA6F/fxHwM6oOOfX4m2wuqD5AMHL1Ta5m1XooBHCHEjEMQ5HMEtwkMKFzwRR7KbhEQ=="
+        "resolved": "1.13.11",
+        "contentHash": "LAdUbB7V62wHKKxVbpt7Q6u9thIKTpyAaMrKzgZrJl83Xka+QqQYTn33iDDUlcJPuTYcHOjDKKsquhMHPV0BZw=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "1.12.144",
-        "contentHash": "lTcRiU0APlxGDKwEpAIsF8S38pa5Id3yn4vl0fqe5TSeA8bYt3NsnzoOAeVcDD0n9UpdSONnHvLR70vAWA19lg=="
+        "resolved": "1.13.11",
+        "contentHash": "Isi2QnI9SsDG+vpWCFHP1GHoIMk/gA3+pVAugC64B7+I5QxNw/xxWq7fS6WaMyRBTGAgzQ0rM0iZ4q2+mjv0cQ=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "1.12.144",
-        "contentHash": "0RgTGSBeUdohFLdOAwy+hJ42bMKXhfm+lG75zzKK6EVaA2+VKIfyR0Rr6Ds8BHzuzmifa1hehMlzGLkMvwMxiA==",
+        "resolved": "1.13.11",
+        "contentHash": "E0PTce57LoTuCTIczuHR4yVkOSt7nsOt++0sDYqR0l1emNQU5qJQAL0QJUnbopkTT29tv0arPvznJL5Pm6/Nag==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
-          "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.0.2",
-          "Microsoft.Testing.Platform": "2.0.2",
-          "Microsoft.Testing.Platform.MSBuild": "2.0.2",
-          "TUnit.Core": "1.12.144"
+          "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.1.0",
+          "Microsoft.Testing.Platform": "2.1.0",
+          "Microsoft.Testing.Platform.MSBuild": "2.1.0",
+          "TUnit.Core": "1.13.11"
         }
       },
       "fakesurveygenerator.api": {
@@ -1119,7 +1119,7 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[10.0.2, )",
           "Microsoft.AspNetCore.OpenApi": "[10.0.2, )",
           "NetEscapades.AspNetCore.SecurityHeaders": "[1.3.1, )",
-          "Scalar.AspNetCore": "[2.12.35, )"
+          "Scalar.AspNetCore": "[2.12.36, )"
         }
       },
       "fakesurveygenerator.application": {
@@ -1445,9 +1445,9 @@
       },
       "Scalar.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[2.12.35, )",
-        "resolved": "2.12.35",
-        "contentHash": "cOyKhYf4HAnkcFd/gIIWIUerY5vfIbyrEHwsANehkimtrZHyc8+G3Fz3h5RG9IrGdLJ63rcn8+hRfd1Kdi9/1w=="
+        "requested": "[2.12.36, )",
+        "resolved": "2.12.36",
+        "contentHash": "jpsDpEs0pN3/AgcaTX8AnRAZy97bLjChToe8wSrNrRoP8nrQu6GgvOLO2X66620Y3Ui63tBkB729yDJKnWvi6A=="
       }
     }
   }
