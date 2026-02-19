@@ -9,7 +9,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-
   name: managedIdentityName
 }
 
-module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
+module containerAppEnvironment 'containerAppEnvironment.bicep' = {
   name: 'containerAppEnvironment'
   params: {
     location: location
@@ -20,7 +20,7 @@ module containerAppEnvironment 'modules/containerAppEnvironment.bicep' = {
   }
 }
 
-module daprSecretStoreComponent 'modules/daprComponent.bicep' = {
+module daprSecretStoreComponent 'daprComponent.bicep' = {
   name: 'daprSecretStoreComponent'
   params: {
     componentName: 'secrets'

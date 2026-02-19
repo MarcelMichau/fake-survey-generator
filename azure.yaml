@@ -7,7 +7,6 @@ services:
   api:
     language: csharp
     project: ./src/server/FakeSurveyGenerator.Api
-    module: ./src/server/infra
     host: containerapp
     docker:
       path: ./Dockerfile
@@ -17,7 +16,6 @@ services:
   ui:
     language: ts
     project: ./src/client/frontend
-    module: ./src/client/infra
     host: containerapp
     dist: dist
     docker:

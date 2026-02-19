@@ -1,4 +1,4 @@
-using './main.bicep'
+using './ui.bicep'
 
 param containerAppName = readEnvironmentVariable('SERVICE_UI_NAME', '')
 param containerAppEnvironmentId = readEnvironmentVariable('AZURE_CONTAINER_APPS_ENVIRONMENT_ID', '')
