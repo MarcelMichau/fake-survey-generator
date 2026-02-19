@@ -111,3 +111,4 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-p
 output containerAppEnvironmentId string = containerAppEnvironment.id
 output containerAppEnvironmentName string = containerAppEnvironment.name
 output fqdn string = containerAppEnvironment::httpRouteConfig.properties.fqdn
+output defaultDomain string = containerAppEnvironment.properties.defaultDomain
