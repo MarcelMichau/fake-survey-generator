@@ -7,15 +7,6 @@ param applicationName string
 
 param dnsZoneName string
 
-param sqlAzureAdAdministratorLogin string
-param sqlAzureAdAdministratorObjectId string
-
-@description('Specifies if the API app exists')
-param apiAppExists bool = false
-
-@description('Specifies if the UI app exists')
-param uiAppExists bool = false
-
 var tags = { 'azd-env-name': environment }
 
 var abbrs = loadJsonContent('abbreviations.json')
@@ -152,19 +143,10 @@ module compute 'compute.bicep' = {
   params: {
     location: location
     tags: tags
-    apiContainerAppName: '${abbrs.appContainerApps}${applicationName}-api'
-    apiContainerAppExists: apiAppExists
-    applicationInsightsName: applicationInsights.outputs.applicationInsightsName
     containerAppEnvironmentName: '${abbrs.appManagedEnvironments}${applicationName}'
     logAnalyticsName: logAnalytics.outputs.name
     virtualNetworkSubnetId: virtualNetwork.outputs.subnetId
-    containerRegistryName: containerRegistry.outputs.containerRegistryName
     managedIdentityName: managedIdentity.outputs.identityName
-    redisCacheName: redisCache.outputs.redisCacheName
-    sqlDatabaseName: azureSql.outputs.sqlServerDatabaseName
-    sqlServerName: azureSql.outputs.sqlServerName
-    uiContainerAppName: '${abbrs.appContainerApps}${applicationName}-ui'
-    uiContainerAppExists: uiAppExists
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -174,31 +156,24 @@ module frontDoor 'modules/frontDoor.bicep' = {
   params: {
     tags: tags
     dnsZoneName: dnsZone.outputs.name
-    uiOriginHostName: compute.outputs.uiContainerAppFqdn
-    apiOriginHostName: compute.outputs.apiContainerAppFqdn
+    uiOriginHostName: '${abbrs.appContainerApps}${applicationName}-ui.${compute.outputs.containerAppEnvironmentDefaultDomain}'
+    apiOriginHostName: '${abbrs.appContainerApps}${applicationName}-api.${compute.outputs.containerAppEnvironmentDefaultDomain}'
     cnameRecordName: replace(applicationName, '-', '')
     endpointName: '${abbrs.networkFrontDoors}${applicationName}'
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
 
-output SERVICE_API_IMAGE_NAME string = compute.outputs.apiContainerImageName
-output SERVICE_API_NAME string = compute.outputs.apiContainerAppName
-output SERVICE_API_URI string = compute.outputs.apiContainerAppUri
-output SERVICE_API_IDENTITY_NAME string = compute.outputs.apiContainerAppIdentityName
-output SERVICE_API_IDENTITY_PRINCIPAL_ID string = compute.outputs.apiContainerAppIdentityPrincipalId
+output SERVICE_API_NAME string = '${abbrs.appContainerApps}${applicationName}-api'
+output SERVICE_API_IDENTITY_NAME string = compute.outputs.managedIdentityName
 
-output SERVICE_UI_IMAGE_NAME string = compute.outputs.uiContainerImageName
-output SERVICE_UI_NAME string = compute.outputs.uiContainerAppName
-output SERVICE_UI_URI string = compute.outputs.uiContainerAppUri
-output SERVICE_UI_IDENTITY_NAME string = compute.outputs.uiContainerAppIdentityName
-output SERVICE_UI_IDENTITY_PRINCIPAL_ID string = compute.outputs.uiContainerAppIdentityPrincipalId
-
-output AZURE_RESOURCE_GROUP_NAME string = fakeSurveyGeneratorResourceGroup.name
+output SERVICE_UI_NAME string = '${abbrs.appContainerApps}${applicationName}-ui'
+output SERVICE_UI_IDENTITY_NAME string = compute.outputs.managedIdentityName
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.containerRegistryEndpoint
-output AZURE_CONTAINER_REGISTRY_NAME string = containerRegistry.outputs.containerRegistryName
+output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = compute.outputs.containerAppEnvironmentId
+output AZURE_REDIS_NAME string = redisCache.outputs.redisCacheName
+output AZURE_APPLICATION_INSIGHTS_NAME string = applicationInsights.outputs.applicationInsightsName
 
-output SQL_SERVER_INSTANCE string = azureSql.outputs.sqlServerInstance
 output SQL_SERVER_NAME string = azureSql.outputs.sqlServerName
 output SQL_DATABASE_NAME string = azureSql.outputs.sqlServerDatabaseName
