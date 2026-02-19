@@ -138,7 +138,7 @@ module managedIdentity 'modules/managedIdentity.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
-module compute 'compute.bicep' = {
+module compute 'modules/compute.bicep' = {
   name: 'compute'
   params: {
     location: location
