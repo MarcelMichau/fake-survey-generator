@@ -26,7 +26,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
       activeRevisionsMode: 'Labels'
-      targetLabel: 'production'
+      targetLabel: 'stage'
       maxInactiveRevisions: 5
       registries: [
         {
@@ -40,8 +40,12 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         allowInsecure: false
         traffic: [
           {
-            label: 'production'
+            label: 'stage'
             latestRevision: true
+            weight: 0
+          }
+          {
+            label: 'production'
             weight: 100
           }
         ]
