@@ -114,12 +114,14 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         external: true
         targetPort: 8080
         allowInsecure: false
-        traffic: promotePreview ? [
-          productionTrafficEntry
-        ] : [
-          previewTrafficEntry
-          productionTrafficEntry
-        ]
+        traffic: promotePreview
+          ? [
+              productionTrafficEntry
+            ]
+          : [
+              previewTrafficEntry
+              productionTrafficEntry
+            ]
       }
       dapr: {
         enabled: true
