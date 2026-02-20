@@ -74,7 +74,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
       activeRevisionsMode: 'Labels'
-      targetLabel: version
+      targetLabel: 'production'
       maxInactiveRevisions: 5
       registries: [
         {
