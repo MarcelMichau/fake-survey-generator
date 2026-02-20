@@ -443,11 +443,40 @@ stages:
                   exit 1
                 fi
 
+                API_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_API_NAME="\(.*\)"/\1/p')
+                UI_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_UI_NAME="\(.*\)"/\1/p')
+
+                API_PREVIEW_REVISION=""
+                UI_PREVIEW_REVISION=""
+
+                if [[ -n "${API_APP_NAME}" ]]; then
+                  API_PREVIEW_REVISION=$(az containerapp ingress traffic show \
+                    --resource-group "${AZURE_RESOURCE_GROUP}" \
+                    --name "${API_APP_NAME}" \
+                    --query "[?label=='${API_PREVIEW_LABEL}'].revisionName | [0]" \
+                    -o tsv 2>/dev/null || true)
+                fi
+
+                if [[ -n "${UI_APP_NAME}" ]]; then
+                  UI_PREVIEW_REVISION=$(az containerapp ingress traffic show \
+                    --resource-group "${AZURE_RESOURCE_GROUP}" \
+                    --name "${UI_APP_NAME}" \
+                    --query "[?label=='${UI_PREVIEW_LABEL}'].revisionName | [0]" \
+                    -o tsv 2>/dev/null || true)
+                fi
+
+                if [[ -z "${API_PREVIEW_REVISION}" || -z "${UI_PREVIEW_REVISION}" ]]; then
+                  echo "Unable to resolve preview revision names for promotion."
+                  echo "API preview revision: ${API_PREVIEW_REVISION:-<none>}"
+                  echo "UI preview revision: ${UI_PREVIEW_REVISION:-<none>}"
+                  exit 1
+                fi
+
                 echo "Promoting API from package: ${API_PACKAGE_REF}"
-                azd deploy api --from-package "${API_PACKAGE_REF}" --no-prompt
+                API_PRODUCTION_REVISION_NAME="${API_PREVIEW_REVISION}" azd deploy api --from-package "${API_PACKAGE_REF}" --no-prompt
 
                 echo "Promoting UI from package: ${UI_PACKAGE_REF}"
-                azd deploy ui --from-package "${UI_PACKAGE_REF}" --no-prompt
+                UI_PRODUCTION_REVISION_NAME="${UI_PREVIEW_REVISION}" azd deploy ui --from-package "${UI_PACKAGE_REF}" --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
               AZURE_ENV_NAME: $(azureEnvName)
@@ -458,9 +487,11 @@ stages:
               UI_ACTIVE_LABEL: $(uiActiveLabel)
               UI_PROMOTE_PREVIEW: "true"
               UI_PRODUCTION_REVISION_NAME: ""
+              UI_PREVIEW_LABEL: $(uiPreviewLabel)
               API_ACTIVE_LABEL: $(apiActiveLabel)
               API_PROMOTE_PREVIEW: "true"
               API_PRODUCTION_REVISION_NAME: ""
+              API_PREVIEW_LABEL: $(apiPreviewLabel)
               API_PACKAGE_REF: $(apiPackageRef)
               UI_PACKAGE_REF: $(uiPackageRef)
               VITE_APP_VERSION: $(uiSemVerVersionTag)

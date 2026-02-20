@@ -41,7 +41,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 var previewLabel = activeLabel == 'blue' ? 'green' : 'blue'
 var productionLabel = promotePreview ? previewLabel : activeLabel
 var targetLabel = promotePreview ? productionLabel : previewLabel
-var useLatestForProductionTraffic = promotePreview || empty(productionRevisionName)
+var useLatestForProductionTraffic = empty(productionRevisionName)
 var previewTrafficEntry = {
   label: previewLabel
   latestRevision: true
