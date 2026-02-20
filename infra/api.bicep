@@ -88,6 +88,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         allowInsecure: false
         traffic: [
           {
+            label: 'production'
             latestRevision: true
             weight: 100
           }
