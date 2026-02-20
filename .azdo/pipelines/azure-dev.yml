@@ -38,6 +38,10 @@ variables:
   azureResourceGroup: rg-fake-survey-generator
   azureResourceManagerConnection: "Azure Service Connection"
   azureLocation: "South Africa North"
+  apiActiveLabel: "blue"
+  apiPromotePreview: "false"
+  uiActiveLabel: "blue"
+  uiPromotePreview: "false"
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
@@ -255,7 +259,7 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
 
           - task: AzureCLI@2
-            displayName: Deploy Application
+            displayName: Deploy Application (Preview)
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
@@ -269,6 +273,78 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
               UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
+              UI_ACTIVE_LABEL: $(uiActiveLabel)
+              UI_PROMOTE_PREVIEW: "false"
+              API_ACTIVE_LABEL: $(apiActiveLabel)
+              API_PROMOTE_PREVIEW: "false"
+              VITE_APP_VERSION: $(uiSemVerVersionTag)
+
+          - task: AzureCLI@2
+            displayName: Validate Preview API + UI URLs
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+
+                API_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_API_NAME="\(.*\)"/\1/p')
+                UI_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_UI_NAME="\(.*\)"/\1/p')
+
+                if [[ -z "${API_APP_NAME}" || -z "${UI_APP_NAME}" ]]; then
+                  echo "Unable to resolve SERVICE_API_NAME or SERVICE_UI_NAME from azd environment."
+                  exit 1
+                fi
+
+                API_HOST=$(az containerapp show --resource-group "${AZURE_RESOURCE_GROUP}" --name "${API_APP_NAME}" --query properties.latestRevisionFqdn -o tsv)
+                UI_HOST=$(az containerapp show --resource-group "${AZURE_RESOURCE_GROUP}" --name "${UI_APP_NAME}" --query properties.latestRevisionFqdn -o tsv)
+
+                API_URL="https://${API_HOST}/health/ready"
+                UI_URL="https://${UI_HOST}"
+
+                echo "Validating API URL: ${API_URL}"
+                echo "Validating UI URL: ${UI_URL}"
+
+                for i in $(seq 1 20); do
+                  API_STATUS=$(curl -k -sS -o /dev/null -w "%{http_code}" "${API_URL}" || true)
+                  UI_STATUS=$(curl -k -sS -o /dev/null -w "%{http_code}" "${UI_URL}" || true)
+
+                  if [[ "${API_STATUS}" == "200" && "${UI_STATUS}" == "200" ]]; then
+                    echo "Preview validation succeeded (API=${API_STATUS}, UI=${UI_STATUS})."
+                    exit 0
+                  fi
+
+                  echo "Attempt ${i}/20: API=${API_STATUS}, UI=${UI_STATUS}. Retrying in 15s..."
+                  sleep 15
+                done
+
+                echo "Preview validation failed after retries."
+                exit 1
+            env:
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+
+          - task: AzureCLI@2
+            displayName: Promote Preview to Production Label
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                azd deploy --no-prompt
+            env:
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              UI_VERSION: $(uiSemVerVersionTag)
+              API_VERSION: $(apiSemVerVersionTag)
+              UI_ACTIVE_LABEL: $(uiActiveLabel)
+              UI_PROMOTE_PREVIEW: "true"
+              API_ACTIVE_LABEL: $(apiActiveLabel)
+              API_PROMOTE_PREVIEW: "true"
               VITE_APP_VERSION: $(uiSemVerVersionTag)
 
   - stage: Database_Deployment

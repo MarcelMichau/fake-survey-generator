@@ -9,6 +9,12 @@ param redisCacheName string
 param applicationInsightsName string
 param location string = resourceGroup().location
 param version string
+@allowed([
+  'blue'
+  'green'
+])
+param activeLabel string = 'blue'
+param promotePreview bool = false
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: managedIdentityName
@@ -30,6 +36,9 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2024-11-01-preview' existi
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: applicationInsightsName
 }
+
+var previewLabel = activeLabel == 'blue' ? 'green' : 'blue'
+var productionLabel = promotePreview ? previewLabel : activeLabel
 
 var apiEnvironmentVariables = [
   {
@@ -74,7 +83,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
       activeRevisionsMode: 'Labels'
-      targetLabel: 'stage'
+      targetLabel: productionLabel
       maxInactiveRevisions: 5
       registries: [
         {
@@ -88,12 +97,12 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         allowInsecure: false
         traffic: [
           {
-            label: 'stage'
+            label: previewLabel
             latestRevision: true
             weight: 0
           }
           {
-            label: 'production'
+            label: productionLabel
             weight: 100
           }
         ]

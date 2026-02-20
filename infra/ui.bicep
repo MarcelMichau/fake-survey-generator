@@ -5,10 +5,19 @@ param imageName string
 param managedIdentityName string
 param location string = resourceGroup().location
 param version string
+@allowed([
+  'blue'
+  'green'
+])
+param activeLabel string = 'blue'
+param promotePreview bool = false
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: managedIdentityName
 }
+
+var previewLabel = activeLabel == 'blue' ? 'green' : 'blue'
+var productionLabel = promotePreview ? previewLabel : activeLabel
 
 resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
   name: containerAppName
@@ -26,7 +35,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
       activeRevisionsMode: 'Labels'
-      targetLabel: 'stage'
+      targetLabel: productionLabel
       maxInactiveRevisions: 5
       registries: [
         {
@@ -40,12 +49,12 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         allowInsecure: false
         traffic: [
           {
-            label: 'stage'
+            label: previewLabel
             latestRevision: true
             weight: 0
           }
           {
-            label: 'production'
+            label: productionLabel
             weight: 100
           }
         ]
