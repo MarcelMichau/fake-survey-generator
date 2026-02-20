@@ -101,7 +101,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
       }
     }
     template: {
-      revisionSuffix: version
+      revisionSuffix: replace(version, '.', '-')
       containers: [
         {
           name: 'fake-survey-generator-api'
