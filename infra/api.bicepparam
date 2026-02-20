@@ -12,3 +12,4 @@ param applicationInsightsName = readEnvironmentVariable('AZURE_APPLICATION_INSIG
 param version = readEnvironmentVariable('API_VERSION', 'latest')
 param activeLabel = readEnvironmentVariable('API_ACTIVE_LABEL', 'blue')
 param promotePreview = toLower(readEnvironmentVariable('API_PROMOTE_PREVIEW', 'false')) == 'true'
+param productionRevisionName = readEnvironmentVariable('API_PRODUCTION_REVISION_NAME', '')

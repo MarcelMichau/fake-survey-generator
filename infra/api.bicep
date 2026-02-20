@@ -15,6 +15,7 @@ param version string
 ])
 param activeLabel string = 'blue'
 param promotePreview bool = false
+param productionRevisionName string = ''
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: managedIdentityName
@@ -39,6 +40,8 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 
 var previewLabel = activeLabel == 'blue' ? 'green' : 'blue'
 var productionLabel = promotePreview ? previewLabel : activeLabel
+var targetLabel = promotePreview ? productionLabel : previewLabel
+var useLatestForProductionTraffic = promotePreview || empty(productionRevisionName)
 
 var apiEnvironmentVariables = [
   {
@@ -83,7 +86,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
       activeRevisionsMode: 'Labels'
-      targetLabel: productionLabel
+      targetLabel: targetLabel
       maxInactiveRevisions: 5
       registries: [
         {
@@ -101,10 +104,17 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
             latestRevision: true
             weight: 0
           }
-          {
-            label: productionLabel
-            weight: 100
-          }
+          useLatestForProductionTraffic
+            ? {
+                label: productionLabel
+                latestRevision: true
+                weight: 100
+              }
+            : {
+                label: productionLabel
+                revisionName: productionRevisionName
+                weight: 100
+              }
         ]
       }
       dapr: {
