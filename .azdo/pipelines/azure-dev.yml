@@ -337,7 +337,31 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                azd deploy --no-prompt
+                set -euo pipefail
+
+                REGISTRY_ENDPOINT=$(azd env get-values | sed -n 's/^AZURE_CONTAINER_REGISTRY_ENDPOINT="\(.*\)"/\1/p')
+                if [[ -z "${REGISTRY_ENDPOINT}" ]]; then
+                  echo "Unable to resolve AZURE_CONTAINER_REGISTRY_ENDPOINT from azd environment."
+                  exit 1
+                fi
+
+                API_PACKAGE="${REGISTRY_ENDPOINT}/fake-survey-generator/fake-survey-generator-api:$(apiSemVerVersionTag)"
+                UI_PACKAGE="${REGISTRY_ENDPOINT}/fake-survey-generator/fake-survey-generator-ui:$(uiSemVerVersionTag)"
+
+                echo "Publishing API package: ${API_PACKAGE}"
+                azd publish api --to "${API_PACKAGE}" --no-prompt
+
+                echo "Publishing UI package: ${UI_PACKAGE}"
+                azd publish ui --to "${UI_PACKAGE}" --no-prompt
+
+                echo "##vso[task.setvariable variable=apiPackageRef]${API_PACKAGE}"
+                echo "##vso[task.setvariable variable=uiPackageRef]${UI_PACKAGE}"
+
+                echo "Deploying preview API from package"
+                azd deploy api --from-package "${API_PACKAGE}" --no-prompt
+
+                echo "Deploying preview UI from package"
+                azd deploy ui --from-package "${UI_PACKAGE}" --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
               AZURE_ENV_NAME: $(azureEnvName)
@@ -412,7 +436,18 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                azd deploy --no-prompt
+                set -euo pipefail
+
+                if [[ -z "${API_PACKAGE_REF}" || -z "${UI_PACKAGE_REF}" ]]; then
+                  echo "Package references are not available for promotion deployment."
+                  exit 1
+                fi
+
+                echo "Promoting API from package: ${API_PACKAGE_REF}"
+                azd deploy api --from-package "${API_PACKAGE_REF}" --no-prompt
+
+                echo "Promoting UI from package: ${UI_PACKAGE_REF}"
+                azd deploy ui --from-package "${UI_PACKAGE_REF}" --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
               AZURE_ENV_NAME: $(azureEnvName)
@@ -426,6 +461,8 @@ stages:
               API_ACTIVE_LABEL: $(apiActiveLabel)
               API_PROMOTE_PREVIEW: "true"
               API_PRODUCTION_REVISION_NAME: ""
+              API_PACKAGE_REF: $(apiPackageRef)
+              UI_PACKAGE_REF: $(uiPackageRef)
               VITE_APP_VERSION: $(uiSemVerVersionTag)
 
   - stage: Database_Deployment
