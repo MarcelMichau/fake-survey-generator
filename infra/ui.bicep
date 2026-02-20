@@ -21,6 +21,22 @@ var previewLabel = activeLabel == 'blue' ? 'green' : 'blue'
 var productionLabel = promotePreview ? previewLabel : activeLabel
 var targetLabel = promotePreview ? productionLabel : previewLabel
 var useLatestForProductionTraffic = promotePreview || empty(productionRevisionName)
+var previewTrafficEntry = {
+  label: previewLabel
+  latestRevision: true
+  weight: 0
+}
+var productionTrafficEntry = useLatestForProductionTraffic
+  ? {
+      label: productionLabel
+      latestRevision: true
+      weight: 100
+    }
+  : {
+      label: productionLabel
+      revisionName: productionRevisionName
+      weight: 100
+    }
 
 resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
   name: containerAppName
@@ -50,23 +66,11 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         external: true
         targetPort: 80
         allowInsecure: false
-        traffic: [
-          {
-            label: previewLabel
-            latestRevision: true
-            weight: 0
-          }
-          useLatestForProductionTraffic
-            ? {
-                label: productionLabel
-                latestRevision: true
-                weight: 100
-              }
-            : {
-                label: productionLabel
-                revisionName: productionRevisionName
-                weight: 100
-              }
+        traffic: promotePreview ? [
+          productionTrafficEntry
+        ] : [
+          previewTrafficEntry
+          productionTrafficEntry
         ]
       }
     }
