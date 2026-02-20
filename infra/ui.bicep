@@ -4,6 +4,7 @@ param containerRegistryUrl string
 param imageName string
 param managedIdentityName string
 param location string = resourceGroup().location
+param version string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: managedIdentityName
@@ -24,6 +25,9 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
   properties: {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
+      activeRevisionsMode: 'Labels'
+      targetLabel: 'production'
+      maxInactiveRevisions: 5
       registries: [
         {
           server: containerRegistryUrl
@@ -36,6 +40,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         allowInsecure: false
         traffic: [
           {
+            label: 'production'
             latestRevision: true
             weight: 100
           }
@@ -43,6 +48,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
       }
     }
     template: {
+      revisionSuffix: replace(version, '.', '-')
       containers: [
         {
           name: 'fake-survey-generator-ui'
