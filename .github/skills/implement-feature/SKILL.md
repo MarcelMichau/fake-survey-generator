@@ -56,7 +56,7 @@ Use this skill when:
 ```
 Feature: Change survey creation button to purple
 Analysis:
-- Frontend Component: `src/client/frontend/src/components/SurveyList.tsx` (button styling)
+- Frontend Component: `src/client/ui/src/components/SurveyList.tsx` (button styling)
 - Backend Changes: None required
 - Happy-Path: Navigate to survey list → verify button is purple
 ```
@@ -71,7 +71,7 @@ Analysis:
    - Add/update database migrations if schema changes
 
 2. Implement frontend changes (if any):
-   - Modify React components in `src/client/frontend/src/`
+   - Modify React components in `src/client/ui/src/`
    - Update types/interfaces for new API contracts
    - Update UI styling/layout as needed
    - Handle new validation/error scenarios

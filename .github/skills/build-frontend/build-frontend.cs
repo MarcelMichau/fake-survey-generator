@@ -4,7 +4,7 @@ using System.IO;
 
 /// <summary>
 /// Frontend build helper script - file-based app
-/// Runs npm build in src/client/frontend/, outputs errors to stderr
+/// Runs npm build in src/client/ui/, outputs errors to stderr
 /// Exit codes: 0 = success, 1 = build failure
 /// Usage: dotnet build-frontend.cs
 /// </summary>
@@ -14,7 +14,7 @@ var exitCode = 0;
 try
 {
   var repoRoot = FindRepositoryRoot();
-  var frontendDir = Path.Combine(repoRoot, "src", "client", "frontend");
+  var frontendDir = Path.Combine(repoRoot, "src", "client", "ui");
 
   if (!Directory.Exists(frontendDir))
   {

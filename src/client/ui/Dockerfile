@@ -1,9 +1,9 @@
 FROM node:25 AS build
 ARG VITE_APP_VERSION
 WORKDIR /usr/src/app
-COPY src/client/frontend/package.json src/client/frontend/package-lock.json ./
+COPY src/client/ui/package.json src/client/ui/package-lock.json ./
 RUN npm i
-COPY src/client/frontend/. ./
+COPY src/client/ui/. ./
 RUN npm run build
 
 FROM nginx:1.29-alpine

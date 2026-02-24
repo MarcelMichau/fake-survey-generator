@@ -7,7 +7,7 @@ trigger:
     include:
       - .azdo/*
       - src/server/*
-      - src/client/frontend/*
+      - src/client/ui/*
       - infra/*
 
 pr:
@@ -22,7 +22,7 @@ pr:
     include:
       - .azdo/*
       - src/server/*
-      - src/client/frontend/*
+      - src/client/ui/*
       - infra/*
 
 parameters:
@@ -179,30 +179,30 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path ./src/client/frontend nbgv --version 3.9.50
+              arguments: install --tool-path ./src/client/ui nbgv --version 3.9.50
 
           - script: ./nbgv cloud -a
-            workingDirectory: src/client/frontend
+            workingDirectory: src/client/ui
             displayName: Set Build Number & Version Variables
 
           - task: Npm@1
             displayName: "Install Frontend Dependencies"
             inputs:
               command: "install"
-              workingDir: "src/client/frontend"
+              workingDir: "src/client/ui"
 
           - task: Npm@1
             displayName: "Run Frontend Unit Tests"
             inputs:
               command: "custom"
-              workingDir: "src/client/frontend"
+              workingDir: "src/client/ui"
               customCommand: "test -- --run --reporter=junit --reporter=default --outputFile.junit=./test-results/junit.xml"
 
           - task: PublishTestResults@2
             displayName: "Publish Frontend Test Results"
             inputs:
               testResultsFormat: "JUnit"
-              testResultsFiles: "src/client/frontend/test-results/junit.xml"
+              testResultsFiles: "src/client/ui/test-results/junit.xml"
               failTaskOnFailedTests: true
             condition: succeededOrFailed()
 

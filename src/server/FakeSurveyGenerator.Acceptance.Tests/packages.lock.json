@@ -135,6 +135,38 @@
           "System.IO.Hashing": "9.0.10"
         }
       },
+      "Aspire.Hosting.AppHost": {
+        "type": "Transitive",
+        "resolved": "13.1.1",
+        "contentHash": "6xGETFMsq3hbdutfFG2S+rJ1OGY9TDclOR8wb3cqpTp/Lph3AfSXeuges4Dbud+SiHB1/IDlbteOhwLu9OdEqg==",
+        "dependencies": {
+          "AspNetCore.HealthChecks.Uris": "9.0.0",
+          "Aspire.Hosting": "13.1.1",
+          "Google.Protobuf": "3.33.0",
+          "Grpc.AspNetCore": "2.71.0",
+          "Grpc.Net.ClientFactory": "2.71.0",
+          "Grpc.Tools": "2.72.0",
+          "Humanizer.Core": "2.14.1",
+          "JsonPatch.Net": "3.3.0",
+          "KubernetesClient": "18.0.5",
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Configuration.Binder": "10.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.1",
+          "Microsoft.Extensions.FileSystemGlobbing": "10.0.1",
+          "Microsoft.Extensions.Hosting": "10.0.1",
+          "Microsoft.Extensions.Hosting.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Http": "10.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Options": "10.0.1",
+          "Microsoft.Extensions.Primitives": "10.0.1",
+          "Newtonsoft.Json": "13.0.4",
+          "Polly.Core": "8.6.4",
+          "Semver": "3.0.0",
+          "StreamJsonRpc": "2.22.23",
+          "System.IO.Hashing": "9.0.10"
+        }
+      },
       "Aspire.Hosting.Orchestration.win-x64": {
         "type": "Transitive",
         "resolved": "13.1.1",
@@ -1052,39 +1084,6 @@
           "Aspire.Hosting.Redis": "[13.1.1, )",
           "Aspire.Hosting.SqlServer": "[13.1.1, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
-        }
-      },
-      "Aspire.Hosting.AppHost": {
-        "type": "CentralTransitive",
-        "requested": "[13.1.1, )",
-        "resolved": "13.1.1",
-        "contentHash": "6xGETFMsq3hbdutfFG2S+rJ1OGY9TDclOR8wb3cqpTp/Lph3AfSXeuges4Dbud+SiHB1/IDlbteOhwLu9OdEqg==",
-        "dependencies": {
-          "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "13.1.1",
-          "Google.Protobuf": "3.33.0",
-          "Grpc.AspNetCore": "2.71.0",
-          "Grpc.Net.ClientFactory": "2.71.0",
-          "Grpc.Tools": "2.72.0",
-          "Humanizer.Core": "2.14.1",
-          "JsonPatch.Net": "3.3.0",
-          "KubernetesClient": "18.0.5",
-          "Microsoft.Extensions.Configuration.Abstractions": "10.0.1",
-          "Microsoft.Extensions.Configuration.Binder": "10.0.1",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.1",
-          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.1",
-          "Microsoft.Extensions.FileSystemGlobbing": "10.0.1",
-          "Microsoft.Extensions.Hosting": "10.0.1",
-          "Microsoft.Extensions.Hosting.Abstractions": "10.0.1",
-          "Microsoft.Extensions.Http": "10.0.1",
-          "Microsoft.Extensions.Logging.Abstractions": "10.0.1",
-          "Microsoft.Extensions.Options": "10.0.1",
-          "Microsoft.Extensions.Primitives": "10.0.1",
-          "Newtonsoft.Json": "13.0.4",
-          "Polly.Core": "8.6.4",
-          "Semver": "3.0.0",
-          "StreamJsonRpc": "2.22.23",
-          "System.IO.Hashing": "9.0.10"
         }
       },
       "Aspire.Hosting.JavaScript": {

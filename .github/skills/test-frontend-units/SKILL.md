@@ -9,7 +9,7 @@ Use this skill to run unit tests for React components to validate that features 
 
 ## What This Skill Does
 
-1. Runs `npm test -- --run` from the `src/client/frontend` directory
+1. Runs `npm test -- --run` from the `src/client/ui` directory
 2. Executes Vitest test suite including:
    - `src/components/CreateSurvey.test.tsx` (15 tests - survey creation form)
    - `src/components/GetSurvey.test.tsx` (17 tests - survey fetching and display)
@@ -45,7 +45,7 @@ Use this skill to run unit tests for React components to validate that features 
 1. **Prepare**: Navigate to repository root
 2. **Invoke**: Run tests from repository root:
    ```
-   cd src/client/frontend && npm test -- --run
+  cd src/client/ui && npm test -- --run
    ```
    - The `--run` flag executes tests once and exits (non-watch mode)
    - Tests execute with jsdom environment for browser API simulation
@@ -166,7 +166,7 @@ await waitFor(() => expect(screen.getByText("Network error")).toBeInTheDocument(
 
 ## Notes
 
-- Tests are located in `src/client/frontend/src/components/` directory
+- Tests are located in `src/client/ui/src/components/` directory
 - All tests use jsdom for browser API simulation (window, document, etc.)
 - Auth0 authentication is mocked so tests don't require real tokens
 - Tests use userEvent for realistic user interaction simulation
@@ -195,7 +195,7 @@ Once all frontend unit tests pass, typically invoke:
 
 ## Dependencies
 
-Run these from `src/client/frontend` directory once:
+Run these from `src/client/ui` directory once:
 ```bash
 npm install
 ```
@@ -210,7 +210,7 @@ Installed packages:
 
 ## References
 
-- Test files: `src/client/frontend/src/components/*.test.tsx`
+- Test files: `src/client/ui/src/components/*.test.tsx`
 - Vitest docs: https://vitest.dev/
 - Testing Library docs: https://testing-library.com/docs/react-testing-library/intro
-- Test utilities: `src/client/frontend/src/test/`
+- Test utilities: `src/client/ui/src/test/`

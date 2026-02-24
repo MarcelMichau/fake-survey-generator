@@ -13,7 +13,7 @@ description: Foundation knowledge about the Fake Survey Generator project archit
 
 ### Frontend
 - **Framework**: React 19 + Vite + TypeScript
-- **Location**: `src/client/frontend/`
+- **Location**: `src/client/ui/`
 - **Authentication**: Auth0
 - **Styling**: Tailwind CSS 4.1
 - **Build**: `npm run build` (TypeScript checking + Vite bundling)
@@ -139,7 +139,7 @@ dotnet test src/server/FakeSurveyGenerator.Application.Tests/
 dotnet test src/server/FakeSurveyGenerator.Api.Tests.Integration/
 ```
 
-### Frontend (from src/client/frontend/)
+### Frontend (from src/client/ui/)
 ```bash
 # Install dependencies
 npm install
@@ -195,7 +195,7 @@ npm run lint
 6. Add integration tests in Api.Tests.Integration
 
 ### Modifying Frontend Component
-1. Update React component in `src/client/frontend/src/`
+1. Update React component in `src/client/ui/src/`
 2. Run `npm run build` to validate TypeScript
 3. Add UI assertions to E2E skill validation
 

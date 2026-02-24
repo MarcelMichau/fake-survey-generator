@@ -9,7 +9,7 @@ Use this skill to validate that all frontend TypeScript and React components com
 
 ## What This Skill Does
 
-1. Runs `npm run build` in `src/client/frontend/`
+1. Runs `npm run build` in `src/client/ui/`
 2. Validates TypeScript compilation via `tsc` type checking
 3. Bundles React application with Vite
 4. Captures and parses build errors
@@ -53,7 +53,7 @@ Use this skill to validate that all frontend TypeScript and React components com
 ## Notes
 
 - The build script automatically finds the repository root by searching for `FakeSurveyGenerator.slnx` or `FakeSurveyGenerator.sln`
-- Frontend directory is located at `src/client/frontend/`
+- Frontend directory is located at `src/client/ui/`
 - Build process includes TypeScript type checking (`npm run build` runs both `tsc` check and Vite bundling)
 - The script automatically runs `npm ci` if `node_modules` directory is missing, ensuring dependencies are installed before building
 - On Windows, the script uses `cmd.exe /c npm` to reliably invoke npm, avoiding PATH resolution issues

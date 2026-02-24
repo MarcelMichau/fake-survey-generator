@@ -33,7 +33,7 @@ var worker = builder.AddProject<FakeSurveyGenerator_Worker>("worker")
     .WaitFor(cache);
 
 #pragma warning disable ASPIRECERTIFICATES001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-builder.AddViteApp("ui", "../../client/frontend")
+builder.AddViteApp("ui", "../../client/ui")
     .WithHttpsDeveloperCertificate()
     .WithDeveloperCertificateTrust(true)
     .WithReference(api)
