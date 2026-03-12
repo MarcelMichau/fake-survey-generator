@@ -286,6 +286,26 @@ describe("CreateSurvey Component", () => {
       });
     });
 
+    it("should show duplicate option error on 422 domain exception response", async () => {
+      const user = userEvent.setup();
+      mockApiCall.mockResolvedValue({
+        ok: false,
+        status: 422,
+        json: async () => ({
+          "survey.domain.exception": ["Duplicate survey option."],
+        }),
+      });
+
+      render(<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />);
+
+      const submitButton = screen.getByRole("button", { name: /Create Survey/i });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("Duplicate survey option.")).toBeInTheDocument();
+      });
+    });
+
     it("should reset form after successful submission when resetOnSuccess is true", async () => {
       const user = userEvent.setup();
       mockApiCall.mockResolvedValue({

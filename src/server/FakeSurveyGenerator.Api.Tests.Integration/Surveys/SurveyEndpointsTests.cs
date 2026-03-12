@@ -214,6 +214,31 @@ public sealed class SurveyEndpointsTests
     }
 
     [Test]
+    public async Task
+        GivenCreateSurveyCommandWithDuplicateOptions_WhenCallingPostSurvey_ThenUnprocessableEntityResponseShouldBeReturned()
+    {
+        await RegisterNewUser();
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "Duplicate test",
+            NumberOfRespondents = 100,
+            RespondentType = "Testers",
+            SurveyOptions = new List<SurveyOptionDto>
+            {
+                new() { OptionText = "Option A" },
+                new() { OptionText = "Option A" }
+            }
+        };
+
+        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
+
+        var body = await response.Content.ReadFromJsonAsync<Dictionary<string, string[]>>();
+        await Assert.That(body!.Values.SelectMany(v => v)).Contains("Duplicate survey option.");
+    }
+
+    [Test]
     public async Task GivenNonExistentSurveyId_WhenCallingGetSurvey_ThenNotFoundResponseShouldBeReturned()
     {
         const int surveyId = 9000000;

@@ -52,7 +52,7 @@ internal static class SurveyEndpoints
     }
 
     private static async
-        Task<Results<CreatedAtRoute<SurveyModel>, ProblemHttpResult,
+        Task<Results<CreatedAtRoute<SurveyModel>,
             UnprocessableEntity<IDictionary<string, string[]>>>> CreateSurvey(
             ICommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>> handler,
             CreateSurveyCommand command,
@@ -70,8 +70,11 @@ internal static class SurveyEndpoints
             return TypedResults.UnprocessableEntity(validationError.Errors);
         }
 
-        return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
-            statusCode: StatusCodes.Status400BadRequest);
+        return TypedResults.UnprocessableEntity(
+            (IDictionary<string, string[]>)new Dictionary<string, string[]>
+            {
+                [result.Error.Code] = [result.Error.Message]
+            });
     }
 
     private static Results<Ok<T>, ProblemHttpResult> FromResultWithValidationLogging<T>(
