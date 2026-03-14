@@ -13,7 +13,7 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.15.0",
+    "@auth0/auth0-react": "^2.15.1",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.2.0",
@@ -22,26 +22,21 @@
     "react-loading-skeleton": "^3.5.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.6",
+    "@biomejs/biome": "2.4.7",
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^25.4.0",
+    "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react-swc": "^4.2.3",
-    "@vitest/ui": "^4.0.18",
+    "@vitejs/plugin-react-swc": "^4.3.0",
+    "@vitest/ui": "^4.1.0",
     "jsdom": "^28.1.0",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18"
-  },
-  "trustedDependencies": [
-    "@biomejs/biome",
-    "@swc/core",
-    "esbuild"
-  ]
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0"
+  }
 }
