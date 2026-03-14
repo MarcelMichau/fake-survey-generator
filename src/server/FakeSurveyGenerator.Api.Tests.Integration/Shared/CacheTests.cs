@@ -26,12 +26,11 @@ public sealed class CacheTests
     }
 
     [Test]
-    [Retry(3)] // This test is flaky & fails periodically as a result of a suspected cache-miss when using the hybrid cache
     public async Task GivenADistributedCache_WhenGettingAnItemThatIsCached_ThenCachedValueShouldBeReturned()
     {
         var cache = ClientFactory.Services.GetRequiredService<ICache<string>>();
 
-        const string cacheKey = "test-key";
+        var cacheKey = $"test-key-get-{Guid.NewGuid()}";
         const string expectedValue = "test-value";
 
         await cache.SetAsync(cacheKey, expectedValue, 1, CancellationToken.None);
@@ -46,7 +45,7 @@ public sealed class CacheTests
     {
         var cache = ClientFactory.Services.GetRequiredService<ICache<string>>();
 
-        const string cacheKey = "test-key";
+        var cacheKey = $"test-key-remove-{Guid.NewGuid()}";
 
         await cache.SetAsync(cacheKey, "test-value", 1, CancellationToken.None);
 

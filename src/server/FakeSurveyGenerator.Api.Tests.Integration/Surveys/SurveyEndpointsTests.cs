@@ -97,7 +97,7 @@ public sealed class SurveyEndpointsTests
     public async Task
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenValidationErrorsShouldBeLogged()
     {
-        TestLogSink.Shared.Clear();
+        var logIndexBefore = TestLogSink.Shared.Entries.Count;
 
         var createSurveyCommand = new CreateSurveyCommand
         {
@@ -117,7 +117,7 @@ public sealed class SurveyEndpointsTests
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
 
-        var validationLog = TestLogSink.Shared.Entries.LastOrDefault(entry =>
+        var validationLog = TestLogSink.Shared.Entries.Skip(logIndexBefore).LastOrDefault(entry =>
             entry.Level == LogLevel.Warning
             && entry.EventId.Id == 1
             && entry.Category == "FakeSurveyGenerator.Api.Filters.ValidationLoggingEndpointFilter");
@@ -146,7 +146,7 @@ public sealed class SurveyEndpointsTests
     public async Task
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenRequestShouldBeLogged()
     {
-        TestLogSink.Shared.Clear();
+        var logIndexBefore = TestLogSink.Shared.Entries.Count;
 
         var createSurveyCommand = new CreateSurveyCommand
         {
@@ -166,7 +166,7 @@ public sealed class SurveyEndpointsTests
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
 
-        var hasRequestLog = TestLogSink.Shared.Entries.Any(entry =>
+        var hasRequestLog = TestLogSink.Shared.Entries.Skip(logIndexBefore).Any(entry =>
             entry.Category == "FakeSurveyGenerator.Api.Filters.RequestLoggingEndpointFilter"
             && entry.Message.Contains("Request to Endpoint: CreateSurvey")
             && entry.Message.Contains("User:")
