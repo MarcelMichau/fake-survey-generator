@@ -12,6 +12,13 @@ public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
+        // Install Playwright Browsers used by Acceptance Tests
+        var exitCode = Microsoft.Playwright.Program.Main(["install"]);
+        if (exitCode != 0)
+        {
+            throw new Exception($"Playwright exited with code {exitCode}");
+        }
+
         var appHost = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FakeSurveyGenerator_AppHost>();
 
