@@ -13,12 +13,12 @@
       },
       "Dapr.AspNetCore": {
         "type": "Direct",
-        "requested": "[1.17.4, )",
-        "resolved": "1.17.4",
-        "contentHash": "SGRzKq6iWVnKcX7AZ1cxqUXatzzO9aEYglVLeTmivOBP+8jp9EgoGsnzid7GZcFeA1rSKstNb33WY8NPj/vOQw==",
+        "requested": "[1.17.5, )",
+        "resolved": "1.17.5",
+        "contentHash": "8cXv9yGremikiw6LItVC8kwvp511spCSqSoGKldS8ILhkmLJq37hVE46+RdQcTlr49wA+AnTae1JD5HmEhMdCQ==",
         "dependencies": {
-          "Dapr.Client": "1.17.4",
-          "Dapr.Common": "1.17.4",
+          "Dapr.Client": "1.17.5",
+          "Dapr.Common": "1.17.5",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -26,12 +26,12 @@
       },
       "Dapr.Extensions.Configuration": {
         "type": "Direct",
-        "requested": "[1.17.4, )",
-        "resolved": "1.17.4",
-        "contentHash": "MzI2ttmjIhGuld0+62oOQbq3b1ib2KXnrK1/tUeFewprCX9JEKOfd3y39Nw0xJPHXS+lGUffGemUwmzYef29FA==",
+        "requested": "[1.17.5, )",
+        "resolved": "1.17.5",
+        "contentHash": "xGZb+n1dhXQ5ej1JilP78xgS8vsttgtlJgmHi8SYwyfT3u9kt1L0RtC80ftE6VHfR1xPedF9GmzKhRbHUltgPA==",
         "dependencies": {
-          "Dapr.Client": "1.17.4",
-          "Dapr.Common": "1.17.4",
+          "Dapr.Client": "1.17.5",
+          "Dapr.Common": "1.17.5",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -86,14 +86,14 @@
       },
       "Scalar.AspNetCore": {
         "type": "Direct",
-        "requested": "[2.13.10, )",
-        "resolved": "2.13.10",
-        "contentHash": "AHsAdrbjIVvV/l6dwsIpluuWZEjafmxLkoJTzdRruRNB3w5VI5MKM1Gu0gyX6xRI0raEtSy3O111YpBrZMOpSA=="
+        "requested": "[2.13.13, )",
+        "resolved": "2.13.13",
+        "contentHash": "QS94/CNp2thhykXwBaOHjDe8Zlexs8v0QOrdLfUvxS85uW84IhCf1zGiOnYZNNtVxunJvtsr7yPgEP36TXnJ3w=="
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "13.1.2",
-        "contentHash": "zFM5TRuz44cjU/epvHjv+F+QLQSXTnq/IQvUC3b55/rXdSCbeDRJ8UBl95LstudRlHr+DrqvHcv1TbotmLQusg==",
+        "resolved": "13.1.3",
+        "contentHash": "JtfQRESBlsHzsTtrSFfPs/vwYbLR7HK7LCCKBOm/dzHXXPZf0WV4Xev3QDa+jLnBcIwwoEIq1X+FhCa/bagiHQ==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "Microsoft.Extensions.DependencyInjection.AutoActivation": "10.1.0",
@@ -137,11 +137,11 @@
       },
       "Dapr.Client": {
         "type": "Transitive",
-        "resolved": "1.17.4",
-        "contentHash": "Rwrxav6vXylJ4hBrbjY4KeaXd8l61RJVlw6p2oDf2YUgsKho179MCVeJ2lW+/9SwkMzIsi/x4gY2hH6zVqUxHQ==",
+        "resolved": "1.17.5",
+        "contentHash": "HBSTYkg8QT2Paz++/ARN91HtY4BB79lnt4oHvcEmS1pjG3L227LN3uIswSknD0UsOXuVbrCGGqfrJsE/X+DJXA==",
         "dependencies": {
-          "Dapr.Common": "1.17.4",
-          "Dapr.Protos": "1.17.4",
+          "Dapr.Common": "1.17.5",
+          "Dapr.Protos": "1.17.5",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -149,10 +149,10 @@
       },
       "Dapr.Common": {
         "type": "Transitive",
-        "resolved": "1.17.4",
-        "contentHash": "qbDHkA34l/gQ04QwSetAb6mb37kT/gl0L9H+lMs0sK2A+IxnJl5ipZ90m9GPTpsD2RTzxyQrbZhjAXVhAVSltg==",
+        "resolved": "1.17.5",
+        "contentHash": "YltoZjfy5HGqyrj8WypQ6EVwmOZyogFhIpTWtkNUC/afhUsbBscsI7UU6CZeFbNxWkspugrG/tzaOjqE372Qkw==",
         "dependencies": {
-          "Dapr.Protos": "1.17.4",
+          "Dapr.Protos": "1.17.5",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -160,8 +160,8 @@
       },
       "Dapr.Protos": {
         "type": "Transitive",
-        "resolved": "1.17.4",
-        "contentHash": "V3UUqtnAqQrc9G6dJUOcWZhVq6pbCaVcSgLk4Z3d0BPz2xEs7I5sg2kysNdWgraAi/iSOWLF52cVhrii0u8pkg==",
+        "resolved": "1.17.5",
+        "contentHash": "J5AdQZPnzKXbOVY0Lan8IRJ+G/W0NNxs6WrRdrWn1MNXItmBeYUdgHJjHnjBIm1a3dSGU5IPtU7XzcGPGPbPaA==",
         "dependencies": {
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
@@ -661,8 +661,8 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.1.2, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[13.1.2, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.1.3, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[13.1.3, )",
           "Azure.Identity": "[1.19.0, )",
           "CSharpFunctionalExtensions": "[3.7.0, )",
           "Dapper": "[2.1.72, )",
@@ -691,9 +691,9 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "CentralTransitive",
-        "requested": "[13.1.2, )",
-        "resolved": "13.1.2",
-        "contentHash": "RrnfTDyPsXnWTb/uGIfrq1lyycjdEsDVKHqdERq7jhJeIMotB3u6X3DSLQ9CzepToR4SuipK0QH6UlHt4pswdw==",
+        "requested": "[13.1.3, )",
+        "resolved": "13.1.3",
+        "contentHash": "YP9pSgmwWNHZKwCbWSvzEQzI2pQjIlGqiYTtu34q0vduKBjX3wXHJa2rW1YkOsoqFQTMfYG9KA1w3DPK8J1wXA==",
         "dependencies": {
           "Azure.Core": "1.50.0",
           "Azure.Identity": "1.17.1",
@@ -705,12 +705,12 @@
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "CentralTransitive",
-        "requested": "[13.1.2, )",
-        "resolved": "13.1.2",
-        "contentHash": "zT3rV/HqBbB0Ybkt7CCU1k7PKwpQlT3H0B9K3OTNgVXyRYXH3JaBUtawSqvK9J7jvGm2ql1V13ALvYveU6BStQ==",
+        "requested": "[13.1.3, )",
+        "resolved": "13.1.3",
+        "contentHash": "SWUkEqtl6TRYN2oyKUbA7EMoy+bHTgv7y+3u3MJes22wT5Ixbpz1ReOFs/sHOJ+oTuHkyNISlhfxct4rcmVPBQ==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
-          "Aspire.StackExchange.Redis": "13.1.2",
+          "Aspire.StackExchange.Redis": "13.1.3",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "10.0.1",
           "Microsoft.Extensions.DependencyInjection.AutoActivation": "10.1.0",
           "OpenTelemetry.Extensions.Hosting": "1.14.0",
