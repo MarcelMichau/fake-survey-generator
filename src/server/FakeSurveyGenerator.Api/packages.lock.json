@@ -13,12 +13,12 @@
       },
       "Dapr.AspNetCore": {
         "type": "Direct",
-        "requested": "[1.17.5, )",
-        "resolved": "1.17.5",
-        "contentHash": "8cXv9yGremikiw6LItVC8kwvp511spCSqSoGKldS8ILhkmLJq37hVE46+RdQcTlr49wA+AnTae1JD5HmEhMdCQ==",
+        "requested": "[1.17.6, )",
+        "resolved": "1.17.6",
+        "contentHash": "PL9YYeYTX8/PLSuo0C0QnKk5t9G74DdXVEIO0qe/PuqdbeistshXZnv1r3Y2IAE0w2+FEeWeEHseJE5UU6qDtw==",
         "dependencies": {
-          "Dapr.Client": "1.17.5",
-          "Dapr.Common": "1.17.5",
+          "Dapr.Client": "1.17.6",
+          "Dapr.Common": "1.17.6",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -138,11 +138,11 @@
       },
       "Dapr.Client": {
         "type": "Transitive",
-        "resolved": "1.17.5",
-        "contentHash": "HBSTYkg8QT2Paz++/ARN91HtY4BB79lnt4oHvcEmS1pjG3L227LN3uIswSknD0UsOXuVbrCGGqfrJsE/X+DJXA==",
+        "resolved": "1.17.6",
+        "contentHash": "5t9VPyGjW5CMQmy09Mhw18dQSLe7k5ybmS1qp04G08cYGGkR+sX7EdN7L2jVzx7ROxHPDgSNLsVZoMIyDaUH6A==",
         "dependencies": {
-          "Dapr.Common": "1.17.5",
-          "Dapr.Protos": "1.17.5",
+          "Dapr.Common": "1.17.6",
+          "Dapr.Protos": "1.17.6",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -150,10 +150,10 @@
       },
       "Dapr.Common": {
         "type": "Transitive",
-        "resolved": "1.17.5",
-        "contentHash": "YltoZjfy5HGqyrj8WypQ6EVwmOZyogFhIpTWtkNUC/afhUsbBscsI7UU6CZeFbNxWkspugrG/tzaOjqE372Qkw==",
+        "resolved": "1.17.6",
+        "contentHash": "yUX5PYxaCSNZr4QzgOzGioQrN28DheGXii6FM9Tb9yQwygLYmVpb15MHbqPy66twSgOmepjtD4kc6U1CDOKncQ==",
         "dependencies": {
-          "Dapr.Protos": "1.17.5",
+          "Dapr.Protos": "1.17.6",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -161,8 +161,8 @@
       },
       "Dapr.Protos": {
         "type": "Transitive",
-        "resolved": "1.17.5",
-        "contentHash": "J5AdQZPnzKXbOVY0Lan8IRJ+G/W0NNxs6WrRdrWn1MNXItmBeYUdgHJjHnjBIm1a3dSGU5IPtU7XzcGPGPbPaA==",
+        "resolved": "1.17.6",
+        "contentHash": "kHvKkzbycwQa1C/IYSiIavsAIFPNN8CdJelw7JyjfhVgYE6svnNPNoRk+sCf272xvENnwpuedbgo6gK3ZhIugw==",
         "dependencies": {
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
