@@ -181,11 +181,11 @@
       },
       "Dapr.Client": {
         "type": "Transitive",
-        "resolved": "1.17.5",
-        "contentHash": "HBSTYkg8QT2Paz++/ARN91HtY4BB79lnt4oHvcEmS1pjG3L227LN3uIswSknD0UsOXuVbrCGGqfrJsE/X+DJXA==",
+        "resolved": "1.17.6",
+        "contentHash": "5t9VPyGjW5CMQmy09Mhw18dQSLe7k5ybmS1qp04G08cYGGkR+sX7EdN7L2jVzx7ROxHPDgSNLsVZoMIyDaUH6A==",
         "dependencies": {
-          "Dapr.Common": "1.17.5",
-          "Dapr.Protos": "1.17.5",
+          "Dapr.Common": "1.17.6",
+          "Dapr.Protos": "1.17.6",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0",
@@ -201,10 +201,10 @@
       },
       "Dapr.Common": {
         "type": "Transitive",
-        "resolved": "1.17.5",
-        "contentHash": "YltoZjfy5HGqyrj8WypQ6EVwmOZyogFhIpTWtkNUC/afhUsbBscsI7UU6CZeFbNxWkspugrG/tzaOjqE372Qkw==",
+        "resolved": "1.17.6",
+        "contentHash": "yUX5PYxaCSNZr4QzgOzGioQrN28DheGXii6FM9Tb9yQwygLYmVpb15MHbqPy66twSgOmepjtD4kc6U1CDOKncQ==",
         "dependencies": {
-          "Dapr.Protos": "1.17.5",
+          "Dapr.Protos": "1.17.6",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0",
@@ -220,8 +220,8 @@
       },
       "Dapr.Protos": {
         "type": "Transitive",
-        "resolved": "1.17.5",
-        "contentHash": "J5AdQZPnzKXbOVY0Lan8IRJ+G/W0NNxs6WrRdrWn1MNXItmBeYUdgHJjHnjBIm1a3dSGU5IPtU7XzcGPGPbPaA==",
+        "resolved": "1.17.6",
+        "contentHash": "kHvKkzbycwQa1C/IYSiIavsAIFPNN8CdJelw7JyjfhVgYE6svnNPNoRk+sCf272xvENnwpuedbgo6gK3ZhIugw==",
         "dependencies": {
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
@@ -1119,14 +1119,14 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.UI.Client": "[9.0.0, )",
-          "Dapr.AspNetCore": "[1.17.5, )",
-          "Dapr.Extensions.Configuration": "[1.17.5, )",
+          "Dapr.AspNetCore": "[1.17.6, )",
+          "Dapr.Extensions.Configuration": "[1.17.6, )",
           "FakeSurveyGenerator.Application": "[1.0.0, )",
           "FakeSurveyGenerator.ServiceDefaults": "[1.0.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[10.0.5, )",
           "Microsoft.AspNetCore.OpenApi": "[10.0.5, )",
           "NetEscapades.AspNetCore.SecurityHeaders": "[1.3.1, )",
-          "Scalar.AspNetCore": "[2.13.13, )"
+          "Scalar.AspNetCore": "[2.13.14, )"
         }
       },
       "fakesurveygenerator.application": {
@@ -1254,12 +1254,12 @@
       },
       "Dapr.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[1.17.5, )",
-        "resolved": "1.17.5",
-        "contentHash": "8cXv9yGremikiw6LItVC8kwvp511spCSqSoGKldS8ILhkmLJq37hVE46+RdQcTlr49wA+AnTae1JD5HmEhMdCQ==",
+        "requested": "[1.17.6, )",
+        "resolved": "1.17.6",
+        "contentHash": "PL9YYeYTX8/PLSuo0C0QnKk5t9G74DdXVEIO0qe/PuqdbeistshXZnv1r3Y2IAE0w2+FEeWeEHseJE5UU6qDtw==",
         "dependencies": {
-          "Dapr.Client": "1.17.5",
-          "Dapr.Common": "1.17.5",
+          "Dapr.Client": "1.17.6",
+          "Dapr.Common": "1.17.6",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0"
@@ -1267,12 +1267,12 @@
       },
       "Dapr.Extensions.Configuration": {
         "type": "CentralTransitive",
-        "requested": "[1.17.5, )",
-        "resolved": "1.17.5",
-        "contentHash": "xGZb+n1dhXQ5ej1JilP78xgS8vsttgtlJgmHi8SYwyfT3u9kt1L0RtC80ftE6VHfR1xPedF9GmzKhRbHUltgPA==",
+        "requested": "[1.17.6, )",
+        "resolved": "1.17.6",
+        "contentHash": "phum1wlYPHWUc6KG3JCbunTKnchQeCOatl8HJHLoFvR7/4TxnLu/WoS8kDLt8skMjHo4f6ykw5bxCeCEWAnNMQ==",
         "dependencies": {
-          "Dapr.Client": "1.17.5",
-          "Dapr.Common": "1.17.5",
+          "Dapr.Client": "1.17.6",
+          "Dapr.Common": "1.17.6",
           "Google.Api.CommonProtos": "2.17.0",
           "Google.Protobuf": "3.34.0",
           "Grpc.Net.Client": "2.76.0",
@@ -1446,9 +1446,9 @@
       },
       "Scalar.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[2.13.13, )",
-        "resolved": "2.13.13",
-        "contentHash": "QS94/CNp2thhykXwBaOHjDe8Zlexs8v0QOrdLfUvxS85uW84IhCf1zGiOnYZNNtVxunJvtsr7yPgEP36TXnJ3w=="
+        "requested": "[2.13.14, )",
+        "resolved": "2.13.14",
+        "contentHash": "l4QRu4M9NwPAnYnaBOan5MXBdiIsKmKQ8gJUSqaqDUoAxJZ+xBsP6kmZoDf9Qovl4E2Fv5qOAWnfpVMUrs2flQ=="
       }
     }
   }
