@@ -67,15 +67,15 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[1.23.7, )",
-        "resolved": "1.23.7",
-        "contentHash": "PVEu/QwlNe2413Qpfru4B7wixLTKGcjqxISKXqUCGAeEKQ84NHMvNVVnm5JKbpMsam2Sf79S6S2HaAIaXy7NYA==",
+        "requested": "[1.24.13, )",
+        "resolved": "1.24.13",
+        "contentHash": "SWmej2l2IkYs5WTyy3bmd4zIzXqWBbfwk9ZGsYXYr4cmy7v5czysa8LNpo42vHzSBvaLLzmLszxsIFIY+B9WQA==",
         "dependencies": {
           "Microsoft.Testing.Extensions.CodeCoverage": "18.5.2",
           "Microsoft.Testing.Extensions.Telemetry": "2.1.0",
           "Microsoft.Testing.Extensions.TrxReport": "2.1.0",
-          "TUnit.Assertions": "1.23.7",
-          "TUnit.Engine": "1.23.7"
+          "TUnit.Assertions": "1.24.13",
+          "TUnit.Engine": "1.24.13"
         }
       },
       "Albedo": {
@@ -85,8 +85,8 @@
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "13.2.0",
-        "contentHash": "D2Y+vU7jZyaMiv7HStwV7Ml79skFyYTHJFTtlIG1zi/xSoZOWZizogNWqlS3sjP9FZqh0YliKbUQNhVdruhRvg==",
+        "resolved": "13.2.1",
+        "contentHash": "V7tatWoJj5HPa6oolIDVEQg73rhiRFi7l8gyE7/QOkroKa31mpN1eYfNs3JQrkco8LbL84bcjXYv0ErE0oWIjw==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.5",
@@ -114,12 +114,12 @@
       },
       "Azure.Core": {
         "type": "Transitive",
-        "resolved": "1.51.1",
-        "contentHash": "JRANrRvN5O5FFRh+pMUb8qqWU7jBQ39qXEbVr7Rkb1/s7rqc6RSzVHKGBz5Ro1gDy2WSGjG5YEOJKpPIBiCMcA==",
+        "resolved": "1.52.0",
+        "contentHash": "If2gP0B4kDAwOw3kvMFs7gEounDhLyeleoWMih0xPdGAvhKpcWQwoPI3L/L0gmcQt0hrtqDnRni1jaIaxwdL7w==",
         "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "10.0.2",
-          "System.ClientModel": "1.9.0",
-          "System.Memory.Data": "10.0.1"
+          "Microsoft.Bcl.AsyncInterfaces": "10.0.3",
+          "System.ClientModel": "1.10.0",
+          "System.Memory.Data": "10.0.3"
         }
       },
       "Castle.Core": {
@@ -150,8 +150,8 @@
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
-        "resolved": "10.0.2",
-        "contentHash": "qE5JhRoeJbAipLqpUCZyNfNwnpAvUttXgIQDnTiJ15d8ji+/bPgoPkB3xLzK5cQTobN2D2ditUesUlDHb7p3Pg=="
+        "resolved": "10.0.3",
+        "contentHash": "TV62UsrJZPX6gbt3c4WrtXh7bmaDIcMqf9uft1cc4L6gJXOU07hDGEh+bFQh/L2Az0R1WVOkiT66lFqS6G2NmA=="
       },
       "Microsoft.Data.SqlClient": {
         "type": "Transitive",
@@ -675,13 +675,13 @@
       },
       "System.ClientModel": {
         "type": "Transitive",
-        "resolved": "1.9.0",
-        "contentHash": "1wdwKtMMMEFEYsxJmtrOd3G+7zVOVO3MlVZAsbKv9H0PnIx6J27fYAarMn0eQS0vKJPQL018DOb7YRK1O97p0A==",
+        "resolved": "1.10.0",
+        "contentHash": "lBEWs54F5Y5pZ9hC+8z4S/X76957ex+DPk7WecRHlbIHtrPfbRMMlOgI3iDn4Jpb3bSxvBnKaaHoD59auFjlBA==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "10.0.2",
-          "Microsoft.Extensions.Hosting.Abstractions": "10.0.2",
-          "Microsoft.Extensions.Logging.Abstractions": "10.0.2",
-          "System.Memory.Data": "10.0.1"
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.3",
+          "Microsoft.Extensions.Hosting.Abstractions": "10.0.3",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.3",
+          "System.Memory.Data": "10.0.3"
         }
       },
       "System.Configuration.ConfigurationManager": {
@@ -714,8 +714,8 @@
       },
       "System.Memory.Data": {
         "type": "Transitive",
-        "resolved": "10.0.1",
-        "contentHash": "BZC4mhdL569AXV56ep9YO6ShjhxFXGP7SwVX0Bc/e0dJPWnS6aBEXZJXqh64RVx8HquqWHkJUINBydLRQ1yq0g=="
+        "resolved": "10.0.3",
+        "contentHash": "MaGhRfGunmrj/nHjtsi9XkhlYJ/ERGWrbA+BiSKNtGnAjc9XlG5EhAvak6VRcX5LYzPF6pBO8nJ613dTgzabig=="
       },
       "System.Security.Cryptography.Pkcs": {
         "type": "Transitive",
@@ -734,33 +734,33 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "1.23.7",
-        "contentHash": "eWCF4SVUxu4vEfJj8wZuE92ONv5lZdL/E3b3Y/axpM55BG0X4dRpvf0Hm80DNB9uJoBjdq9u/QMom2G1wsENgQ=="
+        "resolved": "1.24.13",
+        "contentHash": "bYaYzIMNCEKbOLcLAg7yY3CwmlReblimJYDpyeB4jiiVxEhcJ6LxJslKD+xpPfbs6SGRPK/EJs9t5xH/duVP+w=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "1.23.7",
-        "contentHash": "035xcZ8Lf9y7FI93uvKTWqlwKxY2FBPZ00k0awur38iStXP9Vw3C+Hfz5hDHHryU+H8r0FiYYkqzGDannZ2G/g=="
+        "resolved": "1.24.13",
+        "contentHash": "8YMDqJTDCc9KmnpDAH52WilxbPI95WpGN2CnHONr6rKIdZSJcEfOylMTpU8AJYfSveeJ6i5F3XhfwN21pRLn0A=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "1.23.7",
-        "contentHash": "yek0/Lg0jncyu5mHfLRZyBFNVEbWIofpKcWP5VpscY46IzOeqqgPSURhkg3t52zEbCEPyPOmSZrcDTK2undk7g==",
+        "resolved": "1.24.13",
+        "contentHash": "ZhmDewB+CTdym+kr+RRWtveTCMTAY1Y/BfMEHq41p/cpZfjjk5mm1y8+fNDswHkhCufwXe2GtbyuFUwAdylkAQ==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.1.0",
           "Microsoft.Testing.Platform": "2.1.0",
           "Microsoft.Testing.Platform.MSBuild": "2.1.0",
-          "TUnit.Core": "1.23.7"
+          "TUnit.Core": "1.24.13"
         }
       },
       "fakesurveygenerator.application": {
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.2.0, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[13.2.0, )",
-          "Azure.Identity": "[1.19.0, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.2.1, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[13.2.1, )",
+          "Azure.Identity": "[1.20.0, )",
           "CSharpFunctionalExtensions": "[3.7.0, )",
           "Dapper": "[2.1.72, )",
           "Duende.IdentityModel": "[8.1.0, )",
@@ -775,9 +775,9 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "CentralTransitive",
-        "requested": "[13.2.0, )",
-        "resolved": "13.2.0",
-        "contentHash": "cQfQtnEdPbPKryrHNv43e6xg34h5Zl6R9LPEZXyKy8WiAAspbDQPIOkiyfAmNns1HMNv6Ar2UGRP63JYpET4jA==",
+        "requested": "[13.2.1, )",
+        "resolved": "13.2.1",
+        "contentHash": "mdjcUfNhFRwZ0r4YGmbBjzek+K0z1sOUo+ePl1UT+0VlwLuARjMAEC61BfB+gHrxJtN1nsbd+jpjC+sUXQIcFg==",
         "dependencies": {
           "Azure.Core": "1.51.1",
           "Azure.Identity": "1.18.0",
@@ -799,12 +799,12 @@
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "CentralTransitive",
-        "requested": "[13.2.0, )",
-        "resolved": "13.2.0",
-        "contentHash": "yl3yr48JhtSL5MAJ5EFN2UV5welnG7/T+mkF99OJFHXnvIkf6OFNmEfeUt4z5eaGuskuZ1DZbqFI/WVhTTae/Q==",
+        "requested": "[13.2.1, )",
+        "resolved": "13.2.1",
+        "contentHash": "R35H67djP9RFpuKdhZDs1/qS0Fu+nm/UQ7DwpQi8A5XO5CnE2xk7uEoZL7U0ZapXko1ZakIKapPhKcuDJ8tJAg==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
-          "Aspire.StackExchange.Redis": "13.2.0",
+          "Aspire.StackExchange.Redis": "13.2.1",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "10.0.5",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.5",
           "Microsoft.Extensions.Configuration.Binder": "10.0.5",
@@ -841,11 +841,11 @@
       },
       "Azure.Identity": {
         "type": "CentralTransitive",
-        "requested": "[1.19.0, )",
-        "resolved": "1.19.0",
-        "contentHash": "01KY5RC7XHwh3azcZ46GMhVR7ajRsRPFh5ivVuvs7N9nVAYK+9/g2eqXTjBneorm9PTYAUfmHvd1dIdmzBym3w==",
+        "requested": "[1.20.0, )",
+        "resolved": "1.20.0",
+        "contentHash": "yWOcmVL3SP5aVZqJ24V8IXdGRT6GW3/SD/al2w1Xe0MIcT8DuXpPOyKE9Pbk8/XxMtjHX14A82U6gwvDaU/GIw==",
         "dependencies": {
-          "Azure.Core": "1.51.1",
+          "Azure.Core": "1.52.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.3",
           "Microsoft.Extensions.Hosting.Abstractions": "10.0.3",
           "Microsoft.Identity.Client": "4.83.1",
