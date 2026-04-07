@@ -63,12 +63,12 @@
       },
       "Microsoft.Testing.Extensions.TrxReport": {
         "type": "Direct",
-        "requested": "[2.1.0, )",
-        "resolved": "2.1.0",
-        "contentHash": "cXmP225WcMLLOSrW8xekaNhfzdBwXX3cbXbE5qSzmLbK0KZe3z8rAObKj70FWiPPPzm2W22x0ZW93gsmAfK6Mg==",
+        "requested": "[2.2.1, )",
+        "resolved": "2.2.1",
+        "contentHash": "FWaktPQHSiZh/+2ft2PHH/4bLlg8BKlrbLiil8mRcpoP0oHzKpgBfmN3QepGlAbxG0yDrZGN8tuPy77FYdEaMw==",
         "dependencies": {
-          "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.1.0",
-          "Microsoft.Testing.Platform": "2.1.0"
+          "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.2.1",
+          "Microsoft.Testing.Platform": "2.2.1"
         }
       },
       "Nerdbank.GitVersioning": {
@@ -100,10 +100,10 @@
           "TUnit": "1.24.31"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Transitive",
         "resolved": "13.2.1",
-        "contentHash": "KLB9rXwY8kg2taWwxsJFoK0cAuupSZurcv1zTyYMqLyNuwvYYjs65Yz3g/cgh22QlUfOT3tOh+Jzk5MdJhy5+w=="
+        "contentHash": "rUlEhekc+EyDbOcyfWneGBikNvdLuV5UPtOww2KpUOAcO7oBVG70kTJiFzN/UYU3I/5Udc1xoDt2lWIoyEYADQ=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -170,10 +170,10 @@
           "System.IO.Hashing": "10.0.3"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Transitive",
         "resolved": "13.2.1",
-        "contentHash": "39lRUH4WuCsBaYB7fZH1/r81SSJIXrA8WphBlAdP1QT95+1sKQHzXJuXU4nzKpBLv4oZmjcWzvA+FDMGZbWmkw=="
+        "contentHash": "LcC21cYVVsTDSQe4B0i7X2q1U8u5Bl+X53wPfucfW4YlQhAGzG2FajVfa5PRDduGlp5mjtgjh2vDO4oEBfpSUg=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -885,16 +885,16 @@
       },
       "Microsoft.Testing.Extensions.TrxReport.Abstractions": {
         "type": "Transitive",
-        "resolved": "2.1.0",
-        "contentHash": "D8xmIJYQFJ6D49Rx5/vPrkZZxb338Jkew+eSqZLBfBiWKw4QZKy3i1BOXiLfz0lOmaNErwDz/YWRojCdNl+B9Q==",
+        "resolved": "2.2.1",
+        "contentHash": "RD6D1Jx6cKDA5IHd1H2q8ylIuQG3PD+gdULI0JC8CvsRtaypFzTFpB5xDPuQi8o6kAkcM04cBhAiJPxZboNH2Q==",
         "dependencies": {
-          "Microsoft.Testing.Platform": "2.1.0"
+          "Microsoft.Testing.Platform": "2.2.1"
         }
       },
       "Microsoft.Testing.Platform": {
         "type": "Transitive",
-        "resolved": "2.1.0",
-        "contentHash": "aHkjNTGIA+Zbdw6RJgSFrbDrCjO0CgqpElqYcvkRSeUhBv2bKarnvU3ep786U7UqrPlArT/B7VmImRibJD0Zrg=="
+        "resolved": "2.2.1",
+        "contentHash": "9bbPuls/b6/vUFzxbSjJLZlJHyKBfOZE5kjIY+ITI2ASqlFPJhR83BdLydJeQOCLEZhEbrEcz5xtt1B69nwSVg=="
       },
       "Microsoft.Testing.Platform.MSBuild": {
         "type": "Transitive",
@@ -1103,10 +1103,10 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.2.1, )",
+          "Aspire.Dashboard.Sdk.linux-x64": "[13.2.1, )",
           "Aspire.Hosting.AppHost": "[13.2.1, )",
           "Aspire.Hosting.JavaScript": "[13.2.1, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.2.1, )",
+          "Aspire.Hosting.Orchestration.linux-x64": "[13.2.1, )",
           "Aspire.Hosting.Redis": "[13.2.1, )",
           "Aspire.Hosting.SqlServer": "[13.2.1, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
