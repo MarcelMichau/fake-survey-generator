@@ -4,13 +4,13 @@
     "net10.0": {
       "Aspire.Hosting.Testing": {
         "type": "Direct",
-        "requested": "[13.2.1, )",
-        "resolved": "13.2.1",
-        "contentHash": "FN9uwrIn0g8SVMLFIpwdtxHYkCBMOcBszbSIqhl1nX/kQVCO/JLcStALFgjo9Sc6DhmwFNakGlOYN7hJ0rWl8Q==",
+        "requested": "[13.2.2, )",
+        "resolved": "13.2.2",
+        "contentHash": "CNxdcZqsn/1Cn4LLruTvsq0Ci63l9g6uA5LBQLC3+zzPPqCMBae3qpWErobJ4/+Ebi7IEVgVaiVTSf4h6Llhtg==",
         "dependencies": {
           "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "13.2.1",
-          "Aspire.Hosting.AppHost": "13.2.1",
+          "Aspire.Hosting": "13.2.2",
+          "Aspire.Hosting.AppHost": "13.2.2",
           "Google.Protobuf": "3.33.5",
           "Grpc.AspNetCore": "2.76.0",
           "Grpc.Net.ClientFactory": "2.76.0",
@@ -79,42 +79,41 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[1.29.0, )",
-        "resolved": "1.29.0",
-        "contentHash": "shiQFSR0oKNBQ5OYZZR+WpYCzFNKT+p/CLagqVuEwgyV6A6tDxTjRTf8MK0ow0Bruu15bVmAtaT7xG1E79VOCA==",
+        "requested": "[1.30.0, )",
+        "resolved": "1.30.0",
+        "contentHash": "EU9fu7sQ138eUI/05r62ZyK5dB6zTddpALz8ROdu58zYlKOa42uF4VCHC1m0gz4mUR+je79vnwqnnwwXMsdSKA==",
         "dependencies": {
           "Microsoft.Testing.Extensions.CodeCoverage": "18.6.2",
           "Microsoft.Testing.Extensions.Telemetry": "2.2.1",
           "Microsoft.Testing.Extensions.TrxReport": "2.2.1",
-          "TUnit.Assertions": "1.29.0",
-          "TUnit.Engine": "1.29.0"
+          "TUnit.Assertions": "1.30.0",
+          "TUnit.Engine": "1.30.0"
         }
       },
       "TUnit.Playwright": {
         "type": "Direct",
-        "requested": "[1.29.0, )",
-        "resolved": "1.29.0",
-        "contentHash": "PX4rmGokb7haDwkbwazV/cjmsvAGO0vyIft2uGhjoLBLsVX6XG5T78CKhrM7iXIZWOF1IL3q2xY7qHCl6a0MyQ==",
+        "requested": "[1.30.0, )",
+        "resolved": "1.30.0",
+        "contentHash": "35vM3kEaZcTj+2CsFEmdCzhkSeV8CUs4LNUhNAvZMrxqNEAk/Vvr5CTcTqHUekmTyGfns0S2WFfJHDWj5tCPaQ==",
         "dependencies": {
           "Microsoft.Playwright": "1.58.0",
-          "TUnit": "1.29.0"
+          "TUnit": "1.30.0"
         }
       },
       "Aspire.Dashboard.Sdk.win-x64": {
         "type": "Transitive",
-        "resolved": "13.2.1",
-        "contentHash": "KLB9rXwY8kg2taWwxsJFoK0cAuupSZurcv1zTyYMqLyNuwvYYjs65Yz3g/cgh22QlUfOT3tOh+Jzk5MdJhy5+w=="
+        "resolved": "13.2.2",
+        "contentHash": "a3AOGoRskQuvcvD9OipwKOGWvhgajUN8qHAoOkQnpmC6TmELzZ6RLAA+lHbEyyoJsnenuRbliuwkqvnDLsUtWw=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
-        "resolved": "13.2.1",
-        "contentHash": "GY/T5iK2F4K3Sk60VUeVnTX1MhCjSaX48+qPUjA/rI1x1ONHevHzFj+Gc3fNlGEaZGY8L87hSxwGrV+Bjd5EJw==",
+        "resolved": "13.2.2",
+        "contentHash": "jocP+/rGMBsQqiol5b6LRvWIRYng+o80UikCUuVXhMWIOsrOAL/T6RPye70k43IltcWo3wl3xVGSiSfR1rORGQ==",
         "dependencies": {
           "AspNetCore.HealthChecks.Uris": "9.0.0",
           "Google.Protobuf": "3.33.5",
           "Grpc.AspNetCore": "2.76.0",
           "Grpc.Net.ClientFactory": "2.76.0",
-          "Grpc.Tools": "2.78.0",
           "Humanizer.Core": "2.14.1",
           "JsonPatch.Net": "3.3.0",
           "KubernetesClient": "18.0.13",
@@ -139,11 +138,11 @@
       },
       "Aspire.Hosting.AppHost": {
         "type": "Transitive",
-        "resolved": "13.2.1",
-        "contentHash": "4B/eoZPwOobxpMpvYnqe/EcXabjPhZJhfxlHXv5gdKd16duoWbHnvvAZJsVI3WUpakCwmsCiTrT4sNGfW8H+IQ==",
+        "resolved": "13.2.2",
+        "contentHash": "pRq49/xiOe4mdEQivX/3GNahFaMzmukDMslAL/EpRLkO1jUP5bvl+Bl70+gCTJocIN2owByWmh/SFOuf1BFMGg==",
         "dependencies": {
           "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "13.2.1",
+          "Aspire.Hosting": "13.2.2",
           "Google.Protobuf": "3.33.5",
           "Grpc.AspNetCore": "2.76.0",
           "Grpc.Net.ClientFactory": "2.76.0",
@@ -172,8 +171,8 @@
       },
       "Aspire.Hosting.Orchestration.win-x64": {
         "type": "Transitive",
-        "resolved": "13.2.1",
-        "contentHash": "39lRUH4WuCsBaYB7fZH1/r81SSJIXrA8WphBlAdP1QT95+1sKQHzXJuXU4nzKpBLv4oZmjcWzvA+FDMGZbWmkw=="
+        "resolved": "13.2.2",
+        "contentHash": "BlQpgpIaABomSSSJI64n7KgtBSuEcEjaMANL3K70h5ZwCqLBrkIeJBUbCOUrs6DRt+Bqo27VtO/nfKWIQM510w=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -1075,24 +1074,24 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "1.29.0",
-        "contentHash": "AzZjnKmotIUZTVZA3bxr1R/FcSjZ00CNfwuOotPp+GXh9MOkcVBw8Ei6U65JEc1wksa9I79WGZM2fT7UhYrvCQ=="
+        "resolved": "1.30.0",
+        "contentHash": "EDORtVwr9sjNc6nz/V06cj/bHrUBtP3IX0hDuRotN2IoCnUAx4IayosjH7PXkx7cTAZWCxMbQlZWE3uI0G9E8Q=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "1.29.0",
-        "contentHash": "dxGQH5R+1S1t2OYocH8mCa3peZswdDlzLHJdw5jsf7Yqd4m8q9ueQjJT5wUTUk01bj5xdyxlVaKfV5/hyQEQFQ=="
+        "resolved": "1.30.0",
+        "contentHash": "WPbefiXTg9oXqhMDTLj1m3etI4fyhQMjWSimZgUNj5dVXHbgp8Bk5sN0OdOasYn7Hhb3jg/BEzkzAtBNvF2zXw=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "1.29.0",
-        "contentHash": "S/JWNz38iE3W57M5tXXbLHHZQT0oYDi/jodlzkTNor0+Cc7VpR2DTebci6Afgw0++K7s3HBIAPyW8/DEDADNww==",
+        "resolved": "1.30.0",
+        "contentHash": "w7/Rvhx/3cSO+gMh6ObsXWQUu4PK4MkeWKX5vYsxob76KCJpjSbY7Y9ITfT6nfP5NK67nhDP4dLQx/ATiRBiUA==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.2.1",
           "Microsoft.Testing.Platform": "2.2.1",
           "Microsoft.Testing.Platform.MSBuild": "2.2.1",
-          "TUnit.Core": "1.29.0"
+          "TUnit.Core": "1.30.0"
         }
       },
       "YamlDotNet": {
@@ -1103,23 +1102,23 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.2.1, )",
-          "Aspire.Hosting.AppHost": "[13.2.1, )",
-          "Aspire.Hosting.JavaScript": "[13.2.1, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.2.1, )",
-          "Aspire.Hosting.Redis": "[13.2.1, )",
-          "Aspire.Hosting.SqlServer": "[13.2.1, )",
+          "Aspire.Dashboard.Sdk.win-x64": "[13.2.2, )",
+          "Aspire.Hosting.AppHost": "[13.2.2, )",
+          "Aspire.Hosting.JavaScript": "[13.2.2, )",
+          "Aspire.Hosting.Orchestration.win-x64": "[13.2.2, )",
+          "Aspire.Hosting.Redis": "[13.2.2, )",
+          "Aspire.Hosting.SqlServer": "[13.2.2, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
         }
       },
       "Aspire.Hosting.JavaScript": {
         "type": "CentralTransitive",
-        "requested": "[13.2.1, )",
-        "resolved": "13.2.1",
-        "contentHash": "Fs6Ka0Lx/2mOT/iCp8nR3o4tkuEmv9c7u/G6/2d/ryHyrUp7f2R3AdRLVPTCg8VHZdwemRMgtb7nyBiukIJ3ig==",
+        "requested": "[13.2.2, )",
+        "resolved": "13.2.2",
+        "contentHash": "49PryELVuULba011UDlp3pUFXG7wRUindhaxin3GsYatKMY3sKj+N8DNr5NzgFRJqCwqaDwBqww4Iwsdmc9y1Q==",
         "dependencies": {
           "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "13.2.1",
+          "Aspire.Hosting": "13.2.2",
           "Google.Protobuf": "3.33.5",
           "Grpc.AspNetCore": "2.76.0",
           "Grpc.Net.ClientFactory": "2.76.0",
@@ -1148,13 +1147,13 @@
       },
       "Aspire.Hosting.Redis": {
         "type": "CentralTransitive",
-        "requested": "[13.2.1, )",
-        "resolved": "13.2.1",
-        "contentHash": "cbFWW8MYGlxEyvesrJTY4rWxgdT9NsMC/WrXW2U0bT4XYk7YiJzk/lds6HeNIdW5AOG0m/QejbmqYWIc/Ek0tA==",
+        "requested": "[13.2.2, )",
+        "resolved": "13.2.2",
+        "contentHash": "mWkOX3V4qDC2QdCAfyLLsUc04yVF8Um0WxRbCF5f0+T5tGJUm5ABLRTrLRDFnihCMzBR8gWEpjHpq9VD3nZkMQ==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "13.2.1",
+          "Aspire.Hosting": "13.2.2",
           "Google.Protobuf": "3.33.5",
           "Grpc.AspNetCore": "2.76.0",
           "Grpc.Net.ClientFactory": "2.76.0",
@@ -1184,13 +1183,13 @@
       },
       "Aspire.Hosting.SqlServer": {
         "type": "CentralTransitive",
-        "requested": "[13.2.1, )",
-        "resolved": "13.2.1",
-        "contentHash": "TQVnbyYChei4CPk7fz5zd6f44mdXIBvrsG7VAOM6WojgcKK4p1qgGKGFcA/Jy0DLdXNDkl5PeeCl1w7Elshi1g==",
+        "requested": "[13.2.2, )",
+        "resolved": "13.2.2",
+        "contentHash": "22WVgY/koqGAB/gRvRz1XoMriSzZEt+RZFpgUWef0kz78j2O4UuZPeXC766162qOPmI6TXId5wiJ78AgaYvEEw==",
         "dependencies": {
           "AspNetCore.HealthChecks.SqlServer": "9.0.0",
           "AspNetCore.HealthChecks.Uris": "9.0.0",
-          "Aspire.Hosting": "13.2.1",
+          "Aspire.Hosting": "13.2.2",
           "Azure.Core": "1.51.1",
           "Azure.Identity": "1.18.0",
           "Google.Protobuf": "3.33.5",
