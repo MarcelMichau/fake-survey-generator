@@ -39,6 +39,10 @@ module daprSecretStoreComponent 'daprComponent.bicep' = {
         name: 'azureClientId'
         value: managedIdentity.properties.clientId
       }
+      {
+        name: 'azureAuthMethods'
+        value: 'managedidentity'
+      }
     ]
     scopes: [
       'fake-survey-generator-api'

@@ -17,5 +17,6 @@ resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprCompone
     version: componentVersion
     metadata: metadata
     scopes: scopes
+    initTimeout: '20s'
   }
 }
