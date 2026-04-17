@@ -11,10 +11,10 @@ using NSubstitute;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
-public sealed class IntegrationTestWebApplicationFactory(TestContainerSettings settings)
+public sealed class IntegrationTestWebApplicationFactory(AspireTestSettings settings)
     : WebApplicationFactory<Program>
 {
-    private readonly TestContainerSettings _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+    private readonly AspireTestSettings _settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
     protected override IHost CreateHost(IHostBuilder builder)
     {

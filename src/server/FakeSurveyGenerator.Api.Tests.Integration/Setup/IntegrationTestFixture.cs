@@ -3,34 +3,26 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Respawn;
-using Testcontainers.MsSql;
-using Testcontainers.Redis;
 using TUnit.Core.Interfaces;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 {
-    private readonly RedisContainer _cacheContainer =
-        new RedisBuilder("redis:8-alpine")
-            .Build();
-
-    private readonly MsSqlContainer _dbContainer =
-        new MsSqlBuilder("mcr.microsoft.com/mssql/server:2025-latest")
-            .Build();
-
+    private TestingAspireAppHost? _appHost;
     private IServiceScopeFactory? _serviceScopeFactory;
     public IntegrationTestWebApplicationFactory? Factory;
 
     public async Task InitializeAsync()
     {
-        await _dbContainer.StartAsync();
-        await _cacheContainer.StartAsync();
+        _appHost = new TestingAspireAppHost();
+        await _appHost.StartAsync();
 
-        var connectionString = _dbContainer.GetConnectionString();
+        var sqlConnectionString = await _appHost.GetConnectionString("database");
+        var cacheConnectionString = await _appHost.GetConnectionString("cache");
 
-        Factory = new IntegrationTestWebApplicationFactory(new TestContainerSettings(connectionString,
-            _cacheContainer.GetConnectionString()));
+        Factory = new IntegrationTestWebApplicationFactory(
+            new AspireTestSettings(sqlConnectionString!, cacheConnectionString!));
 
         _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
 
@@ -56,8 +48,7 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await _dbContainer.DisposeAsync();
-        await _cacheContainer.DisposeAsync();
+        if (_appHost != null) await _appHost.DisposeAsync();
 
         if (Factory != null) await Factory.DisposeAsync();
     }
