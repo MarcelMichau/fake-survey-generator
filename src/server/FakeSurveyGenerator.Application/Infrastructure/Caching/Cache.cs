@@ -30,7 +30,7 @@ internal sealed class Cache<T>(HybridCache cache, ILogger<Cache<T>> logger)
         try
         {
             var cacheEntryOptions = new HybridCacheEntryOptions
-                { Expiration = TimeSpan.FromMinutes(minutesToCache) };
+            { Expiration = TimeSpan.FromMinutes(minutesToCache) };
 
             await _cache.SetAsync(CacheKey(key), item, cacheEntryOptions, cancellationToken: cancellationToken);
         }

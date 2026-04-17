@@ -13,7 +13,7 @@ namespace FakeSurveyGenerator.Application.Features.Users;
 public sealed record RegisterUserCommand : ICommand<Result<UserModel, Error>>;
 
 public sealed class RegisterUserCommandHandler(
-    IUserService userService, 
+    IUserService userService,
     SurveyContext surveyContext)
     : ICommandHandler<RegisterUserCommand, Result<UserModel, Error>>
 {

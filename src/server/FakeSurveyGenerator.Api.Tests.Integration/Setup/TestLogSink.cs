@@ -5,23 +5,23 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 public sealed class TestLogSink
 {
-  public static TestLogSink Shared { get; } = new();
+    public static TestLogSink Shared { get; } = new();
 
-  private readonly ConcurrentQueue<TestLogEntry> _entries = new();
+    private readonly ConcurrentQueue<TestLogEntry> _entries = new();
 
-  public IReadOnlyList<TestLogEntry> Entries => _entries.ToArray();
+    public IReadOnlyList<TestLogEntry> Entries => _entries.ToArray();
 
-  public void Add(TestLogEntry entry)
-  {
-    _entries.Enqueue(entry);
-  }
-
-  public void Clear()
-  {
-    while (_entries.TryDequeue(out _))
+    public void Add(TestLogEntry entry)
     {
+        _entries.Enqueue(entry);
     }
-  }
+
+    public void Clear()
+    {
+        while (_entries.TryDequeue(out _))
+        {
+        }
+    }
 }
 
 public sealed record TestLogEntry(
@@ -34,48 +34,48 @@ public sealed record TestLogEntry(
 
 public sealed class TestLoggerProvider(TestLogSink sink) : ILoggerProvider
 {
-  private readonly TestLogSink _sink = sink ?? throw new ArgumentNullException(nameof(sink));
+    private readonly TestLogSink _sink = sink ?? throw new ArgumentNullException(nameof(sink));
 
-  public ILogger CreateLogger(string categoryName)
-  {
-    return new TestLogger(categoryName, _sink);
-  }
-
-  public void Dispose()
-  {
-  }
-
-  private sealed class TestLogger(string categoryName, TestLogSink sink) : ILogger
-  {
-    private readonly string _categoryName = categoryName;
-    private readonly TestLogSink _sink = sink;
-
-    public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+    public ILogger CreateLogger(string categoryName)
     {
-      return null;
+        return new TestLogger(categoryName, _sink);
     }
 
-    public bool IsEnabled(LogLevel logLevel)
+    public void Dispose()
     {
-      return logLevel != LogLevel.None;
     }
 
-    public void Log<TState>(
-        LogLevel logLevel,
-        EventId eventId,
-        TState state,
-        Exception? exception,
-        Func<TState, Exception?, string> formatter)
+    private sealed class TestLogger(string categoryName, TestLogSink sink) : ILogger
     {
-      if (!IsEnabled(logLevel))
-      {
-        return;
-      }
+        private readonly string _categoryName = categoryName;
+        private readonly TestLogSink _sink = sink;
 
-      var message = formatter(state, exception);
-      var stateValues = state as IReadOnlyList<KeyValuePair<string, object?>>;
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull
+        {
+            return null;
+        }
 
-      _sink.Add(new TestLogEntry(_categoryName, logLevel, eventId, message, stateValues, exception));
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            return logLevel != LogLevel.None;
+        }
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
+        {
+            if (!IsEnabled(logLevel))
+            {
+                return;
+            }
+
+            var message = formatter(state, exception);
+            var stateValues = state as IReadOnlyList<KeyValuePair<string, object?>>;
+
+            _sink.Add(new TestLogEntry(_categoryName, logLevel, eventId, message, stateValues, exception));
+        }
     }
-  }
 }

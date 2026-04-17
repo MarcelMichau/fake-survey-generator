@@ -44,7 +44,7 @@ internal static class UserEndpoints
 
     private static async Task<IResult> IsRegistered(
         IQueryHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel, Error>> handler,
-        [Description("The external user identifier")] [Required] string userId,
+        [Description("The external user identifier")][Required] string userId,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(new IsUserRegisteredQuery(userId), cancellationToken);

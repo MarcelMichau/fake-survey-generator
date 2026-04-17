@@ -21,7 +21,7 @@ public sealed class CreateSurveyCommandTests
     public CreateSurveyCommandTests()
     {
         _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
-        
+
         // Setup mock validator to always return successful validation
         _mockValidator.ValidateAsync(Arg.Any<CreateSurveyCommand>(), Arg.Any<CancellationToken>())
             .Returns(new ValidationResult());

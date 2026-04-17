@@ -56,7 +56,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
         if (preferredNumberOfVotes < 0)
             throw new SurveyDomainException(
                 $"Preferred number of votes cannot be negative: {preferredNumberOfVotes}");
-        
+
         if (preferredNumberOfVotes > NumberOfRespondents ||
             _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes > NumberOfRespondents)
             throw new SurveyDomainException(
@@ -98,7 +98,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
         if (_options.Count == 0)
             throw new SurveyDomainException($"Cannot calculate the outcome of a Survey with no Options for Survey with Topic: {Topic}");
     }
-    
+
     private void ThrowIfDuplicateOptions(NonEmptyString optionText)
     {
         var trimmedText = optionText.Value.Trim();

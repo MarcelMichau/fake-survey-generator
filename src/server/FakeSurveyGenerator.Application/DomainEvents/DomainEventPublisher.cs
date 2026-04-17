@@ -9,10 +9,10 @@ public sealed class DomainEventPublisher(IServiceProvider serviceProvider, ILogg
     private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly ILogger<DomainEventPublisher> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-    public async Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default) 
+    public async Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default)
         where TEvent : IDomainEvent
     {
-        _logger.LogDebug("Publishing domain event: {EventType} with ID: {EventId}", 
+        _logger.LogDebug("Publishing domain event: {EventType} with ID: {EventId}",
             typeof(TEvent).Name, domainEvent.Id);
 
         await ProcessEvent(domainEvent, cancellationToken);
@@ -20,7 +20,7 @@ public sealed class DomainEventPublisher(IServiceProvider serviceProvider, ILogg
 
     public async Task PublishAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Publishing domain event: {EventType} with ID: {EventId}", 
+        _logger.LogDebug("Publishing domain event: {EventType} with ID: {EventId}",
             domainEvent.GetType().Name, domainEvent.Id);
 
         await ProcessEvent(domainEvent, cancellationToken);
@@ -59,15 +59,15 @@ public sealed class DomainEventPublisher(IServiceProvider serviceProvider, ILogg
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Handler {HandlerType} failed to process event {EventType} with ID: {EventId}", 
+                _logger.LogError(ex, "Handler {HandlerType} failed to process event {EventType} with ID: {EventId}",
                     handler?.GetType().Name, eventType.Name, domainEvent.Id);
                 throw;
             }
         });
 
         await Task.WhenAll(handleTasks);
-        
-        _logger.LogDebug("Processed domain event: {EventType} with {HandlerCount} handlers", 
+
+        _logger.LogDebug("Processed domain event: {EventType} with {HandlerCount} handlers",
             eventType.Name, handlers.Count);
     }
 }

@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using System.Net;
 
 namespace FakeSurveyGenerator.Api.Configuration.OpenApi;
+
 internal static class OpenApiConfigurationExtensions
 {
     public static IHostApplicationBuilder AddOpenApiConfiguration(this IHostApplicationBuilder builder)
