@@ -92,7 +92,8 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--no-build --coverage --treenode-filter "/(*Tests*)&(!*Acceptance*)/*/*/*" --ignore-exit-code 8'
+              arguments: "--no-build --coverage --treenode-filter
+                \"/(*Tests*)&(!*Acceptance*)/*/*/*\" --ignore-exit-code 8"
             displayName: "Run Unit + Integration Tests"
 
           - script: |
@@ -135,7 +136,8 @@ stages:
 
           - task: PowerShell@2
             inputs:
-              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/Debug/net10.0/playwright.ps1"
+              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/Debug/net10.0/pl\
+                aywright.ps1"
               arguments: "install --with-deps"
             displayName: "Download Playwright Browsers"
 
@@ -148,7 +150,8 @@ stages:
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: '--no-build --coverage --treenode-filter "/(*Acceptance.Tests*)/*/*/*" --ignore-exit-code 8'
+              arguments: "--no-build --coverage --treenode-filter
+                \"/(*Acceptance.Tests*)/*/*/*\" --ignore-exit-code 8"
             displayName: "Run Acceptance Tests"
 
   - stage: BuildTestUI
@@ -169,10 +172,10 @@ stages:
               packageType: "sdk"
               useGlobalJson: true
 
-          - task: NodeTool@0
+          - task: UseNode@1
             displayName: "Install Node.js"
             inputs:
-              versionSpec: "25.x"
+              version: "25.x"
 
           - task: DotNetCoreCLI@2
             displayName: Install NBGV tool
@@ -196,7 +199,8 @@ stages:
             inputs:
               command: "custom"
               workingDir: "src/client/ui"
-              customCommand: "test -- --run --reporter=junit --reporter=default --outputFile.junit=./test-results/junit.xml"
+              customCommand: "test -- --run --reporter=junit --reporter=default
+                --outputFile.junit=./test-results/junit.xml"
 
           - task: PublishTestResults@2
             displayName: "Publish Frontend Test Results"
