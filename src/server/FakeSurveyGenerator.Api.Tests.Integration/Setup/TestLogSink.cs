@@ -47,9 +47,6 @@ public sealed class TestLoggerProvider(TestLogSink sink) : ILoggerProvider
 
     private sealed class TestLogger(string categoryName, TestLogSink sink) : ILogger
     {
-        private readonly string _categoryName = categoryName;
-        private readonly TestLogSink _sink = sink;
-
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull
         {
             return null;
@@ -75,7 +72,7 @@ public sealed class TestLoggerProvider(TestLogSink sink) : ILoggerProvider
             var message = formatter(state, exception);
             var stateValues = state as IReadOnlyList<KeyValuePair<string, object?>>;
 
-            _sink.Add(new TestLogEntry(_categoryName, logLevel, eventId, message, stateValues, exception));
+            sink.Add(new TestLogEntry(categoryName, logLevel, eventId, message, stateValues, exception));
         }
     }
 }
