@@ -9,6 +9,8 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 {
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(300);
+
     private TestingAspireAppHost? _appHost;
     private IServiceScopeFactory? _serviceScopeFactory;
     public IntegrationTestWebApplicationFactory? Factory;
@@ -17,6 +19,14 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
     {
         _appHost = new TestingAspireAppHost();
         await _appHost.StartAsync();
+
+        await _appHost.App!.ResourceNotifications
+            .WaitForResourceHealthyAsync("database")
+            .WaitAsync(DefaultTimeout);
+
+        await _appHost.App!.ResourceNotifications
+            .WaitForResourceHealthyAsync("cache")
+            .WaitAsync(DefaultTimeout);
 
         var sqlConnectionString = await _appHost.GetConnectionString("database");
         var cacheConnectionString = await _appHost.GetConnectionString("cache");

@@ -88,6 +88,14 @@ stages:
               projects: "FakeSurveyGenerator.slnx"
             displayName: "Build Solution"
 
+          - script: |
+              wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+            displayName: "Install Dapr CLI"
+
+          - script: |
+              dapr init
+            displayName: "Dapr Init"
+
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"

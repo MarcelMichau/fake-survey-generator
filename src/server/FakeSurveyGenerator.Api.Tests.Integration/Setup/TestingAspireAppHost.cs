@@ -16,6 +16,13 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 public sealed class TestingAspireAppHost()
     : DistributedApplicationFactory(typeof(AppHostProject))
 {
+    public DistributedApplication? App { get; private set; }
+
+    protected override void OnBuilt(DistributedApplication application)
+    {
+        App = application;
+    }
+
     protected override void OnBuilding(DistributedApplicationBuilder appBuilder)
     {
         // Remove the persistent data volume from SQL Server so each test run starts fresh
