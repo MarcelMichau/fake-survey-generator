@@ -1,5 +1,4 @@
-﻿using Aspire.Hosting.ApplicationModel;
-using FakeSurveyGenerator.Application.Infrastructure.Persistence;
+﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,14 +20,11 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
         _appHost = new TestingAspireAppHost();
         await _appHost.StartAsync();
 
-        var resourceNotificationService =
-            _appHost.Services.GetRequiredService<ResourceNotificationService>();
-
-        await resourceNotificationService
+        await _appHost.App!.ResourceNotifications
             .WaitForResourceHealthyAsync("database")
             .WaitAsync(DefaultTimeout);
 
-        await resourceNotificationService
+        await _appHost.App!.ResourceNotifications
             .WaitForResourceHealthyAsync("cache")
             .WaitAsync(DefaultTimeout);
 
