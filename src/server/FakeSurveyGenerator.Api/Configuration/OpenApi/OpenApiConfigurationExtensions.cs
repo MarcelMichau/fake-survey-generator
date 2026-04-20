@@ -109,13 +109,13 @@ internal sealed class OAuth2SecuritySchemeTransformer(IConfiguration configurati
         document.Security.Add(new OpenApiSecurityRequirement { [reference] = [] });
 
         foreach (var operation in document.Paths.Values.SelectMany(path => path.Operations ?? []))
-            operation.Value.Security = new List<OpenApiSecurityRequirement>
-            {
-                new()
+            operation.Value.Security =
+            [
+                new OpenApiSecurityRequirement
                 {
                     [reference] = ["openid", "profile", "email"]
                 }
-            };
+            ];
 
         return Task.CompletedTask;
     }
@@ -127,9 +127,7 @@ internal sealed class AuthorizeOperationTransformer : IOpenApiOperationTransform
         CancellationToken cancellationToken)
     {
         // Inspect endpoint metadata (works for controllers and minimal APIs)
-        var metadata = context.Description?.ActionDescriptor?.EndpointMetadata;
-
-        if (metadata == null) return Task.CompletedTask;
+        var metadata = context.Description.ActionDescriptor.EndpointMetadata;
 
         // If [AllowAnonymous] present, skip
         if (metadata.OfType<IAllowAnonymous>().Any()) return Task.CompletedTask;
@@ -137,7 +135,7 @@ internal sealed class AuthorizeOperationTransformer : IOpenApiOperationTransform
         // If any [Authorize] metadata is present, mark operation as secured and add 401 response
         if (!metadata.OfType<IAuthorizeData>().Any()) return Task.CompletedTask;
 
-        operation.Responses ??= new OpenApiResponses();
+        operation.Responses ??= [];
         operation.Responses[StatusCodes.Status401Unauthorized.ToString()] =
             new OpenApiResponse { Description = nameof(HttpStatusCode.Unauthorized) };
 
@@ -145,7 +143,7 @@ internal sealed class AuthorizeOperationTransformer : IOpenApiOperationTransform
         const string referenceId = "OAuth2";
         var reference = new OpenApiSecuritySchemeReference(referenceId, context.Document);
 
-        operation.Security ??= new List<OpenApiSecurityRequirement>();
+        operation.Security ??= [];
         operation.Security.Add(new OpenApiSecurityRequirement
         {
             [reference] = ["openid", "profile", "email"]
