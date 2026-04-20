@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence;
+﻿using Aspire.Hosting.ApplicationModel;
+using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,8 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
 {
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(300);
+
     private TestingAspireAppHost? _appHost;
     private IServiceScopeFactory? _serviceScopeFactory;
     public IntegrationTestWebApplicationFactory? Factory;
@@ -17,6 +20,17 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
     {
         _appHost = new TestingAspireAppHost();
         await _appHost.StartAsync();
+
+        var resourceNotificationService =
+            _appHost.Services.GetRequiredService<ResourceNotificationService>();
+
+        await resourceNotificationService
+            .WaitForResourceHealthyAsync("database")
+            .WaitAsync(DefaultTimeout);
+
+        await resourceNotificationService
+            .WaitForResourceHealthyAsync("cache")
+            .WaitAsync(DefaultTimeout);
 
         var sqlConnectionString = await _appHost.GetConnectionString("database");
         var cacheConnectionString = await _appHost.GetConnectionString("cache");
