@@ -25,12 +25,6 @@ pr:
       - src/client/ui/*
       - infra/*
 
-parameters:
-  - name: runAcceptanceTests
-    displayName: "Enable Running Acceptance Tests"
-    default: false
-    type: boolean
-
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   azureSubscriptionId: $(AZURE_SUBSCRIPTION_ID)
@@ -88,21 +82,20 @@ stages:
               projects: "FakeSurveyGenerator.slnx"
             displayName: "Build Solution"
 
+          # Cert Trust Related Issue: https://github.com/dotnet/aspire/issues/13612
           - script: |
               wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
-            displayName: "Install Dapr CLI"
-
-          - script: |
               dapr init
-            displayName: "Dapr Init"
+
+              SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust dotnet dev-certs https --trust
+            displayName: "Test Preparation"
 
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
               publishTestResults: true
-              arguments: "--no-build --coverage --treenode-filter
-                \"/(*Tests*)&(!*Acceptance*)/*/*/*\" --ignore-exit-code 8"
-            displayName: "Run Unit + Integration Tests"
+              arguments: "--no-build --coverage"
+            displayName: "Run Tests"
 
           - script: |
               dotnet tool restore
@@ -115,52 +108,6 @@ stages:
               targetPath: "src/server/FakeSurveyGenerator.Application/DbMigrationScript.sql"
               artifact: "DbMigrationScript"
             displayName: "Publish Database Migration Script"
-
-      - job: AcceptanceTests
-        displayName: "Run Acceptance (E2E) Tests"
-        condition: ${{ eq(parameters.runAcceptanceTests, true) }} # .NET Aspire Tests hang in the pipeline so this is here until it is fixed
-        pool:
-          vmImage: "ubuntu-latest"
-        steps:
-          - task: UseDotNet@2
-            displayName: "Install .NET SDK"
-            inputs:
-              packageType: "sdk"
-              useGlobalJson: true
-
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "build"
-              projects: "FakeSurveyGenerator.slnx"
-            displayName: "Build Solution"
-
-          - script: |
-              wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
-            displayName: "Install Dapr CLI"
-
-          - script: |
-              dapr init
-            displayName: "Dapr Init"
-
-          - task: PowerShell@2
-            inputs:
-              filePath: "src/server/FakeSurveyGenerator.Acceptance.Tests/bin/Debug/net10.0/pl\
-                aywright.ps1"
-              arguments: "install --with-deps"
-            displayName: "Download Playwright Browsers"
-
-          # https://github.com/dotnet/aspire/issues/13612
-          - script: |
-              SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust dotnet dev-certs https --trust
-            displayName: "Trust .NET Dev Certs"
-
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: "test"
-              publishTestResults: true
-              arguments: "--no-build --coverage --treenode-filter
-                \"/(*Acceptance.Tests*)/*/*/*\" --ignore-exit-code 8"
-            displayName: "Run Acceptance Tests"
 
   - stage: BuildTestUI
     displayName: "Build + Test UI"
