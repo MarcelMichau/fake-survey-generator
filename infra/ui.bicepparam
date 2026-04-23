@@ -6,6 +6,3 @@ param containerRegistryUrl = readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_E
 param imageName = readEnvironmentVariable('SERVICE_UI_IMAGE_NAME', '')
 param managedIdentityName = readEnvironmentVariable('SERVICE_UI_IDENTITY_NAME', '')
 param version = readEnvironmentVariable('UI_VERSION', 'latest')
-param activeLabel = readEnvironmentVariable('UI_ACTIVE_LABEL', 'blue')
-param promotePreview = toLower(readEnvironmentVariable('UI_PROMOTE_PREVIEW', 'false')) == 'true'
-param productionRevisionName = readEnvironmentVariable('UI_PRODUCTION_REVISION_NAME', '')

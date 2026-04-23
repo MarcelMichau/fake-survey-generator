@@ -5,38 +5,10 @@ param imageName string
 param managedIdentityName string
 param location string = resourceGroup().location
 param version string
-@allowed([
-  'blue'
-  'green'
-])
-param activeLabel string = 'blue'
-param promotePreview bool = false
-param productionRevisionName string = ''
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: managedIdentityName
 }
-
-var previewLabel = activeLabel == 'blue' ? 'green' : 'blue'
-var productionLabel = promotePreview ? previewLabel : activeLabel
-var targetLabel = promotePreview ? productionLabel : previewLabel
-var useLatestForProductionTraffic = empty(productionRevisionName)
-var previewTrafficEntry = {
-  label: previewLabel
-  latestRevision: true
-  weight: 0
-}
-var productionTrafficEntry = useLatestForProductionTraffic
-  ? {
-      label: productionLabel
-      latestRevision: true
-      weight: 100
-    }
-  : {
-      label: productionLabel
-      revisionName: productionRevisionName
-      weight: 100
-    }
 
 resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
   name: containerAppName
@@ -53,9 +25,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
   properties: {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
-      activeRevisionsMode: 'Labels'
-      targetLabel: targetLabel
-      maxInactiveRevisions: 5
+      activeRevisionsMode: 'Single'
       registries: [
         {
           server: containerRegistryUrl
@@ -66,14 +36,12 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         external: true
         targetPort: 80
         allowInsecure: false
-        traffic: promotePreview
-          ? [
-              productionTrafficEntry
-            ]
-          : [
-              previewTrafficEntry
-              productionTrafficEntry
-            ]
+        traffic: [
+          {
+            latestRevision: true
+            weight: 100
+          }
+        ]
       }
     }
     template: {

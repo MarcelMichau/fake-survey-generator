@@ -267,83 +267,7 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
 
           - task: AzureCLI@2
-            displayName: Resolve Active/Preview Labels + Production Revisions
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                set -euo pipefail
-
-                API_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_API_NAME="\(.*\)"/\1/p')
-                UI_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_UI_NAME="\(.*\)"/\1/p')
-
-                API_ACTIVE_LABEL="blue"
-                UI_ACTIVE_LABEL="blue"
-                API_PREVIEW_LABEL="green"
-                UI_PREVIEW_LABEL="green"
-                API_REVISION=""
-                UI_REVISION=""
-
-                if [[ -n "${API_APP_NAME}" ]]; then
-                  API_ACTIVE_LABEL=$(az containerapp ingress traffic show \
-                    --resource-group "${AZURE_RESOURCE_GROUP}" \
-                    --name "${API_APP_NAME}" \
-                    --query "[?weight==\`100\` && label!=null].label | [0]" \
-                    -o tsv 2>/dev/null || true)
-
-                  if [[ -z "${API_ACTIVE_LABEL}" ]]; then
-                    API_ACTIVE_LABEL="blue"
-                  fi
-
-                  API_PREVIEW_LABEL=$([[ "${API_ACTIVE_LABEL}" == "blue" ]] && echo "green" || echo "blue")
-
-                  API_REVISION=$(az containerapp ingress traffic show \
-                    --resource-group "${AZURE_RESOURCE_GROUP}" \
-                    --name "${API_APP_NAME}" \
-                    --query "[?label=='${API_ACTIVE_LABEL}'].revisionName | [0]" \
-                    -o tsv 2>/dev/null || true)
-                fi
-
-                if [[ -n "${UI_APP_NAME}" ]]; then
-                  UI_ACTIVE_LABEL=$(az containerapp ingress traffic show \
-                    --resource-group "${AZURE_RESOURCE_GROUP}" \
-                    --name "${UI_APP_NAME}" \
-                    --query "[?weight==\`100\` && label!=null].label | [0]" \
-                    -o tsv 2>/dev/null || true)
-
-                  if [[ -z "${UI_ACTIVE_LABEL}" ]]; then
-                    UI_ACTIVE_LABEL="blue"
-                  fi
-
-                  UI_PREVIEW_LABEL=$([[ "${UI_ACTIVE_LABEL}" == "blue" ]] && echo "green" || echo "blue")
-
-                  UI_REVISION=$(az containerapp ingress traffic show \
-                    --resource-group "${AZURE_RESOURCE_GROUP}" \
-                    --name "${UI_APP_NAME}" \
-                    --query "[?label=='${UI_ACTIVE_LABEL}'].revisionName | [0]" \
-                    -o tsv 2>/dev/null || true)
-                fi
-
-                echo "Resolved API labels: active=${API_ACTIVE_LABEL}, preview=${API_PREVIEW_LABEL}"
-                echo "Resolved UI labels: active=${UI_ACTIVE_LABEL}, preview=${UI_PREVIEW_LABEL}"
-                echo "Resolved API production revision: ${API_REVISION:-<none>}"
-                echo "Resolved UI production revision: ${UI_REVISION:-<none>}"
-
-                echo "##vso[task.setvariable variable=apiActiveLabel]${API_ACTIVE_LABEL}"
-                echo "##vso[task.setvariable variable=uiActiveLabel]${UI_ACTIVE_LABEL}"
-                echo "##vso[task.setvariable variable=apiPreviewLabel]${API_PREVIEW_LABEL}"
-                echo "##vso[task.setvariable variable=uiPreviewLabel]${UI_PREVIEW_LABEL}"
-                echo "##vso[task.setvariable variable=apiProductionRevisionName]${API_REVISION}"
-                echo "##vso[task.setvariable variable=uiProductionRevisionName]${UI_REVISION}"
-            env:
-              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
-              AZURE_ENV_NAME: $(azureEnvName)
-              AZURE_LOCATION: $(azureLocation)
-              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
-
-          - task: AzureCLI@2
-            displayName: Deploy Application (Preview)
+            displayName: Deploy Application
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
@@ -366,13 +290,10 @@ stages:
                 echo "Publishing UI package: ${UI_PACKAGE}"
                 azd publish ui --to "${UI_PACKAGE}" --no-prompt
 
-                echo "##vso[task.setvariable variable=apiPackageRef]${API_PACKAGE}"
-                echo "##vso[task.setvariable variable=uiPackageRef]${UI_PACKAGE}"
-
-                echo "Deploying preview API from package"
+                echo "Deploying API from package"
                 azd deploy api --from-package "${API_PACKAGE}" --no-prompt
 
-                echo "Deploying preview UI from package"
+                echo "Deploying UI from package"
                 azd deploy ui --from-package "${UI_PACKAGE}" --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
@@ -381,131 +302,6 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
               UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
-              UI_ACTIVE_LABEL: $(uiActiveLabel)
-              UI_PROMOTE_PREVIEW: "false"
-              UI_PRODUCTION_REVISION_NAME: $(uiProductionRevisionName)
-              API_ACTIVE_LABEL: $(apiActiveLabel)
-              API_PROMOTE_PREVIEW: "false"
-              API_PRODUCTION_REVISION_NAME: $(apiProductionRevisionName)
-              VITE_APP_VERSION: $(uiSemVerVersionTag)
-
-          - task: AzureCLI@2
-            displayName: Validate Preview API + UI URLs
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                set -euo pipefail
-
-                API_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_API_NAME="\(.*\)"/\1/p')
-                UI_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_UI_NAME="\(.*\)"/\1/p')
-
-                if [[ -z "${API_APP_NAME}" || -z "${UI_APP_NAME}" ]]; then
-                  echo "Unable to resolve SERVICE_API_NAME or SERVICE_UI_NAME from azd environment."
-                  exit 1
-                fi
-
-                API_FQDN=$(az containerapp show --resource-group "${AZURE_RESOURCE_GROUP}" --name "${API_APP_NAME}" --query properties.configuration.ingress.fqdn -o tsv)
-                UI_FQDN=$(az containerapp show --resource-group "${AZURE_RESOURCE_GROUP}" --name "${UI_APP_NAME}" --query properties.configuration.ingress.fqdn -o tsv)
-
-                API_DOMAIN="${API_FQDN#${API_APP_NAME}.}"
-                UI_DOMAIN="${UI_FQDN#${UI_APP_NAME}.}"
-
-                API_URL="https://${API_APP_NAME}---${API_PREVIEW_LABEL}.${API_DOMAIN}/health/ready"
-                UI_URL="https://${UI_APP_NAME}---${UI_PREVIEW_LABEL}.${UI_DOMAIN}"
-
-                echo "Validating API URL: ${API_URL}"
-                echo "Validating UI URL: ${UI_URL}"
-
-                for i in $(seq 1 20); do
-                  API_STATUS=$(curl -k -sS -o /dev/null -w "%{http_code}" "${API_URL}" || true)
-                  UI_STATUS=$(curl -k -sS -o /dev/null -w "%{http_code}" "${UI_URL}" || true)
-
-                  if [[ "${API_STATUS}" == "200" && "${UI_STATUS}" == "200" ]]; then
-                    echo "Preview validation succeeded (API=${API_STATUS}, UI=${UI_STATUS})."
-                    exit 0
-                  fi
-
-                  echo "Attempt ${i}/20: API=${API_STATUS}, UI=${UI_STATUS}. Retrying in 15s..."
-                  sleep 15
-                done
-
-                echo "Preview validation failed after retries."
-                exit 1
-            env:
-              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
-              AZURE_ENV_NAME: $(azureEnvName)
-              AZURE_LOCATION: $(azureLocation)
-              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
-              API_PREVIEW_LABEL: $(apiPreviewLabel)
-              UI_PREVIEW_LABEL: $(uiPreviewLabel)
-
-          - task: AzureCLI@2
-            displayName: Promote Preview to Production Label
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              inlineScript: |
-                set -euo pipefail
-
-                if [[ -z "${API_PACKAGE_REF}" || -z "${UI_PACKAGE_REF}" ]]; then
-                  echo "Package references are not available for promotion deployment."
-                  exit 1
-                fi
-
-                API_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_API_NAME="\(.*\)"/\1/p')
-                UI_APP_NAME=$(azd env get-values | sed -n 's/^SERVICE_UI_NAME="\(.*\)"/\1/p')
-
-                API_PREVIEW_REVISION=""
-                UI_PREVIEW_REVISION=""
-
-                if [[ -n "${API_APP_NAME}" ]]; then
-                  API_PREVIEW_REVISION=$(az containerapp ingress traffic show \
-                    --resource-group "${AZURE_RESOURCE_GROUP}" \
-                    --name "${API_APP_NAME}" \
-                    --query "[?label=='${API_PREVIEW_LABEL}'].revisionName | [0]" \
-                    -o tsv 2>/dev/null || true)
-                fi
-
-                if [[ -n "${UI_APP_NAME}" ]]; then
-                  UI_PREVIEW_REVISION=$(az containerapp ingress traffic show \
-                    --resource-group "${AZURE_RESOURCE_GROUP}" \
-                    --name "${UI_APP_NAME}" \
-                    --query "[?label=='${UI_PREVIEW_LABEL}'].revisionName | [0]" \
-                    -o tsv 2>/dev/null || true)
-                fi
-
-                if [[ -z "${API_PREVIEW_REVISION}" || -z "${UI_PREVIEW_REVISION}" ]]; then
-                  echo "Unable to resolve preview revision names for promotion."
-                  echo "API preview revision: ${API_PREVIEW_REVISION:-<none>}"
-                  echo "UI preview revision: ${UI_PREVIEW_REVISION:-<none>}"
-                  exit 1
-                fi
-
-                echo "Promoting API from package: ${API_PACKAGE_REF}"
-                API_PRODUCTION_REVISION_NAME="${API_PREVIEW_REVISION}" azd deploy api --from-package "${API_PACKAGE_REF}" --no-prompt
-
-                echo "Promoting UI from package: ${UI_PACKAGE_REF}"
-                UI_PRODUCTION_REVISION_NAME="${UI_PREVIEW_REVISION}" azd deploy ui --from-package "${UI_PACKAGE_REF}" --no-prompt
-            env:
-              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
-              AZURE_ENV_NAME: $(azureEnvName)
-              AZURE_LOCATION: $(azureLocation)
-              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
-              UI_VERSION: $(uiSemVerVersionTag)
-              API_VERSION: $(apiSemVerVersionTag)
-              UI_ACTIVE_LABEL: $(uiActiveLabel)
-              UI_PROMOTE_PREVIEW: "true"
-              UI_PRODUCTION_REVISION_NAME: ""
-              UI_PREVIEW_LABEL: $(uiPreviewLabel)
-              API_ACTIVE_LABEL: $(apiActiveLabel)
-              API_PROMOTE_PREVIEW: "true"
-              API_PRODUCTION_REVISION_NAME: ""
-              API_PREVIEW_LABEL: $(apiPreviewLabel)
-              API_PACKAGE_REF: $(apiPackageRef)
-              UI_PACKAGE_REF: $(uiPackageRef)
               VITE_APP_VERSION: $(uiSemVerVersionTag)
 
   - stage: Database_Deployment

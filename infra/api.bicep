@@ -9,13 +9,6 @@ param redisCacheName string
 param applicationInsightsName string
 param location string = resourceGroup().location
 param version string
-@allowed([
-  'blue'
-  'green'
-])
-param activeLabel string = 'blue'
-param promotePreview bool = false
-param productionRevisionName string = ''
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: managedIdentityName
@@ -37,27 +30,6 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2024-11-01-preview' existi
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: applicationInsightsName
 }
-
-var previewLabel = activeLabel == 'blue' ? 'green' : 'blue'
-var productionLabel = promotePreview ? previewLabel : activeLabel
-var targetLabel = promotePreview ? productionLabel : previewLabel
-var useLatestForProductionTraffic = empty(productionRevisionName)
-var previewTrafficEntry = {
-  label: previewLabel
-  latestRevision: true
-  weight: 0
-}
-var productionTrafficEntry = useLatestForProductionTraffic
-  ? {
-      label: productionLabel
-      latestRevision: true
-      weight: 100
-    }
-  : {
-      label: productionLabel
-      revisionName: productionRevisionName
-      weight: 100
-    }
 
 var apiEnvironmentVariables = [
   {
@@ -101,9 +73,7 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
   properties: {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
-      activeRevisionsMode: 'Labels'
-      targetLabel: targetLabel
-      maxInactiveRevisions: 5
+      activeRevisionsMode: 'Single'
       registries: [
         {
           server: containerRegistryUrl
@@ -114,14 +84,12 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
         external: true
         targetPort: 8080
         allowInsecure: false
-        traffic: promotePreview
-          ? [
-              productionTrafficEntry
-            ]
-          : [
-              previewTrafficEntry
-              productionTrafficEntry
-            ]
+        traffic: [
+          {
+            latestRevision: true
+            weight: 100
+          }
+        ]
       }
       dapr: {
         enabled: true
