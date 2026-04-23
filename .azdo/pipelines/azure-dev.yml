@@ -151,7 +151,7 @@ stages:
 
           # https://github.com/dotnet/aspire/issues/13612
           - script: |
-              dotnet dev-certs https --trust
+              SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust dotnet dev-certs https --trust
             displayName: "Trust .NET Dev Certs"
 
           - task: DotNetCoreCLI@2
