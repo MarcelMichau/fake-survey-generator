@@ -273,28 +273,7 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                set -euo pipefail
-
-                REGISTRY_ENDPOINT=$(azd env get-values | sed -n 's/^AZURE_CONTAINER_REGISTRY_ENDPOINT="\(.*\)"/\1/p')
-                if [[ -z "${REGISTRY_ENDPOINT}" ]]; then
-                  echo "Unable to resolve AZURE_CONTAINER_REGISTRY_ENDPOINT from azd environment."
-                  exit 1
-                fi
-
-                API_PACKAGE="${REGISTRY_ENDPOINT}/fake-survey-generator/fake-survey-generator-api:$(apiSemVerVersionTag)"
-                UI_PACKAGE="${REGISTRY_ENDPOINT}/fake-survey-generator/fake-survey-generator-ui:$(uiSemVerVersionTag)"
-
-                echo "Publishing API package: ${API_PACKAGE}"
-                azd publish api --to "${API_PACKAGE}" --no-prompt
-
-                echo "Publishing UI package: ${UI_PACKAGE}"
-                azd publish ui --to "${UI_PACKAGE}" --no-prompt
-
-                echo "Deploying API from package"
-                azd deploy api --from-package "${API_PACKAGE}" --no-prompt
-
-                echo "Deploying UI from package"
-                azd deploy ui --from-package "${UI_PACKAGE}" --no-prompt
+                azd deploy --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
               AZURE_ENV_NAME: $(azureEnvName)
