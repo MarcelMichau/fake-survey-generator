@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
 	plugins: [react()],
 	server: {
+		host: true, // Required for Playwright integration tests to work in CI
 		proxy: {
 			"/api": {
 				target: process.env.API_HTTPS || process.env.API_HTTP,
