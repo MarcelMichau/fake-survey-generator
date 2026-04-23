@@ -22,10 +22,7 @@ var app = builder.Build();
 
 app.UseSecurityHeadersConfiguration();
 
-app.UseForwardedHeaders();
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
+app.UseFileServer();
 
 app.UseHttpsRedirection();
 
