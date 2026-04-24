@@ -38,7 +38,8 @@ builder.AddViteApp("ui", "../../client/ui")
     .WithDeveloperCertificateTrust(true)
     .WithReference(api)
     .WaitFor(api)
-    .WithHttpsEndpoint(port: 3000, isProxied: false);
+    .WithHttpsEndpoint(port: 3000, isProxied: false)
+    .WithHttpHealthCheck();
 #pragma warning restore ASPIRECERTIFICATES001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 builder.Build().Run();
