@@ -9,7 +9,9 @@ internal static class DaprConfigurationExtensions
     {
         builder.Services.AddDaprClient();
 
-        if (!builder.Configuration.GetValue<bool>("SKIP_DAPR"))
+        // Only configure the Dapr secret store when a Dapr sidecar is present.
+        // The sidecar injects DAPR_HTTP_PORT into the process environment when attached.
+        if (Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") is not null)
             builder.Configuration.AddDaprSecretStore("secrets", new DaprClientBuilder().Build(), TimeSpan.FromSeconds(10));
 
         return builder;
