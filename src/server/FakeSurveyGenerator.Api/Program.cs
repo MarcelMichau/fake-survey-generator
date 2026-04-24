@@ -16,6 +16,7 @@ builder
     .AddDaprConfiguration()
     .AddOpenApiConfiguration()
     .AddAuthenticationConfiguration()
+    .AddForwardedHeadersConfiguration()
     .AddApplicationServicesConfiguration();
 
 var app = builder.Build();
