@@ -22,8 +22,6 @@ public sealed class IntegrationTestWebApplicationFactory(AspireTestSettings sett
         {
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { "SKIP_DAPR", "true" }, // Do not configure Dapr components for integration tests
-
                 { "ConnectionStrings:database", _settings.SqlServerConnectionString },
                 { "ConnectionStrings:cache", _settings.RedisConnectionString },
                 { "IDENTITY_PROVIDER_URL", "https://somenonexistentdomain.com" }
