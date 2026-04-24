@@ -205,6 +205,7 @@ stages:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
               scriptLocation: inlineScript
+              visibleAzLogin: false
               inlineScript: |
                 azd provision --no-prompt
             env:
@@ -219,6 +220,7 @@ stages:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
               scriptLocation: inlineScript
+              visibleAzLogin: false
               inlineScript: |
                 azd deploy --no-prompt
             env:
