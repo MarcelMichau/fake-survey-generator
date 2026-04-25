@@ -247,6 +247,64 @@ public sealed class SurveyEndpointsTests
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 
+    [Test]
+    public async Task
+        GivenOwnerDeletingOwnSurvey_WhenCallingDeleteSurvey_ThenNoContentResponseShouldBeReturnedAndSurveyShouldNoLongerExist()
+    {
+        await RegisterNewUser();
+        var newSurvey = await CreateSurvey();
+
+        using var deleteResponse = await AuthenticatedClient.DeleteAsync($"api/survey/{newSurvey.Id}");
+
+        await Assert.That(deleteResponse.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
+
+        using var getResponse = await AuthenticatedClient.GetAsync($"api/survey/{newSurvey.Id}");
+
+        await Assert.That(getResponse.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+    }
+
+    [Test]
+    public async Task
+        GivenNonOwnerAttemptingDelete_WhenCallingDeleteSurvey_ThenForbiddenResponseShouldBeReturnedAndSurveyShouldStillExist()
+    {
+        await RegisterNewUser();
+        var newSurvey = await CreateSurvey();
+
+        var otherUser = new Fixture().Create<TestUser>();
+        var otherClient = TestFixture.Factory!.WithSpecificUser(otherUser);
+
+        var registerOtherUserResponse = await otherClient.PostAsJsonAsync("/api/user/register", new RegisterUserCommand());
+        registerOtherUserResponse.EnsureSuccessStatusCode();
+
+        using var deleteResponse = await otherClient.DeleteAsync($"api/survey/{newSurvey.Id}");
+
+        await Assert.That(deleteResponse.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
+
+        using var getResponse = await AuthenticatedClient.GetAsync($"api/survey/{newSurvey.Id}");
+
+        await Assert.That(getResponse.StatusCode).IsEqualTo(HttpStatusCode.OK);
+    }
+
+    [Test]
+    public async Task
+        GivenUnauthenticatedClient_WhenCallingDeleteSurvey_ThenUnauthorizedResponseShouldBeReturned()
+    {
+        using var response = await UnauthenticatedClient.DeleteAsync("/api/survey/1");
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
+    }
+
+    [Test]
+    public async Task GivenNonExistentSurveyId_WhenCallingDeleteSurvey_ThenNotFoundResponseShouldBeReturned()
+    {
+        await RegisterNewUser();
+        const int surveyId = 9000001;
+
+        using var response = await AuthenticatedClient.DeleteAsync($"api/survey/{surveyId}");
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+    }
+
     private async Task<UserModel> RegisterNewUser()
     {
         var registerUserCommand = new RegisterUserCommand();
