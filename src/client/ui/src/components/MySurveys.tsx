@@ -4,9 +4,10 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import type * as Types from "../types";
 import SkeletonButton from "./SkeletonButton";
 import Alert from "./Alert";
+import ConfirmDialog from "./ConfirmDialog";
 import { useApiCall } from "../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export type MySurveysProps = {
 	loading: boolean;
@@ -18,6 +19,9 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasFetched, setHasFetched] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [surveyToDelete, setSurveyToDelete] =
+		useState<Types.UserSurveyModel | null>(null);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	const fetchSurveys = useCallback(async () => {
 		setIsSearching(true);
@@ -48,6 +52,34 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();
 		await fetchSurveys();
+	};
+
+	const confirmDelete = async () => {
+		if (!surveyToDelete) return;
+		setIsDeleting(true);
+		setError(null);
+
+		try {
+			const response = await apiCall(`api/survey/${surveyToDelete.id}`, {
+				method: "DELETE",
+			});
+
+			if (!response.ok) {
+				setError("Failed to delete survey");
+				return;
+			}
+
+			setUserSurveys((current) =>
+				current.filter((s) => s.id !== surveyToDelete.id),
+			);
+			setSurveyToDelete(null);
+		} catch (err) {
+			setError(
+				err instanceof Error ? err.message : "An unexpected error occurred",
+			);
+		} finally {
+			setIsDeleting(false);
+		}
 	};
 
 	const tablePadding = "px-4 py-2";
@@ -95,6 +127,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 								<TableHeader># Options</TableHeader>
 								<TableHeader>Winning Option</TableHeader>
 								<TableHeader>Winning # Votes</TableHeader>
+								<TableHeader>Actions</TableHeader>
 							</tr>
 						</thead>
 						<tbody>
@@ -111,6 +144,16 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 										{new Intl.NumberFormat().format(
 											survey.winningOptionNumberOfVotes,
 										)}
+									</TableData>
+									<TableData>
+										<button
+											type="button"
+											aria-label={`Delete survey ${survey.topic}`}
+											onClick={() => setSurveyToDelete(survey)}
+											className="text-red-400 hover:text-red-300 transition-colors px-2 py-1"
+										>
+											<FontAwesomeIcon icon={faTrash} />
+										</button>
 									</TableData>
 								</tr>
 							))}
@@ -130,6 +173,22 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 						message={error}
 					/>
 				)}
+
+				<ConfirmDialog
+					open={surveyToDelete !== null}
+					title="Delete survey?"
+					message={
+						surveyToDelete
+							? `This will permanently delete "${surveyToDelete.topic}". This action cannot be undone.`
+							: ""
+					}
+					confirmLabel="Delete"
+					busy={isDeleting}
+					onConfirm={confirmDelete}
+					onCancel={() => {
+						if (!isDeleting) setSurveyToDelete(null);
+					}}
+				/>
 			</div>
 		</SkeletonTheme>
 	);

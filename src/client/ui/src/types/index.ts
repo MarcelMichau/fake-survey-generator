@@ -34,6 +34,7 @@ export type UserModel = {
 
 export type SurveyModel = {
 	id: number;
+	ownerExternalUserId: string;
 	topic: string;
 	respondentType: string;
 	numberOfRespondents: number;

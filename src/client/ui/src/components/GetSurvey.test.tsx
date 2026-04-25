@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as auth0 from "@auth0/auth0-react";
 import GetSurvey from "./GetSurvey";
 import { render } from "../test/test-utils";
 import * as hooks from "../hooks";
@@ -11,6 +12,7 @@ vi.mock("../hooks");
 describe("GetSurvey Component", () => {
   const mockSurveyData: SurveyModel = {
     id: 123,
+    ownerExternalUserId: "test-user-id",
     topic: "What's your favorite color?",
     respondentType: "Color Enthusiasts",
     numberOfRespondents: 100,
@@ -28,6 +30,9 @@ describe("GetSurvey Component", () => {
       survey: null,
       loading: false,
       error: "",
+    });
+    vi.mocked(hooks.useApiCall).mockReturnValue({
+      apiCall: vi.fn(),
     });
   });
 
@@ -307,6 +312,73 @@ describe("GetSurvey Component", () => {
       expect(
         screen.getByText("What's your favorite color?")
       ).toBeInTheDocument();
+    });
+  });
+
+  describe("Delete button visibility (owner-gated)", () => {
+    it("should show the delete button when current user owns the survey", () => {
+      vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+        survey: mockSurveyData,
+        loading: false,
+        error: "",
+      });
+
+      render(<GetSurvey loading={false} newSurveyId={null} />);
+
+      expect(
+        screen.getByRole("button", { name: /Delete this survey/i })
+      ).toBeInTheDocument();
+    });
+
+    it("should hide the delete button when current user does not own the survey", () => {
+      vi.mocked(auth0.useAuth0).mockReturnValueOnce({
+        isAuthenticated: true,
+        isLoading: false,
+        user: { sub: "different-user-id", name: "Other User" },
+        // biome-ignore lint/suspicious/noExplicitAny: test mock
+        getAccessTokenSilently: vi.fn(async () => "test-token") as any,
+        // biome-ignore lint/suspicious/noExplicitAny: test mock
+      } as any);
+
+      vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+        survey: mockSurveyData,
+        loading: false,
+        error: "",
+      });
+
+      render(<GetSurvey loading={false} newSurveyId={null} />);
+
+      expect(
+        screen.queryByRole("button", { name: /Delete this survey/i })
+      ).not.toBeInTheDocument();
+    });
+
+    it("should send DELETE request and clear the survey on confirm", async () => {
+      const user = userEvent.setup();
+      const mockApiCall = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 204,
+      });
+      vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+      vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+        survey: mockSurveyData,
+        loading: false,
+        error: "",
+      });
+
+      render(<GetSurvey loading={false} newSurveyId={null} />);
+
+      await user.click(
+        screen.getByRole("button", { name: /Delete this survey/i })
+      );
+      await user.click(screen.getByRole("button", { name: /^Delete$/ }));
+
+      await waitFor(() => {
+        expect(mockApiCall).toHaveBeenCalledWith(
+          `api/survey/${mockSurveyData.id}`,
+          { method: "DELETE" }
+        );
+      });
     });
   });
 });

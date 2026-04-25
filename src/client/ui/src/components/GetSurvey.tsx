@@ -79,7 +79,13 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 
 				{surveyDetail && surveyDetail.id > 0 && (
 					<div className="mt-8 animate-fade-in">
-						<SurveyResult surveyDetail={surveyDetail} />
+						<SurveyResult
+							surveyDetail={surveyDetail}
+							onDeleted={() => {
+								setSurveyIdInput(0);
+								setTriggerFetch(null);
+							}}
+						/>
 					</div>
 				)}
 

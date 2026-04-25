@@ -7,6 +7,7 @@ public sealed record SurveyModel : AuditableModel
 {
     public required int Id { get; init; }
     public required int OwnerId { get; init; }
+    public required string OwnerExternalUserId { get; init; }
     public required string Topic { get; init; }
     public required string RespondentType { get; init; }
     public required int NumberOfRespondents { get; init; }
@@ -22,6 +23,7 @@ public static class SurveyModelMappingExtensions
         {
             Id = survey.Id,
             OwnerId = survey.Owner.Id,
+            OwnerExternalUserId = survey.Owner.ExternalUserId,
             Topic = survey.Topic.Value,
             RespondentType = survey.RespondentType.Value,
             NumberOfRespondents = survey.NumberOfRespondents,
@@ -40,6 +42,7 @@ public static class SurveyModelMappingExtensions
         {
             Id = survey.Id,
             OwnerId = survey.Owner.Id,
+            OwnerExternalUserId = survey.Owner.ExternalUserId,
             Topic = survey.Topic,
             RespondentType = survey.RespondentType,
             NumberOfRespondents = survey.NumberOfRespondents,

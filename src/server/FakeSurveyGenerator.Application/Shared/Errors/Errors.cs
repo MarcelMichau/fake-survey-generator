@@ -26,5 +26,10 @@ public static class Errors
             var forId = id is null ? "" : $"for Id: '{id}'";
             return new Error("record.not.found", $"{entityName} not found {forId}");
         }
+
+        public static Error Forbidden(string message = "You are not authorized to perform this action")
+        {
+            return new Error("forbidden", message);
+        }
     }
 }

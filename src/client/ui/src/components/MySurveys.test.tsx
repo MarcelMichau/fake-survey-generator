@@ -419,4 +419,135 @@ describe("MySurveys Component", () => {
       });
     });
   });
+
+  describe("Delete Survey", () => {
+    const fetchAndDeleteSetup = async (apiCall: ReturnType<typeof vi.fn>) => {
+      vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall });
+      const user = userEvent.setup();
+      render(<MySurveys loading={false} />);
+      await user.click(
+        screen.getByRole("button", { name: /Get My Surveys/i })
+      );
+      await waitFor(() => {
+        expect(
+          screen.getByText("What's your favorite programming language?")
+        ).toBeInTheDocument();
+      });
+      return user;
+    };
+
+    it("should render a delete button for each survey row", async () => {
+      const apiCall = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockSurveysData,
+      });
+      await fetchAndDeleteSetup(apiCall);
+
+      const deleteButtons = screen.getAllByRole("button", {
+        name: /Delete survey /i,
+      });
+      expect(deleteButtons.length).toBe(mockSurveysData.length);
+    });
+
+    it("should open the confirm dialog when a row's delete button is clicked", async () => {
+      const apiCall = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockSurveysData,
+      });
+      const user = await fetchAndDeleteSetup(apiCall);
+
+      await user.click(
+        screen.getByRole("button", {
+          name: /Delete survey What's your favorite programming language\?/i,
+        })
+      );
+
+      expect(
+        screen.getByRole("dialog", { name: /Delete survey\?/i })
+      ).toBeInTheDocument();
+    });
+
+    it("should send DELETE request and remove the row on success", async () => {
+      const apiCall = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockSurveysData,
+      });
+      const user = await fetchAndDeleteSetup(apiCall);
+
+      apiCall.mockResolvedValueOnce({ ok: true, status: 204 });
+
+      await user.click(
+        screen.getByRole("button", {
+          name: /Delete survey What's your favorite programming language\?/i,
+        })
+      );
+      await user.click(screen.getByRole("button", { name: /^Delete$/ }));
+
+      await waitFor(() => {
+        expect(apiCall).toHaveBeenLastCalledWith("api/survey/1", {
+          method: "DELETE",
+        });
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText("What's your favorite programming language?")
+        ).not.toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByText("What's your favorite color?")
+      ).toBeInTheDocument();
+    });
+
+    it("should surface an error alert if DELETE fails", async () => {
+      const apiCall = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockSurveysData,
+      });
+      const user = await fetchAndDeleteSetup(apiCall);
+
+      apiCall.mockResolvedValueOnce({ ok: false, status: 403 });
+
+      await user.click(
+        screen.getByRole("button", {
+          name: /Delete survey What's your favorite programming language\?/i,
+        })
+      );
+      await user.click(screen.getByRole("button", { name: /^Delete$/ }));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Failed to delete survey/i)
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByText("What's your favorite programming language?")
+      ).toBeInTheDocument();
+    });
+
+    it("should close the dialog when Cancel is clicked", async () => {
+      const apiCall = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => mockSurveysData,
+      });
+      const user = await fetchAndDeleteSetup(apiCall);
+
+      await user.click(
+        screen.getByRole("button", {
+          name: /Delete survey What's your favorite programming language\?/i,
+        })
+      );
+      expect(
+        screen.getByRole("dialog", { name: /Delete survey\?/i })
+      ).toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: /Cancel/i }));
+
+      expect(
+        screen.queryByRole("dialog", { name: /Delete survey\?/i })
+      ).not.toBeInTheDocument();
+    });
+  });
 });

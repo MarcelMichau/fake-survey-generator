@@ -28,6 +28,10 @@ internal static class SurveyEndpoints
         surveyGroup.MapPost("", CreateSurvey)
             .WithName(nameof(CreateSurvey))
             .WithSummary("Creates a new Survey");
+
+        surveyGroup.MapDelete("/{id:int}", DeleteSurvey)
+            .WithName(nameof(DeleteSurvey))
+            .WithSummary("Deletes a Survey owned by the current user");
     }
 
     private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(
@@ -77,6 +81,26 @@ internal static class SurveyEndpoints
             });
     }
 
+    private static async Task<Results<NoContent, ProblemHttpResult>> DeleteSurvey(
+        ICommandHandler<DeleteSurveyCommand, Result<int, Error>> handler,
+        [Description("Primary key of the Survey")] int id,
+        HttpContext httpContext,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new DeleteSurveyCommand(id), cancellationToken);
+
+        if (result.IsSuccess)
+            return TypedResults.NoContent();
+
+        if (result.Error is ValidationError validationError)
+        {
+            httpContext.Items[ValidationLoggingEndpointFilter.ValidationErrorsKey] = validationError.Errors;
+        }
+
+        return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
+            statusCode: MapErrorToStatusCode(result.Error));
+    }
+
     private static Results<Ok<T>, ProblemHttpResult> FromResultWithValidationLogging<T>(
         HttpContext httpContext,
         Result<T, Error> result)
@@ -91,11 +115,18 @@ internal static class SurveyEndpoints
             httpContext.Items[ValidationLoggingEndpointFilter.ValidationErrorsKey] = validationError.Errors;
         }
 
-        var statusCode = Equals(result.Error, Errors.General.NotFound())
-            ? StatusCodes.Status404NotFound
-            : StatusCodes.Status400BadRequest;
-
         return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
-            statusCode: statusCode);
+            statusCode: MapErrorToStatusCode(result.Error));
+    }
+
+    private static int MapErrorToStatusCode(Error error)
+    {
+        if (Equals(error, Errors.General.NotFound()))
+            return StatusCodes.Status404NotFound;
+
+        if (Equals(error, Errors.General.Forbidden()))
+            return StatusCodes.Status403Forbidden;
+
+        return StatusCodes.Status400BadRequest;
     }
 }

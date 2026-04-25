@@ -25,6 +25,7 @@ public static class HostApplicationBuilderConfiguration
         // Command Handlers
         builder.Services
             .AddCommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>, CreateSurveyCommandHandler>()
+            .AddCommandHandler<DeleteSurveyCommand, Result<int, Error>, DeleteSurveyCommandHandler>()
             .AddCommandHandler<RegisterUserCommand, Result<UserModel, Error>, RegisterUserCommandHandler>();
 
         // Query Handlers

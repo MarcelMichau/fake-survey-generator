@@ -1,4 +1,9 @@
+import { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import type { SurveyModel } from "../types";
+import { useApiCall } from "../hooks";
+import ConfirmDialog from "./ConfirmDialog";
+import Alert from "./Alert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faCalendarAlt,
@@ -6,25 +11,71 @@ import {
 	faUsers,
 	faTrophy,
 	faChartBar,
+	faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 type SurveyResultProps = {
 	surveyDetail: SurveyModel;
+	onDeleted?: (id: number) => void;
 };
 
-const SurveyResult = ({ surveyDetail }: SurveyResultProps) => {
+const SurveyResult = ({ surveyDetail, onDeleted }: SurveyResultProps) => {
+	const { user } = useAuth0();
+	const { apiCall } = useApiCall();
+	const [confirmOpen, setConfirmOpen] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const isOwner = !!user?.sub && user.sub === surveyDetail.ownerExternalUserId;
+
+	const confirmDelete = async () => {
+		setIsDeleting(true);
+		setError(null);
+		try {
+			const response = await apiCall(`api/survey/${surveyDetail.id}`, {
+				method: "DELETE",
+			});
+
+			if (!response.ok) {
+				setError("Failed to delete survey");
+				return;
+			}
+
+			setConfirmOpen(false);
+			onDeleted?.(surveyDetail.id);
+		} catch (err) {
+			setError(
+				err instanceof Error ? err.message : "An unexpected error occurred",
+			);
+		} finally {
+			setIsDeleting(false);
+		}
+	};
+
 	return (
 		<div className="w-full animate-fade-in">
 			<div className="dark:bg-gray-800/80 backdrop-blur-sm border dark:border-gray-600/60 rounded-lg p-6 flex flex-col justify-between leading-normal shadow-lg">
 				<div className="mb-6">
-					<div className="flex items-center mb-4">
-						<FontAwesomeIcon
-							icon={faPoll}
-							className="text-indigo-500 mr-3 text-xl"
-						/>
-						<h3 className="text-lg font-semibold text-gray-200">
-							Survey Results
-						</h3>
+					<div className="flex items-center justify-between mb-4">
+						<div className="flex items-center">
+							<FontAwesomeIcon
+								icon={faPoll}
+								className="text-indigo-500 mr-3 text-xl"
+							/>
+							<h3 className="text-lg font-semibold text-gray-200">
+								Survey Results
+							</h3>
+						</div>
+						{isOwner && (
+							<button
+								type="button"
+								aria-label="Delete this survey"
+								onClick={() => setConfirmOpen(true)}
+								className="text-red-400 hover:text-red-300 transition-colors px-2 py-1"
+							>
+								<FontAwesomeIcon icon={faTrash} />
+							</button>
+						)}
 					</div>
 
 					<div className="flex items-center mb-4 bg-gray-700/50 px-4 py-3 rounded-md">
@@ -111,7 +162,29 @@ const SurveyResult = ({ surveyDetail }: SurveyResultProps) => {
 						}).format(new Date(surveyDetail.createdOn))}
 					</p>
 				</div>
+
+				{error && (
+					<div className="mt-4">
+						<Alert
+							type="error"
+							title="Oh no! Something did not go as planned."
+							message={error}
+						/>
+					</div>
+				)}
 			</div>
+
+			<ConfirmDialog
+				open={confirmOpen}
+				title="Delete survey?"
+				message={`This will permanently delete "${surveyDetail.topic}". This action cannot be undone.`}
+				confirmLabel="Delete"
+				busy={isDeleting}
+				onConfirm={confirmDelete}
+				onCancel={() => {
+					if (!isDeleting) setConfirmOpen(false);
+				}}
+			/>
 		</div>
 	);
 };

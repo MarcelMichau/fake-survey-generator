@@ -10,8 +10,8 @@
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "13.2.3",
-        "contentHash": "ZBfP8yv6/9VbrRad2j0xtbXPB2RzpOgToQQKuhOqvPhwRppZ8/YlqkTOb4uWqNHl9U3+MkeWL2OkJ3Tn5kD6Zw==",
+        "resolved": "13.2.4",
+        "contentHash": "B+bq0PURfF7/D7lzUS+cAnQ1skbMYmmFg4ofPcE551YI3PfaBfWgQ4YC+0qBbXjytBK53qBeXMnE9H1Kk5xhnw==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.5",
@@ -23,7 +23,7 @@
           "Microsoft.Extensions.Logging.Abstractions": "10.0.5",
           "Microsoft.Extensions.Options": "10.0.5",
           "Microsoft.Extensions.Primitives": "10.0.5",
-          "OpenTelemetry.Extensions.Hosting": "1.15.0",
+          "OpenTelemetry.Extensions.Hosting": "1.15.3",
           "StackExchange.Redis": "2.11.0",
           "System.IO.Hashing": "10.0.3"
         }
@@ -586,8 +586,8 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.2.3, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[13.2.3, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.2.4, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[13.2.4, )",
           "Azure.Identity": "[1.21.0, )",
           "CSharpFunctionalExtensions": "[3.7.0, )",
           "Dapper": "[2.1.72, )",
@@ -603,9 +603,9 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "CentralTransitive",
-        "requested": "[13.2.3, )",
-        "resolved": "13.2.3",
-        "contentHash": "oQw0cNp9b82y0baqgB7YMABHx3pxzA1XZ0+GJCdbkUpv1UOdhGpuovY1beKcnyLoYFtFSl2gC+k0ft4XtK4cpQ==",
+        "requested": "[13.2.4, )",
+        "resolved": "13.2.4",
+        "contentHash": "KYuAp02v5iH1vz3MDnGCM+VSjle2bBXrUPpiV1wyAOVGK+kiv4FCMFeLfob80HeFTaHcjyOjwbEuYIA8YqeizA==",
         "dependencies": {
           "Azure.Core": "1.51.1",
           "Azure.Identity": "1.18.0",
@@ -621,18 +621,18 @@
           "Microsoft.Extensions.Logging.Abstractions": "10.0.5",
           "Microsoft.Extensions.Options": "10.0.5",
           "Microsoft.Extensions.Primitives": "10.0.5",
-          "OpenTelemetry.Extensions.Hosting": "1.15.0",
+          "OpenTelemetry.Extensions.Hosting": "1.15.3",
           "System.Security.Cryptography.Pkcs": "10.0.5"
         }
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "CentralTransitive",
-        "requested": "[13.2.3, )",
-        "resolved": "13.2.3",
-        "contentHash": "7Ivsa1fRT2waAQ/Fj7QnkC6aI1hBS5LKirbRfPNtxT00AxHIQI8dZryW9J4rNOLPqDdjndf1tMYrQQ+HafzQaQ==",
+        "requested": "[13.2.4, )",
+        "resolved": "13.2.4",
+        "contentHash": "K1JyCL5D1xgzD0e7Hjd0zua9nhp+jrDuDI6DlcAAcS3u1XIkVfObOa+uzNL5JvLH9TodNv8KOlvs8PlvBYrZJg==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
-          "Aspire.StackExchange.Redis": "13.2.3",
+          "Aspire.StackExchange.Redis": "13.2.4",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "10.0.5",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.5",
           "Microsoft.Extensions.Configuration.Binder": "10.0.5",
@@ -643,7 +643,7 @@
           "Microsoft.Extensions.Logging.Abstractions": "10.0.5",
           "Microsoft.Extensions.Options": "10.0.5",
           "Microsoft.Extensions.Primitives": "10.0.5",
-          "OpenTelemetry.Extensions.Hosting": "1.15.0",
+          "OpenTelemetry.Extensions.Hosting": "1.15.3",
           "StackExchange.Redis": "2.11.0",
           "System.IO.Hashing": "10.0.3"
         }
