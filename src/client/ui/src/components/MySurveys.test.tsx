@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MySurveys from "./MySurveys";
@@ -421,7 +421,9 @@ describe("MySurveys Component", () => {
   });
 
   describe("Delete Survey", () => {
-    const fetchAndDeleteSetup = async (apiCall: ReturnType<typeof vi.fn>) => {
+    const fetchAndDeleteSetup = async (
+      apiCall: Mock<(url: string, options?: RequestInit) => Promise<Response>>
+    ) => {
       vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall });
       const user = userEvent.setup();
       render(<MySurveys loading={false} />);
