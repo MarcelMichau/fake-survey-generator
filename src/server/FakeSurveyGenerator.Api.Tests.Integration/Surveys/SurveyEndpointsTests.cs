@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Linq;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Surveys;

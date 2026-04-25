@@ -1,6 +1,4 @@
 using FakeSurveyGenerator.Application.Shared.Identity;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
 
 namespace FakeSurveyGenerator.Api.Filters;
 
