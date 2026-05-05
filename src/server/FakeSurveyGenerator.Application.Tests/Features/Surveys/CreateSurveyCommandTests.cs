@@ -11,8 +11,7 @@ namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
 
 public sealed class CreateSurveyCommandTests
 {
-    [ClassDataSource<TestFixture>]
-    public required TestFixture Fixture { get; init; }
+    [ClassDataSource<TestFixture>] public required TestFixture Fixture { get; init; }
 
     private readonly Fixture _fixture = new();
     private readonly IUserService _mockUserService = Substitute.For<IUserService>();
@@ -35,16 +34,17 @@ public sealed class CreateSurveyCommandTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = _fixture.Create<int>(),
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = new List<SurveyOptionDto> {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>()
                 },
-                new()
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>()
                 }
-            }
+            ]
         };
 
         var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService, _mockValidator);
@@ -67,18 +67,19 @@ public sealed class CreateSurveyCommandTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = 500,
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = new List<SurveyOptionDto> {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 100
                 },
-                new()
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 400
                 }
-            }
+            ]
         };
 
         var sut = new CreateSurveyCommandHandler(Fixture.Context, _mockUserService, _mockValidator);

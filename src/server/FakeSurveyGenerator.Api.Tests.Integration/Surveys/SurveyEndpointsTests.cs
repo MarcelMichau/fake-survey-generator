@@ -13,6 +13,7 @@ public sealed class SurveyEndpointsTests
 {
     [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
     public required IntegrationTestFixture TestFixture { get; init; }
+
     private readonly TestUser _testUser;
 
     private HttpClient AuthenticatedClient => TestFixture.Factory!
@@ -51,17 +52,17 @@ public sealed class SurveyEndpointsTests
             SurveyTopic = "How unauthorized is this?",
             NumberOfRespondents = 400,
             RespondentType = "Unauthorized users",
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = "Very Unauthorized"
                 },
-                new()
+                new SurveyOptionDto
                 {
                     OptionText = "Completely Unauthorized"
                 }
-            }
+            ]
         };
 
         using var response = await UnauthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
@@ -78,13 +79,13 @@ public sealed class SurveyEndpointsTests
             SurveyTopic = "",
             NumberOfRespondents = 0,
             RespondentType = "",
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = ""
                 }
-            }
+            ]
         };
 
         using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
@@ -103,13 +104,13 @@ public sealed class SurveyEndpointsTests
             SurveyTopic = "",
             NumberOfRespondents = 0,
             RespondentType = "",
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = ""
                 }
-            }
+            ]
         };
 
         using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
@@ -152,13 +153,13 @@ public sealed class SurveyEndpointsTests
             SurveyTopic = "",
             NumberOfRespondents = 0,
             RespondentType = "",
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = ""
                 }
-            }
+            ]
         };
 
         using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
@@ -209,7 +210,8 @@ public sealed class SurveyEndpointsTests
         await Assert.That(createdSurvey.Topic).IsEqualTo(newSurvey.Topic);
         await Assert.That(createdSurvey.NumberOfRespondents).IsEqualTo(newSurvey.NumberOfRespondents);
         await Assert.That(createdSurvey.RespondentType).IsEqualTo(newSurvey.RespondentType);
-        await Assert.That(createdSurvey.WinningOptionNumberOfVotes).IsEqualTo(newSurvey.Options.Max(o => o.NumberOfVotes));
+        await Assert.That(createdSurvey.WinningOptionNumberOfVotes)
+            .IsEqualTo(newSurvey.Options.Max(o => o.NumberOfVotes));
     }
 
     [Test]
@@ -222,11 +224,11 @@ public sealed class SurveyEndpointsTests
             SurveyTopic = "Duplicate test",
             NumberOfRespondents = 100,
             RespondentType = "Testers",
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new() { OptionText = "Option A" },
-                new() { OptionText = "Option A" }
-            }
+            SurveyOptions =
+            [
+                new SurveyOptionDto { OptionText = "Option A" },
+                new SurveyOptionDto { OptionText = "Option A" }
+            ]
         };
 
         using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
@@ -273,7 +275,8 @@ public sealed class SurveyEndpointsTests
         var otherUser = new Fixture().Create<TestUser>();
         var otherClient = TestFixture.Factory!.WithSpecificUser(otherUser);
 
-        var registerOtherUserResponse = await otherClient.PostAsJsonAsync("/api/user/register", new RegisterUserCommand());
+        var registerOtherUserResponse =
+            await otherClient.PostAsJsonAsync("/api/user/register", new RegisterUserCommand());
         registerOtherUserResponse.EnsureSuccessStatusCode();
 
         using var deleteResponse = await otherClient.DeleteAsync($"api/survey/{newSurvey.Id}");
@@ -324,17 +327,17 @@ public sealed class SurveyEndpointsTests
             SurveyTopic = "How awesome is this?",
             NumberOfRespondents = 350,
             RespondentType = "Individuals",
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = "Very awesome"
                 },
-                new()
+                new SurveyOptionDto
                 {
                     OptionText = "Not so much"
                 }
-            }
+            ]
         };
 
         var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);

@@ -17,14 +17,14 @@ public sealed class CreateSurveyCommandValidatorTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = 1,
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = _fixture.Create<int>()
                 }
-            }
+            ]
         };
 
         var validator = new CreateSurveyCommandValidator();
@@ -42,14 +42,14 @@ public sealed class CreateSurveyCommandValidatorTests
             SurveyTopic = "",
             NumberOfRespondents = 1,
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 1
                 }
-            }
+            ]
         };
 
         var validator = new CreateSurveyCommandValidator();
@@ -68,14 +68,14 @@ public sealed class CreateSurveyCommandValidatorTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = 0,
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 1
                 }
-            }
+            ]
         };
 
         var validator = new CreateSurveyCommandValidator();
@@ -94,14 +94,14 @@ public sealed class CreateSurveyCommandValidatorTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = 1,
             RespondentType = "",
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = _fixture.Create<string>(),
                     PreferredNumberOfVotes = 1
                 }
-            }
+            ]
         };
 
         var validator = new CreateSurveyCommandValidator();
@@ -120,7 +120,7 @@ public sealed class CreateSurveyCommandValidatorTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = 1,
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = new List<SurveyOptionDto>()
+            SurveyOptions = []
         };
 
         var validator = new CreateSurveyCommandValidator();
@@ -158,13 +158,13 @@ public sealed class CreateSurveyCommandValidatorTests
             SurveyTopic = _fixture.Create<string>(),
             NumberOfRespondents = 1,
             RespondentType = _fixture.Create<string>(),
-            SurveyOptions = new List<SurveyOptionDto>
-            {
-                new()
+            SurveyOptions =
+            [
+                new SurveyOptionDto
                 {
                     OptionText = ""
                 }
-            }
+            ]
         };
 
         var validator = new CreateSurveyCommandValidator();
