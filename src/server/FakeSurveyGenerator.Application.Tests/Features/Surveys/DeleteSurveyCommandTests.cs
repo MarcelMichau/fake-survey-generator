@@ -1,7 +1,6 @@
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Users;
 using FakeSurveyGenerator.Application.Features.Surveys;
-using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.TestHelpers;
@@ -18,7 +17,7 @@ public sealed class DeleteSurveyCommandTests
     [ClassDataSource<TestFixture>]
     public required TestFixture Fixture { get; init; }
 
-    private static ICache<SurveyModel?> Cache => TestFixture.GetCache<SurveyModel?>();
+    private static TestHybridCache Cache => TestFixture.GetHybridCache();
     private readonly IUserService _mockUserService = Substitute.For<IUserService>();
     private readonly IValidator<DeleteSurveyCommand> _mockValidator = Substitute.For<IValidator<DeleteSurveyCommand>>();
 
@@ -98,6 +97,6 @@ public sealed class DeleteSurveyCommandTests
 
         await Assert.That(result.IsSuccess).IsTrue();
 
-        await cache.Received(1).RemoveAsync(id.ToString(), Arg.Any<CancellationToken>());
+        await Assert.That(cache.RemovedKeys).Contains($"survey:{id}");
     }
 }

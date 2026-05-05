@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using CSharpFunctionalExtensions;
-using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Identity;
+using Microsoft.Extensions.Caching.Hybrid;
 using Duende.IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -14,11 +14,11 @@ internal sealed class OAuthUserInfoService(
     HttpClient client,
     ILogger<OAuthUserInfoService> logger,
     IConfiguration configuration,
-    ICache<OAuthUser> cache,
+    HybridCache cache,
     ITokenProviderService tokenProviderService)
     : IUserService
 {
-    private readonly ICache<OAuthUser> _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    private readonly HybridCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
 
     private readonly IConfiguration _configuration =
@@ -36,13 +36,13 @@ internal sealed class OAuthUserInfoService(
         return new JwtSecurityToken(accessToken).Subject;
     }
 
+    private static string UserKey(string userId) => $"oauth-user:{userId}";
+
     public async Task<IUser> GetUserInfo(CancellationToken cancellationToken)
     {
-        var cacheKey = GetUserIdentity();
-
         var accessToken = _tokenProviderService.GetToken();
 
-        return await _cache.GetOrCreateAsync(cacheKey, async token =>
+        return await _cache.GetOrCreateAsync(UserKey(GetUserIdentity()), async token =>
         {
             var (_, isFailure, userInfo, error) = await GetUserInfoFromIdentityProvider(accessToken, token);
 

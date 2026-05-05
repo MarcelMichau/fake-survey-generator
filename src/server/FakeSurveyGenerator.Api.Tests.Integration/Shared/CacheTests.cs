@@ -1,6 +1,6 @@
 ﻿using FakeSurveyGenerator.Api.Tests.Integration.Setup;
-using FakeSurveyGenerator.Application.Shared.Caching;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
@@ -16,11 +16,12 @@ public sealed class CacheTests
     [Test]
     public async Task GivenADistributedCache_WhenGettingAnItemThatIsNotCached_ThenCachedValueShouldBeNull()
     {
-        var cache = ClientFactory.Services.GetRequiredService<ICache<string>>();
+        var cache = ClientFactory.Services.GetRequiredService<HybridCache>();
 
         const string cacheKey = "brand-new-key";
 
-        var cachedValue = await cache.GetOrCreateAsync(cacheKey, _ => new ValueTask<string>(), CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, _ => ValueTask.FromResult<string?>(null),
+            cancellationToken: CancellationToken.None);
 
         await Assert.That(cachedValue).IsNull();
     }
@@ -28,14 +29,15 @@ public sealed class CacheTests
     [Test]
     public async Task GivenADistributedCache_WhenGettingAnItemThatIsCached_ThenCachedValueShouldBeReturned()
     {
-        var cache = ClientFactory.Services.GetRequiredService<ICache<string>>();
+        var cache = ClientFactory.Services.GetRequiredService<HybridCache>();
 
         var cacheKey = $"test-key-get-{Guid.NewGuid()}";
         const string expectedValue = "test-value";
 
-        await cache.SetAsync(cacheKey, expectedValue, 1, CancellationToken.None);
+        await cache.SetAsync(cacheKey, expectedValue, cancellationToken: CancellationToken.None);
 
-        var cachedValue = await cache.GetOrCreateAsync(cacheKey, _ => new ValueTask<string>(), CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, _ => ValueTask.FromResult<string?>(null),
+            cancellationToken: CancellationToken.None);
 
         await Assert.That(cachedValue).IsEqualTo(expectedValue);
     }
@@ -43,15 +45,16 @@ public sealed class CacheTests
     [Test]
     public async Task GivenADistributedCache_WhenRemovingAnItemFromCache_ThenItemShouldNoLongerBeInCache()
     {
-        var cache = ClientFactory.Services.GetRequiredService<ICache<string>>();
+        var cache = ClientFactory.Services.GetRequiredService<HybridCache>();
 
         var cacheKey = $"test-key-remove-{Guid.NewGuid()}";
 
-        await cache.SetAsync(cacheKey, "test-value", 1, CancellationToken.None);
+        await cache.SetAsync(cacheKey, "test-value", cancellationToken: CancellationToken.None);
 
         await cache.RemoveAsync(cacheKey, CancellationToken.None);
 
-        var cachedValue = await cache.GetOrCreateAsync(cacheKey, _ => new ValueTask<string>(), CancellationToken.None);
+        var cachedValue = await cache.GetOrCreateAsync(cacheKey, _ => ValueTask.FromResult<string?>(null),
+            cancellationToken: CancellationToken.None);
 
         await Assert.That(cachedValue).IsNull();
     }

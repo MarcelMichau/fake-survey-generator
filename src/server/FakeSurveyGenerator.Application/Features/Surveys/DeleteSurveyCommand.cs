@@ -2,11 +2,11 @@ using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
-using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
 
@@ -23,7 +23,7 @@ public sealed class DeleteSurveyCommandValidator : AbstractValidator<DeleteSurve
 public sealed class DeleteSurveyCommandHandler(
     SurveyContext surveyContext,
     IUserService userService,
-    ICache<SurveyModel?> cache,
+    HybridCache cache,
     IValidator<DeleteSurveyCommand> validator)
     : ICommandHandler<DeleteSurveyCommand, Result<int, Error>>
 {
@@ -32,9 +32,11 @@ public sealed class DeleteSurveyCommandHandler(
 
     private readonly IUserService _userService = userService ?? throw new ArgumentNullException(nameof(userService));
 
-    private readonly ICache<SurveyModel?> _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    private readonly HybridCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
     private readonly IValidator<DeleteSurveyCommand> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+
+    internal static string SurveyKey(int id) => $"survey:{id}";
 
     public async Task<Result<int, Error>> Handle(DeleteSurveyCommand request,
         CancellationToken cancellationToken = default)
@@ -64,7 +66,7 @@ public sealed class DeleteSurveyCommandHandler(
 
         await _surveyContext.SaveChangesAsync(cancellationToken);
 
-        await _cache.RemoveAsync(request.Id.ToString(), cancellationToken);
+        await _cache.RemoveAsync(SurveyKey(request.Id), cancellationToken);
 
         return request.Id;
     }

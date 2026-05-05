@@ -1,10 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Surveys;
-using FakeSurveyGenerator.Application.Shared.Caching;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Tests.Setup;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Caching.Hybrid;
 using NSubstitute;
 
 namespace FakeSurveyGenerator.Application.Tests.Features.Surveys;
@@ -13,7 +13,7 @@ public sealed class GetSurveyDetailQueryTests
 {
     [ClassDataSource<TestFixture>]
     public required TestFixture Fixture { get; init; }
-    private static ICache<SurveyModel?> Cache => TestFixture.GetCache<SurveyModel?>();
+    private static HybridCache Cache => TestFixture.GetHybridCache();
     private readonly IValidator<GetSurveyDetailQuery> _mockValidator = Substitute.For<IValidator<GetSurveyDetailQuery>>();
 
     public GetSurveyDetailQueryTests()

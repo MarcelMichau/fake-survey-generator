@@ -2,7 +2,8 @@ using FakeSurveyGenerator.Application.Shared.Identity;
 
 namespace FakeSurveyGenerator.Api.Filters;
 
-public sealed class ValidationLoggingEndpointFilter(ILoggerFactory loggerFactory, IUserService userService) : IEndpointFilter
+public sealed class ValidationLoggingEndpointFilter(ILoggerFactory loggerFactory, IUserService userService)
+    : IEndpointFilter
 {
     public const string ValidationErrorsKey = "ValidationErrors";
 
@@ -12,20 +13,19 @@ public sealed class ValidationLoggingEndpointFilter(ILoggerFactory loggerFactory
     {
         var endpointMetadataCollection = context.HttpContext.GetEndpoint()?.Metadata;
         var endpointName = endpointMetadataCollection?.GetMetadata<EndpointNameMetadata>()?.EndpointName
-            ?? "Unknown Endpoint";
+                           ?? "Unknown Endpoint";
 
         var result = await next(context);
 
         if (context.HttpContext.Items.TryGetValue(ValidationErrorsKey, out var value)
-            && value is IDictionary<string, string[]> errors
-            && errors.Count > 0)
+            && value is IDictionary<string, string[]> { Count: > 0 } errors)
         {
             if (!_logger.IsEnabled(LogLevel.Warning))
             {
                 return result;
             }
 
-            var userIdentity = userService?.GetUserIdentity() ?? "Unknown Identity";
+            var userIdentity = userService.GetUserIdentity();
             var state = BuildLogState(endpointName, userIdentity, errors);
             var message = $"Validation failure on Endpoint: {endpointName} for User: {userIdentity}.";
 
@@ -37,19 +37,19 @@ public sealed class ValidationLoggingEndpointFilter(ILoggerFactory loggerFactory
     }
 
     private static IReadOnlyList<KeyValuePair<string, object?>> BuildLogState(
-      string endpointName,
-      string userIdentity,
-      IDictionary<string, string[]> errors)
+        string endpointName,
+        string userIdentity,
+        IDictionary<string, string[]> errors)
     {
         var state = new List<KeyValuePair<string, object?>>
-    {
-        new("EndpointName", endpointName),
-        new("UserIdentity", userIdentity),
-    };
+        {
+            new("EndpointName", endpointName),
+            new("UserIdentity", userIdentity),
+        };
 
         foreach (var error in errors.OrderBy(pair => pair.Key))
         {
-            state.Add(new($"Error.{error.Key}", error.Value));
+            state.Add(new KeyValuePair<string, object?>($"Error.{error.Key}", error.Value));
         }
 
         return state;
