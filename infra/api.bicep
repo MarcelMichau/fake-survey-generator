@@ -10,19 +10,19 @@ param applicationInsightsName string
 param location string = resourceGroup().location
 param version string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' existing = {
   name: managedIdentityName
 }
 
-resource redisCache 'Microsoft.Cache/redis@2024-11-01' existing = {
+resource redisCache 'Microsoft.Cache/redis@2025-08-01-preview' existing = {
   name: redisCacheName
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2024-11-01-preview' existing = {
+resource sqlServer 'Microsoft.Sql/servers@2025-02-01-preview' existing = {
   name: sqlServerName
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/databases@2024-11-01-preview' existing = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2025-02-01-preview' existing = {
   parent: sqlServer
   name: sqlDatabaseName
 }
@@ -58,7 +58,7 @@ var apiEnvironmentVariables = [
   }
 ]
 
-resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
+resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
   name: containerAppName
   location: location
   tags: {

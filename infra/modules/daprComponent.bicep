@@ -5,11 +5,11 @@ param componentVersion string = 'v1'
 param metadata array
 param scopes array
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' existing = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' existing = {
   name: containerAppEnvironmentName
 }
 
-resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2025-10-02-preview' = {
+resource daprSecretStoreComponent 'Microsoft.App/managedEnvironments/daprComponents@2026-01-01' = {
   name: componentName
   parent: containerAppEnvironment
   properties: {

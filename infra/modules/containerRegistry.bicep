@@ -9,7 +9,7 @@ param tags object
 @description('SKU/Tier of the Azure Container Registry')
 param sku string = 'Basic'
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-11-01' = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2026-01-01-preview' = {
   name: name
   location: location
   tags: tags

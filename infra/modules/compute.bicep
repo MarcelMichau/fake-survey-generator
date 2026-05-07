@@ -5,7 +5,7 @@ param managedIdentityName string
 param logAnalyticsName string
 param virtualNetworkSubnetId string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' existing = {
   name: managedIdentityName
 }
 
