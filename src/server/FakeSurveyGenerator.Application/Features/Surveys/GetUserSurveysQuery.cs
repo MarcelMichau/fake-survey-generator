@@ -26,39 +26,39 @@ public sealed class
     {
         var userInfo = await _userService.GetUserInfo(cancellationToken);
 
-        var surveyOwner =
-            await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
-                cancellationToken);
-
         var connection = _surveyContext.Database.GetDbConnection();
+        var command = new CommandDefinition(
+            """
+            SELECT s.Id,
+                   s.Topic,
+                   s.RespondentType,
+                   s.NumberOfRespondents,
+                   COALESCE(optionCount.NumberOfOptions, 0) AS NumberOfOptions,
+                   winner.OptionText AS WinningOption,
+                   winner.NumberOfVotes AS WinningOptionNumberOfVotes
+            FROM [Survey].[Survey] s
+            INNER JOIN [Survey].[User] u ON u.Id = s.OwnerId
+            LEFT JOIN (
+                SELECT so.SurveyId,
+                       COUNT(*) AS NumberOfOptions
+                FROM [Survey].[SurveyOption] so
+                GROUP BY so.SurveyId
+            ) optionCount ON optionCount.SurveyId = s.Id
+            OUTER APPLY (
+                SELECT TOP (1)
+                       so.OptionText,
+                       so.NumberOfVotes
+                FROM [Survey].[SurveyOption] so
+                WHERE so.SurveyId = s.Id
+                ORDER BY so.NumberOfVotes DESC, so.Id ASC
+            ) winner
+            WHERE u.ExternalUserId = @externalUserId
+            ORDER BY s.CreatedOn DESC
+            """,
+            new { externalUserId = userInfo.Id },
+            cancellationToken: cancellationToken);
 
-        await connection.OpenAsync(cancellationToken);
-
-        var surveys = await connection.QueryAsync<UserSurveyModel>(@"
-                    SELECT s.Id,
-                           s.Topic,
-                           s.RespondentType,
-                           s.NumberOfRespondents,
-                      (SELECT COUNT(*)
-                       FROM [Survey].[SurveyOption]
-                       WHERE SurveyId = s.Id) AS NumberOfOptions,
-                           surveyOption1.OptionText AS WinningOption,
-                           surveyOption1.NumberOfVotes AS WinningOptionNumberOfVotes
-                    FROM [Survey].[Survey] s
-                    LEFT OUTER JOIN Survey.SurveyOption surveyOption1 ON surveyOption1.SurveyId = s.Id
-                    LEFT OUTER JOIN Survey.SurveyOption surveyOption2 ON surveyOption2.SurveyId = s.Id
-                    AND surveyOption2.NumberOfVotes > surveyOption1.NumberOfVotes
-                    WHERE s.OwnerId = @ownerId
-                      AND surveyOption2.SurveyId IS NULL
-                    GROUP BY s.Id,
-                             s.Topic,
-                             s.RespondentType,
-                             s.NumberOfRespondents,
-                             s.CreatedOn,
-                             surveyOption1.OptionText,
-                             surveyOption1.NumberOfVotes
-                    ORDER BY s.CreatedOn DESC
-                    ", new { ownerId = surveyOwner.Id });
+        var surveys = await connection.QueryAsync<UserSurveyModel>(command);
 
         return surveys.ToList();
     }

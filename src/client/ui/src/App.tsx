@@ -8,7 +8,6 @@ import MySurveys from "./components/MySurveys";
 import Splash from "./components/Splash";
 import Alert from "./components/Alert";
 import Footer from "./components/Footer";
-import type * as Types from "./types";
 
 const App = (): React.JSX.Element => {
 	const [errorMessage, setErrorMessage] = useState("");
@@ -36,36 +35,9 @@ const App = (): React.JSX.Element => {
 			}
 		};
 
-		const isUserRegistered = async (): Promise<boolean> => {
-			const token = await getAccessTokenSilently();
-
-			const response = await fetch(
-				`api/user/isRegistered?userId=${user?.sub}`,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				},
-			);
-
-			try {
-				const data: Types.UserRegistrationStatusModel = await response.json();
-				return data.isUserRegistered;
-			} catch (error) {
-				setErrorMessage(
-					"Oops, something went wrong getting the user registration status.",
-				);
-				return false;
-			}
-		};
-
 		const register = async () => {
 			if (isAuthenticated && user) {
-				const isUserAlreadyRegistered = await isUserRegistered();
-
-				if (!isUserAlreadyRegistered) {
-					await registerUser();
-				}
+				await registerUser();
 			}
 		};
 

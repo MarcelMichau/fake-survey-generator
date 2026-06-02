@@ -52,16 +52,15 @@ internal static class UserEndpoints
         return ApiResultExtensions.FromResult(result);
     }
 
-    private static async Task<Results<CreatedAtRoute<UserModel>, ProblemHttpResult>> Register(
-        ICommandHandler<RegisterUserCommand, Result<UserModel, Error>> handler,
+    private static async Task<Results<CreatedAtRoute<UserModel>, Ok<UserModel>>> Register(
+        ICommandHandler<RegisterUserCommand, RegisterUserResult> handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(new RegisterUserCommand(), cancellationToken);
 
-        if (result.IsSuccess)
-            return TypedResults.CreatedAtRoute(result.Value, nameof(GetUser), new { id = result.Value.Id });
+        if (result.IsNewRegistration)
+            return TypedResults.CreatedAtRoute(result.User, nameof(GetUser), new { id = result.User.Id });
 
-        return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
-            statusCode: StatusCodes.Status400BadRequest);
+        return TypedResults.Ok(result.User);
     }
 }

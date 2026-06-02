@@ -72,16 +72,20 @@ public sealed class UserEndpointsTests
     }
 
     [Test]
-    public async Task GivenExistingUser_WhenCallingRegisterUser_ThenBadRequestResponseShouldBeReturned()
+    public async Task GivenExistingUser_WhenCallingRegisterUser_ThenOkResponseWithExistingUserShouldBeReturned()
     {
         var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
 
-        var _ = await RegisterNewUser(client);
+        var existingUser = await RegisterNewUser(client);
         var registerUserCommand = new RegisterUserCommand();
 
         var response = await client.PostAsJsonAsync("/api/user/register", registerUserCommand);
+        var user = await response.Content.ReadFromJsonAsync<UserModel>();
 
-        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+        await Assert.That(user).IsNotNull();
+        await Assert.That(user!.Id).IsEqualTo(existingUser.Id);
+        await Assert.That(user.ExternalUserId).IsEqualTo(existingUser.ExternalUserId);
     }
 
     private static async Task<UserModel> RegisterNewUser(HttpClient client)

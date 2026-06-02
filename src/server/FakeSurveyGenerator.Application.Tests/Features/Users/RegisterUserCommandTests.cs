@@ -1,6 +1,5 @@
-﻿using AutoFixture;
+using AutoFixture;
 using FakeSurveyGenerator.Application.Features.Users;
-using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.TestHelpers;
 using FakeSurveyGenerator.Application.Tests.Setup;
@@ -35,7 +34,7 @@ public sealed class RegisterUserCommandTests
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(result.IsNewRegistration).IsTrue();
     }
 
     [Test]
@@ -53,14 +52,15 @@ public sealed class RegisterUserCommandTests
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-        await Assert.That(result.Value.Id).IsPositive();
-        await Assert.That(result.Value.ExternalUserId).IsEqualTo(newUserId);
-        await Assert.That(result.Value.DisplayName).IsEqualTo(newUserDisplayName);
-        await Assert.That(result.Value.EmailAddress).IsEqualTo(newUserEmailAddress);
+        await Assert.That(result.User.Id).IsPositive();
+        await Assert.That(result.User.ExternalUserId).IsEqualTo(newUserId);
+        await Assert.That(result.User.DisplayName).IsEqualTo(newUserDisplayName);
+        await Assert.That(result.User.EmailAddress).IsEqualTo(newUserEmailAddress);
+        await Assert.That(result.IsNewRegistration).IsTrue();
     }
 
     [Test]
-    public async Task GivenAlreadyExistingUser_WhenCallingHandle_ThenResultShouldBeFailure()
+    public async Task GivenAlreadyExistingUser_WhenCallingHandle_ThenExistingUserShouldBeReturned()
     {
         var registerUserCommand = new RegisterUserCommand();
 
@@ -68,19 +68,8 @@ public sealed class RegisterUserCommandTests
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-        await Assert.That(result.IsFailure).IsTrue();
-    }
-
-    [Test]
-    public async Task GivenAlreadyExistingUser_WhenCallingHandle_ThenUserAlreadyRegisteredErrorShouldBeReturned()
-    {
-        var registerUserCommand = new RegisterUserCommand();
-
-        var sut = new RegisterUserCommandHandler(_mockUserService, Fixture.Context);
-
-        var result = await sut.Handle(registerUserCommand, CancellationToken.None);
-
-        await Assert.That(result.Error).IsEqualTo(Errors.General.UserAlreadyRegistered());
+        await Assert.That(result.IsNewRegistration).IsFalse();
+        await Assert.That(result.User.ExternalUserId).IsEqualTo(TestUser.Instance.Id);
     }
 
     public static class RegisterUserCommandTestDataSources

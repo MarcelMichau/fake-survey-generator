@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import type * as Types from "../types";
 import SkeletonButton from "./SkeletonButton";
@@ -22,6 +22,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 	const [surveyToDelete, setSurveyToDelete] =
 		useState<Types.UserSurveyModel | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
+	const numberFormatter = useMemo(() => new Intl.NumberFormat(), []);
 
 	const fetchSurveys = useCallback(async () => {
 		setIsSearching(true);
@@ -136,12 +137,12 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 									<TableData>{survey.topic}</TableData>
 									<TableData>{survey.respondentType}</TableData>
 									<TableData>
-										{new Intl.NumberFormat().format(survey.numberOfRespondents)}
+										{numberFormatter.format(survey.numberOfRespondents)}
 									</TableData>
 									<TableData>{survey.numberOfOptions}</TableData>
 									<TableData>{survey.winningOption}</TableData>
 									<TableData>
-										{new Intl.NumberFormat().format(
+										{numberFormatter.format(
 											survey.winningOptionNumberOfVotes,
 										)}
 									</TableData>

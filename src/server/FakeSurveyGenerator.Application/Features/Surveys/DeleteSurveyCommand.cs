@@ -47,23 +47,29 @@ public sealed class DeleteSurveyCommandHandler(
             return Errors.General.ValidationError(validationResult);
         }
 
-        var survey = await _surveyContext.Surveys
-            .Include(s => s.Owner)
-            .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
-
-        if (survey is null)
-            return Errors.General.NotFound(nameof(Survey), request.Id);
-
         var userInfo = await _userService.GetUserInfo(cancellationToken);
 
-        var currentUser = await _surveyContext.Users
-            .FirstAsync(user => user.ExternalUserId == userInfo.Id, cancellationToken);
+        var currentUserId = await _surveyContext.Users
+            .Where(user => user.ExternalUserId == userInfo.Id)
+            .Select(user => user.Id)
+            .FirstAsync(cancellationToken);
 
-        if (survey.Owner.Id != currentUser.Id)
+        var surveyToDelete = await _surveyContext.Surveys
+            .Where(survey => survey.Id == request.Id)
+            .Select(survey => new
+            {
+                Survey = survey,
+                OwnerId = EF.Property<int>(survey, "OwnerId")
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (surveyToDelete is null)
+            return Errors.General.NotFound(nameof(Survey), request.Id);
+
+        if (surveyToDelete.OwnerId != currentUserId)
             return Errors.General.Forbidden();
 
-        _surveyContext.Surveys.Remove(survey);
-
+        _surveyContext.Surveys.Remove(surveyToDelete.Survey);
         await _surveyContext.SaveChangesAsync(cancellationToken);
 
         await _cache.RemoveAsync(SurveyKey(request.Id), cancellationToken);

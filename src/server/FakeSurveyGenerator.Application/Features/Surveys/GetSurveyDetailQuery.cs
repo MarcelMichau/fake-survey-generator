@@ -46,7 +46,7 @@ public sealed class GetSurveyDetailQueryHandler(
         var survey = await _cache.GetOrCreateAsync(SurveyKey(request.Id), async token =>
         {
             var survey = await _surveyContext.Surveys
-                .Include(s => s.Owner)
+                .AsNoTracking()
                 .SelectToModel()
                 .FirstOrDefaultAsync(s => s.Id == request.Id, token);
             return survey;
