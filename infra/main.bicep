@@ -51,17 +51,6 @@ module applicationInsights 'modules/appInsights.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
-module applicationInsightsDashboard 'modules/applicationInsightsDashboard.bicep' = {
-  name: 'application-insights-dashboard'
-  params: {
-    name: '${abbrs.portalDashboards}${applicationName}'
-    location: location
-    tags: tags
-    applicationInsightsName: applicationInsights.name
-  }
-  scope: fakeSurveyGeneratorResourceGroup
-}
-
 module dnsZone 'modules/dnsZone.bicep' = {
   name: 'dnsZone'
   params: {
