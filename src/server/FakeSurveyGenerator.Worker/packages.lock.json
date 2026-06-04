@@ -10,8 +10,8 @@
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "13.4.0",
-        "contentHash": "ZViKVEn2wUEYFWqozlgn1OWpQiRQ3AP11rTciKmtfKnpcnxTAcDFT1/fjqfbU+oEpz+oVRGND5Uo9Kt9i87nHg==",
+        "resolved": "13.4.2",
+        "contentHash": "yjYre7VGrTfnmoO8Q6hIZ1XkOms1SGt+jXWpQffcHCNgVXi0CcxhTkHGpjVYBjeRyzr7tdXXkgcKPye1H2aDTw==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.8",
@@ -615,8 +615,8 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.4.0, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[13.4.0, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.4.2, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[13.4.2, )",
           "Azure.Identity": "[1.21.0, )",
           "CSharpFunctionalExtensions": "[3.7.0, )",
           "Dapper": "[2.1.79, )",
@@ -633,9 +633,9 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "CentralTransitive",
-        "requested": "[13.4.0, )",
-        "resolved": "13.4.0",
-        "contentHash": "Q5fbgpUCDHXgvzwCw6LkeBJ8uZuq7Mpr5b7JEe3YWnWt7FnDXnHeYQJbVY3OMin/oqjhWYOIfI1A42ukq6CKQw==",
+        "requested": "[13.4.2, )",
+        "resolved": "13.4.2",
+        "contentHash": "C8mcPJ1iyDXFeH9AmyyXMl8Oy74fRXJmwXZTQMLkvRkmcqso26eAf3k4zaQ1SRlu3KmAv1MbRFdfui9iob5OCw==",
         "dependencies": {
           "Microsoft.Data.SqlClient": "7.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.8",
@@ -657,12 +657,12 @@
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "CentralTransitive",
-        "requested": "[13.4.0, )",
-        "resolved": "13.4.0",
-        "contentHash": "cCXYiW99oJSvNsg68KBR4hfkxZVkP1spnQtxuGImlgO6QRioHNEVUbyyC9S9IN/GaR5dyMnLgim1jH3ytLNP9g==",
+        "requested": "[13.4.2, )",
+        "resolved": "13.4.2",
+        "contentHash": "HSSVw4VFbqcV3/Gf8A+2cFqzd0Don9SShSM+i8eo//TClSiLGoNbe6PGy+9rOAQtIG0u2G5gbl0iQQVRDf2e7g==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
-          "Aspire.StackExchange.Redis": "13.4.0",
+          "Aspire.StackExchange.Redis": "13.4.2",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "10.0.8",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.8",
           "Microsoft.Extensions.Configuration.Binder": "10.0.8",
