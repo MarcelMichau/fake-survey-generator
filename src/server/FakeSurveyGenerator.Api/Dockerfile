@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-resolute-chiseled-extra AS base
@@ -9,13 +10,20 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["global.json", "."]
+COPY ["NuGet.config", "."]
 COPY ["src/server/Directory.Build.props", "src/server/"]
 COPY ["src/server/Directory.Packages.props", "src/server/"]
 COPY ["src/server/version.json", "src/server/"]
-COPY ["src/server/FakeSurveyGenerator.Api/FakeSurveyGenerator.Api.csproj", "src/server/FakeSurveyGenerator.Api/"]
-COPY ["src/server/FakeSurveyGenerator.Application/FakeSurveyGenerator.Application.csproj", "src/server/FakeSurveyGenerator.Application/"]
-COPY ["src/server/FakeSurveyGenerator.ServiceDefaults/FakeSurveyGenerator.ServiceDefaults.csproj", "src/server/FakeSurveyGenerator.ServiceDefaults/"]
-RUN dotnet restore "./src/server/FakeSurveyGenerator.Api/./FakeSurveyGenerator.Api.csproj"
+RUN --mount=type=bind,source=.,target=/context,readonly \
+    set -eu; \
+    cd /context; \
+    find src/server -type f \( -name "*.csproj" -o -name "packages.lock.json" \) \
+    | while IFS= read -r file; do \
+    mkdir -p "/src/$(dirname "$file")"; \
+    cp "/context/$file" "/src/$file"; \
+    done
+RUN dotnet restore "./src/server/FakeSurveyGenerator.Api/./FakeSurveyGenerator.Api.csproj" --locked-mode
 COPY . .
 WORKDIR /
 COPY .git .git
