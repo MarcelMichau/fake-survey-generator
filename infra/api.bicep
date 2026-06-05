@@ -38,6 +38,10 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 
 var apiEnvironmentVariables = [
   {
+    name: 'AZURE_CLIENT_ID'
+    value: managedIdentity.properties.clientId
+  }
+  {
     name: 'ASPNETCORE_ENVIRONMENT'
     value: 'Production'
   }
