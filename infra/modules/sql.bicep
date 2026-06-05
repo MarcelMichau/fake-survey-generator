@@ -46,11 +46,14 @@ resource sqlServer 'Microsoft.Sql/servers@2025-02-01-preview' = {
   resource sqlDatabase 'databases' = {
     tags: tags
     name: databaseName
-    sku: {
-      name: 'Basic'
-      tier: 'Basic'
-    }
     location: location
+    properties: {
+      freeLimitExhaustionBehavior: 'AutoPause'
+      useFreeLimit: true
+    }
+    sku: {
+      name: 'GP_S_Gen5_2'
+    }
   }
 
   resource sqlServerVirtualNetworkRules 'virtualNetworkRules' = {
