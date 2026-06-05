@@ -57,6 +57,7 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
         maxReplicas: 1
       }
     }
+    workloadProfileName: 'Consumption'
   }
 }
 

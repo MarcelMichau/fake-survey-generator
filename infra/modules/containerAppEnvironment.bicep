@@ -32,6 +32,12 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' 
     vnetConfiguration: {
       infrastructureSubnetId: subnetResourceId
     }
+    workloadProfiles: [
+      {
+        name: 'Consumption'
+        workloadProfileType: 'Consumption'
+      }
+    ]
   }
 
   // resource managedCertificate 'managedCertificates' = {

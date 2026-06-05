@@ -17,15 +17,13 @@ resource fakeSurveyGeneratorResourceGroup 'Microsoft.Resources/resourceGroups@20
   tags: tags
 }
 
-var computeSubnetName = 'container-app'
-
 module virtualNetwork 'modules/virtualNetwork.bicep' = {
   name: 'virtualNetwork'
   params: {
     location: location
     name: '${abbrs.networkVirtualNetworks}${applicationName}'
     tags: tags
-    subnetName: computeSubnetName
+    subnetName: '${abbrs.networkVirtualNetworksSubnets}container-apps'
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
