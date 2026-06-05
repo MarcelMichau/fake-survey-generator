@@ -53,68 +53,68 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' 
   //   ]
   // }
 
-  resource httpRouteConfig 'httpRouteConfigs' = {
-    name: 'fakesurveygenerator'
-    properties: {
-      customDomains: [
-        {
-          name: 'fakesurveygeneratortest.mysecondarydomain.com'
-          bindingType: 'Auto'
-        }
-      ]
-      rules: [
-        {
-          description: 'API Rule'
-          routes: [
-            {
-              match: {
-                prefix: '/api'
-              }
-            }
-            {
-              match: {
-                prefix: '/api-docs'
-              }
-              action: {
-                prefixRewrite: '/'
-              }
-            }
-            {
-              match: {
-                prefix: '/openapi'
-              }
-              action: {
-                prefixRewrite: '/'
-              }
-            }
-          ]
-          targets: [
-            {
-              containerApp: 'ca-fake-survey-generator-api'
-            }
-          ]
-        }
-        {
-          description: 'UI Rule'
-          routes: [
-            {
-              match: {
-                prefix: '/'
-              }
-            }
-          ]
-          targets: [
-            {
-              containerApp: 'ca-fake-survey-generator-ui'
-            }
-          ]
-        }
-      ]
-    }
-  }
+  // resource httpRouteConfig 'httpRouteConfigs' = {
+  //   name: 'fakesurveygenerator'
+  //   properties: {
+  //     customDomains: [
+  //       {
+  //         name: 'fakesurveygeneratortest.mysecondarydomain.com'
+  //         bindingType: 'Auto'
+  //       }
+  //     ]
+  //     rules: [
+  //       {
+  //         description: 'API Rule'
+  //         routes: [
+  //           {
+  //             match: {
+  //               prefix: '/api'
+  //             }
+  //           }
+  //           {
+  //             match: {
+  //               prefix: '/api-docs'
+  //             }
+  //             action: {
+  //               prefixRewrite: '/'
+  //             }
+  //           }
+  //           {
+  //             match: {
+  //               prefix: '/openapi'
+  //             }
+  //             action: {
+  //               prefixRewrite: '/'
+  //             }
+  //           }
+  //         ]
+  //         targets: [
+  //           {
+  //             containerApp: 'ca-fake-survey-generator-api'
+  //           }
+  //         ]
+  //       }
+  //       {
+  //         description: 'UI Rule'
+  //         routes: [
+  //           {
+  //             match: {
+  //               prefix: '/'
+  //             }
+  //           }
+  //         ]
+  //         targets: [
+  //           {
+  //             containerApp: 'ca-fake-survey-generator-ui'
+  //           }
+  //         ]
+  //       }
+  //     ]
+  //   }
+  // }
 }
 
 output containerAppEnvironmentId string = containerAppEnvironment.id
 output containerAppEnvironmentName string = containerAppEnvironment.name
-output fqdn string = containerAppEnvironment::httpRouteConfig.properties.fqdn
+output fqdn string = containerAppEnvironment.properties.defaultDomain
 output defaultDomain string = containerAppEnvironment.properties.defaultDomain
