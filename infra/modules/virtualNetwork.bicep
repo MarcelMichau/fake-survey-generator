@@ -17,14 +17,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.0.0.0/16'
+        '10.0.0.0/22'
       ]
     }
     subnets: [
       {
         name: subnetName
         properties: {
-          addressPrefix: '10.0.0.0/23'
+          addressPrefix: '10.0.0.0/27'
           serviceEndpoints: [
             {
               service: 'Microsoft.Sql'
@@ -37,6 +37,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
               locations: [
                 'southafricanorth'
               ]
+            }
+          ]
+          delegations: [
+            {
+              name: 'container-apps-delegation'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
             }
           ]
         }
