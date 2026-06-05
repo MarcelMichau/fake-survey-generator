@@ -95,6 +95,7 @@ module redisCache 'modules/redisCache.bicep' = {
     location: location
     name: '${abbrs.cacheRedis}${applicationName}'
     tags: tags
+    principalId: managedIdentity.outputs.principalId
   }
   scope: fakeSurveyGeneratorResourceGroup
 }

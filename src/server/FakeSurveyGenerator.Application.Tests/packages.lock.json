@@ -115,15 +115,15 @@
       },
       "Azure.Core": {
         "type": "Transitive",
-        "resolved": "1.53.0",
-        "contentHash": "x9c/toFMOtRrlTdFuE7rlGCVAduQzWVfKmLz5juj41zJAXEhYD5hluiUyyAEzJ6OxpBnKtiaBztzwpZITAVjtg==",
+        "resolved": "1.55.0",
+        "contentHash": "c7femvYS/xEUrLP1sNZN+DoQZmx3X+G3ZXtOOz0RL/7cGMCM3JVqepVmRd3AwM4IK8AtTGS4GOigCO+d/zaSsQ==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "10.0.3",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.3",
           "Microsoft.Extensions.Hosting.Abstractions": "10.0.3",
           "Microsoft.Identity.Client": "4.83.1",
           "Microsoft.Identity.Client.Extensions.Msal": "4.83.1",
-          "System.ClientModel": "1.10.0",
+          "System.ClientModel": "1.11.0",
           "System.Memory.Data": "10.0.3"
         }
       },
@@ -152,6 +152,16 @@
         "type": "Transitive",
         "resolved": "2.23.0",
         "contentHash": "nWArUZTdU7iqZLycLKWe0TDms48KKGE6pONH2terYNa8REXiqixrMOkf1sk5DHGMaUTqONU2YkS4SAXBhLStgw=="
+      },
+      "Microsoft.Azure.StackExchangeRedis": {
+        "type": "Transitive",
+        "resolved": "3.3.1",
+        "contentHash": "2knqrO3yCDX3oerrBfLOYJjgqPTK1BAwBC4oUB2OIJU4R9xFAeIO4SW3SfXsCuD9M+wjtn229wOFpV9A+H0nbg==",
+        "dependencies": {
+          "Microsoft.Extensions.Azure": "1.13.1",
+          "Microsoft.IdentityModel.JsonWebTokens": "8.15.0",
+          "StackExchange.Redis": "2.10.1"
+        }
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
@@ -243,6 +253,16 @@
           "Microsoft.Extensions.Configuration": "10.0.8",
           "Microsoft.Extensions.Hosting.Abstractions": "10.0.8",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "10.0.8"
+        }
+      },
+      "Microsoft.Extensions.Azure": {
+        "type": "Transitive",
+        "resolved": "1.14.0",
+        "contentHash": "g4d2TLfbAiZeXBcGkJdgIl2ZzqMcepMUbECENgg4XXqDU8uGAUwBxJb6x2DBpF6BY09vrHO0Ug3xZcH+cVbMrQ==",
+        "dependencies": {
+          "Azure.Core": "1.53.0",
+          "Microsoft.Extensions.Configuration.Binder": "10.0.3",
+          "Microsoft.Extensions.Logging": "10.0.3"
         }
       },
       "Microsoft.Extensions.Caching.Abstractions": {
@@ -708,8 +728,8 @@
       },
       "System.ClientModel": {
         "type": "Transitive",
-        "resolved": "1.10.0",
-        "contentHash": "lBEWs54F5Y5pZ9hC+8z4S/X76957ex+DPk7WecRHlbIHtrPfbRMMlOgI3iDn4Jpb3bSxvBnKaaHoD59auFjlBA==",
+        "resolved": "1.11.0",
+        "contentHash": "1Wl32zh7TbvN+HAO8NqDuaN0Ao2Qu/0j0NJSrXGDtpUQsTXQYJ3C6hd9/Ds2IrgP4agMQYFoXB35GZfC21ByHw==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.3",
           "Microsoft.Extensions.Hosting.Abstractions": "10.0.3",
@@ -791,6 +811,7 @@
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
+          "Aspire.Microsoft.Azure.StackExchangeRedis": "[13.4.2, )",
           "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.4.2, )",
           "Aspire.StackExchange.Redis.DistributedCaching": "[13.4.2, )",
           "Azure.Identity": "[1.21.0, )",
@@ -805,6 +826,32 @@
           "Microsoft.Extensions.Caching.Hybrid": "[10.6.0, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[10.0.8, )",
           "Microsoft.Extensions.Http.Resilience": "[10.6.0, )"
+        }
+      },
+      "Aspire.Microsoft.Azure.StackExchangeRedis": {
+        "type": "CentralTransitive",
+        "requested": "[13.4.2, )",
+        "resolved": "13.4.2",
+        "contentHash": "uiYmX9zoYN7hqsyCBF/YN0S5SGeb5GpMUux6pvOT6YUiiqB96DATgXh4l0w3gM97ghsA45239SnOE6dHhcIcVA==",
+        "dependencies": {
+          "AspNetCore.HealthChecks.Redis": "9.0.0",
+          "Aspire.StackExchange.Redis": "13.4.2",
+          "Azure.Core": "1.55.0",
+          "Microsoft.Azure.StackExchangeRedis": "3.3.1",
+          "Microsoft.Extensions.Azure": "1.14.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Configuration.Binder": "10.0.8",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.8",
+          "Microsoft.Extensions.DependencyInjection.AutoActivation": "10.6.0",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.8",
+          "Microsoft.Extensions.Hosting.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Logging": "10.0.8",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Options": "10.0.8",
+          "Microsoft.Extensions.Primitives": "10.0.8",
+          "OpenTelemetry.Extensions.Hosting": "1.15.3",
+          "StackExchange.Redis": "2.13.1",
+          "System.IO.Hashing": "10.0.8"
         }
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {

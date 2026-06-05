@@ -14,8 +14,13 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-
   name: managedIdentityName
 }
 
-resource redisCache 'Microsoft.Cache/redis@2025-08-01-preview' existing = {
+resource redisEnterprise 'Microsoft.Cache/redisEnterprise@2025-07-01' existing = {
   name: redisCacheName
+}
+
+resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2025-07-01' existing = {
+  parent: redisEnterprise
+  name: 'default'
 }
 
 resource sqlServer 'Microsoft.Sql/servers@2025-02-01-preview' existing = {
@@ -46,7 +51,7 @@ var apiEnvironmentVariables = [
   }
   {
     name: 'ConnectionStrings__cache'
-    value: '${redisCache.properties.hostName},defaultDatabase=0,ssl=true,password=${redisCache.listKeys().primaryKey},abortConnect=false'
+    value: '${redisEnterprise.properties.hostName}:${redisEnterpriseDatabase.properties.port},ssl=true,abortConnect=false'
   }
   {
     name: 'IDENTITY_PROVIDER_URL'

@@ -7,7 +7,9 @@ internal static class CacheConfigurationExtensions
 {
     public static IHostApplicationBuilder AddCacheConfiguration(this IHostApplicationBuilder builder)
     {
-        builder.AddRedisDistributedCache("cache");
+        builder.AddRedisClientBuilder("cache")
+            .WithAzureAuthentication()
+            .WithDistributedCache();
 
         builder.Services.AddHybridCache();
 

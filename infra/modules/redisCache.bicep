@@ -3,26 +3,45 @@ param location string = resourceGroup().location
 @description('Tags to apply to the resource')
 param tags object
 
-@description('Name of the Azure Redis Cache')
+@description('Name of the Azure Managed Redis cluster')
 param name string
 
-@description('SKU/Tier of the Azure Redis Cache')
-param sku object = {
-  name: 'Basic'
-  family: 'C'
-  capacity: 0
-}
+@description('Principal ID of the managed identity to grant Redis access to')
+param principalId string
 
-resource redisCache 'Microsoft.Cache/redis@2025-08-01-preview' = {
+resource redisEnterprise 'Microsoft.Cache/redisEnterprise@2025-07-01' = {
   name: name
   tags: tags
   location: location
+  sku: {
+    name: 'Balanced_B0'
+  }
   properties: {
-    sku: sku
-    redisConfiguration: {}
-    enableNonSslPort: false
-    redisVersion: '6'
+    highAvailability: 'Disabled'
+    minimumTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
   }
 }
 
-output redisCacheName string = redisCache.name
+resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2025-07-01' = {
+  parent: redisEnterprise
+  name: 'default'
+  properties: {
+    accessKeysAuthentication: 'Disabled'
+    clientProtocol: 'Encrypted'
+    port: 10000
+  }
+}
+
+resource redisAccessPolicyAssignment 'Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments@2025-07-01' = {
+  parent: redisEnterpriseDatabase
+  name: 'managedIdentityAccess'
+  properties: {
+    accessPolicyName: 'default'
+    user: {
+      objectId: principalId
+    }
+  }
+}
+
+output redisCacheName string = redisEnterprise.name
