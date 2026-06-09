@@ -4,6 +4,12 @@ param containerAppEnvironmentName string
 param managedIdentityName string
 param logAnalyticsName string
 param virtualNetworkSubnetId string
+param routeConfigName string
+param routeCustomDomainName string
+param routeCustomDomainBindingType string = 'Auto'
+param managedCertificateName string
+param apiContainerAppName string
+param uiContainerAppName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' existing = {
   name: managedIdentityName
@@ -17,6 +23,12 @@ module containerAppEnvironment 'containerAppEnvironment.bicep' = {
     logAnalyticsName: logAnalyticsName
     containerAppEnvName: containerAppEnvironmentName
     subnetResourceId: virtualNetworkSubnetId
+    routeConfigName: routeConfigName
+    routeCustomDomainName: routeCustomDomainName
+    routeCustomDomainBindingType: routeCustomDomainBindingType
+    managedCertificateName: managedCertificateName
+    apiContainerAppName: apiContainerAppName
+    uiContainerAppName: uiContainerAppName
   }
 }
 
@@ -54,6 +66,8 @@ output containerAppEnvironmentFqdn string = containerAppEnvironment.outputs.fqdn
 output containerAppEnvironmentId string = containerAppEnvironment.outputs.containerAppEnvironmentId
 output containerAppEnvironmentName string = containerAppEnvironment.outputs.containerAppEnvironmentName
 output containerAppEnvironmentDefaultDomain string = containerAppEnvironment.outputs.defaultDomain
+output containerAppEnvironmentStaticIp string = containerAppEnvironment.outputs.staticIp
+output containerAppEnvironmentDomainVerificationId string = containerAppEnvironment.outputs.domainVerificationId
 
 output managedIdentityName string = managedIdentity.name
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId

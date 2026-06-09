@@ -7,6 +7,26 @@ param applicationName string
 
 param dnsZoneName string
 
+@description('Subdomain label for rule-based routing custom domain (for example: app for app.contoso.com)')
+param routeCustomDomainSubdomain string = 'fakesurveygeneratortest'
+
+@description('Custom domain hostname for rule-based routing')
+param routeCustomDomainName string = '${routeCustomDomainSubdomain}.${dnsZoneName}'
+
+@description('Name of the environment HTTP route configuration')
+param routeConfigName string = 'fakesurveygenerator'
+
+@description('Route custom domain binding type')
+@allowed([
+  'Auto'
+  'Disabled'
+  'SniEnabled'
+])
+param routeCustomDomainBindingType string = 'Auto'
+
+@description('Managed certificate resource name for the route custom domain')
+param managedCertificateName string = 'fake-survey-generator-cert'
+
 var tags = { 'azd-env-name': environment }
 
 var abbrs = loadJsonContent('abbreviations.json')
@@ -45,15 +65,6 @@ module applicationInsights 'modules/appInsights.bicep' = {
     name: '${abbrs.insightsComponents}${applicationName}'
     tags: tags
     logAnalyticsWorkspaceId: logAnalytics.outputs.id
-  }
-  scope: fakeSurveyGeneratorResourceGroup
-}
-
-module dnsZone 'modules/dnsZone.bicep' = {
-  name: 'dnsZone'
-  params: {
-    name: dnsZoneName
-    tags: tags
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -135,19 +146,25 @@ module compute 'modules/compute.bicep' = {
     logAnalyticsName: logAnalytics.outputs.name
     virtualNetworkSubnetId: virtualNetwork.outputs.subnetId
     managedIdentityName: managedIdentity.outputs.identityName
+    routeConfigName: routeConfigName
+    routeCustomDomainName: routeCustomDomainName
+    routeCustomDomainBindingType: routeCustomDomainBindingType
+    managedCertificateName: managedCertificateName
+    apiContainerAppName: '${abbrs.appContainerApps}${applicationName}-api'
+    uiContainerAppName: '${abbrs.appContainerApps}${applicationName}-ui'
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
 
-module frontDoor 'modules/frontDoor.bicep' = {
-  name: 'frontDoor'
+module dnsZone 'modules/dnsZone.bicep' = {
+  name: 'dnsZone'
   params: {
+    name: dnsZoneName
     tags: tags
-    dnsZoneName: dnsZone.outputs.name
-    uiOriginHostName: '${abbrs.appContainerApps}${applicationName}-ui.${compute.outputs.containerAppEnvironmentDefaultDomain}'
-    apiOriginHostName: '${abbrs.appContainerApps}${applicationName}-api.${compute.outputs.containerAppEnvironmentDefaultDomain}'
-    cnameRecordName: replace(applicationName, '-', '')
-    endpointName: '${abbrs.networkFrontDoors}${applicationName}'
+    enableRouteDomainRecords: true
+    routeDomainSubdomain: routeCustomDomainSubdomain
+    routeDomainIpAddress: compute.outputs.containerAppEnvironmentStaticIp
+    routeDomainVerificationId: compute.outputs.containerAppEnvironmentDomainVerificationId
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
