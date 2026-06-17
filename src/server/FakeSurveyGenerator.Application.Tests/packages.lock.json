@@ -67,15 +67,15 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[1.53.0, )",
-        "resolved": "1.53.0",
-        "contentHash": "1VRThuUAXomQvpRjm3jDGnyptv1W1c5gIU0Dkwd0ef5wHT/TsTJjd+BwoAEdpfdNarZBMbC9iaApN/8H1z+qag==",
+        "requested": "[1.56.0, )",
+        "resolved": "1.56.0",
+        "contentHash": "K0Fpy4ubt4zW57xrzFN6rb6ep6ZHMhihbJu5i1zehjgl43bGs8jkt6TNIpQ2I/E1cHqtETrsNmFBL5l3VLMlIw==",
         "dependencies": {
           "Microsoft.Testing.Extensions.CodeCoverage": "18.8.0",
           "Microsoft.Testing.Extensions.Telemetry": "2.2.3",
           "Microsoft.Testing.Extensions.TrxReport": "2.2.3",
-          "TUnit.Assertions": "1.53.0",
-          "TUnit.Engine": "1.53.0"
+          "TUnit.Assertions": "1.56.0",
+          "TUnit.Engine": "1.56.0"
         }
       },
       "Albedo": {
@@ -85,8 +85,8 @@
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
-        "resolved": "13.4.3",
-        "contentHash": "+pUrLb77ncuHFYvzazux63fVcrqKp4qUw6QFr3CJd0uYbfWtqJ5aZ/47sm1keMlqaggWkv4D+F+6sK8yYB1eLw==",
+        "resolved": "13.4.5",
+        "contentHash": "sUP/M6vEOb2EUB+FEvrnU8UFGaGex/MynGCubH1b8jeUfD326dmfQb2Hj40uVqyGHpnZHZIw5okkTyd70oX3/g==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.8",
@@ -787,40 +787,40 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "1.53.0",
-        "contentHash": "UNIuCvg5VihbQ2CYIlfzYnePcF1ugexMUdQaWog7FNwiwhit96SgAUr+7PWEEocqEenfZ0L5JuMxlue1bGMX7w=="
+        "resolved": "1.56.0",
+        "contentHash": "is0HoqC0UBIlD6tEJVm/MqariZT0Y6g+2khjKGLc4y7sFPGIUIF9KEzFcOB+hjLEzXSWJwb34G5bfSYw7qwTOg=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "1.53.0",
-        "contentHash": "HMuA2yU5F4e2SnKzPUPCawZSRU/e1qZHdtaTEtSB7hA2B5w+wypqijGiNbrkAK/hR/ugXfwva/tJOZNlOc7+PQ=="
+        "resolved": "1.56.0",
+        "contentHash": "LTzkkcbeRu7CdAg9iyuQPWLiSS16HwIePmFqthRAu2Iz9DoaclJeL06SrWjJrEav6qXB9PJUjrweGbWPWOV/UA=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "1.53.0",
-        "contentHash": "pcDkz8OYW5QI8/Q9/psAK81Fm9BlohVQgAKYVecJvxT7AyrbVEs991i+hLCnhwiIiz5APQt2qnC875HpGPTqAQ==",
+        "resolved": "1.56.0",
+        "contentHash": "O3B3QfaE6UpMSrhQi7H4pj3kePspPfB19BZOklZK2n1blCh93UDT5gXRq6LDwzTycCZyplJIzl1YqfY2pedKMQ==",
         "dependencies": {
           "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.2.3",
           "Microsoft.Testing.Platform": "2.2.3",
           "Microsoft.Testing.Platform.MSBuild": "2.2.3",
-          "TUnit.Core": "1.53.0"
+          "TUnit.Core": "1.56.0"
         }
       },
       "fakesurveygenerator.application": {
         "type": "Project",
         "dependencies": {
           "AspNetCore.HealthChecks.OpenIdConnectServer": "[9.0.0, )",
-          "Aspire.Microsoft.Azure.StackExchangeRedis": "[13.4.3, )",
-          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.4.3, )",
-          "Aspire.StackExchange.Redis.DistributedCaching": "[13.4.3, )",
+          "Aspire.Microsoft.Azure.StackExchangeRedis": "[13.4.5, )",
+          "Aspire.Microsoft.EntityFrameworkCore.SqlServer": "[13.4.5, )",
+          "Aspire.StackExchange.Redis.DistributedCaching": "[13.4.5, )",
           "Azure.Identity": "[1.21.0, )",
           "CSharpFunctionalExtensions": "[3.7.0, )",
           "Dapper": "[2.1.79, )",
           "Duende.IdentityModel": "[8.1.0, )",
           "FluentValidation": "[12.1.1, )",
           "FluentValidation.DependencyInjectionExtensions": "[12.1.1, )",
-          "JetBrains.Annotations": "[2025.2.4, )",
+          "JetBrains.Annotations": "[2026.2.0, )",
           "Microsoft.Data.SqlClient.Extensions.Azure": "[1.0.0, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.9, )",
           "Microsoft.Extensions.Caching.Hybrid": "[10.7.0, )",
@@ -830,12 +830,12 @@
       },
       "Aspire.Microsoft.Azure.StackExchangeRedis": {
         "type": "CentralTransitive",
-        "requested": "[13.4.3, )",
-        "resolved": "13.4.3",
-        "contentHash": "qlL0/D43DJ0cl2EuYZW1ug0EceBrJdEA0Qc/MDkr62SB9kqYrYfV3mMjh2OlFJYuSLQInrBnE/rG+7RNRb5M1w==",
+        "requested": "[13.4.5, )",
+        "resolved": "13.4.5",
+        "contentHash": "FVDFsuUSNBFkNegw55cpJJv9S16uUXZ1VlYqS0/E+dBjhBQ75XfQ9kgtvwV9MudZV7CHW5r+dBe7d7Wc380S/A==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
-          "Aspire.StackExchange.Redis": "13.4.3",
+          "Aspire.StackExchange.Redis": "13.4.5",
           "Azure.Core": "1.55.0",
           "Microsoft.Azure.StackExchangeRedis": "3.3.1",
           "Microsoft.Extensions.Azure": "1.14.0",
@@ -856,9 +856,9 @@
       },
       "Aspire.Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "CentralTransitive",
-        "requested": "[13.4.3, )",
-        "resolved": "13.4.3",
-        "contentHash": "ScowEHKvHondhSOuYKqAFXKDW3BxUwsdsYHxdkbpcbLkZV6FKcB6SGvAThbIoTfoWw+PztKusQYxswKeuPnSwg==",
+        "requested": "[13.4.5, )",
+        "resolved": "13.4.5",
+        "contentHash": "rwxrg2BzUA2/E5lU+Q/RL6uyWNWVznbZfJJKSyCYCRcpcvC78GEDNQRN6vVXZoESObDkkOIf/Fs9OGZTy0x9nw==",
         "dependencies": {
           "Microsoft.Data.SqlClient": "7.0.1",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.8",
@@ -880,12 +880,12 @@
       },
       "Aspire.StackExchange.Redis.DistributedCaching": {
         "type": "CentralTransitive",
-        "requested": "[13.4.3, )",
-        "resolved": "13.4.3",
-        "contentHash": "Iic9Zv2ua/nnTq6Bh32JzAwSLK1cmNiVcdHcYqs+t8isiJewC5NkgrZ/0p6VWEyZml01i73yczze4i0G82D8hg==",
+        "requested": "[13.4.5, )",
+        "resolved": "13.4.5",
+        "contentHash": "yTiB4TC1Oy1LH/t94AUCyhp9KvNKXAfzo41j8jEnnX8+jG1v0GvU9mnND9OBEpDdsa7HqMfge9YBAsRNm3ldkg==",
         "dependencies": {
           "AspNetCore.HealthChecks.Redis": "9.0.0",
-          "Aspire.StackExchange.Redis": "13.4.3",
+          "Aspire.StackExchange.Redis": "13.4.5",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "10.0.8",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.8",
           "Microsoft.Extensions.Configuration.Binder": "10.0.8",
@@ -966,9 +966,9 @@
       },
       "JetBrains.Annotations": {
         "type": "CentralTransitive",
-        "requested": "[2025.2.4, )",
-        "resolved": "2025.2.4",
-        "contentHash": "TwbgxAkXxY+vNEhNVx/QXjJ4vqxmepOjsgRvvImQPbHkHMMb4W+ahL3laMsxXKtNT7iMy+E1B3xkqao2hf1n3A=="
+        "requested": "[2026.2.0, )",
+        "resolved": "2026.2.0",
+        "contentHash": "drvAEaI7Xf4wU6dx4UTB9MoZWXZlraaQ0qoeThPQ411FxNhId7QdUTukIC9I8aUHP0ycAaGwZNKqSvfOZQvUlg=="
       },
       "Microsoft.Data.SqlClient.Extensions.Azure": {
         "type": "CentralTransitive",
