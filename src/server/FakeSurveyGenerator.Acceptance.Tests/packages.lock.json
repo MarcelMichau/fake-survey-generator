@@ -45,9 +45,9 @@
       },
       "Microsoft.Playwright": {
         "type": "Direct",
-        "requested": "[1.60.0, )",
-        "resolved": "1.60.0",
-        "contentHash": "RTwlxpmCsCMD8yCu8a9+/B+ce1axSVuRu3Ew4GI493g84bWxC323u69Tw8najJ/5uZ+cQVU3eDhB4GvubM9yHg==",
+        "requested": "[1.61.0, )",
+        "resolved": "1.61.0",
+        "contentHash": "VM149rQ2Pu+3xAzrO2gvh2WRgrWNbIl0jL9LG2oMC9xKUVYDnUrsh+E/5S+NQToVV4S+yhZ3NHsa6kf1PdHeag==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "System.ComponentModel.Annotations": "5.0.0"
@@ -103,10 +103,10 @@
           "TUnit": "1.56.25"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Transitive",
         "resolved": "13.4.6",
-        "contentHash": "IoN5kv4uMniYyETegmD3/5lW2TpsA4RXRZfgIEAD7gN93P92hhkUiqa+0DC2GrJLD3Voz1/Drmpnq/pQ5WzBow=="
+        "contentHash": "D1wLblOuViLyFXn4cVf/Y+ww2g8s0GnuRmsJCEXCxSFBhao59+6FgUMa8YSZ/Qd4Byj+ZQS+7/6ndbhgJpu8kQ=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -178,10 +178,10 @@
           "System.IO.Hashing": "10.0.8"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Transitive",
         "resolved": "13.4.6",
-        "contentHash": "TjpiZb4VAr7w/ViDq08kX2lXVo5eSDaQpGaLFMRas/0Q2jmuVOWoYFidmuXMbTf2InXVJO0pVjtwhJI2nNXihw=="
+        "contentHash": "zPPL4sZwp8WS8SvncVQfAXVFIIX/00jGe5v220pKjzZgLrBloQUmesHegESkqxTtSA5VBUhlalJgBWKeInEICA=="
       },
       "AspNetCore.HealthChecks.Redis": {
         "type": "Transitive",
@@ -1126,10 +1126,10 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.4.6, )",
+          "Aspire.Dashboard.Sdk.linux-x64": "[13.4.6, )",
           "Aspire.Hosting.AppHost": "[13.4.6, )",
           "Aspire.Hosting.JavaScript": "[13.4.6, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.4.6, )",
+          "Aspire.Hosting.Orchestration.linux-x64": "[13.4.6, )",
           "Aspire.Hosting.Redis": "[13.4.6, )",
           "Aspire.Hosting.SqlServer": "[13.4.6, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
