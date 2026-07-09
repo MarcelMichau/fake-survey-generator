@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsgo -b && vite build",
+    "build": "tsc -b && vite build",
     "lint": "biome lint --write",
     "preview": "vite preview",
     "test": "vitest",
@@ -13,32 +13,31 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
-    "@auth0/auth0-react": "^2.19.0",
+    "@auth0/auth0-react": "^2.20.0",
     "@fortawesome/fontawesome-svg-core": "^7.3.0",
     "@fortawesome/free-solid-svg-icons": "^7.3.0",
-    "@fortawesome/react-fontawesome": "^3.3.1",
+    "@fortawesome/react-fontawesome": "^3.4.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-loading-skeleton": "^3.5.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.2",
+    "@biomejs/biome": "2.5.3",
     "@tailwindcss/postcss": "^4.3.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^26.1.0",
+    "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@typescript/native-preview": "^7.0.0-dev.20260701.1",
     "@vitejs/plugin-react": "^6.0.3",
-    "@vitest/ui": "^4.1.9",
+    "@vitest/ui": "^4.1.10",
     "jsdom": "^29.1.1",
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
-    "typescript": "^6.0.3",
-    "vite": "^8.1.3",
-    "vitest": "^4.1.9"
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
   },
   "allowScripts": {
     "browser-tabs-lock@1.3.0": true
