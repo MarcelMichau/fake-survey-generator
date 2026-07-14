@@ -101,9 +101,9 @@
       },
       "NSubstitute": {
         "type": "Direct",
-        "requested": "[5.3.0, )",
-        "resolved": "5.3.0",
-        "contentHash": "lJ47Cps5Qzr86N99lcwd+OUvQma7+fBgr8+Mn+aOC0WrlqMNkdivaYD9IvnZ5Mqo6Ky3LS7ZI+tUq1/s9ERd0Q==",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "0gvKMbiJ+/WrfbcfBfqRZZrvfLJcd3rqkqVMjjlY5dtmLRVzMY+o/K/rJUStofQ2haSr9Vd04YDfvZtVVGS3/A==",
         "dependencies": {
           "Castle.Core": "5.1.1"
         }
@@ -127,10 +127,10 @@
           "TUnit.Engine": "1.58.0"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
+      "Aspire.Dashboard.Sdk.linux-x64": {
         "type": "Transitive",
         "resolved": "13.4.6",
-        "contentHash": "IoN5kv4uMniYyETegmD3/5lW2TpsA4RXRZfgIEAD7gN93P92hhkUiqa+0DC2GrJLD3Voz1/Drmpnq/pQ5WzBow=="
+        "contentHash": "D1wLblOuViLyFXn4cVf/Y+ww2g8s0GnuRmsJCEXCxSFBhao59+6FgUMa8YSZ/Qd4Byj+ZQS+7/6ndbhgJpu8kQ=="
       },
       "Aspire.Hosting": {
         "type": "Transitive",
@@ -202,10 +202,10 @@
           "System.IO.Hashing": "10.0.8"
         }
       },
-      "Aspire.Hosting.Orchestration.win-x64": {
+      "Aspire.Hosting.Orchestration.linux-x64": {
         "type": "Transitive",
         "resolved": "13.4.6",
-        "contentHash": "TjpiZb4VAr7w/ViDq08kX2lXVo5eSDaQpGaLFMRas/0Q2jmuVOWoYFidmuXMbTf2InXVJO0pVjtwhJI2nNXihw=="
+        "contentHash": "zPPL4sZwp8WS8SvncVQfAXVFIIX/00jGe5v220pKjzZgLrBloQUmesHegESkqxTtSA5VBUhlalJgBWKeInEICA=="
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
@@ -1468,10 +1468,10 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.4.6, )",
+          "Aspire.Dashboard.Sdk.linux-x64": "[13.4.6, )",
           "Aspire.Hosting.AppHost": "[13.4.6, )",
           "Aspire.Hosting.JavaScript": "[13.4.6, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.4.6, )",
+          "Aspire.Hosting.Orchestration.linux-x64": "[13.4.6, )",
           "Aspire.Hosting.Redis": "[13.4.6, )",
           "Aspire.Hosting.SqlServer": "[13.4.6, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
