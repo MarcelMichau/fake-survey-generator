@@ -67,15 +67,15 @@
       },
       "TUnit": {
         "type": "Direct",
-        "requested": "[1.61.15, )",
-        "resolved": "1.61.15",
-        "contentHash": "IFwHucidVQML69dvjiv5qBn+ZyLWWmwHvnBkHUCSUXOeg0BUEJk3bFHdkynfbZe3i3vdueWe3lh78yCs2LeVww==",
+        "requested": "[1.61.38, )",
+        "resolved": "1.61.38",
+        "contentHash": "FiwmKtUn+ldHuMl9rJepih5nTtgrYtADZc0mGUkHYsbeNP4SGoLECrAHR9uQKH259nmpXk6FcziyBhjqyER1og==",
         "dependencies": {
           "Microsoft.Testing.Extensions.CodeCoverage": "18.9.0",
           "Microsoft.Testing.Extensions.Telemetry": "2.3.2",
           "Microsoft.Testing.Extensions.TrxReport": "2.3.2",
-          "TUnit.Assertions": "1.61.15",
-          "TUnit.Engine": "1.61.15"
+          "TUnit.Assertions": "1.61.38",
+          "TUnit.Engine": "1.61.38"
         }
       },
       "Albedo": {
@@ -134,11 +134,6 @@
         "dependencies": {
           "System.Diagnostics.EventLog": "6.0.0"
         }
-      },
-      "EnumerableAsyncProcessor": {
-        "type": "Transitive",
-        "resolved": "3.8.4",
-        "contentHash": "KlbpupRCz3Kf+P7gsiDvFXJ980i/9lfihMZFmmxIk0Gf6mopEjy74OTJZmdaKDQpE29eQDBnMZB5khyW3eugrg=="
       },
       "Fare": {
         "type": "Transitive",
@@ -811,24 +806,23 @@
       },
       "TUnit.Assertions": {
         "type": "Transitive",
-        "resolved": "1.61.15",
-        "contentHash": "hxXV8S+6rcYN3Oh9Ok7eo5LoGgDo6tudT8WYngwc2K16DetX9BrAkMkUJ+gEzkJxMfIyo1dFTrkalhRHQbwpTA=="
+        "resolved": "1.61.38",
+        "contentHash": "jVkPufP7xV7qxjhAEyjxi29Rd/nYbRaHncRq1CSXZniOSNSFmtBzIV8eSfp8hv4o31/8vK2Q9/1V7MgnHp0ncQ=="
       },
       "TUnit.Core": {
         "type": "Transitive",
-        "resolved": "1.61.15",
-        "contentHash": "2Ro4Gx3iYOWMjf9ykAykJyIepRD9tvP12cdV7m1uTFkkXJC2Ok1NY6BynYyn2/S0VDN7DMdSkvtbjVaLNqmOKA=="
+        "resolved": "1.61.38",
+        "contentHash": "AQPWcHAhhSfr6p+9WCujwhJkwF3Ibt3KNG5hGRbkm7EAjmr4NL4W6Nqo5AhrnspDYtI6EI8Br+dkWhZuAU00aA=="
       },
       "TUnit.Engine": {
         "type": "Transitive",
-        "resolved": "1.61.15",
-        "contentHash": "0uGjsf3a1lydHrU3W9K/B+ac5ibZ4TcMqw7k7XQlsoF4uRMIgmNUkxcpURIgZRfM+VMO3RhgKkiZ0Z0MysThUg==",
+        "resolved": "1.61.38",
+        "contentHash": "JeXoX9/rUFCw9p+ZbYOheEEiPRgaKJV7/8O3YF11V2T993s8cirxjCzEO9iWwnvAXQNWiqMy7wuFqc4tVdUpDQ==",
         "dependencies": {
-          "EnumerableAsyncProcessor": "3.8.4",
           "Microsoft.Testing.Extensions.TrxReport.Abstractions": "2.3.2",
           "Microsoft.Testing.Platform": "2.3.2",
           "Microsoft.Testing.Platform.MSBuild": "2.3.2",
-          "TUnit.Core": "1.61.15"
+          "TUnit.Core": "1.61.38"
         }
       },
       "fakesurveygenerator.application": {

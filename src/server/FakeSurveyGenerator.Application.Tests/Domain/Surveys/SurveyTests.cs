@@ -1,11 +1,10 @@
 using System.Text.Json;
-
 using AutoFixture;
 using AutoFixture.Idioms;
-using EnumerableAsyncProcessor.Extensions;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Domain.Users;
+
 namespace FakeSurveyGenerator.Application.Tests.Domain.Surveys;
 
 public sealed class SurveyTests
@@ -40,10 +39,9 @@ public sealed class SurveyTests
         const int numberOfRespondents = 0;
         var respondentType = _fixture.Create<NonEmptyString>();
 
-        await Assert.That(() =>
-        {
-            _ = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert
+            .That(() => { _ = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType); })
+            .ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
     [Test]
@@ -98,14 +96,13 @@ public sealed class SurveyTests
         survey.AddSurveyOption(optionText);
 
         // Act & Assert - Adding the same option should throw
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(optionText);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
+        await Assert.That(() => { survey.AddSurveyOption(optionText); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
     }
 
     [Test]
-    public async Task GivenDuplicateOptionWithDifferentCase_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
+    public async Task
+        GivenDuplicateOptionWithDifferentCase_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
@@ -118,14 +115,13 @@ public sealed class SurveyTests
         survey.AddSurveyOption(NonEmptyString.Create("duplicate case insensitive"));
 
         // Act & Assert - Adding the same option in different case should throw
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(NonEmptyString.Create("DUPLICATE CASE INSENSITIVE"));
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
+        await Assert.That(() => { survey.AddSurveyOption(NonEmptyString.Create("DUPLICATE CASE INSENSITIVE")); })
+            .ThrowsException().And.IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
     }
 
     [Test]
-    public async Task GivenDuplicateOptionWithPreferredVotes_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
+    public async Task
+        GivenDuplicateOptionWithPreferredVotes_WhenAddingOptionToSurvey_ThenSurveyDomainExceptionShouldBeThrown()
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
@@ -139,10 +135,8 @@ public sealed class SurveyTests
         survey.AddSurveyOption(optionText);
 
         // Act & Assert - Adding the same option with preferred votes should also throw
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(optionText, 50);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
+        await Assert.That(() => { survey.AddSurveyOption(optionText, 50); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>().And.HasMessageEqualTo("Duplicate survey option.");
     }
 
     [Test]
@@ -156,10 +150,8 @@ public sealed class SurveyTests
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(null!);
-        }).ThrowsException().And.IsTypeOf<ArgumentNullException>();
+        await Assert.That(() => { survey.AddSurveyOptions(null!); }).ThrowsException().And
+            .IsTypeOf<ArgumentNullException>();
     }
 
     [Test]
@@ -286,10 +278,8 @@ public sealed class SurveyTests
 
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents - 1);
 
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); })
+            .ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
     [Test]
@@ -304,10 +294,8 @@ public sealed class SurveyTests
 
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents);
 
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents + 1); })
+            .ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
     [Test]
@@ -323,10 +311,10 @@ public sealed class SurveyTests
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>());
 
-        survey.DomainEvents.ForEachAsync(async surveyDomainEvent =>
+        foreach (var surveyDomainEvent in survey.DomainEvents)
         {
             await Assert.That(surveyDomainEvent).IsTypeOf<SurveyCreatedDomainEvent>();
-        });
+        }
 
         var surveyCreatedEvent = (SurveyCreatedDomainEvent)survey.DomainEvents.First();
 
@@ -593,12 +581,9 @@ public sealed class SurveyTests
         await Assert.That(survey.Options[0].OptionText.Value).IsEqualTo(" Option ");
 
         // Act - Second option with different spacing should be treated as duplicate
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(option2);
-        }).ThrowsException()
-          .And.IsTypeOf<SurveyDomainException>()
-          .And.HasMessageEqualTo("Duplicate survey option.");
+        await Assert.That(() => { survey.AddSurveyOption(option2); }).ThrowsException()
+            .And.IsTypeOf<SurveyDomainException>()
+            .And.HasMessageEqualTo("Duplicate survey option.");
     }
 
     /// <summary>
@@ -756,10 +741,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -782,10 +765,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -793,7 +774,8 @@ public sealed class SurveyTests
     /// This validates proper exception propagation when the second option causes the total to exceed the limit.
     /// </summary>
     [Test]
-    public async Task AddSurveyOptions_CollectionWithCombinedVotesExceedingRespondents_ShouldThrowSurveyDomainException()
+    public async Task
+        AddSurveyOptions_CollectionWithCombinedVotesExceedingRespondents_ShouldThrowSurveyDomainException()
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
@@ -809,10 +791,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -865,10 +845,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -920,10 +898,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -974,10 +950,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
 
         await Assert.That(survey.Options.Count).IsEqualTo(1);
     }
@@ -1003,10 +977,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -1029,10 +1001,8 @@ public sealed class SurveyTests
         };
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOptions(options);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOptions(options); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -1235,10 +1205,8 @@ public sealed class SurveyTests
         var optionText = _fixture.Create<NonEmptyString>();
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(optionText, -10);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOption(optionText, -10); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -1257,10 +1225,8 @@ public sealed class SurveyTests
         var optionText = _fixture.Create<NonEmptyString>();
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(optionText, int.MinValue);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOption(optionText, int.MinValue); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -1279,10 +1245,8 @@ public sealed class SurveyTests
         var optionText = _fixture.Create<NonEmptyString>();
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(optionText, int.MaxValue);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOption(optionText, int.MaxValue); }).ThrowsException().And
+            .IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -1315,7 +1279,8 @@ public sealed class SurveyTests
     /// Expected: SurveyDomainException is thrown.
     /// </summary>
     [Test]
-    public async Task AddSurveyOption_WithPreferredVotesEqualToNumberOfRespondentsWhenOptionsExist_ShouldThrowSurveyDomainException()
+    public async Task
+        AddSurveyOption_WithPreferredVotesEqualToNumberOfRespondentsWhenOptionsExist_ShouldThrowSurveyDomainException()
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
@@ -1325,10 +1290,8 @@ public sealed class SurveyTests
         survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), 10);
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents);
-        }).ThrowsException().And.IsTypeOf<SurveyDomainException>();
+        await Assert.That(() => { survey.AddSurveyOption(_fixture.Create<NonEmptyString>(), numberOfRespondents); })
+            .ThrowsException().And.IsTypeOf<SurveyDomainException>();
     }
 
     /// <summary>
@@ -1337,7 +1300,8 @@ public sealed class SurveyTests
     /// Expected: Option is added successfully.
     /// </summary>
     [Test]
-    public async Task AddSurveyOption_WithPreferredVotesEqualToNumberOfRespondentsWhenNoOptionsExist_ShouldAddOptionSuccessfully()
+    public async Task
+        AddSurveyOption_WithPreferredVotesEqualToNumberOfRespondentsWhenNoOptionsExist_ShouldAddOptionSuccessfully()
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
@@ -1360,7 +1324,8 @@ public sealed class SurveyTests
     /// Expected: SurveyDomainException is thrown with specific message.
     /// </summary>
     [Test]
-    public async Task AddSurveyOption_WithPreferredVotesExceedingNumberOfRespondents_ShouldThrowSurveyDomainExceptionWithCorrectMessage()
+    public async Task
+        AddSurveyOption_WithPreferredVotesExceedingNumberOfRespondents_ShouldThrowSurveyDomainExceptionWithCorrectMessage()
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
@@ -1371,12 +1336,10 @@ public sealed class SurveyTests
         const int preferredVotes = 150;
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(optionText, preferredVotes);
-        }).ThrowsException()
+        await Assert.That(() => { survey.AddSurveyOption(optionText, preferredVotes); }).ThrowsException()
             .And.IsTypeOf<SurveyDomainException>()
-            .And.HasMessageEqualTo($"Preferred number of votes: {preferredVotes} is higher than the number of respondents: {numberOfRespondents}");
+            .And.HasMessageEqualTo(
+                $"Preferred number of votes: {preferredVotes} is higher than the number of respondents: {numberOfRespondents}");
     }
 
     /// <summary>
@@ -1385,7 +1348,8 @@ public sealed class SurveyTests
     /// Expected: SurveyDomainException is thrown with specific message.
     /// </summary>
     [Test]
-    public async Task AddSurveyOption_WithSumOfPreferredVotesExceedingNumberOfRespondents_ShouldThrowSurveyDomainExceptionWithCorrectMessage()
+    public async Task
+        AddSurveyOption_WithSumOfPreferredVotesExceedingNumberOfRespondents_ShouldThrowSurveyDomainExceptionWithCorrectMessage()
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
@@ -1397,11 +1361,9 @@ public sealed class SurveyTests
         const int preferredVotes = 50;
 
         // Act & Assert
-        await Assert.That(() =>
-        {
-            survey.AddSurveyOption(optionText, preferredVotes);
-        }).ThrowsException()
+        await Assert.That(() => { survey.AddSurveyOption(optionText, preferredVotes); }).ThrowsException()
             .And.IsTypeOf<SurveyDomainException>()
-            .And.HasMessageEqualTo($"Preferred number of votes: {preferredVotes} is higher than the number of respondents: {numberOfRespondents}");
+            .And.HasMessageEqualTo(
+                $"Preferred number of votes: {preferredVotes} is higher than the number of respondents: {numberOfRespondents}");
     }
 }
