@@ -7,14 +7,26 @@ param name string
 @description('Container Apps environment resource ID')
 param containerAppEnvironmentId string
 
-@description('Password required by clients connecting to Redis')
-@secure()
-param redisPassword string
+@description('User-assigned managed identity name used to retrieve the Redis password from Key Vault')
+param managedIdentityName string
+
+@description('Versionless Key Vault URL of the Redis password')
+param redisPasswordSecretUrl string
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' existing = {
+  name: managedIdentityName
+}
 
 resource redisContainerApp 'Microsoft.App/containerApps@2026-01-01' = {
   name: name
   location: resourceGroup().location
   tags: tags
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
   properties: {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
@@ -22,7 +34,8 @@ resource redisContainerApp 'Microsoft.App/containerApps@2026-01-01' = {
       secrets: [
         {
           name: 'redis-password'
-          value: redisPassword
+          keyVaultUrl: redisPasswordSecretUrl
+          identity: managedIdentity.id
         }
       ]
       ingress: {

@@ -7,10 +7,6 @@ param applicationName string
 
 param dnsZoneName string
 
-@description('Password required by clients connecting to the Redis Container App')
-@secure()
-param redisPassword string
-
 var tags = { 'azd-env-name': environment }
 
 var abbrs = loadJsonContent('abbreviations.json')
@@ -91,13 +87,25 @@ module containerRegistry 'modules/containerRegistry.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
+module redisPassword 'modules/redisPassword.bicep' = {
+  name: 'redisPassword'
+  params: {
+    location: location
+    tags: tags
+    name: '${abbrs.managedIdentityUserAssignedIdentities}${applicationName}-redis-password-generator'
+    keyVaultName: keyVault.outputs.keyVaultName
+  }
+  scope: fakeSurveyGeneratorResourceGroup
+}
+
 module redisCache 'modules/redisContainerApp.bicep' = {
   name: 'redisCache'
   params: {
     name: '${abbrs.appContainerApps}${applicationName}-redis'
     tags: tags
     containerAppEnvironmentId: compute.outputs.containerAppEnvironmentId
-    redisPassword: redisPassword
+    managedIdentityName: managedIdentity.outputs.identityName
+    redisPasswordSecretUrl: redisPassword.outputs.secretUrl
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -165,6 +173,7 @@ output SERVICE_UI_IDENTITY_NAME string = compute.outputs.managedIdentityName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.containerRegistryEndpoint
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = compute.outputs.containerAppEnvironmentId
 output REDIS_CACHE_HOST_NAME string = redisCache.outputs.hostName
+output REDIS_KEY_VAULT_URL string = redisPassword.outputs.secretUrl
 output AZURE_APPLICATION_INSIGHTS_NAME string = applicationInsights.outputs.applicationInsightsName
 
 output SQL_SERVER_NAME string = azureSql.outputs.sqlServerName

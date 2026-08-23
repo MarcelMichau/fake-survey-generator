@@ -213,7 +213,28 @@ stages:
               AZURE_ENV_NAME: $(azureEnvName)
               AZURE_LOCATION: $(azureLocation)
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
-              REDIS_PASSWORD: $(REDIS_PASSWORD)
+
+          # The application identity now needs only read access to the Key Vault secret.
+          # Provisioning changes the assignment's deterministic name, so explicitly remove
+          # the superseded broad data-plane role left by earlier deployments.
+          - task: AzureCLI@2
+            displayName: Remove legacy Key Vault Secrets Officer role
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              visibleAzLogin: false
+              inlineScript: |
+                set -euo pipefail
+                identity_principal_id="$(az identity show --resource-group "$(azureResourceGroup)" --name id-fake-survey-generator --query principalId --output tsv)"
+                key_vault_id="$(az keyvault show --resource-group "$(azureResourceGroup)" --name kv-fake-survey-generator --query id --output tsv)"
+                az role assignment list \
+                  --assignee "$identity_principal_id" \
+                  --scope "$key_vault_id" \
+                  --role "Key Vault Secrets Officer" \
+                  --query '[].id' \
+                  --output tsv \
+                  | xargs -r -n 1 az role assignment delete --ids
 
           - task: AzureCLI@2
             displayName: Deploy Application
@@ -232,7 +253,6 @@ stages:
               UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
               VITE_APP_VERSION: $(uiSemVerVersionTag)
-              REDIS_PASSWORD: $(REDIS_PASSWORD)
 
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))

@@ -8,6 +8,6 @@ param managedIdentityName = readEnvironmentVariable('SERVICE_API_IDENTITY_NAME',
 param sqlServerName = readEnvironmentVariable('SQL_SERVER_NAME', '')
 param sqlDatabaseName = readEnvironmentVariable('SQL_DATABASE_NAME', '')
 param redisHostName = readEnvironmentVariable('REDIS_CACHE_HOST_NAME', '')
-param redisPassword = readEnvironmentVariable('REDIS_PASSWORD', '')
+param redisPasswordSecretUrl = readEnvironmentVariable('REDIS_KEY_VAULT_URL', '')
 param applicationInsightsName = readEnvironmentVariable('AZURE_APPLICATION_INSIGHTS_NAME', '')
 param version = readEnvironmentVariable('API_VERSION', 'latest')

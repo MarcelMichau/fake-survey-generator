@@ -12,13 +12,13 @@ param keyVaultName string
 @description('Container Registry to assign roles to')
 param containerRegistryName string
 
-var keyVaultSecretsOfficer = subscriptionResourceId(
+var keyVaultSecretsUser = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
-  'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+  '4633458b-17de-408a-b874-0445c86b69e6'
 )
-var uniqueRoleGuidKeyVaultSecretsOfficer = guid(
+var uniqueRoleGuidKeyVaultSecretsUser = guid(
   resourceId('Microsoft.KeyVault/vaults', keyVaultName),
-  keyVaultSecretsOfficer
+  keyVaultSecretsUser
 )
 
 var acrPull = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
@@ -34,11 +34,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
   name: keyVaultName
 }
 
-resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: uniqueRoleGuidKeyVaultSecretsOfficer
+resource keyVaultSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: uniqueRoleGuidKeyVaultSecretsUser
   scope: keyVault
   properties: {
-    roleDefinitionId: keyVaultSecretsOfficer
+    roleDefinitionId: keyVaultSecretsUser
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }

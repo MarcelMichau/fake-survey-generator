@@ -6,8 +6,7 @@ param managedIdentityName string
 param sqlServerName string
 param sqlDatabaseName string
 param redisHostName string
-@secure()
-param redisPassword string
+param redisPasswordSecretUrl string
 param applicationInsightsName string
 param location string = resourceGroup().location
 param version string
@@ -47,8 +46,12 @@ var apiEnvironmentVariables = [
     value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabase.name};Encrypt=True;TrustServerCertificate=False;Authentication=Active Directory Managed Identity;User Id=${managedIdentity.properties.clientId};'
   }
   {
-    name: 'ConnectionStrings__cache'
-    secretRef: 'cache-connection-string'
+    name: 'Redis__HostName'
+    value: redisHostName
+  }
+  {
+    name: 'Redis__Password'
+    secretRef: 'redis-password'
   }
   {
     name: 'IDENTITY_PROVIDER_URL'
@@ -78,8 +81,9 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
       activeRevisionsMode: 'Single'
       secrets: [
         {
-          name: 'cache-connection-string'
-          value: '${redisHostName}:6379,password=${redisPassword},ssl=false,abortConnect=false'
+          name: 'redis-password'
+          keyVaultUrl: redisPasswordSecretUrl
+          identity: managedIdentity.id
         }
       ]
       registries: [
