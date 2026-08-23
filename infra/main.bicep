@@ -7,6 +7,10 @@ param applicationName string
 
 param dnsZoneName string
 
+@description('Password required by clients connecting to the Redis Container App')
+@secure()
+param redisPassword string
+
 var tags = { 'azd-env-name': environment }
 
 var abbrs = loadJsonContent('abbreviations.json')
@@ -87,13 +91,13 @@ module containerRegistry 'modules/containerRegistry.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
-module redisCache 'modules/redisCache.bicep' = {
+module redisCache 'modules/redisContainerApp.bicep' = {
   name: 'redisCache'
   params: {
-    location: location
-    name: '${abbrs.cacheRedis}${applicationName}'
+    name: '${abbrs.appContainerApps}${applicationName}-redis'
     tags: tags
-    principalId: managedIdentity.outputs.principalId
+    containerAppEnvironmentId: compute.outputs.containerAppEnvironmentId
+    redisPassword: redisPassword
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -160,7 +164,7 @@ output SERVICE_UI_IDENTITY_NAME string = compute.outputs.managedIdentityName
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.containerRegistryEndpoint
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = compute.outputs.containerAppEnvironmentId
-output AZURE_REDIS_NAME string = redisCache.outputs.redisCacheName
+output REDIS_CACHE_HOST_NAME string = redisCache.outputs.hostName
 output AZURE_APPLICATION_INSIGHTS_NAME string = applicationInsights.outputs.applicationInsightsName
 
 output SQL_SERVER_NAME string = azureSql.outputs.sqlServerName

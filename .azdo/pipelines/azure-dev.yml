@@ -213,6 +213,7 @@ stages:
               AZURE_ENV_NAME: $(azureEnvName)
               AZURE_LOCATION: $(azureLocation)
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              REDIS_PASSWORD: $(REDIS_PASSWORD)
 
           - task: AzureCLI@2
             displayName: Deploy Application
@@ -231,6 +232,7 @@ stages:
               UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
               VITE_APP_VERSION: $(uiSemVerVersionTag)
+              REDIS_PASSWORD: $(REDIS_PASSWORD)
 
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))

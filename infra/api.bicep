@@ -5,22 +5,15 @@ param imageName string
 param managedIdentityName string
 param sqlServerName string
 param sqlDatabaseName string
-param redisCacheName string
+param redisHostName string
+@secure()
+param redisPassword string
 param applicationInsightsName string
 param location string = resourceGroup().location
 param version string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' existing = {
   name: managedIdentityName
-}
-
-resource redisEnterprise 'Microsoft.Cache/redisEnterprise@2025-07-01' existing = {
-  name: redisCacheName
-}
-
-resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2025-07-01' existing = {
-  parent: redisEnterprise
-  name: 'default'
 }
 
 resource sqlServer 'Microsoft.Sql/servers@2025-02-01-preview' existing = {
@@ -55,7 +48,7 @@ var apiEnvironmentVariables = [
   }
   {
     name: 'ConnectionStrings__cache'
-    value: '${redisEnterprise.properties.hostName}:${redisEnterpriseDatabase.properties.port},ssl=true,abortConnect=false'
+    secretRef: 'cache-connection-string'
   }
   {
     name: 'IDENTITY_PROVIDER_URL'
@@ -83,6 +76,12 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
       activeRevisionsMode: 'Single'
+      secrets: [
+        {
+          name: 'cache-connection-string'
+          value: '${redisHostName}:6379,password=${redisPassword},ssl=false,abortConnect=false'
+        }
+      ]
       registries: [
         {
           server: containerRegistryUrl
