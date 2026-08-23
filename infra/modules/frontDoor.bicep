@@ -70,8 +70,8 @@ resource profile 'Microsoft.Cdn/profiles@2025-09-01-preview' = {
       enabledState: 'Enabled'
     }
 
-    resource apiRoute 'routes' = {
-      name: 'api-route'
+    resource uiRoute 'routes' = {
+      name: 'ui-route'
       dependsOn: [
         apiOriginGroup::apiOrigin // This explicit dependency is required to ensure that the origin group is not empty when the route is created.
       ]
