@@ -10,13 +10,27 @@ param name string
 @description('Name of the Key Vault that stores the Redis password')
 param keyVaultName string
 
+@description('Name of the deployment-script storage account')
+param deploymentScriptStorageAccountName string
+
+@description('Subnet Resource ID used by the deployment-script Azure Container Instance')
+param deploymentScriptSubnetResourceId string
+
 var keyVaultSecretsOfficer = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
 )
+var storageFileDataPrivilegedContributor = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+)
 
 resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
   name: keyVaultName
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
+  name: deploymentScriptStorageAccountName
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' = {
@@ -30,6 +44,16 @@ resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
   scope: keyVault
   properties: {
     roleDefinitionId: keyVaultSecretsOfficer
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource storageFileDataPrivilegedContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storageAccount.id, managedIdentity.id, storageFileDataPrivilegedContributor)
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: storageFileDataPrivilegedContributor
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
@@ -50,6 +74,16 @@ resource redisPassword 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     timeout: 'PT10M'
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
+    storageAccountSettings: {
+      storageAccountName: deploymentScriptStorageAccountName
+    }
+    containerSettings: {
+      subnetIds: [
+        {
+          id: deploymentScriptSubnetResourceId
+        }
+      ]
+    }
     arguments: '${keyVault.properties.vaultUri} RedisPassword'
     scriptContent: '''
       #!/usr/bin/env bash
@@ -71,6 +105,7 @@ resource redisPassword 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   dependsOn: [
     keyVaultSecretsOfficerRoleAssignment
+    storageFileDataPrivilegedContributorRoleAssignment
   ]
 }
 

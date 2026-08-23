@@ -1,44 +1,67 @@
-$sqlServerFqdn = "$env:DBSERVER"
-$sqlDatabaseName = "$env:DBNAME"
-$principalName = "$env:PRINCIPALNAME"
-$id = "$env:ID"
-$pipelineIdentityName = "$env:PIPELINEIDENTITYNAME"
-$pipelineIdentityClientId = "$env:PIPELINEIDENTITYCLIENTID"
+$ErrorActionPreference = 'Stop'
 
-# Install SqlServer module - using specific version to avoid breaking changes in 22.4.5.1 (see https://github.com/dotnet/aspire/issues/9926)
-Install-Module -Name SqlServer -RequiredVersion 22.3.0 -Force -AllowClobber -Scope CurrentUser
-Import-Module SqlServer
+$sqlServerFqdn = $env:DBSERVER
+$sqlDatabaseName = $env:DBNAME
+$principalName = $env:PRINCIPALNAME
+$principalId = [Guid]$env:ID
+$pipelineIdentityName = $env:PIPELINEIDENTITYNAME
+$pipelineIdentityClientId = [Guid]$env:PIPELINEIDENTITYCLIENTID
 
-$sqlCmd = @"
-DECLARE @name SYSNAME = '$principalName';
-DECLARE @id UNIQUEIDENTIFIER = '$id';
-DECLARE @pipelineName SYSNAME = '$pipelineIdentityName';
-DECLARE @pipelineId UNIQUEIDENTIFIER = '$pipelineIdentityClientId';
+$sqlAccessToken = Get-AzAccessToken -ResourceUrl 'https://database.windows.net/'
+$tokenBstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sqlAccessToken.Token)
 
--- Convert the guid to the right type
-DECLARE @castId NVARCHAR(MAX) = CONVERT(VARCHAR(MAX), CONVERT (VARBINARY(16), @id), 1);
-DECLARE @pipelineCastId NVARCHAR(MAX) = CONVERT(VARCHAR(MAX), CONVERT (VARBINARY(16), @pipelineId), 1);
+try {
+    $accessToken = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($tokenBstr)
+}
+finally {
+    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($tokenBstr)
+}
 
--- Construct command: CREATE USER [@name] WITH SID = @castId, TYPE = E;
-DECLARE @cmd NVARCHAR(MAX) = N'CREATE USER [' + @name + '] WITH SID = ' + @castId + ', TYPE = E;'
-EXEC (@cmd);
+$connection = [System.Data.SqlClient.SqlConnection]::new(
+    "Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};Encrypt=True;TrustServerCertificate=False;"
+)
+$connection.AccessToken = $accessToken
 
--- Assign roles to the new user
-DECLARE @role1 NVARCHAR(MAX) = N'ALTER ROLE db_owner ADD MEMBER [' + @name + ']';
-EXEC (@role1);
+$command = $connection.CreateCommand()
+$command.CommandText = @'
+DECLARE @principalSid NVARCHAR(MAX) = CONVERT(VARCHAR(MAX), CONVERT(VARBINARY(16), @principalId), 1);
+DECLARE @pipelineIdentitySid NVARCHAR(MAX) = CONVERT(VARCHAR(MAX), CONVERT(VARBINARY(16), @pipelineIdentityClientId), 1);
 
--- Create pipeline identity user and assign role
-DECLARE @pipelineCmd NVARCHAR(MAX) = N'CREATE USER [' + @pipelineName + '] WITH SID = ' + @pipelineCastId + ', TYPE = E;'
-EXEC (@pipelineCmd);
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = @principalName)
+BEGIN
+    EXEC(N'CREATE USER ' + QUOTENAME(@principalName) + N' WITH SID = ' + @principalSid + N', TYPE = E;');
+END;
 
-DECLARE @pipelineRole NVARCHAR(MAX) = N'ALTER ROLE db_owner ADD MEMBER [' + @pipelineName + ']';
-EXEC (@pipelineRole);
+IF IS_ROLEMEMBER(N'db_owner', @principalName) <> 1
+BEGIN
+    EXEC(N'ALTER ROLE [db_owner] ADD MEMBER ' + QUOTENAME(@principalName) + N';');
+END;
 
-"@
-# Note: the string terminator must not have whitespace before it, therefore it is not indented.
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = @pipelineIdentityName)
+BEGIN
+    EXEC(N'CREATE USER ' + QUOTENAME(@pipelineIdentityName) + N' WITH SID = ' + @pipelineIdentitySid + N', TYPE = E;');
+END;
 
-Write-Host $sqlCmd
+IF IS_ROLEMEMBER(N'db_owner', @pipelineIdentityName) <> 1
+BEGIN
+    EXEC(N'ALTER ROLE [db_owner] ADD MEMBER ' + QUOTENAME(@pipelineIdentityName) + N';');
+END;
+'@
 
-$connectionString = "Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};Authentication=Active Directory Default;"
+$null = $command.Parameters.Add('@principalName', [System.Data.SqlDbType]::NVarChar, 128)
+$command.Parameters['@principalName'].Value = $principalName
+$null = $command.Parameters.Add('@principalId', [System.Data.SqlDbType]::UniqueIdentifier)
+$command.Parameters['@principalId'].Value = $principalId
+$null = $command.Parameters.Add('@pipelineIdentityName', [System.Data.SqlDbType]::NVarChar, 128)
+$command.Parameters['@pipelineIdentityName'].Value = $pipelineIdentityName
+$null = $command.Parameters.Add('@pipelineIdentityClientId', [System.Data.SqlDbType]::UniqueIdentifier)
+$command.Parameters['@pipelineIdentityClientId'].Value = $pipelineIdentityClientId
 
-Invoke-Sqlcmd -ConnectionString $connectionString -Query $sqlCmd
+try {
+    $connection.Open()
+    $null = $command.ExecuteNonQuery()
+}
+finally {
+    $command.Dispose()
+    $connection.Dispose()
+}

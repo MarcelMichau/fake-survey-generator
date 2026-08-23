@@ -7,6 +7,9 @@ param tags object
 @description('Name of the compute subnet')
 param subnetName string
 
+@description('Name of the subnet used by deployment-script Azure Container Instances')
+param deploymentScriptsSubnetName string
+
 @description('Specifies the location for all resources.')
 param location string = resourceGroup().location
 
@@ -49,8 +52,43 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
           ]
         }
       }
+      {
+        name: deploymentScriptsSubnetName
+        properties: {
+          addressPrefix: '10.0.0.32/27'
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Sql'
+              locations: [
+                'southafricanorth'
+              ]
+            }
+            {
+              service: 'Microsoft.KeyVault'
+              locations: [
+                'southafricanorth'
+              ]
+            }
+            {
+              service: 'Microsoft.Storage'
+              locations: [
+                'southafricanorth'
+              ]
+            }
+          ]
+          delegations: [
+            {
+              name: 'container-instance-delegation'
+              properties: {
+                serviceName: 'Microsoft.ContainerInstance/containerGroups'
+              }
+            }
+          ]
+        }
+      }
     ]
   }
 }
 
 output subnetId string = virtualNetwork.properties.subnets[0].id
+output deploymentScriptsSubnetId string = virtualNetwork.properties.subnets[1].id

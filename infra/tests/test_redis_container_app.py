@@ -101,6 +101,58 @@ class RedisContainerAppInfrastructureTests(unittest.TestCase):
         self.assertIn('if [ -z "$secret_id" ]', generator)
         self.assertIn("output secretUrl string", generator)
 
+    def test_deployment_scripts_run_in_a_dedicated_aci_subnet_allowed_by_key_vault(self) -> None:
+        virtual_network = read("infra/modules/virtualNetwork.bicep")
+        key_vault = read("infra/modules/keyVault.bicep")
+        deployment_storage = read("infra/modules/deploymentScriptStorage.bicep")
+        generator = read("infra/modules/redisPassword.bicep")
+        sql = read("infra/modules/sql.bicep")
+        main = read("infra/main.bicep")
+
+        self.assertIn("deploymentScriptsSubnetId", virtual_network)
+        self.assertIn("10.0.0.32/27", virtual_network)
+        self.assertIn("Microsoft.ContainerInstance/containerGroups", virtual_network)
+        self.assertIn("Microsoft.KeyVault", virtual_network)
+        self.assertIn("Microsoft.Storage", virtual_network)
+        self.assertIn("deploymentScriptStorage", main)
+        self.assertIn("deploymentScriptStorageAccountName", main)
+        self.assertIn("deploymentScriptStorageAccountName", generator)
+        self.assertIn("storageAccountSettings", generator)
+        self.assertIn("deploymentScriptStorageAccountName", sql)
+        self.assertIn("storageAccountSettings", sql)
+        self.assertIn("storageFileDataPrivilegedContributor", generator)
+        self.assertIn("storageFileDataPrivilegedContributorRoleAssignment", generator)
+        self.assertIn("storageFileDataPrivilegedContributorRoleAssignment", deployment_storage)
+        self.assertIn("deploymentScriptIdentityPrincipalId", deployment_storage)
+        self.assertIn("deploymentScriptIdentityPrincipalId: managedIdentity.outputs.principalId", main)
+        self.assertIn("param subnetResourceIds array", key_vault)
+        self.assertIn("for subnetResourceId in subnetResourceIds", key_vault)
+        self.assertIn("param deploymentScriptSubnetResourceId string", generator)
+        self.assertIn("containerSettings", generator)
+        self.assertIn("id: deploymentScriptSubnetResourceId", generator)
+        self.assertIn("param deploymentScriptSubnetResourceId string", sql)
+        self.assertIn("sqlDeploymentScriptsVirtualNetworkRules", sql)
+        self.assertIn("virtualNetworkSubnetId: deploymentScriptSubnetResourceId", sql)
+        self.assertIn(
+            "dependsOn: [\n    sqlServer::sqlDatabase\n    sqlServer::sqlDeploymentScriptsVirtualNetworkRules\n  ]",
+            sql,
+        )
+        self.assertIn("containerSettings", sql)
+        self.assertIn("id: deploymentScriptSubnetResourceId", sql)
+        self.assertIn("deploymentScriptSubnetResourceId: virtualNetwork.outputs.deploymentScriptsSubnetId", main)
+        self.assertIn("subnetResourceIds: [", main)
+
+    def test_sql_deployment_script_uses_an_access_token_without_the_sqlserver_module(self) -> None:
+        sql_script = read("infra/modules/sql-deployment-script.ps1")
+
+        self.assertNotIn("Install-Module -Name SqlServer", sql_script)
+        self.assertNotIn("Import-Module SqlServer", sql_script)
+        self.assertNotIn("Invoke-Sqlcmd", sql_script)
+        self.assertIn("Get-AzAccessToken -ResourceUrl 'https://database.windows.net/'", sql_script)
+        self.assertIn("[System.Data.SqlClient.SqlConnection]", sql_script)
+        self.assertIn("AccessToken", sql_script)
+        self.assertIn("ExecuteNonQuery", sql_script)
+
 
 if __name__ == "__main__":
     unittest.main()
