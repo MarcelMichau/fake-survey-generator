@@ -41,9 +41,12 @@ class ConsolidatedFrontendTests(unittest.TestCase):
 
         self.assertIn(":/src/client/ui", version["pathFilters"])
 
-    def test_infrastructure_deploys_one_public_app_and_front_door_routes_to_it(self) -> None:
+    def test_infrastructure_deploys_one_public_app_with_direct_custom_domain(self) -> None:
         main = read("infra/main.bicep")
-        front_door = read("infra/modules/frontDoor.bicep")
+        dns_zone = read("infra/modules/dnsZone.bicep")
+        api = read("infra/api.bicep")
+        api_params = read("infra/api.bicepparam")
+        azure_yaml = read("azure.yaml")
         environment = read("infra/modules/containerAppEnvironment.bicep")
 
         self.assertNotIn("modules/ui.bicep", main)
@@ -52,14 +55,20 @@ class ConsolidatedFrontendTests(unittest.TestCase):
         self.assertFalse((REPO_ROOT / "src/client/ui/Dockerfile").exists())
         self.assertNotIn("SERVICE_UI_NAME", main)
         self.assertNotIn("SERVICE_UI_IDENTITY_NAME", main)
-        self.assertIn("apiOriginHostName:", main)
-        self.assertIn("resource uiRoute 'routes'", front_door)
-        self.assertIn("name: 'ui-route'", front_door)
-        self.assertIn("originGroup: {\n          id: apiOriginGroup.id", front_door)
-        self.assertIn("'/*'", front_door)
-        self.assertNotIn("resource apiRoute 'routes'", front_door)
-        self.assertNotIn("uiOriginHostName", front_door)
-        self.assertNotIn("uiOriginGroup", front_door)
+        self.assertNotIn("frontDoor", main)
+        self.assertFalse((REPO_ROOT / "infra/modules/frontDoor.bicep").exists())
+        self.assertIn("cnameTargetHostName:", main)
+        self.assertIn("CNAMERecord:", dns_zone)
+        self.assertIn("cnameTargetHostName", dns_zone)
+        self.assertIn("customDomains:", api)
+        self.assertIn("bindingType: 'Auto'", api)
+        self.assertIn("asuid.", api)
+        self.assertIn("managedCertificates@2026-01-01", api)
+        self.assertIn("param customDomainName", api_params)
+        self.assertIn("apiVersion: 2026-01-01", azure_yaml)
+        self.assertIn("output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME", main)
+        self.assertIn("output DNS_ZONE_NAME", main)
+        self.assertIn("output CUSTOM_DOMAIN_NAME", main)
         self.assertNotIn("ca-fake-survey-generator-ui", environment)
         self.assertIn("prefix: '/'", environment)
 

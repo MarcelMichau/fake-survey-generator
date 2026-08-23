@@ -205,6 +205,7 @@ stages:
               API_VERSION: $(apiSemVerVersionTag)
               VITE_APP_VERSION: $(apiSemVerVersionTag)
 
+
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
