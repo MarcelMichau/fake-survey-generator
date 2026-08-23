@@ -26,25 +26,30 @@ $command = $connection.CreateCommand()
 $command.CommandText = @'
 DECLARE @principalSid NVARCHAR(MAX) = CONVERT(VARCHAR(MAX), CONVERT(VARBINARY(16), @principalId), 1);
 DECLARE @pipelineIdentitySid NVARCHAR(MAX) = CONVERT(VARCHAR(MAX), CONVERT(VARBINARY(16), @pipelineIdentityClientId), 1);
+DECLARE @sql NVARCHAR(MAX);
 
 IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = @principalName)
 BEGIN
-    EXEC(N'CREATE USER ' + QUOTENAME(@principalName) + N' WITH SID = ' + @principalSid + N', TYPE = E;');
+    SET @sql = N'CREATE USER ' + QUOTENAME(@principalName) + N' WITH SID = ' + @principalSid + N', TYPE = E;';
+    EXEC sys.sp_executesql @sql;
 END;
 
 IF IS_ROLEMEMBER(N'db_owner', @principalName) <> 1
 BEGIN
-    EXEC(N'ALTER ROLE [db_owner] ADD MEMBER ' + QUOTENAME(@principalName) + N';');
+    SET @sql = N'ALTER ROLE [db_owner] ADD MEMBER ' + QUOTENAME(@principalName) + N';';
+    EXEC sys.sp_executesql @sql;
 END;
 
 IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = @pipelineIdentityName)
 BEGIN
-    EXEC(N'CREATE USER ' + QUOTENAME(@pipelineIdentityName) + N' WITH SID = ' + @pipelineIdentitySid + N', TYPE = E;');
+    SET @sql = N'CREATE USER ' + QUOTENAME(@pipelineIdentityName) + N' WITH SID = ' + @pipelineIdentitySid + N', TYPE = E;';
+    EXEC sys.sp_executesql @sql;
 END;
 
 IF IS_ROLEMEMBER(N'db_owner', @pipelineIdentityName) <> 1
 BEGIN
-    EXEC(N'ALTER ROLE [db_owner] ADD MEMBER ' + QUOTENAME(@pipelineIdentityName) + N';');
+    SET @sql = N'ALTER ROLE [db_owner] ADD MEMBER ' + QUOTENAME(@pipelineIdentityName) + N';';
+    EXEC sys.sp_executesql @sql;
 END;
 '@
 

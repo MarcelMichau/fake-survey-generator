@@ -153,6 +153,16 @@ class RedisContainerAppInfrastructureTests(unittest.TestCase):
         self.assertIn("AccessToken", sql_script)
         self.assertIn("ExecuteNonQuery", sql_script)
 
+    def test_sql_deployment_script_executes_dynamic_sql_from_a_variable(self) -> None:
+        sql_script = read("infra/modules/sql-deployment-script.ps1")
+
+        self.assertIn("DECLARE @sql NVARCHAR(MAX);", sql_script)
+        self.assertIn("SET @sql = N'CREATE USER '", sql_script)
+        self.assertIn("SET @sql = N'ALTER ROLE [db_owner] ADD MEMBER '", sql_script)
+        self.assertIn("EXEC sys.sp_executesql @sql;", sql_script)
+        self.assertNotIn("EXEC(N'CREATE USER ' +", sql_script)
+        self.assertNotIn("EXEC(N'ALTER ROLE [db_owner] ADD MEMBER ' +", sql_script)
+
 
 if __name__ == "__main__":
     unittest.main()
