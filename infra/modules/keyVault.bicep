@@ -14,8 +14,8 @@ param name string
 @secure()
 param secretsObject object
 
-@description('Subnet Resource ID for the infrastructure subnet')
-param subnetResourceId string
+@description('Subnet Resource IDs permitted to access the Key Vault through a service endpoint')
+param subnetResourceIds array
 
 resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: name
@@ -35,7 +35,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
       defaultAction: 'Deny'
       bypass: 'AzureServices'
       virtualNetworkRules: [
-        {
+        for subnetResourceId in subnetResourceIds: {
           id: subnetResourceId
         }
       ]

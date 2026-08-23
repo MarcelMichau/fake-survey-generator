@@ -24,6 +24,7 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = {
     name: '${abbrs.networkVirtualNetworks}${applicationName}'
     tags: tags
     subnetName: '${abbrs.networkVirtualNetworksSubnets}container-apps'
+    deploymentScriptsSubnetName: '${abbrs.networkVirtualNetworksSubnets}deployment-scripts'
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -72,7 +73,22 @@ module keyVault 'modules/keyVault.bicep' = {
         }
       ]
     }
-    subnetResourceId: virtualNetwork.outputs.subnetId
+    subnetResourceIds: [
+      virtualNetwork.outputs.subnetId
+      virtualNetwork.outputs.deploymentScriptsSubnetId
+    ]
+  }
+  scope: fakeSurveyGeneratorResourceGroup
+}
+
+module deploymentScriptStorage 'modules/deploymentScriptStorage.bicep' = {
+  name: 'deploymentScriptStorage'
+  params: {
+    location: location
+    tags: tags
+    name: take(toLower('${abbrs.storageStorageAccounts}${uniqueString('deployment-scripts', fakeSurveyGeneratorResourceGroup.id)}'), 24)
+    subnetResourceId: virtualNetwork.outputs.deploymentScriptsSubnetId
+    deploymentScriptIdentityPrincipalId: managedIdentity.outputs.principalId
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -94,6 +110,8 @@ module redisPassword 'modules/redisPassword.bicep' = {
     tags: tags
     name: '${abbrs.managedIdentityUserAssignedIdentities}${applicationName}-redis-password-generator'
     keyVaultName: keyVault.outputs.keyVaultName
+    deploymentScriptStorageAccountName: deploymentScriptStorage.outputs.name
+    deploymentScriptSubnetResourceId: virtualNetwork.outputs.deploymentScriptsSubnetId
   }
   scope: fakeSurveyGeneratorResourceGroup
 }
@@ -120,6 +138,8 @@ module azureSql 'modules/sql.bicep' = {
     azureAdAdministratorLogin: managedIdentity.outputs.identityName
     azureAdAdministratorObjectId: managedIdentity.outputs.principalId
     subnetResourceId: virtualNetwork.outputs.subnetId
+    deploymentScriptStorageAccountName: deploymentScriptStorage.outputs.name
+    deploymentScriptSubnetResourceId: virtualNetwork.outputs.deploymentScriptsSubnetId
     managedIdentityId: managedIdentity.outputs.identityResourceId
     pipelineIdentityClientId: 'df54403d-edea-442f-bc25-99403859119c'
   }

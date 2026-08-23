@@ -19,8 +19,14 @@ param azureAdAdministratorObjectId string
 @description('The Azure AD administrator Azure AD Tenant ID')
 param azureAdAdministratorTenantId string = subscription().tenantId
 
-@description('Subnet Resource ID for the infrastructure subnet')
+@description('Subnet Resource ID for the Container Apps environment')
 param subnetResourceId string
+
+@description('Name of the deployment-script storage account')
+param deploymentScriptStorageAccountName string
+
+@description('Subnet Resource ID used by the deployment-script Azure Container Instance')
+param deploymentScriptSubnetResourceId string
 
 @description('Managed Identity ID')
 param managedIdentityId string
@@ -59,6 +65,13 @@ resource sqlServer 'Microsoft.Sql/servers@2025-02-01-preview' = {
       virtualNetworkSubnetId: subnetResourceId
     }
   }
+
+  resource sqlDeploymentScriptsVirtualNetworkRules 'virtualNetworkRules' = {
+    name: 'sql-deployment-scripts-vnet-rules'
+    properties: {
+      virtualNetworkSubnetId: deploymentScriptSubnetResourceId
+    }
+  }
 }
 
 resource sqlDatabaseRoles 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
@@ -70,10 +83,24 @@ resource sqlDatabaseRoles 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       '${managedIdentityId}': {}
     }
   }
+  dependsOn: [
+    sqlServer::sqlDatabase
+    sqlServer::sqlDeploymentScriptsVirtualNetworkRules
+  ]
   kind: 'AzurePowerShell'
   properties: {
     azPowerShellVersion: '14.4'
     retentionInterval: 'PT1H'
+    storageAccountSettings: {
+      storageAccountName: deploymentScriptStorageAccountName
+    }
+    containerSettings: {
+      subnetIds: [
+        {
+          id: deploymentScriptSubnetResourceId
+        }
+      ]
+    }
     environmentVariables: [
       {
         name: 'DBNAME'
