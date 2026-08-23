@@ -9,7 +9,6 @@ param sqlDatabaseName string
 param redisHostName string
 param redisPasswordSecretUrl string
 param applicationInsightsName string
-param dnsZoneName string
 param customDomainName string
 param location string = resourceGroup().location
 param version string
@@ -33,10 +32,6 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' existing = {
   name: containerAppEnvironmentName
-}
-
-resource dnsZone 'Microsoft.Network/dnsZones@2023-07-01-preview' existing = {
-  name: dnsZoneName
 }
 
 var customDomainRecordName = split(customDomainName, '.')[0]
@@ -147,21 +142,6 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
   }
 }
 
-resource validationTxtRecord 'Microsoft.Network/dnsZones/TXT@2023-07-01-preview' = if (!empty(customDomainName)) {
-  parent: dnsZone
-  name: 'asuid.${customDomainRecordName}'
-  properties: {
-    TTL: 3600
-    TXTRecords: [
-      {
-        value: [
-          containerApp.properties.customDomainVerificationId
-        ]
-      }
-    ]
-  }
-}
-
 resource managedCertificate 'Microsoft.App/managedEnvironments/managedCertificates@2026-01-01' = if (!empty(customDomainName)) {
   parent: managedEnvironment
   name: '${managedEnvironment.name}-${customDomainRecordName}-certificate'
@@ -170,9 +150,7 @@ resource managedCertificate 'Microsoft.App/managedEnvironments/managedCertificat
     subjectName: customDomainName
     domainControlValidation: 'CNAME'
   }
-  dependsOn: [
-    validationTxtRecord
-  ]
+  dependsOn: [containerApp]
 }
 
 output containerAppFqdn string = containerApp.properties.configuration.ingress.fqdn
