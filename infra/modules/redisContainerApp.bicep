@@ -78,4 +78,4 @@ resource redisContainerApp 'Microsoft.App/containerApps@2026-01-01' = {
   }
 }
 
-output hostName string = redisContainerApp.properties.configuration.ingress.fqdn
+output hostName string = redisContainerApp.name
