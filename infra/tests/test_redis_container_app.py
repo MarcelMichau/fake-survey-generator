@@ -35,6 +35,12 @@ class RedisContainerAppInfrastructureTests(unittest.TestCase):
         self.assertNotIn("output AZURE_REDIS_NAME", main)
         self.assertIn("output REDIS_CACHE_HOST_NAME string", main)
 
+    def test_redis_host_export_uses_container_app_name_for_internal_tcp_routing(self) -> None:
+        redis = read("infra/modules/redisContainerApp.bicep")
+
+        self.assertIn("output hostName string = redisContainerApp.name", redis)
+        self.assertNotIn("output hostName string = redisContainerApp.properties.configuration.ingress.fqdn", redis)
+
     def test_api_consumes_private_redis_host_and_key_vault_password(self) -> None:
         api = read("infra/api.bicep")
         parameters = read("infra/api.bicepparam")
