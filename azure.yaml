@@ -13,15 +13,5 @@ services:
       context: ../../../
       image: fake-survey-generator/fake-survey-generator-api
       tag: ${API_VERSION}
-  ui:
-    language: ts
-    project: ./src/client/ui
-    host: containerapp
-    dist: dist
-    docker:
-      path: ./Dockerfile
-      context: ../../../
-      image: fake-survey-generator/fake-survey-generator-ui
-      tag: ${UI_VERSION}
       buildArgs:
         - "VITE_APP_VERSION"

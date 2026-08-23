@@ -11,9 +11,6 @@ param endpointName string = 'afd-${uniqueString(resourceGroup().id)}'
 ])
 param skuName string = 'Standard_AzureFrontDoor'
 
-@description('The UI host name that should be used when connecting from Front Door to the origin.')
-param uiOriginHostName string
-
 @description('The API host name that should be used when connecting from Front Door to the origin.')
 param apiOriginHostName string
 
@@ -73,33 +70,6 @@ resource profile 'Microsoft.Cdn/profiles@2025-09-01-preview' = {
       enabledState: 'Enabled'
     }
 
-    resource uiRoute 'routes' = {
-      name: 'ui-route'
-      dependsOn: [
-        uiOriginGroup::uiOrigin // This explicit dependency is required to ensure that the origin group is not empty when the route is created.
-      ]
-      properties: {
-        customDomains: [
-          {
-            id: customDomain.id
-          }
-        ]
-        originGroup: {
-          id: uiOriginGroup.id
-        }
-        supportedProtocols: [
-          'Http'
-          'Https'
-        ]
-        patternsToMatch: [
-          '/*'
-        ]
-        forwardingProtocol: 'HttpsOnly'
-        linkToDefaultDomain: 'Enabled'
-        httpsRedirect: 'Enabled'
-      }
-    }
-
     resource apiRoute 'routes' = {
       name: 'api-route'
       dependsOn: [
@@ -119,11 +89,7 @@ resource profile 'Microsoft.Cdn/profiles@2025-09-01-preview' = {
           'Https'
         ]
         patternsToMatch: [
-          '/api/*'
-          '/health/*'
-          '/api-docs/*'
-          '/api-docs'
-          '/openapi/*'
+          '/*'
         ]
         forwardingProtocol: 'HttpsOnly'
         linkToDefaultDomain: 'Enabled'
@@ -132,33 +98,6 @@ resource profile 'Microsoft.Cdn/profiles@2025-09-01-preview' = {
     }
   }
 
-  resource uiOriginGroup 'originGroups' = {
-    name: 'ui-origin-group'
-    properties: {
-      loadBalancingSettings: {
-        sampleSize: 4
-        successfulSamplesRequired: 3
-      }
-      // healthProbeSettings: {
-      //   probePath: '/'
-      //   probeRequestType: 'HEAD'
-      //   probeProtocol: 'Http' // The UI needs http for some reason
-      //   probeIntervalInSeconds: 100
-      // }
-    }
-
-    resource uiOrigin 'origins' = {
-      name: 'ui-origin'
-      properties: {
-        hostName: uiOriginHostName
-        httpPort: 80
-        httpsPort: 443
-        originHostHeader: uiOriginHostName
-        priority: 1
-        weight: 1000
-      }
-    }
-  }
 
   resource apiOriginGroup 'originGroups' = {
     name: 'api-origin-group'

@@ -1,6 +1,15 @@
 # syntax=docker/dockerfile:1
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+FROM node:26 AS frontend-build
+ARG VITE_APP_VERSION
+WORKDIR /src/client/ui
+COPY ["src/client/ui/package.json", "."]
+COPY ["src/client/ui/package-lock.json", "."]
+RUN npm ci
+COPY ["src/client/ui/", "."]
+RUN npm run build
+
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-resolute-chiseled-extra AS base
 USER app
 WORKDIR /app
@@ -34,8 +43,12 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./FakeSurveyGenerator.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+FROM publish AS publish-with-frontend
+RUN mkdir -p /app/publish/wwwroot
+COPY --from=frontend-build /src/client/ui/dist/ /app/publish/wwwroot/
+
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=publish-with-frontend /app/publish .
 USER $APP_UID
 ENTRYPOINT ["dotnet", "FakeSurveyGenerator.Api.dll"]
