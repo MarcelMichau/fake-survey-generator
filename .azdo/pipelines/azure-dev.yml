@@ -117,31 +117,11 @@ stages:
         displayName: "Build + Test"
         pool:
           vmImage: "ubuntu-latest"
-        variables:
-          projectName: fake-survey-generator-ui
-          imageRepository: "$(registryName).azurecr.io/$(projectName)"
         steps:
-          - task: UseDotNet@2
-            displayName: "Install .NET SDK"
-            inputs:
-              packageType: "sdk"
-              useGlobalJson: true
-
           - task: UseNode@1
             displayName: "Install Node.js"
             inputs:
               version: "26.x"
-
-          - task: DotNetCoreCLI@2
-            displayName: Install NBGV tool
-            inputs:
-              command: custom
-              custom: tool
-              arguments: install --tool-path ./src/client/ui nbgv --version 3.10.91
-
-          - script: ./nbgv cloud -a
-            workingDirectory: src/client/ui
-            displayName: Set Build Number & Version Variables
 
           - task: Npm@1
             displayName: "Install Frontend Dependencies"
@@ -165,11 +145,6 @@ stages:
               failTaskOnFailedTests: true
             condition: succeededOrFailed()
 
-          - script: |
-              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
-            name: "SetVersionTag"
-            displayName: "Set SemVer Version Tag from NBGV"
-
   - stage: App_Deployment
     displayName: "Deploy App"
     condition: and(succeeded(), eq(variables.isMain, true))
@@ -183,7 +158,6 @@ stages:
           vmImage: "ubuntu-latest"
         variables:
           apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
-          uiSemVerVersionTag: $[stageDependencies.BuildTestUI.BuildAndTest.outputs['SetVersionTag.VersionTag']]
         steps:
           - task: setup-azd@1
             displayName: Install azd
@@ -228,9 +202,8 @@ stages:
               AZURE_ENV_NAME: $(azureEnvName)
               AZURE_LOCATION: $(azureLocation)
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
-              UI_VERSION: $(uiSemVerVersionTag)
               API_VERSION: $(apiSemVerVersionTag)
-              VITE_APP_VERSION: $(uiSemVerVersionTag)
+              VITE_APP_VERSION: $(apiSemVerVersionTag)
 
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))

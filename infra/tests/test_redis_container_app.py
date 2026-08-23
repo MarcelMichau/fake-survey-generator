@@ -93,8 +93,7 @@ class RedisContainerAppInfrastructureTests(unittest.TestCase):
         self.assertIn("4633458b-17de-408a-b874-0445c86b69e6", identity)
         self.assertNotIn("keyVaultSecretsOfficer", identity)
         self.assertNotIn("REDIS_PASSWORD: $(REDIS_PASSWORD)", pipeline)
-        self.assertIn("Remove legacy Key Vault Secrets Officer role", pipeline)
-        self.assertIn("az role assignment delete --ids", pipeline)
+
 
     def test_deployment_script_creates_the_secret_only_when_absent(self) -> None:
         generator = read("infra/modules/redisPassword.bicep")

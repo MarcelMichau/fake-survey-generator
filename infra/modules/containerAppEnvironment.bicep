@@ -87,16 +87,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' 
                 prefixRewrite: '/'
               }
             }
-          ]
-          targets: [
-            {
-              containerApp: 'ca-fake-survey-generator-api'
-            }
-          ]
-        }
-        {
-          description: 'UI Rule'
-          routes: [
             {
               match: {
                 prefix: '/'
@@ -105,7 +95,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' 
           ]
           targets: [
             {
-              containerApp: 'ca-fake-survey-generator-ui'
+              containerApp: 'ca-fake-survey-generator-api'
             }
           ]
         }

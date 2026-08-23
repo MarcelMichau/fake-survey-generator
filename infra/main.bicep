@@ -176,7 +176,6 @@ module frontDoor 'modules/frontDoor.bicep' = {
   params: {
     tags: tags
     dnsZoneName: dnsZone.outputs.name
-    uiOriginHostName: '${abbrs.appContainerApps}${applicationName}-ui.${compute.outputs.containerAppEnvironmentDefaultDomain}'
     apiOriginHostName: '${abbrs.appContainerApps}${applicationName}-api.${compute.outputs.containerAppEnvironmentDefaultDomain}'
     cnameRecordName: replace(applicationName, '-', '')
     endpointName: '${abbrs.networkFrontDoors}${applicationName}'
@@ -186,9 +185,6 @@ module frontDoor 'modules/frontDoor.bicep' = {
 
 output SERVICE_API_NAME string = '${abbrs.appContainerApps}${applicationName}-api'
 output SERVICE_API_IDENTITY_NAME string = compute.outputs.managedIdentityName
-
-output SERVICE_UI_NAME string = '${abbrs.appContainerApps}${applicationName}-ui'
-output SERVICE_UI_IDENTITY_NAME string = compute.outputs.managedIdentityName
 
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.containerRegistryEndpoint
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = compute.outputs.containerAppEnvironmentId
