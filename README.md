@@ -187,7 +187,6 @@ The hosted version utilizes the following infrastructure:
 
 - [Azure Container Apps](https://azure.microsoft.com/en-us/services/container-apps/#overview)
 - [Azure SQL Database](https://azure.microsoft.com/en-us/services/sql-database/)
-- [Azure Cache for Redis](https://azure.microsoft.com/en-us/services/cache/)
 - [Azure Container Registry](https://azure.microsoft.com/en-us/services/container-registry/)
 - [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/)
 - [Azure Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview)
