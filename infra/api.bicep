@@ -5,22 +5,14 @@ param imageName string
 param managedIdentityName string
 param sqlServerName string
 param sqlDatabaseName string
-param redisCacheName string
+param redisHostName string
+param redisPasswordSecretUrl string
 param applicationInsightsName string
 param location string = resourceGroup().location
 param version string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-05-31-preview' existing = {
   name: managedIdentityName
-}
-
-resource redisEnterprise 'Microsoft.Cache/redisEnterprise@2025-07-01' existing = {
-  name: redisCacheName
-}
-
-resource redisEnterpriseDatabase 'Microsoft.Cache/redisEnterprise/databases@2025-07-01' existing = {
-  parent: redisEnterprise
-  name: 'default'
 }
 
 resource sqlServer 'Microsoft.Sql/servers@2025-02-01-preview' existing = {
@@ -54,8 +46,12 @@ var apiEnvironmentVariables = [
     value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Initial Catalog=${sqlDatabase.name};Encrypt=True;TrustServerCertificate=False;Authentication=Active Directory Managed Identity;User Id=${managedIdentity.properties.clientId};'
   }
   {
-    name: 'ConnectionStrings__cache'
-    value: '${redisEnterprise.properties.hostName}:${redisEnterpriseDatabase.properties.port},ssl=true,abortConnect=false'
+    name: 'Redis__HostName'
+    value: redisHostName
+  }
+  {
+    name: 'Redis__Password'
+    secretRef: 'redis-password'
   }
   {
     name: 'IDENTITY_PROVIDER_URL'
@@ -83,6 +79,13 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
     managedEnvironmentId: containerAppEnvironmentId
     configuration: {
       activeRevisionsMode: 'Single'
+      secrets: [
+        {
+          name: 'redis-password'
+          keyVaultUrl: redisPasswordSecretUrl
+          identity: managedIdentity.id
+        }
+      ]
       registries: [
         {
           server: containerRegistryUrl
