@@ -129,11 +129,6 @@
           "TUnit.Engine": "1.65.38"
         }
       },
-      "Aspire.Dashboard.Sdk.win-x64": {
-        "type": "Transitive",
-        "resolved": "13.5.2",
-        "contentHash": "51dqyjliPxjr18ePR+Gwrg+sOdkI2ZoCnP5yW7MOM6eD84cgi5I99prFXfizknPVTiP5kUMxGYmB/zMBbUkQkw=="
-      },
       "Aspire.Hosting": {
         "type": "Transitive",
         "resolved": "13.5.2",
@@ -207,11 +202,6 @@
           "System.IO.Hashing": "10.0.8",
           "YamlDotNet": "16.3.0"
         }
-      },
-      "Aspire.Hosting.Orchestration.win-x64": {
-        "type": "Transitive",
-        "resolved": "13.5.2",
-        "contentHash": "vTxtjg54DN364UsTCc9P71yeCjYlHWlOnXtaIsrbyEGsoBjzIVxW3Md5HKDogVCYS+gVOeKvJGyoP4wsU1BJMg=="
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
@@ -532,23 +522,6 @@
         "type": "Transitive",
         "resolved": "10.0.2",
         "contentHash": "LG9Yll3B5aNpxv0+D47g6LiOiKBIlodhcHdQwcYzo8VeexFLGqx5ymetmA2aBRyo9cCcWsQWrFsdbsr8LvmWDw=="
-      },
-      "Microsoft.Data.SqlClient": {
-        "type": "Transitive",
-        "resolved": "7.0.1",
-        "contentHash": "9jZFXAJ2ThNYK7lhj2RhH7klXVNaWSvZpQncq3bPIOjmHBrdjwgeO4c8wucUVxQwFT8rAA13Z2F2jzoYR7ICDw==",
-        "dependencies": {
-          "Microsoft.Bcl.Cryptography": "9.0.13",
-          "Microsoft.Data.SqlClient.Extensions.Abstractions": "1.0.0",
-          "Microsoft.Data.SqlClient.Internal.Logging": "1.0.0",
-          "Microsoft.Data.SqlClient.SNI.runtime": "6.0.2",
-          "Microsoft.Extensions.Caching.Memory": "9.0.13",
-          "Microsoft.IdentityModel.JsonWebTokens": "8.16.0",
-          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.16.0",
-          "Microsoft.SqlServer.Server": "1.0.0",
-          "System.Configuration.ConfigurationManager": "9.0.13",
-          "System.Security.Cryptography.Pkcs": "9.0.13"
-        }
       },
       "Microsoft.Data.SqlClient.Extensions.Abstractions": {
         "type": "Transitive",
@@ -1471,10 +1444,8 @@
       "fakesurveygenerator.apphost": {
         "type": "Project",
         "dependencies": {
-          "Aspire.Dashboard.Sdk.win-x64": "[13.5.2, )",
           "Aspire.Hosting.AppHost": "[13.5.2, )",
           "Aspire.Hosting.JavaScript": "[13.5.2, )",
-          "Aspire.Hosting.Orchestration.win-x64": "[13.5.2, )",
           "Aspire.Hosting.Redis": "[13.5.2, )",
           "Aspire.Hosting.SqlServer": "[13.5.2, )",
           "CommunityToolkit.Aspire.Hosting.Dapr": "[13.0.0, )"
@@ -1850,6 +1821,24 @@
         "contentHash": "R/1EATnPLU+gRfB6lwVkMcymmyAY5ppBBdRN/5lhNEiT3xP1sWccuSFkU/f1lQvN/WgRq5Vn8AhCdE3fqgsL/w==",
         "dependencies": {
           "Microsoft.OpenApi": "[2.7.5, 3.0.0)"
+        }
+      },
+      "Microsoft.Data.SqlClient": {
+        "type": "CentralTransitive",
+        "requested": "[7.0.2, )",
+        "resolved": "7.0.2",
+        "contentHash": "zwv76lANFQQI6Gmp6ntkzMWIWVqm8Wf4Mz00AeGCk1n8HCi5afi6bNynSe18uI0xeL0n6J+Myjk9AiIsL5oSqw==",
+        "dependencies": {
+          "Microsoft.Bcl.Cryptography": "9.0.13",
+          "Microsoft.Data.SqlClient.Extensions.Abstractions": "[7.0.2, 8.0.0)",
+          "Microsoft.Data.SqlClient.Internal.Logging": "[7.0.2, 8.0.0)",
+          "Microsoft.Data.SqlClient.SNI.runtime": "[6.0.2, 7.0.0)",
+          "Microsoft.Extensions.Caching.Memory": "9.0.13",
+          "Microsoft.IdentityModel.JsonWebTokens": "8.16.0",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.16.0",
+          "Microsoft.SqlServer.Server": "[1.0.0, 2.0.0)",
+          "System.Configuration.ConfigurationManager": "9.0.13",
+          "System.Security.Cryptography.Pkcs": "9.0.13"
         }
       },
       "Microsoft.Data.SqlClient.Extensions.Azure": {
