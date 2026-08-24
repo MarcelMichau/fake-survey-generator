@@ -10,6 +10,9 @@ param cnameRecordName string
 @description('The hostname targeted by the application CNAME record')
 param cnameTargetHostName string
 
+@description('The Container Apps managed environment custom domain verification ID')
+param customDomainVerificationId string
+
 resource dnsZone 'Microsoft.Network/dnsZones@2023-07-01-preview' = {
   name: name
   tags: tags
@@ -25,6 +28,20 @@ resource dnsZone 'Microsoft.Network/dnsZones@2023-07-01-preview' = {
       CNAMERecord: {
         cname: cnameTargetHostName
       }
+    }
+  }
+
+  resource customDomainVerificationRecord 'TXT' = {
+    name: 'asuid.${cnameRecordName}'
+    properties: {
+      TTL: 3600
+      TXTRecords: [
+        {
+          value: [
+            customDomainVerificationId
+          ]
+        }
+      ]
     }
   }
 }

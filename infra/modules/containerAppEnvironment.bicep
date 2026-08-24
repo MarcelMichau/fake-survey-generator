@@ -108,3 +108,4 @@ output containerAppEnvironmentId string = containerAppEnvironment.id
 output containerAppEnvironmentName string = containerAppEnvironment.name
 output fqdn string = containerAppEnvironment.properties.defaultDomain
 output defaultDomain string = containerAppEnvironment.properties.defaultDomain
+output customDomainVerificationId string = containerAppEnvironment.properties.customDomainConfiguration.customDomainVerificationId

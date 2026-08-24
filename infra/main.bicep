@@ -57,6 +57,7 @@ module dnsZone 'modules/dnsZone.bicep' = {
     tags: tags
     cnameRecordName: replace(applicationName, '-', '')
     cnameTargetHostName: '${abbrs.appContainerApps}${applicationName}-api.${compute.outputs.containerAppEnvironmentDefaultDomain}'
+    customDomainVerificationId: compute.outputs.containerAppEnvironmentCustomDomainVerificationId
   }
   scope: fakeSurveyGeneratorResourceGroup
 }

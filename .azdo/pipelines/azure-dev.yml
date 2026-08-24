@@ -207,52 +207,6 @@ stages:
               CUSTOM_DOMAIN_NAME: ""
 
           - task: AzureCLI@2
-            displayName: Configure Container App Domain Validation
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              visibleAzLogin: false
-              inlineScript: |
-                set -euo pipefail
-
-                verificationId=$(az containerapp show \
-                  --name ca-fake-survey-generator-api \
-                  --resource-group $(azureResourceGroup) \
-                  --query properties.customDomainVerificationId \
-                  --output tsv)
-
-                if ! az network dns record-set txt show \
-                  --name asuid.fakesurveygenerator \
-                  --resource-group $(azureResourceGroup) \
-                  --zone-name mysecondarydomain.com \
-                  --only-show-errors \
-                  >/dev/null 2>&1; then
-                  az network dns record-set txt create \
-                    --name asuid.fakesurveygenerator \
-                    --resource-group $(azureResourceGroup) \
-                    --zone-name mysecondarydomain.com \
-                    --ttl 3600 \
-                    --only-show-errors
-                fi
-
-                existingVerificationId=$(az network dns record-set txt show \
-                  --name asuid.fakesurveygenerator \
-                  --resource-group $(azureResourceGroup) \
-                  --zone-name mysecondarydomain.com \
-                  --query "TXTRecords[?value[0]=='$verificationId'] | [0].value[0]" \
-                  --output tsv)
-
-                if [ "$existingVerificationId" != "$verificationId" ]; then
-                  az network dns record-set txt add-record \
-                    --record-set-name asuid.fakesurveygenerator \
-                    --resource-group $(azureResourceGroup) \
-                    --zone-name mysecondarydomain.com \
-                    --value "$verificationId" \
-                    --only-show-errors
-                fi
-
-          - task: AzureCLI@2
             displayName: Bind Container App Custom Domain
             inputs:
               azureSubscription: $(azureResourceManagerConnection)

@@ -54,6 +54,7 @@ output containerAppEnvironmentFqdn string = containerAppEnvironment.outputs.fqdn
 output containerAppEnvironmentId string = containerAppEnvironment.outputs.containerAppEnvironmentId
 output containerAppEnvironmentName string = containerAppEnvironment.outputs.containerAppEnvironmentName
 output containerAppEnvironmentDefaultDomain string = containerAppEnvironment.outputs.defaultDomain
+output containerAppEnvironmentCustomDomainVerificationId string = containerAppEnvironment.outputs.customDomainVerificationId
 
 output managedIdentityName string = managedIdentity.name
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
