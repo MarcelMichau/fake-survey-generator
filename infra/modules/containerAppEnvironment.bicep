@@ -40,68 +40,6 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' 
     ]
   }
 
-  // resource managedCertificate 'managedCertificates' = {
-  //   name: 'fake-survey-generator-cert'
-  //   location: location
-  //   tags: tags
-  //   properties: {
-  //     subjectName: 'fakesurveygeneratortest.mysecondarydomain.com'
-  //     domainControlValidation: 'TXT'
-  //   }
-  //   dependsOn: [
-  //     httpRouteConfig
-  //   ]
-  // }
-
-  resource httpRouteConfig 'httpRouteConfigs' = {
-    name: 'fakesurveygenerator'
-    properties: {
-      customDomains: [
-        {
-          name: 'fakesurveygeneratortest.mysecondarydomain.com'
-          bindingType: 'Auto'
-        }
-      ]
-      rules: [
-        {
-          description: 'API Rule'
-          routes: [
-            {
-              match: {
-                prefix: '/api'
-              }
-            }
-            {
-              match: {
-                prefix: '/api-docs'
-              }
-              action: {
-                prefixRewrite: '/'
-              }
-            }
-            {
-              match: {
-                prefix: '/openapi'
-              }
-              action: {
-                prefixRewrite: '/'
-              }
-            }
-            {
-              match: {
-                prefix: '/'
-              }
-            }
-          ]
-          targets: [
-            {
-              containerApp: 'ca-fake-survey-generator-api'
-            }
-          ]
-        }
-      ]
-    }
-  }
 }
 
 output containerAppEnvironmentId string = containerAppEnvironment.id
