@@ -189,25 +189,7 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
 
           - task: AzureCLI@2
-            displayName: Deploy Application Without Custom Domain
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              visibleAzLogin: false
-              inlineScript: |
-                azd deploy --no-prompt
-            env:
-              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
-              AZURE_ENV_NAME: $(azureEnvName)
-              AZURE_LOCATION: $(azureLocation)
-              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
-              API_VERSION: $(apiSemVerVersionTag)
-              VITE_APP_VERSION: $(apiSemVerVersionTag)
-              CUSTOM_DOMAIN_NAME: ""
-
-          - task: AzureCLI@2
-            displayName: Bind Container App Custom Domain
+            displayName: Deploy Application
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
