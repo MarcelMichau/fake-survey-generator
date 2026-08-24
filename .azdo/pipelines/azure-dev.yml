@@ -224,29 +224,6 @@ stages:
 
                 test "$customDomain" = "fakesurveygenerator.mysecondarydomain.com"
 
-          - task: AzureCLI@2
-            displayName: Remove Unused UI Container App
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              visibleAzLogin: false
-              inlineScript: |
-                set -euo pipefail
-
-                if az containerapp show \
-                  --name ca-fake-survey-generator-ui \
-                  --resource-group $(azureResourceGroup) \
-                  --output none 2>/dev/null; then
-                  az containerapp delete \
-                    --name ca-fake-survey-generator-ui \
-                    --resource-group $(azureResourceGroup) \
-                    --yes
-                else
-                  echo "Unused UI Container App is already absent"
-                fi
-
-
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:

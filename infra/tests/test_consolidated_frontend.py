@@ -46,10 +46,8 @@ class ConsolidatedFrontendTests(unittest.TestCase):
         self.assertNotIn("asuid.fakesurveygenerator.mysecondarydomain.com", pipeline)
         self.assertNotIn("existingVerificationId", pipeline)
         self.assertNotIn("if [ \"$existingVerificationId\" != \"$verificationId\" ]", pipeline)
-        self.assertIn("Remove Unused UI Container App", pipeline)
-        self.assertIn("az containerapp delete", pipeline)
-        self.assertIn("ca-fake-survey-generator-ui", pipeline)
-        self.assertIn("--yes", pipeline)
+        self.assertNotIn("Remove Unused UI Container App", pipeline)
+        self.assertNotIn("ca-fake-survey-generator-ui", pipeline)
         self.assertIn("Verify Container App Custom Domain", pipeline)
         self.assertIn("properties.configuration.ingress.customDomains", pipeline)
         self.assertEqual(pipeline.count("azd deploy --no-prompt"), 1)
@@ -99,7 +97,8 @@ class ConsolidatedFrontendTests(unittest.TestCase):
         self.assertIn("output DNS_ZONE_NAME", main)
         self.assertIn("output CUSTOM_DOMAIN_NAME", main)
         self.assertNotIn("ca-fake-survey-generator-ui", environment)
-        self.assertIn("prefix: '/'", environment)
+        self.assertNotIn("httpRouteConfig", environment)
+        self.assertNotIn("fakesurveygeneratortest.mysecondarydomain.com", environment)
 
 
 if __name__ == "__main__":
