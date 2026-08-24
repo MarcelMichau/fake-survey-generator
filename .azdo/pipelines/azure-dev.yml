@@ -189,6 +189,55 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
 
           - task: AzureCLI@2
+            displayName: Wait for Custom Domain DNS Records
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              visibleAzLogin: false
+              inlineScript: |
+                set -euo pipefail
+
+                customDomain=fakesurveygenerator.mysecondarydomain.com
+                verificationRecord=asuid.fakesurveygenerator.mysecondarydomain.com
+                resourceGroup=$(azureResourceGroup)
+                containerAppName=ca-fake-survey-generator-api
+                containerAppEnvironmentName=cae-fake-survey-generator
+                dnsZone=mysecondarydomain.com
+
+                defaultDomain=$(az containerapp env show \
+                  --name "$containerAppEnvironmentName" \
+                  --resource-group "$resourceGroup" \
+                  --query properties.defaultDomain \
+                  --output tsv)
+                expectedCname="${containerAppName}.${defaultDomain}"
+                expectedVerificationId=$(az containerapp env show \
+                  --name "$containerAppEnvironmentName" \
+                  --resource-group "$resourceGroup" \
+                  --query properties.customDomainVerificationId \
+                  --output tsv)
+                nameServer=$(az network dns zone show \
+                  --name "$dnsZone" \
+                  --resource-group "$resourceGroup" \
+                  --query nameServers[0] \
+                  --output tsv)
+
+                for attempt in $(seq 1 30); do
+                  actualCname=$(dig +short CNAME "$customDomain" "@$nameServer" | sed 's/\\.$//')
+                  actualVerificationId=$(dig +short TXT "$verificationRecord" "@$nameServer" | tr -d '"')
+
+                  if [ "$actualCname" = "$expectedCname" ] && grep -Fxq "$expectedVerificationId" <<< "$actualVerificationId"; then
+                    exit 0
+                  fi
+
+                  echo "Waiting for DNS records (attempt $attempt/30): CNAME='$actualCname', TXT='$actualVerificationId'"
+                  sleep 10
+                done
+
+                echo "Timed out waiting for custom-domain DNS records" >&2
+                exit 1
+
+          - task: AzureCLI@2
             displayName: Deploy Application
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
