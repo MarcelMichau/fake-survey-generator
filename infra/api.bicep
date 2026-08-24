@@ -1,5 +1,6 @@
 param containerAppName string
 param containerAppEnvironmentId string
+param containerAppEnvironmentName string
 param containerRegistryUrl string
 param imageName string
 param managedIdentityName string
@@ -8,6 +9,7 @@ param sqlDatabaseName string
 param redisHostName string
 param redisPasswordSecretUrl string
 param applicationInsightsName string
+param customDomainName string
 param location string = resourceGroup().location
 param version string
 
@@ -27,6 +29,12 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2025-02-01-preview' existi
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: applicationInsightsName
 }
+
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' existing = {
+  name: containerAppEnvironmentName
+}
+
+var customDomainRecordName = split(customDomainName, '.')[0]
 
 var apiEnvironmentVariables = [
   {
@@ -96,6 +104,12 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
         external: true
         targetPort: 8080
         allowInsecure: false
+        customDomains: empty(customDomainName) ? [] : [
+          {
+            name: customDomainName
+            bindingType: 'Auto'
+          }
+        ]
         traffic: [
           {
             latestRevision: true
@@ -126,6 +140,17 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
     }
     workloadProfileName: 'Consumption'
   }
+}
+
+resource managedCertificate 'Microsoft.App/managedEnvironments/managedCertificates@2026-01-01' = if (!empty(customDomainName)) {
+  parent: managedEnvironment
+  name: '${managedEnvironment.name}-${customDomainRecordName}-certificate'
+  location: location
+  properties: {
+    subjectName: customDomainName
+    domainControlValidation: 'CNAME'
+  }
+  dependsOn: [containerApp]
 }
 
 output containerAppFqdn string = containerApp.properties.configuration.ingress.fqdn

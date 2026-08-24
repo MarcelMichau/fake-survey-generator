@@ -189,7 +189,7 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
 
           - task: AzureCLI@2
-            displayName: Deploy Application
+            displayName: Deploy Application Without Custom Domain
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
@@ -204,6 +204,44 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
               API_VERSION: $(apiSemVerVersionTag)
               VITE_APP_VERSION: $(apiSemVerVersionTag)
+              CUSTOM_DOMAIN_NAME: ""
+
+          - task: AzureCLI@2
+            displayName: Bind Container App Custom Domain
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              visibleAzLogin: false
+              inlineScript: |
+                azd deploy --no-prompt
+            env:
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              API_VERSION: $(apiSemVerVersionTag)
+              VITE_APP_VERSION: $(apiSemVerVersionTag)
+              CUSTOM_DOMAIN_NAME: fakesurveygenerator.mysecondarydomain.com
+
+          - task: AzureCLI@2
+            displayName: Verify Container App Custom Domain
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              visibleAzLogin: false
+              inlineScript: |
+                set -euo pipefail
+
+                customDomain=$(az containerapp show \
+                  --name ca-fake-survey-generator-api \
+                  --resource-group $(azureResourceGroup) \
+                  --query "properties.configuration.ingress.customDomains[?name=='fakesurveygenerator.mysecondarydomain.com'].name | [0]" \
+                  --output tsv)
+
+                test "$customDomain" = "fakesurveygenerator.mysecondarydomain.com"
+
 
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))

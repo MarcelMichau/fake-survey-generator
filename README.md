@@ -179,9 +179,9 @@ The following endpoints are accessible:
 - [/openapi](https://fakesurveygenerator.mysecondarydomain.com/api-docs) - The OpenAPI documentation page for
   the API
 - [/health/live](https://fakesurveygenerator.mysecondarydomain.com/health/live) - Health Checks endpoint used by Azure
-  Front Door health probe
+  Container Apps ingress
 - [/health/ready](https://fakesurveygenerator.mysecondarydomain.com/health/ready) - Health Checks endpoint used by Azure
-  Front Door health probe
+  Container Apps ingress
 
 The hosted version utilizes the following infrastructure:
 
@@ -191,7 +191,7 @@ The hosted version utilizes the following infrastructure:
 - [Azure Key Vault](https://azure.microsoft.com/en-us/services/key-vault/)
 - [Azure Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-overview)
 - [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview)
-- [Azure Front Door](https://azure.microsoft.com/en-in/pricing/details/frontdoor/#overview)
+- [Azure Container Apps managed certificates](https://learn.microsoft.com/en-us/azure/container-apps/custom-domains-managed-certificates)
 - [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview)
 - [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/) (for CI/CD)
 

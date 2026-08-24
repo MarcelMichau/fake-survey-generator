@@ -8,6 +8,7 @@ services:
     language: csharp
     project: ./src/server/FakeSurveyGenerator.Api
     host: containerapp
+    apiVersion: 2026-01-01
     docker:
       path: ./Dockerfile
       context: ../../../
