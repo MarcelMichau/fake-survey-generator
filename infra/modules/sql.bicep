@@ -52,9 +52,12 @@ resource sqlServer 'Microsoft.Sql/servers@2025-02-01-preview' = {
   resource sqlDatabase 'databases' = {
     tags: tags
     name: databaseName
+    properties: {
+      freeLimitExhaustionBehavior: 'AutoPause'
+      useFreeLimit: true
+    }
     sku: {
-      name: 'Basic'
-      tier: 'Basic'
+      name: 'GP_S_Gen5_2'
     }
     location: location
   }
