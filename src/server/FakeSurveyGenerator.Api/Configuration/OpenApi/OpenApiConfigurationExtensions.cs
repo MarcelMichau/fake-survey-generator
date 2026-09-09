@@ -12,6 +12,9 @@ internal static class OpenApiConfigurationExtensions
     {
         builder.Services.AddOpenApi(options =>
         {
+            // Scalar.AspNetCore 2.17.3 supports OpenAPI 3.1, but not the OpenAPI 3.2
+            // document emitted by Microsoft.AspNetCore.OpenApi 11 by default.
+            options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
             options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>();
             options.AddOperationTransformer<AuthorizeOperationTransformer>();
         });

@@ -1,4 +1,5 @@
 ﻿using FakeSurveyGenerator.Api.Tests.Integration.Setup;
+using System.Text.Json;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 
@@ -17,9 +18,14 @@ public sealed class OpenApiTests
     }
 
     [Test]
-    public async Task GivenAnyUser_WhenMakingRequestToOpenApiJsonRoute_ThenSuccessResponseShouldBeReturned()
+    public async Task GivenAnyUser_WhenMakingRequestToOpenApiJsonRoute_ThenOpenApi31DocumentShouldBeReturned()
     {
         var response = await Client.GetAsync("/openapi/v1.json");
         response.EnsureSuccessStatusCode();
+
+        var document = await response.Content.ReadFromJsonAsync<JsonDocument>();
+
+        await Assert.That(document).IsNotNull();
+        await Assert.That(document!.RootElement.GetProperty("openapi").GetString()).IsEqualTo("3.1.2");
     }
 }

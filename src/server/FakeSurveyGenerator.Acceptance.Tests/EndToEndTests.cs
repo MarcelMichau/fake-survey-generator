@@ -20,7 +20,7 @@ public class EndToEndTests : ContextTest
     }
 
     // If Playwright fails with a "not installed" error, run the following command from the repo root directory:
-    // pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net10.0\playwright.ps1 install
+    // pwsh .\src\server\FakeSurveyGenerator.Acceptance.Tests\bin\Debug\net11.0\playwright.ps1 install
     [Test]
     public async Task GivenRunningApp_WhenOpeningUiWithPlaywright_ThenIndexPageIsDisplayed(CancellationToken cancellationToken)
     {
