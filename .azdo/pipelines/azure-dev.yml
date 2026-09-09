@@ -48,6 +48,7 @@ stages:
             inputs:
               packageType: "sdk"
               useGlobalJson: true
+              includePreviewVersions: true
 
           - task: DotNetCoreCLI@2
             inputs:
@@ -75,6 +76,7 @@ stages:
             inputs:
               packageType: "sdk"
               useGlobalJson: true
+              includePreviewVersions: true
 
           - task: DotNetCoreCLI@2
             inputs:
@@ -172,6 +174,7 @@ stages:
             inputs:
               packageType: "sdk"
               useGlobalJson: true
+              includePreviewVersions: true
 
           - task: AzureCLI@2
             displayName: Provision Infrastructure
