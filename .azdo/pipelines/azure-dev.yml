@@ -9,6 +9,7 @@ trigger:
       - src/server/*
       - src/client/ui/*
       - infra/*
+      - global.json
 
 pr:
   branches:
@@ -24,6 +25,7 @@ pr:
       - src/server/*
       - src/client/ui/*
       - infra/*
+      - global.json
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
