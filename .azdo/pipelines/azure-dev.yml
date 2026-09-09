@@ -133,6 +133,10 @@ stages:
               command: "install"
               workingDir: "src/client/ui"
 
+          - script: npx playwright install --with-deps chromium
+            workingDirectory: "src/client/ui"
+            displayName: "Install Playwright Chromium"
+
           - task: Npm@1
             displayName: "Run Frontend Unit Tests"
             inputs:
