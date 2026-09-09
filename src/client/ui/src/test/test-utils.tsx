@@ -1,12 +1,9 @@
-import { render as rtlRender } from "@testing-library/react";
 import type { ReactElement } from "react";
+import { render as browserRender } from "vitest-browser-react";
 
 /**
- * Custom render function that wraps components with necessary providers
+ * Render a component in Vitest Browser Mode and return its locator-based screen.
  */
 export function render(ui: ReactElement) {
-  return rtlRender(ui);
+	return browserRender(ui);
 }
-
-export * from "@testing-library/react";
-export { default as userEvent } from "@testing-library/user-event";
