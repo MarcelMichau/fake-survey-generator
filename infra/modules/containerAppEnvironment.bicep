@@ -7,7 +7,7 @@ param tags object
 @description('Specifies the name of the Container App Environment')
 param containerAppEnvName string
 
-@description('Specifies the name of the log analytics workspace')
+@description('Specifies the name of the Log Analytics workspace used by Azure Monitor diagnostic settings')
 param logAnalyticsName string
 
 @description('Subnet Resource ID for the infrastructure subnet')
@@ -22,12 +22,12 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' 
   location: location
   tags: tags
   properties: {
+    // Use the Azure Monitor resource-log pipeline instead of the legacy
+    // Log Analytics HTTP Data Collector API. The latter creates the classic
+    // *_CL tables, which cannot be migrated when they contain service-owned
+    // columns such as _timestamp_d.
     appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: logAnalytics.properties.customerId
-        sharedKey: logAnalytics.listKeys().primarySharedKey
-      }
+      destination: 'azure-monitor'
     }
     vnetConfiguration: {
       infrastructureSubnetId: subnetResourceId
@@ -40,6 +40,27 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' 
     ]
   }
 
+}
+
+// Route the Azure Monitor Container Apps resource logs to the workspace.
+// The resource-specific tables are ContainerAppConsoleLogs and
+// ContainerAppSystemLogs (without the legacy _CL suffix).
+resource containerAppLogs 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  scope: containerAppEnvironment
+  name: 'container-app-logs'
+  properties: {
+    workspaceId: logAnalytics.id
+    logs: [
+      {
+        category: 'ContainerAppConsoleLogs'
+        enabled: true
+      }
+      {
+        category: 'ContainerAppSystemLogs'
+        enabled: true
+      }
+    ]
+  }
 }
 
 output containerAppEnvironmentId string = containerAppEnvironment.id
