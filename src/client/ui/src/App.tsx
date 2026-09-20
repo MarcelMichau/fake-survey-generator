@@ -29,7 +29,7 @@ const App = (): React.JSX.Element => {
 
 			try {
 				await response.json();
-			} catch (error) {
+			} catch {
 				setErrorMessage("Oops, something went wrong with registering a user.");
 				return;
 			}

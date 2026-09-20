@@ -39,16 +39,20 @@ const ConfirmDialog = ({
 			role="dialog"
 			aria-modal="true"
 			aria-labelledby="confirm-dialog-title"
-			onClick={() => {
-				if (!busy) onCancel();
+			onClick={(event) => {
+				if (!busy && event.target === event.currentTarget) onCancel();
 			}}
-			onKeyDown={() => {}}
+			onKeyDown={(event) => {
+				if (
+					!busy &&
+					event.target === event.currentTarget &&
+					(event.key === "Enter" || event.key === " ")
+				) {
+					onCancel();
+				}
+			}}
 		>
-			<div
-				className="dark:bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
-				onClick={(e) => e.stopPropagation()}
-				onKeyDown={() => {}}
-			>
+			<div className="dark:bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
 				<h3
 					id="confirm-dialog-title"
 					className="dark:text-indigo-400 text-xl font-semibold tracking-tight mb-3"

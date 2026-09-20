@@ -14,6 +14,8 @@ const Splash = () => (
 			<svg
 				className="h-64"
 				id="629dcec7-c063-4496-b40c-d8a33d01e794"
+				role="img"
+				aria-label="Customer survey illustration"
 				data-name="Layer 1"
 				xmlns="http://www.w3.org/2000/svg"
 				xmlnsXlink="http://www.w3.org/1999/xlink"
