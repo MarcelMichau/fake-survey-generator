@@ -7,6 +7,7 @@ type ButtonActionType = "primary" | "secondary" | "destructive";
 type ButtonProps = {
 	type?: ButtonType;
 	onClick?: (e: React.MouseEvent) => void;
+	disabled?: boolean;
 	actionType?: ButtonActionType;
 	additionalClasses?: string[];
 	children: React.ReactNode;
@@ -15,6 +16,7 @@ type ButtonProps = {
 const Button = ({
 	type = "button",
 	onClick,
+	disabled = false,
 	actionType = "primary",
 	additionalClasses = [],
 	children,
@@ -42,10 +44,11 @@ const Button = ({
 	return (
 		<button
 			type={type}
-			className={`align-baseline px-5 py-2.5 rounded-md text-white font-medium ${classes} focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-opacity-60 focus:outline-none shadow-md transition-all duration-200 ease-in-out transform hover:scale-[1.02] ${additionalClasses.join(
+			className={`align-baseline px-5 py-2.5 rounded-md text-white font-medium ${classes} focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-opacity-60 focus:outline-none shadow-md transition-all duration-200 ease-in-out transform hover:scale-[1.02] ${disabled ? "opacity-60 cursor-not-allowed" : ""} ${additionalClasses.join(
 				" ",
 			)}`}
 			onClick={onClick}
+			disabled={disabled}
 		>
 			{children}
 		</button>

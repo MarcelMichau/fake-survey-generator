@@ -34,6 +34,13 @@ describe("CreateSurvey Component", () => {
 			await expect
 				.element(screen.getByPlaceholder("Do you prefer tabs or spaces?"))
 				.toBeInTheDocument();
+			await expect
+				.element(
+					screen.getByText(
+						"Analyse provided survey information for potential issues.",
+					),
+				)
+				.toBeInTheDocument();
 		});
 
 		it("should show loading skeleton when loading prop is true", async () => {
@@ -107,7 +114,7 @@ describe("CreateSurvey Component", () => {
 				.not.toBeInTheDocument();
 		});
 
-		it("should generate unique option IDs even after removing options", async () => {
+		it("should keep option labels sequential after removing and adding options", async () => {
 			const screen = await render(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
@@ -117,10 +124,6 @@ describe("CreateSurvey Component", () => {
 			await expect
 				.element(screen.getByRole("button", { name: /Remove #2/i }))
 				.toBeInTheDocument();
-			await addButton.click();
-			await expect
-				.element(screen.getByRole("button", { name: /Remove #3/i }))
-				.toBeInTheDocument();
 
 			await screen.getByRole("button", { name: /Remove #2/i }).click();
 			await expect
@@ -129,10 +132,13 @@ describe("CreateSurvey Component", () => {
 
 			await addButton.click();
 			await expect
-				.element(screen.getByRole("button", { name: /Remove #4/i }))
+				.element(screen.getByTestId("field-label").filter({ hasText: /^#2$/ }))
 				.toBeInTheDocument();
 			await expect
 				.element(screen.getByRole("button", { name: /Remove #2/i }))
+				.toBeInTheDocument();
+			await expect
+				.element(screen.getByTestId("field-label").filter({ hasText: /^#3$/ }))
 				.not.toBeInTheDocument();
 		});
 
@@ -155,6 +161,135 @@ describe("CreateSurvey Component", () => {
 			await expect
 				.element(preferredVotesInput)
 				.toHaveAttribute("type", "number");
+		});
+	});
+
+	describe("Survey Analysis", () => {
+		it("should disable form inputs while analysis is in progress", async () => {
+			let completeAnalysis: (() => void) | undefined;
+			mockApiCall.mockImplementation(
+				() =>
+					new Promise<Response>((resolve) => {
+						completeAnalysis = () =>
+							resolve({
+								ok: true,
+								status: 200,
+								json: async () => ({ warnings: [] }),
+							} as Response);
+					}),
+			);
+			const screen = await render(
+				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
+			);
+			const respondentInput = screen.getByPlaceholder("Pragmatic Developers");
+
+			await screen.getByRole("button", { name: /Analyse Survey/i }).click();
+
+			await expect.element(respondentInput).toBeDisabled();
+			completeAnalysis?.();
+			await expect.element(respondentInput).not.toBeDisabled();
+		});
+
+		it("should analyze survey data and show semantic suggestions", async () => {
+			const screen = await render(
+				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
+			);
+			mockApiCall.mockResolvedValue({
+				ok: true,
+				status: 200,
+				json: async () => ({
+					responseShape: "single_choice",
+					responseShapeConfidence: 0.95,
+					leadingProbability: 0.9,
+					multipleChoiceProbability: 0.1,
+					coverageProbability: 0.9,
+					warnings: [
+						{
+							code: "question.leading",
+							title: "Survey Has Already Voted",
+							message:
+								"This question appears to have a favourite. Try not to make respondents agree under oath.",
+							probability: 0.9,
+						},
+					],
+				}),
+			});
+
+			await screen.getByRole("button", { name: /Analyse Survey/i }).click();
+
+			await expect
+				.poll(() => mockApiCall)
+				.toHaveBeenCalledWith("api/survey/analyze", {
+					method: "POST",
+					body: expect.stringContaining("surveyTopic"),
+				});
+			await expect
+				.element(
+					screen.getByText(
+						"This question appears to have a favourite. Try not to make respondents agree under oath.",
+					),
+				)
+				.toBeInTheDocument();
+			await expect
+				.element(screen.getByText("Survey Has Already Voted"))
+				.toBeInTheDocument();
+			const analyzeButton = screen.getByRole("button", {
+				name: "Analyse Survey",
+			});
+			await expect.element(analyzeButton).toBeDisabled();
+
+			await screen
+				.getByPlaceholder("Do you prefer tabs or spaces?")
+				.fill("A different question");
+			await expect.element(analyzeButton).not.toBeDisabled();
+		});
+
+		it("should clear analysis warnings after creating a survey", async () => {
+			const screen = await render(
+				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
+			);
+			mockApiCall
+				.mockResolvedValueOnce({
+					ok: true,
+					status: 200,
+					json: async () => ({
+						warnings: [
+							{
+								code: "question.leading",
+								title: "Survey Has Already Voted",
+								message: "This question has already picked a side.",
+								probability: 0.9,
+							},
+						],
+					}),
+				})
+				.mockResolvedValueOnce({
+					ok: true,
+					status: 201,
+					json: async () => ({ id: 123, topic: "Test Survey" }),
+				});
+
+			await screen.getByRole("button", { name: "Analyse Survey" }).click();
+			await expect
+				.element(screen.getByText("Survey Has Already Voted"))
+				.toBeInTheDocument();
+			const createButton = screen.getByRole("button", {
+				name: "Create Survey (Despite All The Issues Identified)",
+			});
+			await expect.element(createButton).toBeDisabled();
+			const confirmation = screen.getByLabelText(
+				"I confirm that I want to create this survey with bad data & that I feel bad about it",
+			);
+			await confirmation.click();
+			await expect.element(createButton).not.toBeDisabled();
+			await createButton.click();
+
+			await expect
+				.element(screen.getByText("Survey Has Already Voted"))
+				.not.toBeInTheDocument();
+			await expect
+				.element(screen.getByRole("button", { name: "Create Survey" }))
+				.toBeInTheDocument();
 		});
 	});
 

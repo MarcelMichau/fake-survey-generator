@@ -45,6 +45,31 @@ public sealed class SurveyEndpointsTests
 
     [Test]
     public async Task
+        GivenAuthenticatedClientWithValidSurvey_WhenCallingPostAnalyzeSurvey_ThenAnalysisShouldBeReturned()
+    {
+        var command = new AnalyzeSurveyCommand
+        {
+            SurveyTopic = "Do you prefer tabs or spaces?",
+            RespondentType = "Developers",
+            SurveyOptions =
+            [
+                new SurveyOptionDto { OptionText = "Tabs" },
+                new SurveyOptionDto { OptionText = "Spaces" }
+            ]
+        };
+
+        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey/analyze", command);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
+
+        var analysis = await response.Content.ReadFromJsonAsync<SurveyAnalysisModel>();
+        await Assert.That(analysis).IsNotNull();
+        await Assert.That(analysis!.ResponseShape).IsEqualTo("single_choice");
+        await Assert.That(analysis.Warnings).IsEmpty();
+    }
+
+    [Test]
+    public async Task
         GivenUnauthenticatedClientWithValidCreateSurveyCommand_WhenCallingPostSurvey_ThenUnauthorizedResponseShouldBeReturned()
     {
         var createSurveyCommand = new CreateSurveyCommand

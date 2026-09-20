@@ -216,6 +216,18 @@ The client configuration is in `src/client/ui/src/auth_config.json`, and the loc
 `src/server/FakeSurveyGenerator.Api/appsettings.Development.json`. If you use a different Auth0 tenant, update both
 configurations and configure its allowed callback/logout URLs for the local and deployed UI origins.
 
+### Semantic survey analysis
+
+The **Analyse Survey** button uses TypeSafe to check survey wording and options for potential issues such as leading questions, multiple-choice ambiguity, incomplete coverage, and semantically duplicate options. Configure the API key on the server; never expose it to the browser:
+
+```bash
+TYPESAFE_API_KEY=your-key
+```
+
+`TYPESAFE_BASE_URL` and `TYPESAFE_MODEL` are optional and default to `https://api.typesafe.ai/` and `jev-latest`.
+
+For Azure deployments, configure `typeSafeApiKey` as a secret Azure Pipelines variable. The deployment seeds it into Azure Key Vault and exposes it to the API container through a managed-identity-backed secret reference.
+
 ## How do I run this thing?
 
 In order to run FSG on your local machine, you will need the following prerequisites:

@@ -19,7 +19,9 @@ function Field<T extends FieldValue>(props: FieldProps<T>) {
 				className="block text-gray-300 font-medium mb-1"
 				htmlFor="field-input"
 			>
-				{props.loading ? <Skeleton width={250} /> : props.label}
+				<span data-testid="field-label">
+					{props.loading ? <Skeleton width={250} /> : props.label}
+				</span>
 				<div>
 					{props.loading ? (
 						<Skeleton height={42} className="py-2 mt-1 mb-3" />

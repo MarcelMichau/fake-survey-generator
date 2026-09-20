@@ -7,6 +7,9 @@ param applicationName string
 
 param dnsZoneName string
 
+@secure()
+param typeSafeApiKey string
+
 var tags = { 'azd-env-name': environment }
 
 var abbrs = loadJsonContent('abbreviations.json')
@@ -73,6 +76,10 @@ module keyVault 'modules/keyVault.bicep' = {
         {
           secretName: 'HealthCheckSecret'
           secretValue: 'healthy'
+        }
+        {
+          secretName: 'TypeSafeApiKey'
+          secretValue: typeSafeApiKey
         }
       ]
     }
@@ -184,6 +191,7 @@ output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.cont
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = compute.outputs.containerAppEnvironmentId
 output REDIS_CACHE_HOST_NAME string = redisCache.outputs.hostName
 output REDIS_KEY_VAULT_URL string = redisPassword.outputs.secretUrl
+output TYPESAFE_API_KEY_VAULT_URL string = '${keyVault.outputs.keyVaultUri}secrets/TypeSafeApiKey'
 output AZURE_APPLICATION_INSIGHTS_NAME string = applicationInsights.outputs.applicationInsightsName
 
 output SQL_SERVER_NAME string = azureSql.outputs.sqlServerName

@@ -5,6 +5,7 @@ using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.ComponentModel;
 using FakeSurveyGenerator.Api.Filters;
+using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace FakeSurveyGenerator.Api.Surveys;
 
@@ -28,6 +29,10 @@ internal static class SurveyEndpoints
         surveyGroup.MapPost("", CreateSurvey)
             .WithName(nameof(CreateSurvey))
             .WithSummary("Creates a new Survey");
+
+        surveyGroup.MapPost("/analyze", AnalyzeSurvey)
+            .WithName(nameof(AnalyzeSurvey))
+            .WithSummary("Analyzes a Survey before creation");
 
         surveyGroup.MapDelete("/{id:int}", DeleteSurvey)
             .WithName(nameof(DeleteSurvey))
@@ -79,6 +84,34 @@ internal static class SurveyEndpoints
             {
                 [result.Error.Code] = [result.Error.Message]
             });
+    }
+
+    private static async Task<IResult> AnalyzeSurvey(
+        ICommandHandler<AnalyzeSurveyCommand, Result<SurveyAnalysisModel, Error>> handler,
+        AnalyzeSurveyCommand command,
+        HttpContext httpContext,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok(result.Value);
+        }
+
+        if (result.Error is ValidationError validationError)
+        {
+            httpContext.Items[ValidationLoggingEndpointFilter.ValidationErrorsKey] = validationError.Errors;
+            return TypedResults.UnprocessableEntity(validationError.Errors);
+        }
+
+        var statusCode = result.Error.Code.StartsWith("typesafe.", StringComparison.Ordinal)
+            ? StatusCodes.Status503ServiceUnavailable
+            : StatusCodes.Status400BadRequest;
+
+        return TypedResults.Problem(
+            $"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
+            statusCode: statusCode);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> DeleteSurvey(

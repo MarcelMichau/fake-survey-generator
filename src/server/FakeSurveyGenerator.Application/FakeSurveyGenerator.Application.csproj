@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <InternalsVisibleTo Include="FakeSurveyGenerator.Application.Tests" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aspire.Microsoft.Azure.StackExchangeRedis" />

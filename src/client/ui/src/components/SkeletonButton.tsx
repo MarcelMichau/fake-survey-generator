@@ -1,6 +1,6 @@
 import type React from "react";
-import Button from "./Button";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Button from "./Button";
 
 type ButtonType = "button" | "submit";
 
@@ -10,6 +10,7 @@ type SkeletonButtonProps = {
 	loading: boolean;
 	type?: ButtonType;
 	onClick?: (e: React.MouseEvent) => void;
+	disabled?: boolean;
 	actionType?: ButtonActionType;
 	additionalClasses?: string[];
 	children: React.ReactNode;
@@ -19,6 +20,7 @@ const SkeletonButton = ({
 	loading,
 	type = "button",
 	onClick,
+	disabled = false,
 	actionType = "primary",
 	additionalClasses = [],
 	children,
@@ -49,6 +51,7 @@ const SkeletonButton = ({
 				<Button
 					type={type}
 					onClick={onClick}
+					disabled={disabled}
 					actionType={actionType}
 					additionalClasses={additionalClasses}
 				>

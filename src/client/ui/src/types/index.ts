@@ -66,6 +66,22 @@ export type CreateSurveyCommand = {
 	surveyOptions: SurveyOptionDto[];
 };
 
+export type SurveyAnalysisWarningModel = {
+	code: string;
+	title: string;
+	message: string;
+	probability: number;
+};
+
+export type SurveyAnalysisModel = {
+	responseShape: string;
+	responseShapeConfidence: number;
+	leadingProbability: number;
+	multipleChoiceProbability: number;
+	coverageProbability: number;
+	warnings: SurveyAnalysisWarningModel[];
+};
+
 export type SurveyOptionDto = {
 	optionText: string;
 	preferredNumberOfVotes: number;

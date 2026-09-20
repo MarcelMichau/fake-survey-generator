@@ -1,18 +1,19 @@
-import type React from "react";
-import { useState, useCallback, useRef } from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import type * as Types from "../types";
-import Field from "./Field";
-import Button from "./Button";
-import SkeletonButton from "./SkeletonButton";
-import Alert from "./Alert";
-import { useApiCall } from "../hooks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-	faPlus,
+	faMicroscope,
 	faMinus,
 	faPaperPlane,
+	faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useApiCall } from "../hooks";
+import type * as Types from "../types";
+import Alert from "./Alert";
+import Button from "./Button";
+import Field from "./Field";
+import SkeletonButton from "./SkeletonButton";
 
 type CreateSurveyProps = {
 	loading: boolean;
@@ -43,6 +44,13 @@ interface SurveyFormState {
 	ui: {
 		isSubmitting: boolean;
 	};
+	analysis: {
+		isAnalyzing: boolean;
+		completed: boolean;
+		warnings: Types.SurveyAnalysisWarningModel[];
+		hasAcknowledgedWarnings: boolean;
+		error: string;
+	};
 }
 
 const initialFormState: SurveyFormState = {
@@ -60,6 +68,13 @@ const initialFormState: SurveyFormState = {
 	ui: {
 		isSubmitting: false,
 	},
+	analysis: {
+		isAnalyzing: false,
+		completed: false,
+		warnings: [],
+		hasAcknowledgedWarnings: false,
+		error: "",
+	},
 };
 
 const CreateSurvey = ({
@@ -69,7 +84,8 @@ const CreateSurvey = ({
 }: CreateSurveyProps): React.ReactElement => {
 	const { apiCall } = useApiCall();
 	const [formState, setFormState] = useState<SurveyFormState>(initialFormState);
-	// Counter for generating unique option IDs - never decreases
+	// Counter for generating unique option IDs used as React keys. Display labels
+	// are based on each option's current position instead.
 	const nextOptionIdRef = useRef(2);
 
 	const updateSurveyField = useCallback(
@@ -83,6 +99,7 @@ const CreateSurvey = ({
 					...prev.survey,
 					[key]: value,
 				},
+				analysis: initialFormState.analysis,
 			}));
 		},
 		[],
@@ -113,6 +130,7 @@ const CreateSurvey = ({
 					option.id === optionId ? { ...option, optionText } : option,
 				),
 			},
+			analysis: initialFormState.analysis,
 		}));
 	}, []);
 
@@ -128,6 +146,7 @@ const CreateSurvey = ({
 							: option,
 					),
 				},
+				analysis: initialFormState.analysis,
 			}));
 		},
 		[],
@@ -140,6 +159,7 @@ const CreateSurvey = ({
 				...prev.survey,
 				options: prev.survey.options.filter((o) => o.id !== optionId),
 			},
+			analysis: initialFormState.analysis,
 		}));
 	}, []);
 
@@ -160,6 +180,7 @@ const CreateSurvey = ({
 						},
 					],
 				},
+				analysis: initialFormState.analysis,
 			};
 		});
 	}, []);
@@ -213,6 +234,7 @@ const CreateSurvey = ({
 						validationErrors: [],
 					},
 					ui: { isSubmitting: false },
+					analysis: initialFormState.analysis,
 				}));
 
 				if (resetOnSuccess) {
@@ -222,7 +244,7 @@ const CreateSurvey = ({
 				if (onSurveyCreated) {
 					onSurveyCreated(data.id);
 				}
-			} catch (error) {
+			} catch (_error) {
 				setFormState((prev) => ({
 					...prev,
 					messages: {
@@ -236,11 +258,8 @@ const CreateSurvey = ({
 		[apiCall, resetMessages, resetForm, resetOnSuccess, onSurveyCreated],
 	);
 
-	const onSubmit = async (
-		e: React.FormEvent<HTMLFormElement>,
-	): Promise<void> => {
-		e.preventDefault();
-		const surveyCommand: Types.CreateSurveyCommand = {
+	const buildSurveyCommand = useCallback(
+		(): Types.CreateSurveyCommand => ({
 			surveyTopic: formState.survey.topic,
 			numberOfRespondents: formState.survey.numberOfRespondents,
 			respondentType: formState.survey.respondentType,
@@ -251,9 +270,75 @@ const CreateSurvey = ({
 						preferredNumberOfVotes: option.preferredNumberOfVotes,
 					}) as Types.SurveyOptionDto,
 			),
-		};
+		}),
+		[formState.survey],
+	);
 
-		await createSurvey(surveyCommand);
+	const analyzeSurvey = useCallback(async () => {
+		resetMessages();
+		setFormState((prev) => ({
+			...prev,
+			analysis: {
+				...initialFormState.analysis,
+				isAnalyzing: true,
+			},
+		}));
+
+		try {
+			const response = await apiCall("api/survey/analyze", {
+				method: "POST",
+				body: JSON.stringify(buildSurveyCommand()),
+			});
+
+			if (response.status === 422) {
+				const data: Record<string, string[]> = await response.json();
+				setFormState((prev) => ({
+					...prev,
+					analysis: {
+						...initialFormState.analysis,
+						error: Object.values(data).flat().join(" "),
+					},
+				}));
+				return;
+			}
+
+			if (!response.ok) {
+				setFormState((prev) => ({
+					...prev,
+					analysis: {
+						...initialFormState.analysis,
+						error:
+							"Survey analysis is temporarily unavailable. Please try again.",
+					},
+				}));
+				return;
+			}
+
+			const data: Types.SurveyAnalysisModel = await response.json();
+			setFormState((prev) => ({
+				...prev,
+				analysis: {
+					...initialFormState.analysis,
+					completed: true,
+					warnings: data.warnings,
+				},
+			}));
+		} catch {
+			setFormState((prev) => ({
+				...prev,
+				analysis: {
+					...initialFormState.analysis,
+					error: "An unexpected error occurred while analyzing the survey.",
+				},
+			}));
+		}
+	}, [apiCall, buildSurveyCommand, resetMessages]);
+
+	const onSubmit = async (
+		e: React.SubmitEvent<HTMLFormElement>,
+	): Promise<void> => {
+		e.preventDefault();
+		await createSurvey(buildSurveyCommand());
 	};
 
 	return (
@@ -262,111 +347,172 @@ const CreateSurvey = ({
 				<h2 className="dark:text-indigo-500 text-xl font-semibold tracking-tight mb-2">
 					{loading ? <Skeleton /> : <span>Create Survey</span>}
 				</h2>
-				<form onSubmit={onSubmit}>
-					<Field
-						label="Target Audience (Respondent Type)"
-						value={formState.survey.respondentType}
-						onChange={(value) => updateSurveyField("respondentType", value)}
-						loading={loading}
-						placeholder="Pragmatic Developers"
-					/>
-					<Field
-						label="Question (Survey Topic)"
-						value={formState.survey.topic}
-						onChange={(value) => updateSurveyField("topic", value)}
-						loading={loading}
-						placeholder="Do you prefer tabs or spaces?"
-					/>
-					<Field
-						label="Number of Respondents"
-						value={formState.survey.numberOfRespondents}
-						onChange={(value) =>
-							updateSurveyField(
-								"numberOfRespondents",
-								Number.isNaN(Number(value))
-									? formState.survey.numberOfRespondents
-									: Number(value),
-							)
-						}
-						loading={loading}
-					/>
-					<span className="block text-gray-500">
-						{loading ? <Skeleton /> : <span>Options</span>}
-					</span>
-					{formState.survey.options.map((option, index) => (
-						<div key={option.id}>
-							<Field
-								label={`#${option.id}`}
-								value={option.optionText}
-								onChange={(value) => updateOption(option.id, value)}
+				<form onSubmit={onSubmit} aria-busy={formState.analysis.isAnalyzing}>
+					<fieldset disabled={formState.analysis.isAnalyzing}>
+						<Field
+							label="Target Audience (Respondent Type)"
+							value={formState.survey.respondentType}
+							onChange={(value) => updateSurveyField("respondentType", value)}
+							loading={loading}
+							placeholder="Pragmatic Developers"
+						/>
+						<Field
+							label="Question (Survey Topic)"
+							value={formState.survey.topic}
+							onChange={(value) => updateSurveyField("topic", value)}
+							loading={loading}
+							placeholder="Do you prefer tabs or spaces?"
+						/>
+						<Field
+							label="Number of Respondents"
+							value={formState.survey.numberOfRespondents}
+							onChange={(value) =>
+								updateSurveyField(
+									"numberOfRespondents",
+									Number.isNaN(Number(value))
+										? formState.survey.numberOfRespondents
+										: Number(value),
+								)
+							}
+							loading={loading}
+						/>
+						<span className="block text-gray-500">
+							{loading ? <Skeleton /> : <span>Options</span>}
+						</span>
+						{formState.survey.options.map((option, index) => {
+							const optionNumber = index + 1;
+
+							return (
+								<div key={option.id}>
+									<Field
+										label={`#${optionNumber}`}
+										value={option.optionText}
+										onChange={(value) => updateOption(option.id, value)}
+										loading={loading}
+										placeholder={
+											index === 0 ? "Most definitely tabs" : "Some other option"
+										}
+									>
+										{index > 0 && (
+											<Button
+												actionType="destructive"
+												onClick={() => removeOption(option.id)}
+												additionalClasses={["lg:ml-4"]}
+											>
+												{`Remove #${optionNumber}`}
+												<FontAwesomeIcon icon={faMinus} className="ml-1" />
+											</Button>
+										)}
+									</Field>
+									<div className="ml-4 mt-1 mb-3">
+										<label
+											htmlFor={`preferred-votes-${option.id}`}
+											className="block text-gray-500 text-sm mb-1"
+										>
+											{loading ? <Skeleton width={100} /> : "Preferred Votes"}
+										</label>
+										<input
+											id={`preferred-votes-${option.id}`}
+											type="number"
+											min="0"
+											max={formState.survey.numberOfRespondents}
+											value={option.preferredNumberOfVotes}
+											onChange={(e) => {
+												const value = Number.parseInt(e.target.value, 10);
+												updatePreferredVotes(
+													option.id,
+													Number.isNaN(value) ? 0 : value,
+												);
+											}}
+											disabled={loading}
+											className="bg-gray-700 focus:outline-none focus:shadow-outline border border-gray-700 rounded py-1 px-2 block w-32 appearance-none leading-normal text-gray-200 focus:border-indigo-500"
+										/>
+										<p className="text-gray-500 text-xs mt-1">
+											{loading ? (
+												<Skeleton width={200} />
+											) : (
+												`Set to 0 for random distribution or specify the desired number of votes (max: ${formState.survey.numberOfRespondents})`
+											)}
+										</p>
+									</div>
+								</div>
+							);
+						})}
+						<div className="my-2">
+							<SkeletonButton
+								onClick={addOption}
 								loading={loading}
-								placeholder={
-									index === 0 ? "Most definitely tabs" : "Some other option"
+								actionType="secondary"
+							>
+								Add Option <FontAwesomeIcon icon={faPlus} className="ml-1" />
+							</SkeletonButton>
+						</div>
+						<div className="mt-6 border-t border-gray-700 pt-4">
+							{formState.analysis.warnings.length > 0 && (
+								<label className="my-2 flex items-center gap-2 text-sm text-gray-300">
+									<input
+										type="checkbox"
+										checked={formState.analysis.hasAcknowledgedWarnings}
+										onChange={(event) =>
+											setFormState((prev) => ({
+												...prev,
+												analysis: {
+													...prev.analysis,
+													hasAcknowledgedWarnings: event.target.checked,
+												},
+											}))
+										}
+										disabled={formState.ui.isSubmitting}
+									/>
+									I confirm that I want to create this survey with bad data &amp; that I feel bad about it
+								</label>
+							)}
+							<div className="my-2">
+							<SkeletonButton
+								type="submit"
+								loading={loading}
+								disabled={
+									formState.ui.isSubmitting ||
+									formState.analysis.isAnalyzing ||
+									(formState.analysis.warnings.length > 0 &&
+										!formState.analysis.hasAcknowledgedWarnings)
 								}
 							>
-								{index > 0 && (
-									<Button
-										actionType="destructive"
-										onClick={() => removeOption(option.id)}
-										additionalClasses={["lg:ml-4"]}
-									>
-										{`Remove #${option.id}`}
-										<FontAwesomeIcon icon={faMinus} className="ml-1" />
-									</Button>
-								)}
-							</Field>
-							<div className="ml-4 mt-1 mb-3">
-								<label
-									htmlFor={`preferred-votes-${option.id}`}
-									className="block text-gray-500 text-sm mb-1"
-								>
-									{loading ? <Skeleton width={100} /> : "Preferred Votes"}
-								</label>
-								<input
-									id={`preferred-votes-${option.id}`}
-									type="number"
-									min="0"
-									max={formState.survey.numberOfRespondents}
-									value={option.preferredNumberOfVotes}
-									onChange={(e) => {
-										const value = Number.parseInt(e.target.value, 10);
-										updatePreferredVotes(
-											option.id,
-											Number.isNaN(value) ? 0 : value,
-										);
-									}}
-									disabled={loading}
-									className="bg-gray-700 focus:outline-none focus:shadow-outline border border-gray-700 rounded py-1 px-2 block w-32 appearance-none leading-normal text-gray-200 focus:border-indigo-500"
-								/>
-								<p className="text-gray-500 text-xs mt-1">
-									{loading ? (
-										<Skeleton width={200} />
-									) : (
-										`Set to 0 for random distribution or specify the desired number of votes (max: ${formState.survey.numberOfRespondents})`
-									)}
-								</p>
+								{formState.analysis.warnings.length > 0
+									? "Create Survey (Despite All The Issues Identified)"
+									: "Create Survey"}{" "}
+								<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
+							</SkeletonButton>
 							</div>
 						</div>
-					))}
-					<div className="my-2">
-						<SkeletonButton
-							onClick={addOption}
-							loading={loading}
-							actionType="secondary"
-						>
-							Add Option <FontAwesomeIcon icon={faPlus} className="ml-1" />
-						</SkeletonButton>
-					</div>
-					<div className="my-2">
-						<SkeletonButton type="submit" loading={loading}>
-							Create Survey{" "}
-							<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
-						</SkeletonButton>
-					</div>
+						<div className="mt-4">
+							<p className="mb-2 text-sm text-gray-400">
+								Analyse provided survey information for potential issues.
+							</p>
+							<SkeletonButton
+								onClick={() => void analyzeSurvey()}
+								loading={loading}
+								disabled={
+									formState.ui.isSubmitting ||
+									formState.analysis.isAnalyzing ||
+									formState.analysis.completed
+								}
+								actionType="secondary"
+							>
+								{formState.analysis.isAnalyzing
+									? "Analysing..."
+									: "Analyse Survey"}
+								<FontAwesomeIcon icon={faMicroscope} className="ml-1" />
+							</SkeletonButton>
+						</div>
+					</fieldset>
 				</form>
 				<div>
 					{formState.messages.success !== "" && (
-						<Alert title="Survey Created" message={formState.messages.success} />
+						<Alert
+							title="Survey Created"
+							message={formState.messages.success}
+						/>
 					)}
 					{formState.messages.error !== "" && (
 						<Alert
@@ -382,6 +528,28 @@ const CreateSurvey = ({
 							type="error"
 							title="Validation Error"
 							message={error}
+						/>
+					))}
+					{formState.analysis.error !== "" && (
+						<Alert
+							type="error"
+							title="Survey Analysis Failed"
+							message={formState.analysis.error}
+						/>
+					)}
+					{formState.analysis.completed &&
+						formState.analysis.warnings.length === 0 && (
+							<Alert
+								title="The Fun Police Report"
+								message="No questionable survey decisions detected."
+							/>
+						)}
+					{formState.analysis.warnings.map((warning) => (
+						<Alert
+							key={warning.code}
+							type="warning"
+							title={warning.title}
+							message={warning.message}
 						/>
 					))}
 				</div>
