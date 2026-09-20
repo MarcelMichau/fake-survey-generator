@@ -1,10 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faCircleCheck,
 	faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-type AlertType = "error" | "success";
+type AlertType = "error" | "success" | "warning";
 
 type AlertProps = {
 	title: string;
@@ -22,6 +22,11 @@ const Alert = ({ title, message, type = "success" }: AlertProps) => {
 		error: {
 			containerClasses: "bg-red-800/80 border-red-500 backdrop-blur-sm",
 			iconClasses: "text-red-400",
+			icon: faCircleExclamation,
+		},
+		warning: {
+			containerClasses: "bg-yellow-800/80 border-yellow-500 backdrop-blur-sm",
+			iconClasses: "text-yellow-400",
 			icon: faCircleExclamation,
 		},
 	};

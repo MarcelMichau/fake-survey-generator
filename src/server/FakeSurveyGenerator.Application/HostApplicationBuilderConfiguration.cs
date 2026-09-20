@@ -8,6 +8,7 @@ using FakeSurveyGenerator.Application.Infrastructure.Caching;
 using FakeSurveyGenerator.Application.Infrastructure.Identity;
 using FakeSurveyGenerator.Application.Infrastructure.Notifications;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
+using FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ public static class HostApplicationBuilderConfiguration
         // Command Handlers
         builder.Services
             .AddCommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>, CreateSurveyCommandHandler>()
+            .AddCommandHandler<AnalyzeSurveyCommand, Result<SurveyAnalysisModel, Error>, AnalyzeSurveyCommandHandler>()
             .AddCommandHandler<DeleteSurveyCommand, Result<int, Error>, DeleteSurveyCommandHandler>()
             .AddCommandHandler<RegisterUserCommand, RegisterUserResult, RegisterUserCommandHandler>();
 
@@ -79,6 +81,7 @@ public static class HostApplicationBuilderConfiguration
 
         builder.AddDatabaseConfiguration();
         builder.AddCacheConfiguration();
+        builder.AddTypeSafeConfiguration();
 
         return builder;
     }

@@ -8,6 +8,7 @@ param sqlServerName string
 param sqlDatabaseName string
 param redisHostName string
 param redisPasswordSecretUrl string
+param typeSafeApiKeySecretUrl string
 param applicationInsightsName string
 param customDomainName string
 param location string = resourceGroup().location
@@ -62,6 +63,10 @@ var apiEnvironmentVariables = [
     secretRef: 'redis-password'
   }
   {
+    name: 'TYPESAFE_API_KEY'
+    secretRef: 'typesafe-api-key'
+  }
+  {
     name: 'IDENTITY_PROVIDER_URL'
     value: 'https://marcelmichau.eu.auth0.com/'
   }
@@ -91,6 +96,11 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
         {
           name: 'redis-password'
           keyVaultUrl: redisPasswordSecretUrl
+          identity: managedIdentity.id
+        }
+        {
+          name: 'typesafe-api-key'
+          keyVaultUrl: typeSafeApiKeySecretUrl
           identity: managedIdentity.id
         }
       ]

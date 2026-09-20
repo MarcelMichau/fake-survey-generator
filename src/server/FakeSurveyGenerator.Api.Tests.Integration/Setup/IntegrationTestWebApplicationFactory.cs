@@ -1,4 +1,7 @@
-﻿using FakeSurveyGenerator.Application.Shared.Identity;
+﻿using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Features.Surveys;
+using FakeSurveyGenerator.Application.Shared.Errors;
+using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.TestHelpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -50,5 +53,24 @@ public sealed class IntegrationTestWebApplicationFactory(AspireTestSettings sett
         mockUserService.GetUserIdentity().Returns(new TestUser().Id);
 
         services.AddScoped(_ => mockUserService);
+        services.AddScoped<ISurveySemanticAnalyzer, TestSurveySemanticAnalyzer>();
+    }
+
+    private sealed class TestSurveySemanticAnalyzer : ISurveySemanticAnalyzer
+    {
+        public Task<Result<SurveyAnalysisModel, Error>> AnalyzeAsync(
+            AnalyzeSurveyCommand command,
+            CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(Result.Success<SurveyAnalysisModel, Error>(new SurveyAnalysisModel
+            {
+                ResponseShape = "single_choice",
+                ResponseShapeConfidence = 1,
+                LeadingProbability = 0,
+                MultipleChoiceProbability = 0,
+                CoverageProbability = 1,
+                Warnings = []
+            }));
+        }
     }
 }

@@ -196,6 +196,7 @@ stages:
               AZURE_ENV_NAME: $(azureEnvName)
               AZURE_LOCATION: $(azureLocation)
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              TYPE_SAFE_API_KEY: $(typeSafeApiKey)
 
           - task: AzureCLI@2
             displayName: Deploy Application

@@ -29,6 +29,12 @@ internal static class SurveyEndpoints
             .WithName(nameof(CreateSurvey))
             .WithSummary("Creates a new Survey");
 
+        surveyGroup.MapPost("/analyze", AnalyzeSurvey)
+            .WithName(nameof(AnalyzeSurvey))
+            .WithSummary("Analyzes a Survey before creation")
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
         surveyGroup.MapDelete("/{id:int}", DeleteSurvey)
             .WithName(nameof(DeleteSurvey))
             .WithSummary("Deletes a Survey owned by the current user");
@@ -36,7 +42,8 @@ internal static class SurveyEndpoints
 
     private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(
         IQueryHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>> handler,
-        [Description("Primary key of the Survey")] int id,
+        [Description("Primary key of the Survey")]
+        int id,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
@@ -81,9 +88,39 @@ internal static class SurveyEndpoints
             });
     }
 
+    private static async Task<Results<Ok<SurveyAnalysisModel>,
+        UnprocessableEntity<IDictionary<string, string[]>>, ProblemHttpResult>> AnalyzeSurvey(
+        ICommandHandler<AnalyzeSurveyCommand, Result<SurveyAnalysisModel, Error>> handler,
+        AnalyzeSurveyCommand command,
+        HttpContext httpContext,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsSuccess)
+        {
+            return TypedResults.Ok(result.Value);
+        }
+
+        if (result.Error is ValidationError validationError)
+        {
+            httpContext.Items[ValidationLoggingEndpointFilter.ValidationErrorsKey] = validationError.Errors;
+            return TypedResults.UnprocessableEntity(validationError.Errors);
+        }
+
+        var statusCode = result.Error.Code.StartsWith("typesafe.", StringComparison.Ordinal)
+            ? StatusCodes.Status503ServiceUnavailable
+            : StatusCodes.Status400BadRequest;
+
+        return TypedResults.Problem(
+            $"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
+            statusCode: statusCode);
+    }
+
     private static async Task<Results<NoContent, ProblemHttpResult>> DeleteSurvey(
         ICommandHandler<DeleteSurveyCommand, Result<int, Error>> handler,
-        [Description("Primary key of the Survey")] int id,
+        [Description("Primary key of the Survey")]
+        int id,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
