@@ -14,11 +14,14 @@ internal static class TypeSafeConfigurationExtensions
             {
                 var configuration = serviceProvider.GetRequiredService<IConfiguration>();
                 var baseUrl = configuration["TYPESAFE_BASE_URL"] ?? "https://api.typesafe.ai/";
+                if (!baseUrl.EndsWith('/'))
+                {
+                    baseUrl += "/";
+                }
 
                 client.BaseAddress = new Uri(baseUrl);
-                client.Timeout = TimeSpan.FromSeconds(15);
-            })
-            .AddStandardResilienceHandler();
+                client.Timeout = Timeout.InfiniteTimeSpan;
+            });
 
         return builder;
     }

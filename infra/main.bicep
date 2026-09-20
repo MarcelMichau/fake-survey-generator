@@ -8,6 +8,7 @@ param applicationName string
 param dnsZoneName string
 
 @secure()
+@minLength(1)
 param typeSafeApiKey string
 
 var tags = { 'azd-env-name': environment }

@@ -371,16 +371,32 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
 
     private static string GetString(JsonElement answer, string propertyName)
     {
-        return answer.TryGetProperty(propertyName, out var property)
-            ? property.GetString() ?? throw new JsonException($"TypeSafe answer property '{propertyName}' was null.")
-            : throw new JsonException($"TypeSafe answer did not contain property '{propertyName}'.");
+        if (!answer.TryGetProperty(propertyName, out var property))
+        {
+            throw new JsonException($"TypeSafe answer did not contain property '{propertyName}'.");
+        }
+
+        if (property.ValueKind != JsonValueKind.String)
+        {
+            throw new JsonException($"TypeSafe answer property '{propertyName}' was not a string.");
+        }
+
+        return property.GetString()!;
     }
 
     private static double GetDouble(JsonElement answer, string propertyName)
     {
-        return answer.TryGetProperty(propertyName, out var property) && property.TryGetDouble(out var value)
-            ? value
-            : throw new JsonException($"TypeSafe answer did not contain numeric property '{propertyName}'.");
+        if (!answer.TryGetProperty(propertyName, out var property))
+        {
+            throw new JsonException($"TypeSafe answer did not contain property '{propertyName}'.");
+        }
+
+        if (property.ValueKind != JsonValueKind.Number || !property.TryGetDouble(out var value))
+        {
+            throw new JsonException($"TypeSafe answer property '{propertyName}' was not a number.");
+        }
+
+        return value;
     }
 
     private static double GetNoul(

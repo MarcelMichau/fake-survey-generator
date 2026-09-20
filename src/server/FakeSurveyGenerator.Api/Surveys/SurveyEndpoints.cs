@@ -5,7 +5,6 @@ using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.ComponentModel;
 using FakeSurveyGenerator.Api.Filters;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace FakeSurveyGenerator.Api.Surveys;
 
@@ -32,7 +31,9 @@ internal static class SurveyEndpoints
 
         surveyGroup.MapPost("/analyze", AnalyzeSurvey)
             .WithName(nameof(AnalyzeSurvey))
-            .WithSummary("Analyzes a Survey before creation");
+            .WithSummary("Analyzes a Survey before creation")
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
         surveyGroup.MapDelete("/{id:int}", DeleteSurvey)
             .WithName(nameof(DeleteSurvey))
@@ -41,7 +42,8 @@ internal static class SurveyEndpoints
 
     private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(
         IQueryHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>> handler,
-        [Description("Primary key of the Survey")] int id,
+        [Description("Primary key of the Survey")]
+        int id,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
@@ -86,7 +88,8 @@ internal static class SurveyEndpoints
             });
     }
 
-    private static async Task<IResult> AnalyzeSurvey(
+    private static async Task<Results<Ok<SurveyAnalysisModel>,
+        UnprocessableEntity<IDictionary<string, string[]>>, ProblemHttpResult>> AnalyzeSurvey(
         ICommandHandler<AnalyzeSurveyCommand, Result<SurveyAnalysisModel, Error>> handler,
         AnalyzeSurveyCommand command,
         HttpContext httpContext,
@@ -116,7 +119,8 @@ internal static class SurveyEndpoints
 
     private static async Task<Results<NoContent, ProblemHttpResult>> DeleteSurvey(
         ICommandHandler<DeleteSurveyCommand, Result<int, Error>> handler,
-        [Description("Primary key of the Survey")] int id,
+        [Description("Primary key of the Survey")]
+        int id,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
