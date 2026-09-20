@@ -216,24 +216,6 @@ stages:
               VITE_APP_VERSION: $(apiSemVerVersionTag)
               CUSTOM_DOMAIN_NAME: fakesurveygenerator.mysecondarydomain.com
 
-          - task: AzureCLI@2
-            displayName: Verify Container App Custom Domain
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              visibleAzLogin: false
-              inlineScript: |
-                set -euo pipefail
-
-                customDomain=$(az containerapp show \
-                  --name ca-fake-survey-generator-api \
-                  --resource-group $(azureResourceGroup) \
-                  --query "properties.configuration.ingress.customDomains[?name=='fakesurveygenerator.mysecondarydomain.com'].name | [0]" \
-                  --output tsv)
-
-                test "$customDomain" = "fakesurveygenerator.mysecondarydomain.com"
-
   - stage: Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:

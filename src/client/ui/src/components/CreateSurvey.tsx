@@ -43,6 +43,7 @@ interface SurveyFormState {
 	};
 	ui: {
 		isSubmitting: boolean;
+		isCreated: boolean;
 	};
 	analysis: {
 		isAnalyzing: boolean;
@@ -67,6 +68,7 @@ const initialFormState: SurveyFormState = {
 	},
 	ui: {
 		isSubmitting: false,
+		isCreated: false,
 	},
 	analysis: {
 		isAnalyzing: false,
@@ -190,7 +192,7 @@ const CreateSurvey = ({
 			resetMessages();
 			setFormState((prev) => ({
 				...prev,
-				ui: { isSubmitting: true },
+				ui: { ...prev.ui, isSubmitting: true },
 			}));
 
 			try {
@@ -207,7 +209,7 @@ const CreateSurvey = ({
 							...prev.messages,
 							validationErrors: Object.values(data).flat(),
 						},
-						ui: { isSubmitting: false },
+						ui: { ...prev.ui, isSubmitting: false },
 					}));
 					return;
 				}
@@ -219,7 +221,7 @@ const CreateSurvey = ({
 							...prev.messages,
 							error: "Please try again or create an issue on GitHub",
 						},
-						ui: { isSubmitting: false },
+						ui: { ...prev.ui, isSubmitting: false },
 					}));
 					return;
 				}
@@ -233,7 +235,7 @@ const CreateSurvey = ({
 						error: "",
 						validationErrors: [],
 					},
-					ui: { isSubmitting: false },
+					ui: { ...prev.ui, isSubmitting: false, isCreated: true },
 					analysis: initialFormState.analysis,
 				}));
 
@@ -251,7 +253,7 @@ const CreateSurvey = ({
 						...prev.messages,
 						error: "An unexpected error occurred",
 					},
-					ui: { isSubmitting: false },
+					ui: { ...prev.ui, isSubmitting: false },
 				}));
 			}
 		},
@@ -495,7 +497,8 @@ const CreateSurvey = ({
 								disabled={
 									formState.ui.isSubmitting ||
 									formState.analysis.isAnalyzing ||
-									formState.analysis.completed
+									formState.analysis.completed ||
+									formState.ui.isCreated
 								}
 								actionType="secondary"
 							>

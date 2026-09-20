@@ -353,6 +353,23 @@ describe("CreateSurvey Component", () => {
 				.toBeInTheDocument();
 		});
 
+		it("should keep the analysis button disabled after successful submission", async () => {
+			const screen = await render(
+				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
+			);
+			mockApiCall.mockResolvedValue({
+				ok: true,
+				status: 201,
+				json: async () => ({ id: 999, topic: "Test Survey" }),
+			});
+
+			await screen.getByRole("button", { name: /Create Survey/i }).click();
+
+			await expect
+				.element(screen.getByRole("button", { name: "Analyse Survey" }))
+				.toBeDisabled();
+		});
+
 		it("should show error message on failed submission", async () => {
 			const screen = await render(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
