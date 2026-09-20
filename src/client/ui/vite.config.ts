@@ -9,7 +9,7 @@ export default defineConfig({
 		proxy: {
 			"/api": {
 				target: process.env.API_HTTPS || process.env.API_HTTP,
-				changeOrigin: true
+				changeOrigin: true,
 			},
 		},
 	},

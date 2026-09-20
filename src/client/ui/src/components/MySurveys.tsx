@@ -142,9 +142,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 									<TableData>{survey.numberOfOptions}</TableData>
 									<TableData>{survey.winningOption}</TableData>
 									<TableData>
-										{numberFormatter.format(
-											survey.winningOptionNumberOfVotes,
-										)}
+										{numberFormatter.format(survey.winningOptionNumberOfVotes)}
 									</TableData>
 									<TableData>
 										<button

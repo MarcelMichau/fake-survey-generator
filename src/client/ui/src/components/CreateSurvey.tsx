@@ -466,25 +466,26 @@ const CreateSurvey = ({
 										}
 										disabled={formState.ui.isSubmitting}
 									/>
-									I confirm that I want to create this survey with bad data &amp; that I feel bad about it
+									I confirm that I want to create this survey with bad data
+									&amp; that I feel bad about it
 								</label>
 							)}
 							<div className="my-2">
-							<SkeletonButton
-								type="submit"
-								loading={loading}
-								disabled={
-									formState.ui.isSubmitting ||
-									formState.analysis.isAnalyzing ||
-									(formState.analysis.warnings.length > 0 &&
-										!formState.analysis.hasAcknowledgedWarnings)
-								}
-							>
-								{formState.analysis.warnings.length > 0
-									? "Create Survey (Despite All The Issues Identified)"
-									: "Create Survey"}{" "}
-								<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
-							</SkeletonButton>
+								<SkeletonButton
+									type="submit"
+									loading={loading}
+									disabled={
+										formState.ui.isSubmitting ||
+										formState.analysis.isAnalyzing ||
+										(formState.analysis.warnings.length > 0 &&
+											!formState.analysis.hasAcknowledgedWarnings)
+									}
+								>
+									{formState.analysis.warnings.length > 0
+										? "Create Survey (Despite All The Issues Identified)"
+										: "Create Survey"}{" "}
+									<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
+								</SkeletonButton>
 							</div>
 						</div>
 						<div className="mt-4">

@@ -17,7 +17,11 @@ export type GetSurveyProps = {
 const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 	const [surveyIdInput, setSurveyIdInput] = useState(0);
 	const [triggerFetch, setTriggerFetch] = useState<number | null>(null);
-	const { survey: surveyDetail, loading: isSearching, error: errorMessage } = useSurveyFetch(triggerFetch);
+	const {
+		survey: surveyDetail,
+		loading: isSearching,
+		error: errorMessage,
+	} = useSurveyFetch(triggerFetch);
 
 	// Auto-fetch when newSurveyId changes (from CreateSurvey)
 	useEffect(() => {
