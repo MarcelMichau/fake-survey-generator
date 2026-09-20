@@ -114,9 +114,9 @@ const SurveyResult = ({ surveyDetail, onDeleted }: SurveyResultProps) => {
 									key={option.id}
 									className={`flex items-center p-3 rounded-md ${
 										index === 0
-											? "bg-gradient-to-r from-green-900/40 to-green-800/20 border-l-4 border-green-500"
+											? "bg-linear-to-r from-green-900/40 to-green-800/20 border-l-4 border-green-500"
 											: index === 1
-												? "bg-gradient-to-r from-blue-900/40 to-blue-800/20 border-l-4 border-blue-500"
+												? "bg-linear-to-r from-blue-900/40 to-blue-800/20 border-l-4 border-blue-500"
 												: "bg-gray-700/30 border-l-4 border-gray-600"
 									} transition-all duration-200 hover:shadow-md card-hover`}
 								>
@@ -131,7 +131,7 @@ const SurveyResult = ({ surveyDetail, onDeleted }: SurveyResultProps) => {
 									>
 										#{index + 1}
 									</span>
-									<span className="flex-grow">{option.optionText}</span>
+									<span className="grow">{option.optionText}</span>
 									<span
 										className={`ml-2 inline-block ${
 											index === 0
