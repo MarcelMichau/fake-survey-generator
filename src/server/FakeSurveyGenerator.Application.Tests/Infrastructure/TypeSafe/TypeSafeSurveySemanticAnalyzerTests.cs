@@ -61,6 +61,72 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         await Assert.That(result.Value.Warnings.Any(warning => warning.Code == "question.bike_shedding")).IsFalse();
     }
 
+    [Test]
+    public async Task GivenMissingApiKey_WhenAnalyzing_ThenReturnsNotConfiguredErrorWithoutCallingProvider()
+    {
+        var analyzer = CreateAnalyzer(new ExceptionResponseHandler(new HttpRequestException()), apiKey: null);
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.not.configured");
+    }
+
+    [Test]
+    public async Task GivenProviderReturnsFailureStatus_WhenAnalyzing_ThenReturnsRequestFailedError()
+    {
+        var analyzer = CreateAnalyzer(new StaticResponseHandler("provider unavailable", HttpStatusCode.ServiceUnavailable));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.request.failed");
+    }
+
+    [Test]
+    public async Task GivenMalformedProviderJson_WhenAnalyzing_ThenReturnsInvalidResponseError()
+    {
+        var analyzer = CreateAnalyzer(new StaticResponseHandler("{not-json"));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.invalid_response");
+    }
+
+    [Test]
+    public async Task GivenProviderResponseWithoutAnswers_WhenAnalyzing_ThenReturnsInvalidResponseError()
+    {
+        var analyzer = CreateAnalyzer(new StaticResponseHandler("{}"));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.invalid_response");
+    }
+
+    [Test]
+    public async Task GivenProviderRequestFails_WhenAnalyzing_ThenReturnsRequestFailedError()
+    {
+        var analyzer = CreateAnalyzer(new ExceptionResponseHandler(new HttpRequestException("network failure")));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.request.failed");
+    }
+
+    [Test]
+    public async Task GivenProviderRequestTimesOut_WhenAnalyzing_ThenReturnsTimeoutError()
+    {
+        var analyzer = CreateAnalyzer(new ExceptionResponseHandler(new OperationCanceledException("request timed out")));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.timeout");
+    }
+
     private static TypeSafeSurveySemanticAnalyzer CreateAnalyzer(
         double bikeSheddingProbability,
         double contextVacuumProbability,
@@ -82,12 +148,19 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
                 duplicate_0_1 = new { noul = 0.9 }
             }
         });
-        var client = new HttpClient(new StaticResponseHandler(response))
+        return CreateAnalyzer(new StaticResponseHandler(response));
+    }
+
+    private static TypeSafeSurveySemanticAnalyzer CreateAnalyzer(
+        HttpMessageHandler handler,
+        string? apiKey = "test-key")
+    {
+        var client = new HttpClient(handler)
         {
             BaseAddress = new Uri("https://typesafe.test/")
         };
         var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["TYPESAFE_API_KEY"] = "test-key" })
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["TYPESAFE_API_KEY"] = apiKey })
             .Build();
 
         return new TypeSafeSurveySemanticAnalyzer(
@@ -107,16 +180,27 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         ]
     };
 
-    private sealed class StaticResponseHandler(string response) : HttpMessageHandler
+    private sealed class StaticResponseHandler(string response, HttpStatusCode statusCode = HttpStatusCode.OK)
+        : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            return Task.FromResult(new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(response, Encoding.UTF8, "application/json")
             });
+        }
+    }
+
+    private sealed class ExceptionResponseHandler(Exception exception) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            return Task.FromException<HttpResponseMessage>(exception);
         }
     }
 }

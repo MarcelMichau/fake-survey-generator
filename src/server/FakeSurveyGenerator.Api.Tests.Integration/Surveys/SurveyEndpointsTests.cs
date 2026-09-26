@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Notifications;
@@ -8,6 +7,7 @@ using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using FakeSurveyGenerator.Application.TestHelpers;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -106,6 +106,54 @@ public sealed class SurveyEndpointsTests
         await Assert.That(analysis).IsNotNull();
         await Assert.That(analysis!.ResponseShape).IsEqualTo("single_choice");
         await Assert.That(analysis.Warnings).IsEmpty();
+    }
+
+    [Test]
+    public async Task GivenInvalidAnalyzeSurveyCommand_WhenCallingAnalyzeSurvey_ThenUnprocessableEntityIsReturned()
+    {
+        var command = new AnalyzeSurveyCommand
+        {
+            SurveyTopic = "",
+            RespondentType = "",
+            SurveyOptions = []
+        };
+
+        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey/analyze", command);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
+    }
+
+    [Test]
+    public async Task GivenTypeSafeApiKeyIsMissing_WhenCallingAnalyzeSurvey_ThenServiceUnavailableIsReturned()
+    {
+        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureAppConfiguration((_, configuration) =>
+                configuration.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["TYPESAFE_API_KEY"] = ""
+                }));
+            builder.ConfigureTestServices(services =>
+            {
+                var testAnalyzer = services.Last(service => service.ServiceType == typeof(ISurveySemanticAnalyzer));
+                services.Remove(testAnalyzer);
+            });
+        });
+        using var client = factory.WithSpecificUser(_testUser);
+        var command = new AnalyzeSurveyCommand
+        {
+            SurveyTopic = "Do you prefer tabs or spaces?",
+            RespondentType = "Developers",
+            SurveyOptions =
+            [
+                new SurveyOptionDto { OptionText = "Tabs" },
+                new SurveyOptionDto { OptionText = "Spaces" }
+            ]
+        };
+
+        using var response = await client.PostAsJsonAsync("/api/survey/analyze", command);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.ServiceUnavailable);
     }
 
     [Test]

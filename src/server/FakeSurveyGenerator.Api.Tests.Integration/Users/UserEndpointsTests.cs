@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http.Json;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
 using FakeSurveyGenerator.Application.Features.Users;
@@ -11,6 +10,7 @@ public sealed class UserEndpointsTests
 {
     [ClassDataSource<IntegrationTestFixture>(Shared = SharedType.PerTestSession)]
     public required IntegrationTestFixture TestFixture { get; init; }
+
     private readonly IFixture _fixture = new Fixture();
 
     [Test]
@@ -26,6 +26,16 @@ public sealed class UserEndpointsTests
         await Assert.That(user.DisplayName).IsEqualTo(newUser.DisplayName);
         await Assert.That(user.EmailAddress).IsEqualTo(newUser.EmailAddress);
         await Assert.That(user.ExternalUserId).IsEqualTo(newUser.ExternalUserId);
+    }
+
+    [Test]
+    public async Task GivenUnknownUserId_WhenCallingGetUser_ThenNotFoundResponseIsReturned()
+    {
+        var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
+
+        using var response = await client.GetAsync("api/user/2147483647");
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 
     [Test]
