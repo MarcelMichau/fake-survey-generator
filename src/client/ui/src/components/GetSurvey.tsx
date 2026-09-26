@@ -7,7 +7,7 @@ import Alert from "./Alert";
 import SurveyResult from "./SurveyResult";
 import { useSurveyFetch } from "../hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export type GetSurveyProps = {
 	loading: boolean;
@@ -37,52 +37,43 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 	};
 
 	return (
-		<SkeletonTheme baseColor="#2d3748" highlightColor="#667eea">
-			<div className="dark:bg-gray-800/90 backdrop-blur-sm rounded-lg px-8 pt-6 pb-8 mb-6 shadow-lg border border-gray-700/60">
-				<h2 className="dark:text-indigo-400 text-xl font-semibold tracking-tight mb-4 flex items-center">
-					{loading ? (
-						<Skeleton width={100} />
-					) : (
-						<>
-							<FontAwesomeIcon
-								icon={faSearch}
-								className="mr-2 text-indigo-500"
+		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
+			<div className="space-y-5">
+				<section className="brutal-panel">
+					<h2 className="display-title text-4xl lg:text-5xl mb-5">
+						{loading ? <Skeleton width={100} /> : <span>Get Survey</span>}
+					</h2>
+					<form onSubmit={submitForm} className="space-y-2">
+						<div className="mb-3">
+							<Field
+								label="Survey ID"
+								value={surveyIdInput}
+								onChange={(value) =>
+									setSurveyIdInput(
+										Number.isNaN(Number(value)) ? surveyIdInput : Number(value),
+									)
+								}
+								loading={loading}
+								placeholder="Enter survey ID number"
 							/>
-							<span>Get Survey</span>
-						</>
-					)}
-				</h2>
-				<form onSubmit={submitForm} className="space-y-4">
-					<div className="mb-4">
-						<Field
-							label="Survey ID"
-							value={surveyIdInput}
-							onChange={(value) =>
-								setSurveyIdInput(
-									Number.isNaN(Number(value)) ? surveyIdInput : Number(value),
-								)
-							}
-							loading={loading}
-							placeholder="Enter survey ID number"
-						/>
-					</div>
-					<div className="flex justify-start">
-						<SkeletonButton
-							onClick={submitForm}
-							loading={loading}
-							type="submit"
-							additionalClasses={
-								isSearching ? ["opacity-80", "cursor-not-allowed"] : []
-							}
-						>
-							{isSearching ? "Searching..." : "Get Survey"}
-							<FontAwesomeIcon icon={faPaperPlane} className="ml-2" />
-						</SkeletonButton>
-					</div>
-				</form>
-
+						</div>
+						<div className="flex justify-start">
+							<SkeletonButton
+								loading={loading}
+								type="submit"
+								disabled={isSearching}
+								additionalClasses={
+									isSearching ? ["opacity-80", "cursor-not-allowed"] : []
+								}
+							>
+								{isSearching ? "Searching..." : "Get Survey"}
+								<FontAwesomeIcon icon={faPaperPlane} className="ml-2" />
+							</SkeletonButton>
+						</div>
+					</form>
+				</section>
 				{surveyDetail && surveyDetail.id > 0 && (
-					<div className="mt-8 animate-fade-in">
+					<div>
 						<SurveyResult
 							surveyDetail={surveyDetail}
 							onDeleted={() => {

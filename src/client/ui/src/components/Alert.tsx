@@ -5,51 +5,27 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type AlertType = "error" | "success" | "warning";
-
-type AlertProps = {
-	title: string;
-	message: string;
-	type?: AlertType;
-};
+type AlertProps = { title: string; message: string; type?: AlertType };
 
 const Alert = ({ title, message, type = "success" }: AlertProps) => {
-	const styleMap = {
-		success: {
-			containerClasses: "bg-green-800/80 border-green-500 backdrop-blur-sm",
-			iconClasses: "text-green-400",
-			icon: faCircleCheck,
-		},
-		error: {
-			containerClasses: "bg-red-800/80 border-red-500 backdrop-blur-sm",
-			iconClasses: "text-red-400",
-			icon: faCircleExclamation,
-		},
-		warning: {
-			containerClasses: "bg-yellow-800/80 border-yellow-500 backdrop-blur-sm",
-			iconClasses: "text-yellow-400",
-			icon: faCircleExclamation,
-		},
+	const icon = type === "success" ? faCircleCheck : faCircleExclamation;
+	const accents = {
+		success: "border-lime bg-[#263923]",
+		error: "border-[#ff8e83] bg-[#3b2525]",
+		warning: "border-[#ffdc75] bg-[#383322]",
 	};
-
-	const { containerClasses, iconClasses, icon } = styleMap[type];
-
 	return (
 		<div
-			className={`${containerClasses} border shadow-md px-5 py-4 my-4 rounded-md relative animate-slide-up flex`}
+			className={`my-4 flex gap-4 border-2 p-4 ${accents[type]}`}
 			role="alert"
 		>
-			<div className={`${iconClasses} mr-4 pt-1`}>
-				<FontAwesomeIcon icon={icon} size="lg" />
-			</div>
-			<div>
-				<div className="mb-1">
-					<strong className="font-semibold text-white">{title}</strong>
-				</div>
-				<div>
-					<span className="block sm:inline text-gray-200 opacity-90">
-						{message}
-					</span>
-				</div>
+			<FontAwesomeIcon
+				icon={icon}
+				className={`mt-1 shrink-0 text-xl ${type === "success" ? "text-lime" : type === "error" ? "text-[#ffaaa1]" : "text-[#ffdc75]"}`}
+			/>
+			<div className="min-w-0">
+				<strong className="ui-label mb-1">{title}</strong>
+				<p className="text-paper wrap-break-word">{message}</p>
 			</div>
 		</div>
 	);

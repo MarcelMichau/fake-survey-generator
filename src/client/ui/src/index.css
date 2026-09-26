@@ -1,60 +1,192 @@
 @import "tailwindcss";
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+@theme {
+	--color-ink: #101214;
+	--color-panel: #222629;
+	--color-surface: #30353a;
+	--color-lime: #c7ff18;
+	--color-paper: #f5f6f3;
+}
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
-
 	*,
-	::after,
 	::before,
-	::backdrop,
-	::file-selector-button {
-		border-color: var(--color-gray-200, currentColor);
+	::after {
+		box-sizing: border-box;
 	}
-
+	html {
+		color-scheme: dark;
+	}
 	body {
-		@apply bg-linear-to-br from-gray-900 via-gray-900 to-gray-800 min-h-screen text-gray-100;
+		margin: 0;
+		min-width: 320px;
+		min-height: 100vh;
+		background: var(--color-ink);
+		color: var(--color-paper);
+		font-family: Arial, Helvetica, sans-serif;
+	}
+	button,
+	input {
+		font: inherit;
+	}
+	button {
+		cursor: pointer;
+	}
+	button:disabled {
+		cursor: not-allowed;
+	}
+	:focus-visible {
+		outline: 3px solid var(--color-lime) !important;
+		outline-offset: 3px;
+	}
+	::selection {
+		background: var(--color-lime);
+		color: var(--color-ink);
 	}
 }
 
-@layer utilities {
-	.animate-fade-in {
-		animation: fadeIn 0.5s ease-in-out;
+@layer components {
+	.display-title {
+		font-family: Impact, "Arial Narrow", "Franklin Gothic Heavy", sans-serif;
+		font-stretch: condensed;
+		font-weight: 900;
+		line-height: 0.98;
+		text-transform: uppercase;
+		letter-spacing: 0.015em;
 	}
-
-	.animate-slide-up {
-		animation: slideUp 0.4s ease-out;
+	.ui-label {
+		display: block;
+		margin-bottom: 0.4rem;
+		font-family: Impact, "Arial Narrow", sans-serif;
+		font-size: 1rem;
+		line-height: 1.3;
+		text-transform: uppercase;
+		letter-spacing: 0.025em;
+		color: var(--color-paper);
 	}
-
-	.card-hover {
-		@apply transition-all duration-300 hover:shadow-lg hover:scale-[1.01] hover:bg-gray-800/90;
+	.brutal-panel {
+		min-width: 0;
+		border: 2px solid var(--color-paper);
+		background: var(--color-panel);
+		box-shadow: 7px 7px 0 var(--color-paper);
+		padding: clamp(1rem, 2vw, 1.5rem);
 	}
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
+	.brutal-input {
+		display: block;
+		width: 100%;
+		min-height: 2.75rem;
+		padding: 0.55rem 0.85rem;
+		border: 2px solid var(--color-paper);
+		border-radius: 0;
+		background: var(--color-surface);
+		color: var(--color-paper);
+		box-shadow: none;
 	}
-
-	to {
+	.brutal-input::placeholder {
+		color: #c3c8c9;
 		opacity: 1;
 	}
+	.brutal-input:disabled {
+		opacity: 0.65;
+	}
+	.brutal-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		max-width: 100%;
+		min-height: 2.75rem;
+		padding: 0.48rem 1.2rem;
+		border: 2px solid #050605;
+		border-radius: 0;
+		background: var(--color-lime);
+		color: #080a04;
+		box-shadow: 6px 6px 0 #050605;
+		font-family: Impact, "Arial Narrow", sans-serif;
+		font-size: 1.25rem;
+		line-height: 1.1;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		transition:
+			transform 0.12s,
+			box-shadow 0.12s,
+			background-color 0.12s;
+	}
+	.brutal-button:hover:not(:disabled) {
+		background: #dcff6b;
+		transform: translate(2px, 2px);
+		box-shadow: 4px 4px 0 #050605;
+	}
+	.brutal-button:active:not(:disabled) {
+		transform: translate(6px, 6px);
+		box-shadow: none;
+	}
+	.brutal-button:disabled {
+		opacity: 0.56;
+	}
+	.brutal-button--secondary {
+		background: var(--color-paper);
+	}
+	.brutal-button--secondary:hover:not(:disabled) {
+		background: #d8dcd5;
+	}
+	.brutal-button--destructive {
+		background: #ff8e83;
+	}
+	.brutal-button--destructive:hover:not(:disabled) {
+		background: #ffb4ac;
+	}
+	.brutal-icon-button {
+		min-height: 2.5rem;
+		min-width: 2.5rem;
+		border: 2px solid #ff8e83;
+		color: #ffb4ac;
+		background: #282122;
+	}
+	.brutal-icon-button:hover {
+		background: #ff8e83;
+		color: #101214;
+	}
+	.brutal-table {
+		width: 100%;
+		border-collapse: collapse;
+		text-align: left;
+	}
+	.brutal-table th,
+	.brutal-table td {
+		border: 2px solid #aeb4b2;
+		padding: 0.65rem 0.8rem;
+	}
+	.brutal-table th {
+		background: var(--color-lime);
+		color: var(--color-ink);
+		font-family: Impact, "Arial Narrow", sans-serif;
+		text-transform: uppercase;
+		font-weight: 400;
+	}
+	.brutal-table tbody tr:nth-child(even) {
+		background: var(--color-surface);
+	}
+	.react-loading-skeleton {
+		border-radius: 0 !important;
+	}
 }
 
-@keyframes slideUp {
-	from {
-		transform: translateY(10px);
-		opacity: 0;
+@media (max-width: 640px) {
+	.brutal-panel {
+		box-shadow: 5px 5px 0 var(--color-paper);
 	}
+	.brutal-button {
+		font-size: 1.1rem;
+	}
+}
 
-	to {
-		transform: translateY(0);
-		opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+	*,
+	::before,
+	::after {
+		scroll-behavior: auto !important;
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
 	}
 }

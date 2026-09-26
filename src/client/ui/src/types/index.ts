@@ -53,7 +53,6 @@ export type UserSurveyModel = {
 };
 
 export type SurveyOptionModel = {
-	id: number;
 	optionText: string;
 	numberOfVotes: number;
 	preferredNumberOfVotes: number;

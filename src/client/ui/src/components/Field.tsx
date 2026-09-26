@@ -1,8 +1,8 @@
 import type React from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useId } from "react";
+import Skeleton from "react-loading-skeleton";
 
 type FieldValue = string | number;
-
 type FieldProps<T extends FieldValue> = {
 	label: string;
 	value: T;
@@ -13,34 +13,30 @@ type FieldProps<T extends FieldValue> = {
 };
 
 function Field<T extends FieldValue>(props: FieldProps<T>) {
+	const id = useId();
 	return (
-		<SkeletonTheme baseColor="#2d3748" highlightColor="#4a5568">
-			<label
-				className="block text-gray-300 font-medium mb-1"
-				htmlFor="field-input"
-			>
+		<div className="mb-4">
+			<label className="ui-label" htmlFor={id}>
 				<span data-testid="field-label">
-					{props.loading ? <Skeleton width={250} /> : props.label}
+					{props.loading ? <Skeleton width={200} /> : props.label}
 				</span>
-				<div>
-					{props.loading ? (
-						<Skeleton height={42} className="py-2 mt-1 mb-3" />
-					) : (
-						<>
-							<input
-								id="field-input"
-								className="appearance-none border border-gray-600 rounded-md w-full lg:w-2/3 py-2.5 px-4 text-gray-100 bg-gray-700/70 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-400 transition-all duration-200 mt-1 mb-3 placeholder:text-gray-400 shadow-sm backdrop-blur-sm"
-								type="text"
-								value={props.value}
-								placeholder={props.placeholder}
-								onChange={(e) => props.onChange(e.target.value)}
-							/>
-							{props.children}
-						</>
-					)}
-				</div>
 			</label>
-		</SkeletonTheme>
+			{props.loading ? (
+				<Skeleton height={44} />
+			) : (
+				<div className="flex flex-wrap items-center gap-3">
+					<input
+						id={id}
+						className="brutal-input min-w-0 flex-1"
+						type="text"
+						value={props.value}
+						placeholder={props.placeholder}
+						onChange={(e) => props.onChange(e.target.value)}
+					/>
+					{props.children}
+				</div>
+			)}
+		</div>
 	);
 }
 

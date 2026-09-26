@@ -344,9 +344,9 @@ const CreateSurvey = ({
 	};
 
 	return (
-		<SkeletonTheme baseColor="#2d3748" highlightColor="#667eea">
-			<div className="dark:bg-gray-800 rounded-sm px-8 pt-6 pb-8 mb-4">
-				<h2 className="dark:text-indigo-500 text-xl font-semibold tracking-tight mb-2">
+		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
+			<div className="brutal-panel h-full">
+				<h2 className="display-title text-4xl lg:text-5xl mb-5">
 					{loading ? <Skeleton /> : <span>Create Survey</span>}
 				</h2>
 				<form onSubmit={onSubmit} aria-busy={formState.analysis.isAnalyzing}>
@@ -378,7 +378,7 @@ const CreateSurvey = ({
 							}
 							loading={loading}
 						/>
-						<span className="block text-gray-500">
+						<span className="ui-label">
 							{loading ? <Skeleton /> : <span>Options</span>}
 						</span>
 						{formState.survey.options.map((option, index) => {
@@ -399,17 +399,17 @@ const CreateSurvey = ({
 											<Button
 												actionType="destructive"
 												onClick={() => removeOption(option.id)}
-												additionalClasses={["lg:ml-4"]}
+												additionalClasses={["text-base!"]}
 											>
 												{`Remove #${optionNumber}`}
 												<FontAwesomeIcon icon={faMinus} className="ml-1" />
 											</Button>
 										)}
 									</Field>
-									<div className="ml-4 mt-1 mb-3">
+									<div className="mt-1 mb-5">
 										<label
 											htmlFor={`preferred-votes-${option.id}`}
-											className="block text-gray-500 text-sm mb-1"
+											className="ui-label"
 										>
 											{loading ? <Skeleton width={100} /> : "Preferred Votes"}
 										</label>
@@ -427,9 +427,9 @@ const CreateSurvey = ({
 												);
 											}}
 											disabled={loading}
-											className="bg-gray-700 focus:outline-none focus:shadow-outline border border-gray-700 rounded py-1 px-2 block w-32 appearance-none leading-normal text-gray-200 focus:border-indigo-500"
+											className="brutal-input max-w-40"
 										/>
-										<p className="text-gray-500 text-xs mt-1">
+										<p className="text-gray-300 text-xs mt-2">
 											{loading ? (
 												<Skeleton width={200} />
 											) : (
@@ -449,9 +449,9 @@ const CreateSurvey = ({
 								Add Option <FontAwesomeIcon icon={faPlus} className="ml-1" />
 							</SkeletonButton>
 						</div>
-						<div className="mt-6 border-t border-gray-700 pt-4">
+						<div className="mt-6 border-t-2 border-white pt-4">
 							{formState.analysis.warnings.length > 0 && (
-								<label className="my-2 flex items-center gap-2 text-sm text-gray-300">
+								<label className="my-3 flex items-start gap-3 text-sm text-paper">
 									<input
 										type="checkbox"
 										checked={formState.analysis.hasAcknowledgedWarnings}
@@ -489,7 +489,7 @@ const CreateSurvey = ({
 							</div>
 						</div>
 						<div className="mt-4">
-							<p className="mb-2 text-sm text-gray-400">
+							<p className="mb-2 text-sm text-gray-300">
 								Analyse provided survey information for potential issues.
 							</p>
 							<SkeletonButton
