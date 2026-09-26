@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import type * as Types from "../types";
 import SkeletonButton from "./SkeletonButton";
@@ -15,6 +15,7 @@ export type MySurveysProps = {
 
 const MySurveys = ({ loading }: MySurveysProps) => {
 	const { apiCall } = useApiCall();
+	const formRef = useRef<HTMLFormElement>(null);
 	const [userSurveys, setUserSurveys] = useState<Types.UserSurveyModel[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasFetched, setHasFetched] = useState(false);
@@ -96,7 +97,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 					<h2 className="display-title text-4xl lg:text-5xl">
 						{loading ? <Skeleton width={100} /> : <span>My Surveys</span>}
 					</h2>
-					<form onSubmit={submitForm}>
+					<form ref={formRef} onSubmit={submitForm}>
 						<SkeletonButton
 							loading={loading}
 							type="submit"
@@ -180,6 +181,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 					}
 					confirmLabel="Delete"
 					busy={isDeleting}
+					fallbackFocus={() => formRef.current?.querySelector("button") ?? null}
 					onConfirm={confirmDelete}
 					onCancel={() => {
 						if (!isDeleting) setSurveyToDelete(null);

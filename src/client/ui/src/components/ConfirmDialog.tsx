@@ -8,6 +8,7 @@ type ConfirmDialogProps = {
 	confirmLabel?: string;
 	cancelLabel?: string;
 	busy?: boolean;
+	fallbackFocus?: () => HTMLElement | null;
 	onConfirm: () => void;
 	onCancel: () => void;
 };
@@ -19,19 +20,34 @@ const ConfirmDialog = ({
 	confirmLabel = "Confirm",
 	cancelLabel = "Cancel",
 	busy = false,
+	fallbackFocus,
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) => {
 	const cancelRef = useRef<HTMLButtonElement>(null);
 	const panelRef = useRef<HTMLDivElement>(null);
 	const onCancelRef = useRef(onCancel);
+	const fallbackFocusRef = useRef(fallbackFocus);
 	onCancelRef.current = onCancel;
+	fallbackFocusRef.current = fallbackFocus;
 	useEffect(() => {
 		if (!open) return;
 		const previous = document.activeElement as HTMLElement | null;
 		cancelRef.current?.focus();
-		return () => previous?.focus();
+		return () => {
+			if (previous?.isConnected) previous.focus();
+			else fallbackFocusRef.current?.()?.focus();
+		};
 	}, [open]);
+	useEffect(() => {
+		if (!open) return;
+		if (busy) panelRef.current?.focus();
+		else if (
+			document.activeElement === panelRef.current ||
+			!panelRef.current?.contains(document.activeElement)
+		)
+			cancelRef.current?.focus();
+	}, [open, busy]);
 	useEffect(() => {
 		if (!open) return;
 		const onKey = (e: KeyboardEvent) => {
@@ -80,7 +96,11 @@ const ConfirmDialog = ({
 					onCancel();
 			}}
 		>
-			<div ref={panelRef} className="brutal-panel mx-4 w-full max-w-md p-6">
+			<div
+				ref={panelRef}
+				tabIndex={-1}
+				className="brutal-panel mx-4 w-full max-w-md p-6"
+			>
 				<h3 id="confirm-dialog-title" className="display-title mb-3 text-3xl">
 					{title}
 				</h3>

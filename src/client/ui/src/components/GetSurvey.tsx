@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import Field from "./Field";
 import SkeletonButton from "./SkeletonButton";
@@ -16,6 +16,7 @@ export type GetSurveyProps = {
 
 const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 	const [surveyIdInput, setSurveyIdInput] = useState(0);
+	const formRef = useRef<HTMLFormElement>(null);
 	const [triggerFetch, setTriggerFetch] = useState<number | null>(null);
 	const {
 		survey: surveyDetail,
@@ -43,7 +44,7 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 					<h2 className="display-title text-4xl lg:text-5xl mb-5">
 						{loading ? <Skeleton width={100} /> : <span>Get Survey</span>}
 					</h2>
-					<form onSubmit={submitForm} className="space-y-2">
+					<form ref={formRef} onSubmit={submitForm} className="space-y-2">
 						<div className="mb-3">
 							<Field
 								label="Survey ID"
@@ -76,6 +77,9 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 					<div>
 						<SurveyResult
 							surveyDetail={surveyDetail}
+							fallbackFocus={() =>
+								formRef.current?.querySelector("input") ?? null
+							}
 							onDeleted={() => {
 								setSurveyIdInput(0);
 								setTriggerFetch(null);

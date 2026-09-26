@@ -15,10 +15,15 @@ import {
 
 type SurveyResultProps = {
 	surveyDetail: SurveyModel;
+	fallbackFocus?: () => HTMLElement | null;
 	onDeleted?: (id: number) => void;
 };
 
-const SurveyResult = ({ surveyDetail, onDeleted }: SurveyResultProps) => {
+const SurveyResult = ({
+	surveyDetail,
+	fallbackFocus,
+	onDeleted,
+}: SurveyResultProps) => {
 	const { user } = useAuth0();
 	const { apiCall } = useApiCall();
 	const [confirmOpen, setConfirmOpen] = useState(false);
@@ -128,6 +133,7 @@ const SurveyResult = ({ surveyDetail, onDeleted }: SurveyResultProps) => {
 				message={`This will permanently delete "${surveyDetail.topic}". This action cannot be undone.`}
 				confirmLabel="Delete"
 				busy={isDeleting}
+				fallbackFocus={fallbackFocus}
 				onConfirm={confirmDelete}
 				onCancel={() => {
 					if (!isDeleting) setConfirmOpen(false);
