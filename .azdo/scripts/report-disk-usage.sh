@@ -19,6 +19,7 @@ for path in \
 done
 
 if command -v docker >/dev/null 2>&1; then
-  timeout 20s docker system df || true
+  # Include per-image unique/shared layer sizes; image-list SIZE alone double-counts shared layers.
+  timeout 20s docker system df -v || true
 fi
 printf '=== End disk usage snapshot ===\n\n'
