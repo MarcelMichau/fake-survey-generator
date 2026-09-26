@@ -70,6 +70,8 @@ public static class HostApplicationBuilderConfiguration
         where THandler : class, IDomainEventHandler<TEvent>
     {
         services.AddScoped<IDomainEventHandler<TEvent>, THandler>();
+        services.AddScoped<IDomainEventHandler>(provider =>
+            provider.GetRequiredService<IDomainEventHandler<TEvent>>());
         return services;
     }
 

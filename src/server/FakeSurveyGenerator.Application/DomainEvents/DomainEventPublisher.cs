@@ -1,12 +1,14 @@
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace FakeSurveyGenerator.Application.DomainEvents;
 
-public sealed class DomainEventPublisher(IServiceProvider serviceProvider, ILogger<DomainEventPublisher> logger)
+public sealed class DomainEventPublisher(
+    IEnumerable<IDomainEventHandler> handlers,
+    ILogger<DomainEventPublisher> logger)
     : IEventBus
 {
-    private readonly IServiceProvider _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    private readonly IReadOnlyList<IDomainEventHandler> _handlers =
+        (handlers ?? throw new ArgumentNullException(nameof(handlers))).ToList();
     private readonly ILogger<DomainEventPublisher> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default)
@@ -29,9 +31,7 @@ public sealed class DomainEventPublisher(IServiceProvider serviceProvider, ILogg
     private async Task ProcessEvent(IDomainEvent domainEvent, CancellationToken cancellationToken)
     {
         var eventType = domainEvent.GetType();
-        var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
-
-        var handlers = _serviceProvider.GetServices(handlerType).ToList();
+        var handlers = _handlers.Where(handler => handler.EventType == eventType).ToList();
 
         if (handlers.Count == 0)
         {
@@ -39,35 +39,29 @@ public sealed class DomainEventPublisher(IServiceProvider serviceProvider, ILogg
             return;
         }
 
-        var handleTasks = handlers.Select(async handler =>
-        {
-            try
-            {
-                var method = handlerType.GetMethod(nameof(IDomainEventHandler<>.HandleAsync));
-                if (method != null)
-                {
-                    if (handler != null)
-                    {
-                        _logger.LogDebug("Executing handler {HandlerType} for event {EventType}",
-                            handler.GetType().Name, eventType.Name);
-
-                        var result = method.Invoke(handler, [domainEvent, cancellationToken]);
-                        if (result is Task task)
-                            await task;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Handler {HandlerType} failed to process event {EventType} with ID: {EventId}",
-                    handler?.GetType().Name, eventType.Name, domainEvent.Id);
-                throw;
-            }
-        });
-
-        await Task.WhenAll(handleTasks);
+        await Task.WhenAll(handlers.Select(handler => InvokeHandler(handler, domainEvent, cancellationToken)));
 
         _logger.LogDebug("Processed domain event: {EventType} with {HandlerCount} handlers",
             eventType.Name, handlers.Count);
+    }
+
+    private async Task InvokeHandler(
+        IDomainEventHandler handler,
+        IDomainEvent domainEvent,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            _logger.LogDebug("Executing handler {HandlerType} for event {EventType}",
+                handler.GetType().Name, domainEvent.GetType().Name);
+
+            await handler.HandleAsync(domainEvent, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Handler {HandlerType} failed to process event {EventType} with ID: {EventId}",
+                handler.GetType().Name, domainEvent.GetType().Name, domainEvent.Id);
+            throw;
+        }
     }
 }

@@ -42,11 +42,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public void AddSurveyOption(NonEmptyString optionText)
     {
-        ThrowIfDuplicateOptions(optionText);
-
-        var newOption = new SurveyOption(optionText);
-
-        _options.Add(newOption);
+        AddSurveyOption(optionText, 0);
     }
 
     public void AddSurveyOption(NonEmptyString optionText, int preferredNumberOfVotes)
@@ -77,18 +73,23 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public void CalculateOutcome()
     {
-        ThrowIfNoOptions();
-        ResetVotes();
-        DetermineVoteDistributionStrategy();
-
-        _selectedVoteDistribution.DistributeVotes(this);
+        CalculateOutcome(oneSided: false);
     }
 
     public void CalculateOneSidedOutcome()
     {
+        CalculateOutcome(oneSided: true);
+    }
+
+    private void CalculateOutcome(bool oneSided)
+    {
         ThrowIfNoOptions();
         ResetVotes();
-        _selectedVoteDistribution = new OneSidedVoteDistribution();
+
+        if (oneSided)
+            _selectedVoteDistribution = new OneSidedVoteDistribution();
+        else
+            DetermineVoteDistributionStrategy();
 
         _selectedVoteDistribution.DistributeVotes(this);
     }

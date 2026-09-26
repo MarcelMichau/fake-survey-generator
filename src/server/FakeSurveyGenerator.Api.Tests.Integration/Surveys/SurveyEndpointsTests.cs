@@ -2,10 +2,16 @@ using System.Net;
 using System.Net.Http.Json;
 using AutoFixture;
 using FakeSurveyGenerator.Api.Tests.Integration.Setup;
+using FakeSurveyGenerator.Application.Features.Notifications;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Features.Users;
+using FakeSurveyGenerator.Application.Shared.Notifications;
 using FakeSurveyGenerator.Application.TestHelpers;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using NSubstitute;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Surveys;
 
@@ -41,6 +47,40 @@ public sealed class SurveyEndpointsTests
         await Assert.That(newSurvey.Options.All(option => option.NumberOfVotes > 0)).IsTrue();
         await Assert.That(newSurvey.CreatedOn).IsNotEqualTo(default);
         await Assert.That(newSurvey.CreatedBy).IsEqualTo(newUser.ExternalUserId);
+    }
+
+    [Test]
+    public async Task GivenSurveyCreatedThroughApi_WhenSaved_ThenSaveChangesInterceptorPublishesNotification()
+    {
+        var notificationService = Substitute.For<INotificationService>();
+        using var notificationFactory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+            builder.ConfigureTestServices(services =>
+            {
+                services.RemoveAll<INotificationService>();
+                services.AddSingleton(notificationService);
+            }));
+        using var client = notificationFactory.WithSpecificUser(_testUser);
+
+        using var registrationResponse = await client.PostAsJsonAsync("/api/user/register", new RegisterUserCommand());
+        registrationResponse.EnsureSuccessStatusCode();
+
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "Domain event integration test",
+            NumberOfRespondents = 1,
+            RespondentType = "Test respondents",
+            SurveyOptions = [new SurveyOptionDto { OptionText = "Test option" }]
+        };
+        using var surveyResponse = await client.PostAsJsonAsync("/api/survey", createSurveyCommand);
+        surveyResponse.EnsureSuccessStatusCode();
+
+        await notificationService.Received(1).SendMessage(
+            Arg.Is<MessageModel>(message =>
+                message.From == "System" &&
+                message.To == "Whom It May Concern" &&
+                message.Subject == "New Survey Created" &&
+                message.Body.StartsWith("Survey with ID:", StringComparison.Ordinal)),
+            Arg.Any<CancellationToken>());
     }
 
     [Test]

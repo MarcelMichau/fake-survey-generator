@@ -1,4 +1,5 @@
-﻿using FakeSurveyGenerator.Application.Domain.Surveys;
+using System.Linq.Expressions;
+using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Shared.Auditing;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
@@ -17,41 +18,31 @@ public sealed record SurveyModel : AuditableModel
 
 public static class SurveyModelMappingExtensions
 {
+    private static readonly Expression<Func<Survey, SurveyModel>> SurveyProjection = survey => new SurveyModel
+    {
+        Id = survey.Id,
+        OwnerId = survey.Owner.Id,
+        OwnerExternalUserId = survey.Owner.ExternalUserId,
+        Topic = survey.Topic,
+        RespondentType = survey.RespondentType,
+        NumberOfRespondents = survey.NumberOfRespondents,
+        IsRigged = survey.IsRigged,
+        Options = survey.Options.Select(option => option.MapToModel()).ToList(),
+        CreatedBy = survey.CreatedBy,
+        CreatedOn = survey.CreatedOn,
+        ModifiedBy = survey.ModifiedBy,
+        ModifiedOn = survey.ModifiedOn
+    };
+
+    private static readonly Func<Survey, SurveyModel> MapSurvey = SurveyProjection.Compile();
+
     public static SurveyModel MapToModel(this Survey survey)
     {
-        return new SurveyModel
-        {
-            Id = survey.Id,
-            OwnerId = survey.Owner.Id,
-            OwnerExternalUserId = survey.Owner.ExternalUserId,
-            Topic = survey.Topic.Value,
-            RespondentType = survey.RespondentType.Value,
-            NumberOfRespondents = survey.NumberOfRespondents,
-            IsRigged = survey.IsRigged,
-            Options = survey.Options.Select(option => option.MapToModel()).ToList(),
-            CreatedBy = survey.CreatedBy,
-            CreatedOn = survey.CreatedOn,
-            ModifiedBy = survey.ModifiedBy,
-            ModifiedOn = survey.ModifiedOn
-        };
+        return MapSurvey(survey);
     }
 
     public static IQueryable<SurveyModel> SelectToModel(this IQueryable<Survey> surveys)
     {
-        return surveys.Select(survey => new SurveyModel
-        {
-            Id = survey.Id,
-            OwnerId = survey.Owner.Id,
-            OwnerExternalUserId = survey.Owner.ExternalUserId,
-            Topic = survey.Topic,
-            RespondentType = survey.RespondentType,
-            NumberOfRespondents = survey.NumberOfRespondents,
-            IsRigged = survey.IsRigged,
-            Options = survey.Options.Select(option => option.MapToModel()).ToList(),
-            CreatedBy = survey.CreatedBy,
-            CreatedOn = survey.CreatedOn,
-            ModifiedBy = survey.ModifiedBy,
-            ModifiedOn = survey.ModifiedOn
-        });
+        return surveys.Select(SurveyProjection);
     }
 }
