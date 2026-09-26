@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Button from "./Button";
 
 type ConfirmDialogProps = {
@@ -8,6 +8,7 @@ type ConfirmDialogProps = {
 	confirmLabel?: string;
 	cancelLabel?: string;
 	busy?: boolean;
+	fallbackFocus?: () => HTMLElement | null;
 	onConfirm: () => void;
 	onCancel: () => void;
 };
@@ -19,23 +20,67 @@ const ConfirmDialog = ({
 	confirmLabel = "Confirm",
 	cancelLabel = "Cancel",
 	busy = false,
+	fallbackFocus,
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) => {
+	const cancelRef = useRef<HTMLButtonElement>(null);
+	const panelRef = useRef<HTMLDivElement>(null);
+	const onCancelRef = useRef(onCancel);
+	const fallbackFocusRef = useRef(fallbackFocus);
+	onCancelRef.current = onCancel;
+	fallbackFocusRef.current = fallbackFocus;
+	useEffect(() => {
+		if (!open) return;
+		const previous = document.activeElement as HTMLElement | null;
+		cancelRef.current?.focus();
+		return () => {
+			if (previous?.isConnected) previous.focus();
+			else fallbackFocusRef.current?.()?.focus();
+		};
+	}, [open]);
+	useEffect(() => {
+		if (!open) return;
+		if (busy) panelRef.current?.focus();
+		else if (
+			document.activeElement === panelRef.current ||
+			!panelRef.current?.contains(document.activeElement)
+		)
+			cancelRef.current?.focus();
+	}, [open, busy]);
 	useEffect(() => {
 		if (!open) return;
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape" && !busy) onCancel();
+			if (e.key === "Escape" && !busy) onCancelRef.current();
+			if (e.key === "Tab") {
+				const buttons = Array.from(
+					panelRef.current?.querySelectorAll<HTMLButtonElement>(
+						"button:not(:disabled)",
+					) ?? [],
+				);
+				if (!buttons.length) {
+					e.preventDefault();
+					return;
+				}
+				const first = buttons[0];
+				const last = buttons[buttons.length - 1];
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
 		};
 		window.addEventListener("keydown", onKey);
 		return () => window.removeEventListener("keydown", onKey);
-	}, [open, busy, onCancel]);
+	}, [open, busy]);
 
 	if (!open) return null;
-
 	return (
 		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in"
+			className="fixed inset-0 z-50 flex items-center justify-center bg-black/85"
 			role="dialog"
 			aria-modal="true"
 			aria-labelledby="confirm-dialog-title"
@@ -47,33 +92,39 @@ const ConfirmDialog = ({
 					!busy &&
 					event.target === event.currentTarget &&
 					(event.key === "Enter" || event.key === " ")
-				) {
+				)
 					onCancel();
-				}
 			}}
 		>
-			<div className="dark:bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-				<h3
-					id="confirm-dialog-title"
-					className="dark:text-indigo-400 text-xl font-semibold tracking-tight mb-3"
-				>
+			<div
+				ref={panelRef}
+				tabIndex={-1}
+				className="brutal-panel mx-4 w-full max-w-md p-6"
+			>
+				<h3 id="confirm-dialog-title" className="display-title mb-3 text-3xl">
 					{title}
 				</h3>
-				<p className="text-gray-300 mb-6">{message}</p>
-				<div className="flex justify-end gap-3">
-					<Button
-						type="button"
-						actionType="secondary"
-						onClick={onCancel}
-						additionalClasses={busy ? ["opacity-60", "cursor-not-allowed"] : []}
+				<p className="mb-6 text-paper">{message}</p>
+				<div className="flex flex-wrap justify-end gap-4">
+					<span
+						ref={(element) => {
+							cancelRef.current = element?.querySelector("button") ?? null;
+						}}
 					>
-						{cancelLabel}
-					</Button>
+						<Button
+							type="button"
+							actionType="secondary"
+							onClick={onCancel}
+							disabled={busy}
+						>
+							{cancelLabel}
+						</Button>
+					</span>
 					<Button
 						type="button"
 						actionType="destructive"
 						onClick={onConfirm}
-						additionalClasses={busy ? ["opacity-60", "cursor-not-allowed"] : []}
+						disabled={busy}
 					>
 						{busy ? "Working..." : confirmLabel}
 					</Button>

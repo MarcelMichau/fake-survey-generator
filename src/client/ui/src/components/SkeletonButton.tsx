@@ -27,26 +27,22 @@ const SkeletonButton = ({
 }: SkeletonButtonProps) => {
 	const styleMap = {
 		primary: {
-			hexValue: "#48bb78",
+			hexValue: "#c7ff18",
 		},
 		secondary: {
-			hexValue: "#4299e1",
+			hexValue: "#f5f6f3",
 		},
 		destructive: {
-			hexValue: "#f56565",
+			hexValue: "#ff8e83",
 		},
 	};
 
 	const hexColour = styleMap[actionType].hexValue;
 
 	return (
-		<SkeletonTheme baseColor="#2d3748" highlightColor={hexColour}>
+		<SkeletonTheme baseColor="#30353a" highlightColor={hexColour}>
 			{loading ? (
-				<Skeleton
-					height={44}
-					width={150}
-					className="px-5 py-2.5 rounded-md shadow-md"
-				/>
+				<Skeleton height={44} width={150} className="px-5 py-2.5" />
 			) : (
 				<Button
 					type={type}

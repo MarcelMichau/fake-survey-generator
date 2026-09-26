@@ -45,13 +45,13 @@ const App = (): React.JSX.Element => {
 	}, [isAuthenticated, user, getAccessTokenSilently]);
 
 	return (
-		<div className="flex flex-col h-full">
-			<div className="flex-1">
+		<div className="flex min-h-screen flex-col">
+			<div className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
 				<NavBar />
 				{!isAuthenticated && !isLoading ? (
 					<Splash />
 				) : (
-					<div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4 mb-4">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 my-5 lg:my-6">
 						<div>
 							<CreateSurvey
 								loading={isLoading}
@@ -68,7 +68,7 @@ const App = (): React.JSX.Element => {
 								/>
 							)}
 						</div>
-						<div>
+						<div className="md:col-span-2">
 							<MySurveys loading={isLoading} />
 						</div>
 					</div>

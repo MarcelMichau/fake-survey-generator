@@ -21,11 +21,11 @@ const VersionInfo = () => {
 
 	return (
 		<>
-			<span className="block mt-4 lg:inline-block lg:mt-0 text-white mr-4">
+			<span className="block text-xs font-mono font-bold uppercase">
 				UI Version: {import.meta.env.VITE_APP_VERSION}
 			</span>
 
-			<span className="block mt-4 lg:inline-block lg:mt-0 text-white">
+			<span className="block text-xs font-mono font-bold uppercase">
 				{isLoading ? (
 					<span data-test="version-info">Loading API Version...</span>
 				) : (

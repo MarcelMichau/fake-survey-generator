@@ -17,19 +17,16 @@ describe("GetSurvey Component", () => {
 		createdOn: new Date("2026-01-20T00:00:00Z"),
 		options: [
 			{
-				id: 1,
 				optionText: "Red",
 				numberOfVotes: 50,
 				preferredNumberOfVotes: 0,
 			},
 			{
-				id: 2,
 				optionText: "Green",
 				numberOfVotes: 30,
 				preferredNumberOfVotes: 0,
 			},
 			{
-				id: 3,
 				optionText: "Blue",
 				numberOfVotes: 20,
 				preferredNumberOfVotes: 0,
@@ -120,6 +117,26 @@ describe("GetSurvey Component", () => {
 			await screen.rerender(<GetSurvey loading={false} newSurveyId={456} />);
 
 			await expect.poll(() => hooks.useSurveyFetch).toHaveBeenCalledWith(456);
+		});
+
+		it("renders API options without React key warnings", async () => {
+			const consoleError = vi.spyOn(console, "error");
+			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				survey: mockSurveyData,
+				loading: false,
+				error: "",
+			});
+			try {
+				const screen = await render(
+					<GetSurvey loading={false} newSurveyId={null} />,
+				);
+				await expect.element(screen.getByText("Red")).toBeInTheDocument();
+				expect(consoleError.mock.calls.flat().join(" ")).not.toContain(
+					'Each child in a list should have a unique "key" prop',
+				);
+			} finally {
+				consoleError.mockRestore();
+			}
 		});
 
 		it("should display survey results when data is fetched", async () => {

@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import type * as Types from "../types";
 import SkeletonButton from "./SkeletonButton";
@@ -15,6 +15,7 @@ export type MySurveysProps = {
 
 const MySurveys = ({ loading }: MySurveysProps) => {
 	const { apiCall } = useApiCall();
+	const formRef = useRef<HTMLFormElement>(null);
 	const [userSurveys, setUserSurveys] = useState<Types.UserSurveyModel[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
 	const [hasFetched, setHasFetched] = useState(false);
@@ -83,81 +84,78 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 		}
 	};
 
-	const tablePadding = "px-4 py-2";
-	const tableBorder = "border border-gray-700";
-
 	type TableHeaderProps = { children: React.ReactNode };
-	const TableHeader = ({ children }: TableHeaderProps) => (
-		<th className={`${tablePadding}`}>{children}</th>
-	);
+	const TableHeader = ({ children }: TableHeaderProps) => <th>{children}</th>;
 
 	type TableDataProps = { children: React.ReactNode };
-	const TableData = ({ children }: TableDataProps) => (
-		<td className={`${tableBorder} ${tablePadding}`}>{children}</td>
-	);
+	const TableData = ({ children }: TableDataProps) => <td>{children}</td>;
 
 	return (
-		<SkeletonTheme baseColor="#2d3748" highlightColor="#667eea">
-			<div className="dark:bg-gray-800 rounded-sm px-8 pt-6 pb-8 mb-4">
-				<h2 className="dark:text-indigo-500 text-xl font-semibold tracking-tight mb-2">
-					{loading ? <Skeleton width={100} /> : <span>My Surveys</span>}
-				</h2>
-				<form onSubmit={submitForm}>
-					<SkeletonButton
-						onClick={submitForm}
-						loading={loading}
-						type="submit"
-						additionalClasses={
-							isSearching ? ["opacity-80", "cursor-not-allowed"] : []
-						}
-					>
-						{isSearching ? "Searching..." : "Get My Surveys"}
-						<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
-					</SkeletonButton>
-				</form>
+		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
+			<div className="brutal-panel">
+				<div className="flex flex-wrap items-center justify-between gap-4 mb-2">
+					<h2 className="display-title text-4xl lg:text-5xl">
+						{loading ? <Skeleton width={100} /> : <span>My Surveys</span>}
+					</h2>
+					<form ref={formRef} onSubmit={submitForm}>
+						<SkeletonButton
+							loading={loading}
+							type="submit"
+							disabled={isSearching}
+							additionalClasses={
+								isSearching ? ["opacity-80", "cursor-not-allowed"] : []
+							}
+						>
+							{isSearching ? "Searching..." : "Get My Surveys"}
+							<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
+						</SkeletonButton>
+					</form>
+				</div>
 
 				{userSurveys.length > 0 && (
-					<table
-						className={`table-auto bg-gray-900 text-gray-400 ${tableBorder} my-4`}
-					>
-						<thead>
-							<tr>
-								<TableHeader>Question</TableHeader>
-								<TableHeader>Audience</TableHeader>
-								<TableHeader># Respondents</TableHeader>
-								<TableHeader># Options</TableHeader>
-								<TableHeader>Winning Option</TableHeader>
-								<TableHeader>Winning # Votes</TableHeader>
-								<TableHeader>Actions</TableHeader>
-							</tr>
-						</thead>
-						<tbody>
-							{userSurveys.map((survey) => (
-								<tr key={survey.id}>
-									<TableData>{survey.topic}</TableData>
-									<TableData>{survey.respondentType}</TableData>
-									<TableData>
-										{numberFormatter.format(survey.numberOfRespondents)}
-									</TableData>
-									<TableData>{survey.numberOfOptions}</TableData>
-									<TableData>{survey.winningOption}</TableData>
-									<TableData>
-										{numberFormatter.format(survey.winningOptionNumberOfVotes)}
-									</TableData>
-									<TableData>
-										<button
-											type="button"
-											aria-label={`Delete survey ${survey.topic}`}
-											onClick={() => setSurveyToDelete(survey)}
-											className="text-red-400 hover:text-red-300 transition-colors px-2 py-1"
-										>
-											<FontAwesomeIcon icon={faTrash} />
-										</button>
-									</TableData>
+					<div className="overflow-x-auto mt-5">
+						<table className="brutal-table min-w-[850px]">
+							<thead>
+								<tr>
+									<TableHeader>Question</TableHeader>
+									<TableHeader>Audience</TableHeader>
+									<TableHeader># Respondents</TableHeader>
+									<TableHeader># Options</TableHeader>
+									<TableHeader>Winning Option</TableHeader>
+									<TableHeader>Winning # Votes</TableHeader>
+									<TableHeader>Actions</TableHeader>
 								</tr>
-							))}
-						</tbody>
-					</table>
+							</thead>
+							<tbody>
+								{userSurveys.map((survey) => (
+									<tr key={survey.id}>
+										<TableData>{survey.topic}</TableData>
+										<TableData>{survey.respondentType}</TableData>
+										<TableData>
+											{numberFormatter.format(survey.numberOfRespondents)}
+										</TableData>
+										<TableData>{survey.numberOfOptions}</TableData>
+										<TableData>{survey.winningOption}</TableData>
+										<TableData>
+											{numberFormatter.format(
+												survey.winningOptionNumberOfVotes,
+											)}
+										</TableData>
+										<TableData>
+											<button
+												type="button"
+												aria-label={`Delete survey ${survey.topic}`}
+												onClick={() => setSurveyToDelete(survey)}
+												className="brutal-icon-button"
+											>
+												<FontAwesomeIcon icon={faTrash} />
+											</button>
+										</TableData>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
 				)}
 				{hasFetched && userSurveys?.length === 0 && (
 					<Alert
@@ -183,6 +181,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 					}
 					confirmLabel="Delete"
 					busy={isDeleting}
+					fallbackFocus={() => formRef.current?.querySelector("button") ?? null}
 					onConfirm={confirmDelete}
 					onCancel={() => {
 						if (!isDeleting) setSurveyToDelete(null);
