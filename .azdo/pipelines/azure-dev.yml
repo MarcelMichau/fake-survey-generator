@@ -82,6 +82,7 @@ stages:
 
           - script: bash .azdo/scripts/report-disk-usage.sh "After SDK install"
             displayName: "Measure disk usage before build"
+            condition: always()
 
           # Hosted agents come with unused preloaded images; prune before Dapr and Aspire pull test dependencies.
           - script: docker image prune --all --force
