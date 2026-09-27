@@ -80,19 +80,39 @@ stages:
               useGlobalJson: true
               includePreviewVersions: true
 
+          - script: bash .azdo/scripts/report-disk-usage.sh "After SDK install"
+            displayName: "Measure disk usage before build"
+            condition: always()
+
+          # Hosted agents come with unused preloaded images; prune before Dapr and Aspire pull test dependencies.
+          - script: docker image prune --all --force
+            displayName: "Prune unused preloaded Docker images"
+
+          - script: bash .azdo/scripts/report-disk-usage.sh "After Docker image prune"
+            displayName: "Measure disk usage after Docker image prune"
+            condition: always()
+
           - task: DotNetCoreCLI@2
             inputs:
               command: "build"
               projects: "FakeSurveyGenerator.slnx"
             displayName: "Build Solution"
 
+          - script: bash .azdo/scripts/report-disk-usage.sh "After solution build"
+            displayName: "Measure disk usage after build"
+            condition: always()
+
           # Cert Trust Related Issue: https://github.com/dotnet/aspire/issues/13612
           - script: |
               wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
-              dapr init
+              dapr init --slim
 
               SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust dotnet dev-certs https --trust
             displayName: "Test Preparation"
+
+          - script: bash .azdo/scripts/report-disk-usage.sh "After test preparation"
+            displayName: "Measure disk usage after test preparation"
+            condition: always()
 
           - task: DotNetCoreCLI@2
             inputs:
@@ -100,6 +120,10 @@ stages:
               publishTestResults: true
               arguments: "--no-build --coverage"
             displayName: "Run Tests"
+
+          - script: bash .azdo/scripts/report-disk-usage.sh "After tests"
+            displayName: "Measure disk usage after tests"
+            condition: always()
 
           - script: |
               dotnet tool restore

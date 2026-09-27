@@ -1,4 +1,6 @@
 ﻿using Aspire.Hosting;
+using Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.Redis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TUnit.Core.Interfaces;
@@ -12,8 +14,8 @@ public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        // Install Playwright Browsers used by Acceptance Tests
-        var exitCode = Microsoft.Playwright.Program.Main(["install"]);
+        // Only Chromium is used by the acceptance tests.
+        var exitCode = Microsoft.Playwright.Program.Main(["install", "chromium"]);
         if (exitCode != 0)
         {
             throw new Exception($"Playwright exited with code {exitCode}");
@@ -21,6 +23,10 @@ public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
 
         var appHost = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FakeSurveyGenerator_AppHost>();
+
+        // Keep Redis Insight automatic for local aspire run, but defer it in acceptance tests.
+        appHost.Resources.OfType<RedisInsightResource>().Single()
+            .Annotations.Add(new ExplicitStartupAnnotation());
 
         appHost.Services.AddLogging(logging =>
         {
