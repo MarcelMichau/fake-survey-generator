@@ -104,7 +104,7 @@ stages:
           # Cert Trust Related Issue: https://github.com/dotnet/aspire/issues/13612
           - script: |
               wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
-              dapr init
+              dapr init --slim
 
               SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust dotnet dev-certs https --trust
             displayName: "Test Preparation"
