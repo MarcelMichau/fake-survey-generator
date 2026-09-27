@@ -1,4 +1,5 @@
 ﻿using Aspire.Hosting;
+using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TUnit.Core.Interfaces;
@@ -21,6 +22,10 @@ public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
 
         var appHost = await DistributedApplicationTestingBuilder
             .CreateAsync<Projects.FakeSurveyGenerator_AppHost>();
+
+        // Keep Redis Insight automatic for local aspire run, but defer it in acceptance tests.
+        appHost.Resources.Single(resource => resource.Name == "redis-insight")
+            .Annotations.Add(new ExplicitStartupAnnotation());
 
         appHost.Services.AddLogging(logging =>
         {
