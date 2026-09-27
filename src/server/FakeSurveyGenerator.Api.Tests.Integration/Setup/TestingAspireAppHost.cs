@@ -2,6 +2,7 @@
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
+using Aspire.Hosting.Redis;
 using AppHostProject = AppHost::Projects.FakeSurveyGenerator_AppHost;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
@@ -40,7 +41,7 @@ public sealed class TestingAspireAppHost()
         // Prevent project resources and Redis Insight from starting automatically —
         // the API is hosted via WebApplicationFactory and the others are not needed for tests.
         var resourcesToSkip = appBuilder.Resources
-            .Where(r => r is ProjectResource || r.Name is "redis-insight" or "ui")
+            .Where(r => r is ProjectResource or RedisInsightResource || r.Name == "ui")
             .ToList();
 
         foreach (var resource in resourcesToSkip)
