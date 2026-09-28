@@ -8,7 +8,7 @@ public sealed class DomainEventPublisher(
     : IEventBus
 {
     private readonly IReadOnlyList<IDomainEventHandler> _handlers =
-        (handlers ?? throw new ArgumentNullException(nameof(handlers))).ToList();
+        [.. handlers ?? throw new ArgumentNullException(nameof(handlers))];
     private readonly ILogger<DomainEventPublisher> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default)

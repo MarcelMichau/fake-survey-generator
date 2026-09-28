@@ -5,6 +5,7 @@ using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FluentValidation;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 
@@ -12,6 +13,7 @@ namespace FakeSurveyGenerator.Application.Features.Surveys;
 
 public sealed record DeleteSurveyCommand(int Id) : ICommand<Result<int, Error>>;
 
+[UsedImplicitly]
 public sealed class DeleteSurveyCommandValidator : AbstractValidator<DeleteSurveyCommand>
 {
     public DeleteSurveyCommandValidator()

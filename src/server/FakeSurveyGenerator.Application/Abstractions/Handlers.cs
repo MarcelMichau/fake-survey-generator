@@ -1,13 +1,8 @@
 namespace FakeSurveyGenerator.Application.Abstractions;
 
+public interface ICommand<TResult>;
 
-public interface ICommand<TResult>
-{
-}
-
-public interface IQuery<TResult>
-{
-}
+public interface IQuery<TResult>;
 
 public interface ICommandHandler<in TCommand, TResult>
     where TCommand : ICommand<TResult>

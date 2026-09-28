@@ -7,15 +7,18 @@ internal static class DaprConfigurationExtensions
 {
     private const string DaprHttpPortEnvVar = "DAPR_HTTP_PORT";
 
-    public static IHostApplicationBuilder AddDaprConfiguration(this IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
-        builder.Services.AddDaprClient();
+        public IHostApplicationBuilder AddDaprConfiguration()
+        {
+            builder.Services.AddDaprClient();
 
-        // Only configure the Dapr secret store when a Dapr sidecar is present.
-        // The sidecar injects DAPR_HTTP_PORT into the process environment when attached.
-        if (Environment.GetEnvironmentVariable(DaprHttpPortEnvVar) is not null)
-            builder.Configuration.AddDaprSecretStore("secrets", new DaprClientBuilder().Build(), TimeSpan.FromSeconds(10));
+            // Only configure the Dapr secret store when a Dapr sidecar is present.
+            // The sidecar injects DAPR_HTTP_PORT into the process environment when attached.
+            if (Environment.GetEnvironmentVariable(DaprHttpPortEnvVar) is not null)
+                builder.Configuration.AddDaprSecretStore("secrets", new DaprClientBuilder().Build(), TimeSpan.FromSeconds(10));
 
-        return builder;
+            return builder;
+        }
     }
 }

@@ -9,26 +9,29 @@ namespace FakeSurveyGenerator.Application.Infrastructure.Persistence;
 
 internal static class DatabaseConfigurationExtensions
 {
-    public static IHostApplicationBuilder AddDatabaseConfiguration(this IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
-        const string connectionName = "database";
+        public IHostApplicationBuilder AddDatabaseConfiguration()
+        {
+            const string connectionName = "database";
 
-        var connectionString = builder.Configuration.GetConnectionString(connectionName) ??
-                               throw new InvalidOperationException(
-                                   $"Connection String for '{connectionName}' was not found in config");
+            var connectionString = builder.Configuration.GetConnectionString(connectionName) ??
+                                   throw new InvalidOperationException(
+                                       $"Connection String for '{connectionName}' was not found in config");
 
-        builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntitySaveChangesInterceptor>();
-        builder.Services.AddScoped<ISaveChangesInterceptor, PublishDomainEventsInterceptor>();
+            builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntitySaveChangesInterceptor>();
+            builder.Services.AddScoped<ISaveChangesInterceptor, PublishDomainEventsInterceptor>();
 
-        builder.Services.AddDbContext<SurveyContext>((sp, options) =>
-            {
-                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-                options.UseSqlServer(connectionString);
-            }
-        );
+            builder.Services.AddDbContext<SurveyContext>((sp, options) =>
+                {
+                    options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                    options.UseSqlServer(connectionString);
+                }
+            );
 
-        builder.EnrichSqlServerDbContext<SurveyContext>();
+            builder.EnrichSqlServerDbContext<SurveyContext>();
 
-        return builder;
+            return builder;
+        }
     }
 }

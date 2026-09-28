@@ -4,6 +4,7 @@ using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FluentValidation;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 
@@ -11,6 +12,7 @@ namespace FakeSurveyGenerator.Application.Features.Surveys;
 
 public sealed record GetSurveyDetailQuery(int Id) : IQuery<Result<SurveyModel, Error>>;
 
+[UsedImplicitly]
 public sealed class GetSurveyDetailQueryValidator : AbstractValidator<GetSurveyDetailQuery>
 {
     public GetSurveyDetailQueryValidator()

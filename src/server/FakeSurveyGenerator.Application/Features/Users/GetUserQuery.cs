@@ -4,12 +4,14 @@ using FakeSurveyGenerator.Application.Domain.Users;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FluentValidation;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Features.Users;
 
 public sealed record GetUserQuery(int Id) : IQuery<Result<UserModel, Error>>;
 
+[UsedImplicitly]
 public sealed class GetUserQueryValidator : AbstractValidator<GetUserQuery>
 {
     public GetUserQueryValidator()
@@ -27,7 +29,6 @@ public sealed class GetUserQueryHandler(
 
     public async Task<Result<UserModel, Error>> Handle(GetUserQuery request, CancellationToken cancellationToken = default)
     {
-        // Validate the query first
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {

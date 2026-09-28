@@ -601,7 +601,7 @@ public sealed class SurveyTests
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
         // Act & Assert
-        await Assert.That(() => survey.CalculateOneSidedOutcome())
+        await Assert.That(survey.CalculateOneSidedOutcome)
             .ThrowsExactly<SurveyDomainException>();
     }
 
@@ -887,7 +887,7 @@ public sealed class SurveyTests
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
-        var numberOfRespondents = 100;
+        const int numberOfRespondents = 100;
         var respondentType = _fixture.Create<NonEmptyString>();
 
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
@@ -911,13 +911,13 @@ public sealed class SurveyTests
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
-        var numberOfRespondents = 10000;
+        const int numberOfRespondents = 10000;
         var respondentType = _fixture.Create<NonEmptyString>();
 
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
 
         var options = new List<SurveyOption>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             options.Add(new SurveyOption(NonEmptyString.Create($"Option {i}"), 0));
         }
@@ -938,7 +938,7 @@ public sealed class SurveyTests
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
-        var numberOfRespondents = 100;
+        const int numberOfRespondents = 100;
         var respondentType = _fixture.Create<NonEmptyString>();
 
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
@@ -965,7 +965,7 @@ public sealed class SurveyTests
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
-        var numberOfRespondents = 100;
+        const int numberOfRespondents = 100;
         var respondentType = _fixture.Create<NonEmptyString>();
 
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);
@@ -990,7 +990,7 @@ public sealed class SurveyTests
     {
         // Arrange
         var topic = _fixture.Create<NonEmptyString>();
-        var numberOfRespondents = 100;
+        const int numberOfRespondents = 100;
         var respondentType = _fixture.Create<NonEmptyString>();
 
         var survey = new Survey(_fixture.Create<User>(), topic, numberOfRespondents, respondentType);

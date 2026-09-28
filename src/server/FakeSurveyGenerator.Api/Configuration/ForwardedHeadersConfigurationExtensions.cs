@@ -4,18 +4,21 @@ namespace FakeSurveyGenerator.Api.Configuration;
 
 internal static class ForwardedHeadersConfigurationExtensions
 {
-    public static IHostApplicationBuilder AddForwardedHeadersConfiguration(this IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
-        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        public IHostApplicationBuilder AddForwardedHeadersConfiguration()
         {
-            options.ForwardedHeaders |= ForwardedHeaders.XForwardedHost;
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders |= ForwardedHeaders.XForwardedHost;
 
-            options.AllowedHosts =
-            [
-                "fakesurveygenerator.mysecondarydomain.com"
-            ];
-        });
+                options.AllowedHosts =
+                [
+                    "fakesurveygenerator.mysecondarydomain.com"
+                ];
+            });
 
-        return builder;
+            return builder;
+        }
     }
 }

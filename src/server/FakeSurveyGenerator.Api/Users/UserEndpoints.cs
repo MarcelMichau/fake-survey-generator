@@ -7,29 +7,31 @@ using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace FakeSurveyGenerator.Api.Users;
 
 internal static class UserEndpoints
 {
-    internal static void MapUserEndpoints(this IEndpointRouteBuilder app)
+    extension(IEndpointRouteBuilder app)
     {
-        var userGroup = app.MapGroup("/api/user")
-            .RequireAuthorization()
-            .AddEndpointFilter<RequestLoggingEndpointFilter>();
+        internal void MapUserEndpoints()
+        {
+            var userGroup = app.MapGroup("/api/user")
+                .RequireAuthorization()
+                .AddEndpointFilter<RequestLoggingEndpointFilter>();
 
-        userGroup.MapGet("/{id:int}", GetUser)
-            .WithName(nameof(GetUser))
-            .WithSummary("Retrieves a specific User");
+            userGroup.MapGet("/{id:int}", GetUser)
+                .WithName(nameof(GetUser))
+                .WithSummary("Retrieves a specific User");
 
-        userGroup.MapGet("isRegistered", IsRegistered)
-            .WithName(nameof(IsRegistered))
-            .WithSummary("Checks whether or not a User with a specific UserId is already registered in the system");
+            userGroup.MapGet("isRegistered", IsRegistered)
+                .WithName(nameof(IsRegistered))
+                .WithSummary("Checks whether or not a User with a specific UserId is already registered in the system");
 
-        userGroup.MapPost("register", Register)
-            .WithName(nameof(Register))
-            .WithSummary("Registers a new User, using the information from the access token");
+            userGroup.MapPost("register", Register)
+                .WithName(nameof(Register))
+                .WithSummary("Registers a new User, using the information from the access token");
+        }
     }
 
     private static async Task<Results<Ok<UserModel>, ProblemHttpResult>> GetUser(
@@ -42,7 +44,7 @@ internal static class UserEndpoints
         return ApiResultExtensions.FromResult(result);
     }
 
-    private static async Task<IResult> IsRegistered(
+    private static async Task<Results<Ok<UserRegistrationStatusModel>, ProblemHttpResult>> IsRegistered(
         IQueryHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel, Error>> handler,
         [Description("The external user identifier")][Required] string userId,
         CancellationToken cancellationToken)

@@ -10,31 +10,36 @@ internal static class IdentityProviderConfigurationExtensions
 {
     private static readonly string[] IdentityProviderTags = ["identity-provider", "ready"];
 
-    public static IHostApplicationBuilder AddOAuthConfiguration(this IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
-        builder.Services
-            .AddHttpClient<IUserService, OAuthUserInfoService>()
-            .AddStandardResilienceHandler();
+        public IHostApplicationBuilder AddOAuthConfiguration()
+        {
+            builder.Services
+                .AddHttpClient<IUserService, OAuthUserInfoService>()
+                .AddStandardResilienceHandler();
 
-        builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<ITokenProviderService, JwtBearerTokenProviderService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ITokenProviderService, JwtBearerTokenProviderService>();
 
-        var healthChecksBuilder = builder.Services.AddHealthChecks();
-        healthChecksBuilder.AddIdentityProviderHealthCheck(builder.Configuration);
+            var healthChecksBuilder = builder.Services.AddHealthChecks();
+            healthChecksBuilder.AddIdentityProviderHealthCheck(builder.Configuration);
 
-        return builder;
+            return builder;
+        }
     }
 
-    private static IHealthChecksBuilder AddIdentityProviderHealthCheck(this IHealthChecksBuilder healthChecksBuilder,
-        IConfiguration configuration)
+    extension(IHealthChecksBuilder healthChecksBuilder)
     {
-        healthChecksBuilder.AddOpenIdConnectServer(
-            new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
-            name: "IdentityProvider-check",
-            tags: IdentityProviderTags,
-            failureStatus: HealthStatus.Unhealthy,
-            timeout: new TimeSpan(0, 0, 5));
+        private IHealthChecksBuilder AddIdentityProviderHealthCheck(IConfiguration configuration)
+        {
+            healthChecksBuilder.AddOpenIdConnectServer(
+                new Uri($"{configuration.GetValue<string>("IDENTITY_PROVIDER_URL")}"),
+                name: "IdentityProvider-check",
+                tags: IdentityProviderTags,
+                failureStatus: HealthStatus.Unhealthy,
+                timeout: new TimeSpan(0, 0, 5));
 
-        return healthChecksBuilder;
+            return healthChecksBuilder;
+        }
     }
 }

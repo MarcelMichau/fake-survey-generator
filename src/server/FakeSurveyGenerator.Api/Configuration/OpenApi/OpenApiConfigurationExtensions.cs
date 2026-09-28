@@ -8,48 +8,54 @@ namespace FakeSurveyGenerator.Api.Configuration.OpenApi;
 
 internal static class OpenApiConfigurationExtensions
 {
-    public static IHostApplicationBuilder AddOpenApiConfiguration(this IHostApplicationBuilder builder)
+    extension(IHostApplicationBuilder builder)
     {
-        builder.Services.AddOpenApi(options =>
+        public IHostApplicationBuilder AddOpenApiConfiguration()
         {
-            // Scalar.AspNetCore 2.17.3 supports OpenAPI 3.1, but not the OpenAPI 3.2
-            // document emitted by Microsoft.AspNetCore.OpenApi 11 by default.
-            options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
-            options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>();
-            options.AddOperationTransformer<AuthorizeOperationTransformer>();
-        });
+            builder.Services.AddOpenApi(options =>
+            {
+                // Scalar.AspNetCore 2.17.3 supports OpenAPI 3.1, but not the OpenAPI 3.2
+                // document emitted by Microsoft.AspNetCore.OpenApi 11 by default.
+                options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
+                options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>();
+                options.AddOperationTransformer<AuthorizeOperationTransformer>();
+            });
 
-        return builder;
+            return builder;
+        }
     }
 
-    public static IApplicationBuilder UseOpenApiConfiguration(this WebApplication app)
+    extension(WebApplication app)
     {
-        app.MapOpenApi();
-
-        app.MapScalarApiReference("/api-docs", options =>
+        public IApplicationBuilder UseOpenApiConfiguration()
         {
-            options.Title = "Fake Survey Generator - OpenAPI";
+            app.MapOpenApi();
 
-            // Because light attracts bugs :)
-            options.DarkMode = true;
-            options.HideDarkModeToggle = true;
+            app.MapScalarApiReference("/api-docs", options =>
+            {
+                options.Title = "Fake Survey Generator - OpenAPI";
 
-            // Use the Aspire external proxy address for the API instead of the internal API address for the URL used by Scalar
-            // https://github.com/scalar/scalar/discussions/4025
-            options.Servers = [];
+                // Because light attracts bugs :)
+                options.DarkMode = true;
+                options.HideDarkModeToggle = true;
 
-            options
-                .AddPreferredSecuritySchemes("OAuth2")
-                .AddAuthorizationCodeFlow("OAuth2", flow =>
-                {
-                    flow.ClientId = "LuAbezRfaAKRau0myoAkXCK2myLrfMYP";
-                    flow.Pkce = Pkce.Sha256;
-                    flow.SelectedScopes = ["openid", "profile", "email"];
-                })
-                .EnablePersistentAuthentication();
-        });
+                // Use the Aspire external proxy address for the API instead of the internal API address for the URL used by Scalar
+                // https://github.com/scalar/scalar/discussions/4025
+                options.Servers = [];
 
-        return app;
+                options
+                    .AddPreferredSecuritySchemes("OAuth2")
+                    .AddAuthorizationCodeFlow("OAuth2", flow =>
+                    {
+                        flow.ClientId = "LuAbezRfaAKRau0myoAkXCK2myLrfMYP";
+                        flow.Pkce = Pkce.Sha256;
+                        flow.SelectedScopes = ["openid", "profile", "email"];
+                    })
+                    .EnablePersistentAuthentication();
+            });
+
+            return app;
+        }
     }
 }
 

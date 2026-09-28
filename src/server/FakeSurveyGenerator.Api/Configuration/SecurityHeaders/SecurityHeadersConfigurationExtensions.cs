@@ -2,13 +2,16 @@
 
 internal static class SecurityHeadersConfigurationExtensions
 {
-    public static IApplicationBuilder UseSecurityHeadersConfiguration(this WebApplication app)
+    extension(WebApplication app)
     {
-        var policyCollection = new HeaderPolicyCollection()
-            .AddCrossOriginOpenerPolicy(x => x.UnsafeNone()); // Required for OpenAPI Docs Sign-In with PKCE to work in browsers
+        public IApplicationBuilder UseSecurityHeadersConfiguration()
+        {
+            var policyCollection = new HeaderPolicyCollection()
+                .AddCrossOriginOpenerPolicy(x => x.UnsafeNone()); // Required for OpenAPI Docs Sign-In with PKCE to work in browsers
 
-        app.UseSecurityHeaders(policyCollection);
+            app.UseSecurityHeaders(policyCollection);
 
-        return app;
+            return app;
+        }
     }
 }

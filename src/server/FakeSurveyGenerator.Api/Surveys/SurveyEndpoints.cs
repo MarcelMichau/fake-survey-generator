@@ -10,34 +10,37 @@ namespace FakeSurveyGenerator.Api.Surveys;
 
 internal static class SurveyEndpoints
 {
-    internal static void MapSurveyEndpoints(this IEndpointRouteBuilder app)
+    extension(IEndpointRouteBuilder app)
     {
-        var surveyGroup = app.MapGroup("/api/survey")
-            .RequireAuthorization()
-            .AddEndpointFilter<RequestLoggingEndpointFilter>()
-            .AddEndpointFilter<ValidationLoggingEndpointFilter>();
+        internal void MapSurveyEndpoints()
+        {
+            var surveyGroup = app.MapGroup("/api/survey")
+                .RequireAuthorization()
+                .AddEndpointFilter<RequestLoggingEndpointFilter>()
+                .AddEndpointFilter<ValidationLoggingEndpointFilter>();
 
-        surveyGroup.MapGet("/{id:int}", GetSurvey)
-            .WithName(nameof(GetSurvey))
-            .WithSummary("Retrieves a specific Survey");
+            surveyGroup.MapGet("/{id:int}", GetSurvey)
+                .WithName(nameof(GetSurvey))
+                .WithSummary("Retrieves a specific Survey");
 
-        surveyGroup.MapGet("/user", GetUserSurveys)
-            .WithName(nameof(GetUserSurveys))
-            .WithSummary("Retrieves all Surveys created by the current user");
+            surveyGroup.MapGet("/user", GetUserSurveys)
+                .WithName(nameof(GetUserSurveys))
+                .WithSummary("Retrieves all Surveys created by the current user");
 
-        surveyGroup.MapPost("", CreateSurvey)
-            .WithName(nameof(CreateSurvey))
-            .WithSummary("Creates a new Survey");
+            surveyGroup.MapPost("", CreateSurvey)
+                .WithName(nameof(CreateSurvey))
+                .WithSummary("Creates a new Survey");
 
-        surveyGroup.MapPost("/analyze", AnalyzeSurvey)
-            .WithName(nameof(AnalyzeSurvey))
-            .WithSummary("Analyzes a Survey before creation")
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+            surveyGroup.MapPost("/analyze", AnalyzeSurvey)
+                .WithName(nameof(AnalyzeSurvey))
+                .WithSummary("Analyzes a Survey before creation")
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
-        surveyGroup.MapDelete("/{id:int}", DeleteSurvey)
-            .WithName(nameof(DeleteSurvey))
-            .WithSummary("Deletes a Survey owned by the current user");
+            surveyGroup.MapDelete("/{id:int}", DeleteSurvey)
+                .WithName(nameof(DeleteSurvey))
+                .WithSummary("Deletes a Survey owned by the current user");
+        }
     }
 
     private static async Task<Results<Ok<SurveyModel>, ProblemHttpResult>> GetSurvey(
@@ -161,9 +164,6 @@ internal static class SurveyEndpoints
         if (Equals(error, Errors.General.NotFound()))
             return StatusCodes.Status404NotFound;
 
-        if (Equals(error, Errors.General.Forbidden()))
-            return StatusCodes.Status403Forbidden;
-
-        return StatusCodes.Status400BadRequest;
+        return Equals(error, Errors.General.Forbidden()) ? StatusCodes.Status403Forbidden : StatusCodes.Status400BadRequest;
     }
 }

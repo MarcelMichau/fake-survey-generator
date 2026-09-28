@@ -21,92 +21,97 @@ namespace FakeSurveyGenerator.Application;
 
 public static class HostApplicationBuilderConfiguration
 {
-    public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)
+    extension(IServiceCollection services)
     {
-        // Command Handlers
-        builder.Services
-            .AddCommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>, CreateSurveyCommandHandler>()
-            .AddCommandHandler<AnalyzeSurveyCommand, Result<SurveyAnalysisModel, Error>, AnalyzeSurveyCommandHandler>()
-            .AddCommandHandler<DeleteSurveyCommand, Result<int, Error>, DeleteSurveyCommandHandler>()
-            .AddCommandHandler<RegisterUserCommand, RegisterUserResult, RegisterUserCommandHandler>();
+        private IServiceCollection AddCommandHandler<TCommand, TResult, THandler>()
+            where TCommand : ICommand<TResult>
+            where THandler : class, ICommandHandler<TCommand, TResult>
+        {
+            services.AddScoped<ICommandHandler<TCommand, TResult>, THandler>();
+            return services;
+        }
 
-        // Query Handlers
-        builder.Services.AddQueryHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>, GetUserSurveysQueryHandler>()
-            .AddQueryHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>, GetSurveyDetailQueryHandler>()
-            .AddQueryHandler<GetUserQuery, Result<UserModel, Error>, GetUserQueryHandler>()
-            .AddQueryHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel, Error>, IsUserRegisteredQueryHandler>();
+        private IServiceCollection AddQueryHandler<TQuery, TResult, THandler>()
+            where TQuery : IQuery<TResult>
+            where THandler : class, IQueryHandler<TQuery, TResult>
+        {
+            services.AddScoped<IQueryHandler<TQuery, TResult>, THandler>();
+            return services;
+        }
 
-        // Domain Event Handlers
-        builder.Services
-            .AddDomainEventHandler<SurveyCreatedDomainEvent, SendNotificationWhenSurveyCreatedDomainEventHandler>();
-
-        // Validators
-        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-        // Domain Event Publisher
-        builder.Services.AddScoped<IEventBus, DomainEventPublisher>();
-
-        return builder;
+        private IServiceCollection AddDomainEventHandler<TEvent, THandler>()
+            where TEvent : IDomainEvent
+            where THandler : class, IDomainEventHandler<TEvent>
+        {
+            services.AddScoped<IDomainEventHandler<TEvent>, THandler>();
+            services.AddScoped<IDomainEventHandler>(provider =>
+                provider.GetRequiredService<IDomainEventHandler<TEvent>>());
+            return services;
+        }
     }
 
-    private static IServiceCollection AddCommandHandler<TCommand, TResult, THandler>(this IServiceCollection services)
-        where TCommand : ICommand<TResult>
-        where THandler : class, ICommandHandler<TCommand, TResult>
+    extension(IHostApplicationBuilder builder)
     {
-        services.AddScoped<ICommandHandler<TCommand, TResult>, THandler>();
-        return services;
-    }
+        private IHostApplicationBuilder AddBaseInfrastructure()
+        {
+            builder.Services.AddSingleton(TimeProvider.System);
 
-    private static IServiceCollection AddQueryHandler<TQuery, TResult, THandler>(this IServiceCollection services)
-        where TQuery : IQuery<TResult>
-        where THandler : class, IQueryHandler<TQuery, TResult>
-    {
-        services.AddScoped<IQueryHandler<TQuery, TResult>, THandler>();
-        return services;
-    }
+            builder.Services.AddScoped<INotificationService, NotificationService>();
 
-    private static IServiceCollection AddDomainEventHandler<TEvent, THandler>(this IServiceCollection services)
-        where TEvent : IDomainEvent
-        where THandler : class, IDomainEventHandler<TEvent>
-    {
-        services.AddScoped<IDomainEventHandler<TEvent>, THandler>();
-        services.AddScoped<IDomainEventHandler>(provider =>
-            provider.GetRequiredService<IDomainEventHandler<TEvent>>());
-        return services;
-    }
+            builder.AddDatabaseConfiguration();
+            builder.AddCacheConfiguration();
+            builder.AddTypeSafeConfiguration();
 
-    private static IHostApplicationBuilder AddBaseInfrastructure(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddSingleton(TimeProvider.System);
+            return builder;
+        }
 
-        builder.Services.AddScoped<INotificationService, NotificationService>();
+        // There are two different extension methods to add the Infrastructure dependencies to the service collection.
+        // This is because the services for OAuthUserInfo depend on a Token Provider which, in turn, depend on an HttpContext.
+        // The AddInfrastructure method registers a SystemUserInfoService - this is intended to be used by long-running worker processes which do not have an HttpContext.
+        // The AddInfrastructureForApi method registers an OAuthUserInfoService to get the current user info from an OAuth Identity Provider using the Access Token from the HTTP request - this is intended
+        // to be used by APIs which do have an HttpContext & which have an ITokenProvider implementation registered with the service collection.
+        public IHostApplicationBuilder AddInfrastructure()
+        {
+            builder.AddBaseInfrastructure();
+            builder.Services.AddSingleton<IUserService, SystemUserInfoService>();
 
-        builder.AddDatabaseConfiguration();
-        builder.AddCacheConfiguration();
-        builder.AddTypeSafeConfiguration();
+            return builder;
+        }
 
-        return builder;
-    }
+        public IHostApplicationBuilder AddInfrastructureForApi()
+        {
+            builder.AddBaseInfrastructure();
+            builder.AddOAuthConfiguration();
 
-    // There are two different extension methods to add the Infrastructure dependencies to the service collection.
-    // This is because the services for OAuthUserInfo depend on a Token Provider which, in turn, depend on an HttpContext.
-    // The AddInfrastructure method registers a SystemUserInfoService - this is intended to be used by long-running worker processes which do not have an HttpContext.
-    // The AddInfrastructureForApi method registers an OAuthUserInfoService to get the current user info from an OAuth Identity Provider using the Access Token from the HTTP request - this is intended
-    // to be used by APIs which do have an HttpContext & which have an ITokenProvider implementation registered with the service collection.
+            return builder;
+        }
 
-    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
-    {
-        builder.AddBaseInfrastructure();
-        builder.Services.AddSingleton<IUserService, SystemUserInfoService>();
+        public IHostApplicationBuilder AddApplication()
+        {
+            // Command Handlers
+            builder.Services
+                .AddCommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>, CreateSurveyCommandHandler>()
+                .AddCommandHandler<AnalyzeSurveyCommand, Result<SurveyAnalysisModel, Error>, AnalyzeSurveyCommandHandler>()
+                .AddCommandHandler<DeleteSurveyCommand, Result<int, Error>, DeleteSurveyCommandHandler>()
+                .AddCommandHandler<RegisterUserCommand, RegisterUserResult, RegisterUserCommandHandler>();
 
-        return builder;
-    }
+            // Query Handlers
+            builder.Services.AddQueryHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>, GetUserSurveysQueryHandler>()
+                .AddQueryHandler<GetSurveyDetailQuery, Result<SurveyModel, Error>, GetSurveyDetailQueryHandler>()
+                .AddQueryHandler<GetUserQuery, Result<UserModel, Error>, GetUserQueryHandler>()
+                .AddQueryHandler<IsUserRegisteredQuery, Result<UserRegistrationStatusModel, Error>, IsUserRegisteredQueryHandler>();
 
-    public static IHostApplicationBuilder AddInfrastructureForApi(this IHostApplicationBuilder builder)
-    {
-        builder.AddBaseInfrastructure();
-        builder.AddOAuthConfiguration();
+            // Domain Event Handlers
+            builder.Services
+                .AddDomainEventHandler<SurveyCreatedDomainEvent, SendNotificationWhenSurveyCreatedDomainEventHandler>();
 
-        return builder;
+            // Validators
+            builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+            // Domain Event Publisher
+            builder.Services.AddScoped<IEventBus, DomainEventPublisher>();
+
+            return builder;
+        }
     }
 }

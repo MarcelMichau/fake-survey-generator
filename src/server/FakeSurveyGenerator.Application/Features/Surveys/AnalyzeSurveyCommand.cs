@@ -2,6 +2,7 @@
 using FakeSurveyGenerator.Application.Abstractions;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FluentValidation;
+using JetBrains.Annotations;
 
 namespace FakeSurveyGenerator.Application.Features.Surveys;
 
@@ -37,6 +38,7 @@ public interface ISurveySemanticAnalyzer
         CancellationToken cancellationToken = default);
 }
 
+[UsedImplicitly]
 public sealed class AnalyzeSurveyCommandValidator : AbstractValidator<AnalyzeSurveyCommand>
 {
     private const int MaximumOptionsForAnalysis = 20;
