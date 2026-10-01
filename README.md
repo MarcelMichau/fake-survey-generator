@@ -218,11 +218,13 @@ TYPESAFE_API_KEY=your-key
 
 `TYPESAFE_BASE_URL` and `TYPESAFE_MODEL` are optional and default to `https://api.typesafe.ai/` and `jev-latest`.
 
-TypeSafe uses its own HTTP resilience pipeline: a 60-second attempt and total timeout, a circuit breaker,
-and at most eight concurrent requests per API process with no waiting queue. Analysis POSTs are never retried.
+TypeSafe uses its own HTTP resilience pipeline: a 55-second attempt timeout, a 60-second total timeout, a circuit breaker,
+and at most eight concurrent requests per API process with no waiting queue. These policies cover the complete response body,
+and analysis POSTs are never retried. The native `HttpClient.Timeout` is disabled so it cannot preempt the resilience timeouts.
 Settings can be overridden under `TypeSafe:Resilience` (for example,
-`TypeSafe__Resilience__AttemptTimeout__Timeout=00:00:45`); circuit-breaker sampling duration must be at least
-twice the attempt timeout. Other HTTP clients inherit the standard pipeline, with retries disabled for unsafe methods.
+`TypeSafe__Resilience__AttemptTimeout__Timeout=00:00:45`); the attempt timeout must be strictly shorter than the total timeout
+(invalid overrides are rejected), and circuit-breaker sampling duration must be at least twice the attempt timeout.
+Other HTTP clients inherit the standard pipeline, with retries disabled for unsafe methods.
 
 For Azure deployments, configure `typeSafeApiKey` as a secret Azure Pipelines variable. The deployment seeds it into Azure Key Vault and exposes it to the API container through a managed-identity-backed secret reference.
 

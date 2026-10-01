@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Http.Resilience;
+using Microsoft.Extensions.Options;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
 
@@ -30,18 +31,23 @@ internal static class TypeSafeConfigurationExtensions
                 .AddStandardResilienceHandler(options =>
                 {
                     // Analysis can take longer than a normal API call. Never repeat provider work.
-                    options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(60);
+                    options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(55);
                     options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(60);
                     options.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(120);
                     options.RateLimiter.DefaultRateLimiterOptions.PermitLimit = 8;
                     options.RateLimiter.DefaultRateLimiterOptions.QueueLimit = 0;
                     builder.Configuration.GetSection("TypeSafe:Resilience").Bind(options);
+                    if (options.AttemptTimeout.Timeout >= options.TotalRequestTimeout.Timeout)
+                    {
+                        throw new OptionsValidationException("TypeSafe:Resilience", typeof(HttpStandardResilienceOptions),
+                            ["The TypeSafe attempt timeout must be shorter than the total request timeout."]);
+                    }
+
                     options.Retry.DisableForUnsafeHttpMethods();
                 });
-            // The handler timeouts cover response headers. Keep a native end-to-end
-            // timeout as well so a stalled response body cannot run indefinitely.
-            httpClient.ConfigureHttpClient(client => client.Timeout = builder.Configuration
-                .GetValue<TimeSpan?>("TypeSafe:Resilience:TotalRequestTimeout:Timeout") ?? TimeSpan.FromSeconds(60));
+            // Buffer inside the resilience handler so its timeouts, circuit breaker and
+            // concurrency permits cover the body too. No native HttpClient timeout is needed.
+            httpClient.AddHttpMessageHandler(() => new TypeSafeResponseBufferingHandler());
 #pragma warning restore EXTEXP0001
 
             return builder;
