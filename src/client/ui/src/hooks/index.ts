@@ -1,2 +1,2 @@
-export { useApiCall } from "./useApiCall";
+export { useApiClient } from "./useApiClient";
 export { useSurveyFetch } from "./useSurveyFetch";

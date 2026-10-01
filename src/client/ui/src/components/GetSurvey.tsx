@@ -1,13 +1,13 @@
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useSurveyFetch } from "../hooks";
+import Alert from "./Alert";
 import Field from "./Field";
 import SkeletonButton from "./SkeletonButton";
-import Alert from "./Alert";
 import SurveyResult from "./SurveyResult";
-import { useSurveyFetch } from "../hooks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export type GetSurveyProps = {
 	loading: boolean;
@@ -22,6 +22,7 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 		survey: surveyDetail,
 		loading: isSearching,
 		error: errorMessage,
+		refetch,
 	} = useSurveyFetch(triggerFetch);
 
 	// Auto-fetch when newSurveyId changes (from CreateSurvey)
@@ -34,7 +35,11 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setTriggerFetch(surveyIdInput);
+		if (surveyIdInput === triggerFetch && surveyIdInput > 0) {
+			void refetch();
+		} else {
+			setTriggerFetch(surveyIdInput);
+		}
 	};
 
 	return (

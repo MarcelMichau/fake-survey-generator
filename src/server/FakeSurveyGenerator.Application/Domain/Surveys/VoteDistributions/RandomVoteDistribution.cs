@@ -6,10 +6,11 @@ internal sealed class RandomVoteDistribution : IVoteDistribution
     {
         ArgumentNullException.ThrowIfNull(survey);
 
+        var options = survey.Options;
         for (var i = 0; i < survey.NumberOfRespondents; i++)
         {
-            var randomIndex = Random.Shared.Next(0, survey.Options.Count);
-            survey.Options[randomIndex].AddVote();
+            var randomIndex = Random.Shared.Next(0, options.Count);
+            options[randomIndex].AddVote();
         }
     }
 }

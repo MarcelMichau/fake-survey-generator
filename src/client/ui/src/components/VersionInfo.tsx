@@ -1,23 +1,20 @@
-import { useState, useEffect } from "react";
-import type * as Types from "../types";
+import { useQuery } from "@tanstack/react-query";
+import { ApiError } from "../api/ApiError";
+import { publicClient } from "../api/publicClient";
 
 const VersionInfo = () => {
-	const [apiVersion, setApiVersion] = useState({} as Types.ApiVersionModel);
-	const [isLoading, setIsLoading] = useState(false);
-
-	useEffect(() => {
-		const getApiVersion = async () => {
-			setIsLoading(true);
-
-			const response = await fetch("api/admin/version");
-			const versionResponse: Types.ApiVersionModel = await response.json();
-			setIsLoading(false);
-
-			setApiVersion(versionResponse);
-		};
-
-		getApiVersion();
-	}, []);
+	const version = useQuery({
+		queryKey: ["api-version"],
+		staleTime: Infinity,
+		queryFn: async ({ signal }) => {
+			const { data, response } = await publicClient.GET("/api/admin/version", {
+				signal,
+			});
+			if (!response.ok || !data)
+				throw new ApiError("API version unavailable", response.status);
+			return data;
+		},
+	});
 
 	return (
 		<>
@@ -26,11 +23,11 @@ const VersionInfo = () => {
 			</span>
 
 			<span className="block text-xs font-mono font-bold uppercase">
-				{isLoading ? (
+				{version.isPending ? (
 					<span data-test="version-info">Loading API Version...</span>
 				) : (
 					<span data-test="version-info">
-						API Version: {apiVersion.assemblyFileVersion}
+						API Version: {version.data?.assemblyFileVersion ?? "unavailable"}
 					</span>
 				)}
 			</span>

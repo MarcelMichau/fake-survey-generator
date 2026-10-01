@@ -1,87 +1,16 @@
-export type ExceptionMessage = {
-	type: string;
-	title: string;
-	status: number;
-	detail: string;
-	traceId: string;
-	errors: Record<string, string[]>;
-};
+import type { components } from "../api/generated";
 
-export type ResponseException = {
-	exceptionMessage: ExceptionMessage;
-};
-
-export type ApiVersionModel = {
-	assemblyVersion: string;
-	assemblyFileVersion: string;
-	assemblyInformationalVersion: string;
-	assemblyName: string;
-	assemblyTitle: string;
-	assemblyConfiguration: string;
-	rootNamespace: string;
-};
-
-export type UserRegistrationStatusModel = {
-	isUserRegistered: boolean;
-};
-
-export type UserModel = {
-	id: number;
-	displayName: string;
-	emailAddress: string;
-	externalUserId: string;
-};
-
-export type SurveyModel = {
-	id: number;
-	ownerExternalUserId: string;
-	topic: string;
-	respondentType: string;
-	numberOfRespondents: number;
-	createdOn: Date;
-	options: SurveyOptionModel[];
-};
-
-export type UserSurveyModel = {
-	id: number;
-	topic: string;
-	respondentType: string;
-	numberOfRespondents: number;
-	numberOfOptions: number;
-	winningOption: string;
-	winningOptionNumberOfVotes: number;
-};
-
-export type SurveyOptionModel = {
-	optionText: string;
-	numberOfVotes: number;
-	preferredNumberOfVotes: number;
-};
-
-export type CreateSurveyCommand = {
-	surveyTopic: string;
-	numberOfRespondents: number;
-	respondentType: string;
-	surveyOptions: SurveyOptionDto[];
-};
-
-export type SurveyAnalysisWarningModel = {
-	code: string;
-	title: string;
-	message: string;
-	probability: number;
-};
-
-export type SurveyAnalysisModel = {
-	responseShape: string;
-	responseShapeConfidence: number;
-	leadingProbability: number;
-	multipleChoiceProbability: number;
-	coverageProbability: number;
-	warnings: SurveyAnalysisWarningModel[];
-};
-
-export type SurveyOptionDto = {
-	optionText: string;
-	preferredNumberOfVotes: number;
-};
+export type ApiVersionModel = components["schemas"]["ApiVersionModel"];
+export type UserRegistrationStatusModel =
+	components["schemas"]["UserRegistrationStatusModel"];
+export type UserModel = components["schemas"]["UserModel"];
+export type SurveyModel = components["schemas"]["SurveyModel"];
+export type UserSurveyModel = components["schemas"]["UserSurveyModel"];
+export type SurveyOptionModel = components["schemas"]["SurveyOptionModel"];
+export type CreateSurveyCommand = components["schemas"]["CreateSurveyCommand"];
+export type AnalyzeSurveyCommand =
+	components["schemas"]["AnalyzeSurveyCommand"];
+export type SurveyAnalysisWarningModel =
+	components["schemas"]["SurveyAnalysisWarningModel"];
+export type SurveyAnalysisModel = components["schemas"]["SurveyAnalysisModel"];
+export type SurveyOptionDto = components["schemas"]["SurveyOptionDto"];

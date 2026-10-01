@@ -6,6 +6,9 @@ using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Polly.CircuitBreaker;
+using Polly.RateLimiting;
+using Polly.Timeout;
 
 namespace FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
 
@@ -98,6 +101,19 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
             }
 
             return BuildAnalysis(options, systemOneResponse.Answers);
+        }
+        catch (TimeoutRejectedException)
+        {
+            _logger.LogWarning("TypeSafe survey analysis timed out.");
+            return new Error("typesafe.timeout", "Survey analysis timed out. Please try again.");
+        }
+        catch (BrokenCircuitException)
+        {
+            return new Error("typesafe.unavailable", "Survey analysis is temporarily unavailable. Please try again.");
+        }
+        catch (RateLimiterRejectedException)
+        {
+            return new Error("typesafe.busy", "Survey analysis is busy. Please try again shortly.");
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {

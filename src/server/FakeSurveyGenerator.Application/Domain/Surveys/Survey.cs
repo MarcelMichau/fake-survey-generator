@@ -10,15 +10,17 @@ namespace FakeSurveyGenerator.Application.Domain.Surveys;
 public sealed class Survey : AuditableEntity, IAggregateRoot
 {
     private readonly List<SurveyOption> _options = [];
+    private readonly IReadOnlyList<SurveyOption> _readOnlyOptions;
 
     private IVoteDistribution _selectedVoteDistribution = new RandomVoteDistribution();
 
     [UsedImplicitly]
     private Survey()
     {
+        _readOnlyOptions = _options.AsReadOnly();
     } // Necessary for Entity Framework Core
 
-    public Survey(User owner, NonEmptyString topic, int numberOfRespondents, NonEmptyString respondentType)
+    public Survey(User owner, NonEmptyString topic, int numberOfRespondents, NonEmptyString respondentType) : this()
     {
         if (numberOfRespondents < 1)
             throw new SurveyDomainException("Survey should have at least one respondent");
@@ -37,7 +39,7 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
     public NonEmptyString Topic { get; } = null!;
     public NonEmptyString RespondentType { get; } = null!;
     public int NumberOfRespondents { get; }
-    public IReadOnlyList<SurveyOption> Options => _options.AsReadOnly();
+    public IReadOnlyList<SurveyOption> Options => _readOnlyOptions;
     public bool IsRigged => _options.Any(option => option.IsRigged);
 
     public void AddSurveyOption(NonEmptyString optionText)

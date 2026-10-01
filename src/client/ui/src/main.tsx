@@ -2,8 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import config from "./auth_config.json";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { ApiQueryProvider } from "./api/ApiQueryProvider";
+import config from "./auth_config.json";
 
 const rootElement = document.getElementById("root");
 
@@ -23,7 +24,9 @@ createRoot(rootElement).render(
 			useRefreshTokens={true}
 			cacheLocation="localstorage"
 		>
-			<App />
+			<ApiQueryProvider>
+				<App />
+			</ApiQueryProvider>
 		</Auth0Provider>
 	</StrictMode>,
 );

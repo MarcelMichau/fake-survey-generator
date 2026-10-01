@@ -15,8 +15,7 @@ internal static class IdentityProviderConfigurationExtensions
         public IHostApplicationBuilder AddOAuthConfiguration()
         {
             builder.Services
-                .AddHttpClient<IUserService, OAuthUserInfoService>()
-                .AddStandardResilienceHandler();
+                .AddHttpClient<IUserService, OAuthUserInfoService>();
 
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<ITokenProviderService, JwtBearerTokenProviderService>();

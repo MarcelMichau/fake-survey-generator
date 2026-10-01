@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { useApiCall } from "../hooks";
+import { ApiError } from "../api/ApiError";
+import { useAnalyzeSurvey, useCreateSurvey } from "../hooks/useSurveys";
 import type * as Types from "../types";
 import Alert from "./Alert";
 import Button from "./Button";
@@ -42,11 +43,9 @@ interface SurveyFormState {
 		validationErrors: string[];
 	};
 	ui: {
-		isSubmitting: boolean;
 		isCreated: boolean;
 	};
 	analysis: {
-		isAnalyzing: boolean;
 		completed: boolean;
 		warnings: Types.SurveyAnalysisWarningModel[];
 		hasAcknowledgedWarnings: boolean;
@@ -67,11 +66,9 @@ const initialFormState: SurveyFormState = {
 		validationErrors: [],
 	},
 	ui: {
-		isSubmitting: false,
 		isCreated: false,
 	},
 	analysis: {
-		isAnalyzing: false,
 		completed: false,
 		warnings: [],
 		hasAcknowledgedWarnings: false,
@@ -84,7 +81,8 @@ const CreateSurvey = ({
 	onSurveyCreated,
 	resetOnSuccess = !onSurveyCreated,
 }: CreateSurveyProps): React.ReactElement => {
-	const { apiCall } = useApiCall();
+	const creation = useCreateSurvey();
+	const analysis = useAnalyzeSurvey();
 	const [formState, setFormState] = useState<SurveyFormState>(initialFormState);
 	// Counter for generating unique option IDs used as React keys. Display labels
 	// are based on each option's current position instead.
@@ -187,78 +185,39 @@ const CreateSurvey = ({
 		});
 	}, []);
 
-	const createSurvey = useCallback(
-		async (surveyCommand: Types.CreateSurveyCommand) => {
-			resetMessages();
+	const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
+		resetMessages();
+		try {
+			const data = await creation.mutateAsync(surveyCommand);
+			if (resetOnSuccess) resetForm();
 			setFormState((prev) => ({
 				...prev,
-				ui: { ...prev.ui, isSubmitting: true },
+				messages: {
+					success: `Survey created with ID: ${data.id}. Get the survey to see the outcome.`,
+					error: "",
+					validationErrors: [],
+				},
+				ui: { isCreated: !resetOnSuccess },
+				analysis: initialFormState.analysis,
 			}));
-
-			try {
-				const response = await apiCall("api/survey", {
-					method: "POST",
-					body: JSON.stringify(surveyCommand),
-				});
-
-				if (response.status === 422) {
-					const data: Record<string, string[]> = await response.json();
-					setFormState((prev) => ({
-						...prev,
-						messages: {
-							...prev.messages,
-							validationErrors: Object.values(data).flat(),
-						},
-						ui: { ...prev.ui, isSubmitting: false },
-					}));
-					return;
-				}
-
-				if (response.status !== 201) {
-					setFormState((prev) => ({
-						...prev,
-						messages: {
-							...prev.messages,
-							error: "Please try again or create an issue on GitHub",
-						},
-						ui: { ...prev.ui, isSubmitting: false },
-					}));
-					return;
-				}
-
-				const data: Types.SurveyModel = await response.json();
-
-				setFormState((prev) => ({
-					...prev,
-					messages: {
-						success: `Survey created with ID: ${data.id}. Get the survey to see the outcome.`,
-						error: "",
-						validationErrors: [],
-					},
-					ui: { ...prev.ui, isSubmitting: false, isCreated: true },
-					analysis: initialFormState.analysis,
-				}));
-
-				if (resetOnSuccess) {
-					resetForm();
-				}
-
-				if (onSurveyCreated) {
-					onSurveyCreated(data.id);
-				}
-			} catch (_error) {
-				setFormState((prev) => ({
-					...prev,
-					messages: {
-						...prev.messages,
-						error: "An unexpected error occurred",
-					},
-					ui: { ...prev.ui, isSubmitting: false },
-				}));
-			}
-		},
-		[apiCall, resetMessages, resetForm, resetOnSuccess, onSurveyCreated],
-	);
+			onSurveyCreated?.(data.id);
+		} catch (error) {
+			setFormState((prev) => ({
+				...prev,
+				messages: {
+					...prev.messages,
+					error:
+						error instanceof ApiError
+							? error.validationErrors.length > 0
+								? ""
+								: error.message
+							: "An unexpected error occurred",
+					validationErrors:
+						error instanceof ApiError ? error.validationErrors : [],
+				},
+			}));
+		}
+	};
 
 	const buildSurveyCommand = useCallback(
 		(): Types.CreateSurveyCommand => ({
@@ -270,53 +229,19 @@ const CreateSurvey = ({
 					({
 						optionText: option.optionText,
 						preferredNumberOfVotes: option.preferredNumberOfVotes,
-					}) as Types.SurveyOptionDto,
+					}) satisfies Types.SurveyOptionDto,
 			),
 		}),
 		[formState.survey],
 	);
 
-	const analyzeSurvey = useCallback(async () => {
+	const analyzeSurvey = async () => {
 		resetMessages();
-		setFormState((prev) => ({
-			...prev,
-			analysis: {
-				...initialFormState.analysis,
-				isAnalyzing: true,
-			},
-		}));
-
+		setFormState((prev) => ({ ...prev, analysis: initialFormState.analysis }));
+		const { numberOfRespondents: _respondents, ...command } =
+			buildSurveyCommand();
 		try {
-			const response = await apiCall("api/survey/analyze", {
-				method: "POST",
-				body: JSON.stringify(buildSurveyCommand()),
-			});
-
-			if (response.status === 422) {
-				const data: Record<string, string[]> = await response.json();
-				setFormState((prev) => ({
-					...prev,
-					analysis: {
-						...initialFormState.analysis,
-						error: Object.values(data).flat().join(" "),
-					},
-				}));
-				return;
-			}
-
-			if (!response.ok) {
-				setFormState((prev) => ({
-					...prev,
-					analysis: {
-						...initialFormState.analysis,
-						error:
-							"Survey analysis is temporarily unavailable. Please try again.",
-					},
-				}));
-				return;
-			}
-
-			const data: Types.SurveyAnalysisModel = await response.json();
+			const data = await analysis.mutateAsync(command);
 			setFormState((prev) => ({
 				...prev,
 				analysis: {
@@ -325,16 +250,19 @@ const CreateSurvey = ({
 					warnings: data.warnings,
 				},
 			}));
-		} catch {
+		} catch (error) {
 			setFormState((prev) => ({
 				...prev,
 				analysis: {
 					...initialFormState.analysis,
-					error: "An unexpected error occurred while analyzing the survey.",
+					error:
+						error instanceof ApiError
+							? error.validationErrors.join(" ") || error.message
+							: "An unexpected error occurred while analyzing the survey.",
 				},
 			}));
 		}
-	}, [apiCall, buildSurveyCommand, resetMessages]);
+	};
 
 	const onSubmit = async (
 		e: React.SubmitEvent<HTMLFormElement>,
@@ -349,8 +277,13 @@ const CreateSurvey = ({
 				<h2 className="display-title text-4xl lg:text-5xl mb-5">
 					{loading ? <Skeleton /> : <span>Create Survey</span>}
 				</h2>
-				<form onSubmit={onSubmit} aria-busy={formState.analysis.isAnalyzing}>
-					<fieldset disabled={formState.analysis.isAnalyzing}>
+				<form
+					onSubmit={onSubmit}
+					aria-busy={analysis.isPending || creation.isPending}
+				>
+					<fieldset
+						disabled={loading || analysis.isPending || creation.isPending}
+					>
 						<Field
 							label="Target Audience (Respondent Type)"
 							value={formState.survey.respondentType}
@@ -464,7 +397,7 @@ const CreateSurvey = ({
 												},
 											}))
 										}
-										disabled={formState.ui.isSubmitting}
+										disabled={creation.isPending}
 									/>
 									I confirm that I want to create this survey with bad data
 									&amp; that I feel bad about it
@@ -475,8 +408,8 @@ const CreateSurvey = ({
 									type="submit"
 									loading={loading}
 									disabled={
-										formState.ui.isSubmitting ||
-										formState.analysis.isAnalyzing ||
+										creation.isPending ||
+										analysis.isPending ||
 										(formState.analysis.warnings.length > 0 &&
 											!formState.analysis.hasAcknowledgedWarnings)
 									}
@@ -496,16 +429,14 @@ const CreateSurvey = ({
 								onClick={() => void analyzeSurvey()}
 								loading={loading}
 								disabled={
-									formState.ui.isSubmitting ||
-									formState.analysis.isAnalyzing ||
+									creation.isPending ||
+									analysis.isPending ||
 									formState.analysis.completed ||
 									formState.ui.isCreated
 								}
 								actionType="secondary"
 							>
-								{formState.analysis.isAnalyzing
-									? "Analysing..."
-									: "Analyse Survey"}
+								{analysis.isPending ? "Analysing..." : "Analyse Survey"}
 								<FontAwesomeIcon icon={faMicroscope} className="ml-1" />
 							</SkeletonButton>
 						</div>
