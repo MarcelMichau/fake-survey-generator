@@ -1,12 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as hooks from "../hooks";
+import * as hooks from "../hooks/useApiClient";
+import { mockApiClient } from "../test/mock-api-client";
 import { render } from "../test/test-utils";
 import type { UserSurveyModel } from "../types";
 import MySurveys from "./MySurveys";
 
-vi.mock("../hooks");
-
-type ApiCall = (url: string, options?: RequestInit) => Promise<Response>;
+vi.mock("../hooks/useApiClient");
 
 describe("MySurveys Component", () => {
 	const mockSurveysData: UserSurveyModel[] = [
@@ -32,7 +31,7 @@ describe("MySurveys Component", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: vi.fn() });
+		vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(vi.fn()));
 	});
 
 	describe("Rendering", () => {
@@ -80,7 +79,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => mockSurveysData,
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -92,7 +91,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => mockSurveysData,
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -109,7 +108,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => mockSurveysData,
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -126,7 +125,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => mockSurveysData,
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
 			return screen;
@@ -157,7 +156,7 @@ describe("MySurveys Component", () => {
 				status: 400,
 				statusText: "Bad Request",
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -168,7 +167,7 @@ describe("MySurveys Component", () => {
 
 		it("should display error message on network failure", async () => {
 			const mockApiCall = vi.fn().mockRejectedValue(new Error("Network error"));
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -184,7 +183,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => [],
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -200,7 +199,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => mockSurveysData,
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -212,7 +211,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => mockSurveysData,
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 			const button = screen.getByRole("button", { name: /Get My Surveys/i });
 
@@ -236,7 +235,7 @@ describe("MySurveys Component", () => {
 							),
 						),
 				);
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -253,7 +252,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => [mockSurveysData[0]],
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
@@ -270,7 +269,7 @@ describe("MySurveys Component", () => {
 				ok: true,
 				json: async () => mockSurveysData,
 			});
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 			const screen = await render(<MySurveys loading={false} />);
 			const button = screen.getByRole("button", { name: /Get My Surveys/i });
 
@@ -284,10 +283,10 @@ describe("MySurveys Component", () => {
 	});
 
 	describe("Delete Survey", () => {
-		const fetchAndDeleteSetup = async (apiCall: ReturnType<typeof vi.fn>) => {
-			vi.mocked(hooks.useApiCall).mockReturnValue({
-				apiCall: apiCall as ApiCall,
-			});
+		const fetchAndDeleteSetup = async (
+			apiCall: Parameters<typeof mockApiClient>[0],
+		) => {
+			vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(apiCall));
 			const screen = await render(<MySurveys loading={false} />);
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
 			await expect
@@ -331,6 +330,10 @@ describe("MySurveys Component", () => {
 			});
 			const screen = await fetchAndDeleteSetup(apiCall);
 			apiCall.mockResolvedValueOnce({ ok: true, status: 204 });
+			apiCall.mockResolvedValue({
+				ok: true,
+				json: async () => [mockSurveysData[1]],
+			});
 
 			await screen
 				.getByRole("button", {
@@ -341,7 +344,7 @@ describe("MySurveys Component", () => {
 
 			await expect
 				.poll(() => apiCall)
-				.toHaveBeenLastCalledWith("api/survey/1", {
+				.toHaveBeenCalledWith("api/survey/1", {
 					method: "DELETE",
 				});
 			await expect

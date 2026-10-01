@@ -23,19 +23,19 @@ internal static class AdminEndpoints
         }
     }
 
-    private static IResult GetVersionInformation()
+    private static Microsoft.AspNetCore.Http.HttpResults.Ok<ApiVersionModel> GetVersionInformation()
     {
-        return Results.Ok(new
+        return TypedResults.Ok(new ApiVersionModel
         {
-            ThisAssembly.AssemblyVersion,
-            ThisAssembly.AssemblyFileVersion,
-            ThisAssembly.AssemblyInformationalVersion,
-            ThisAssembly.AssemblyName,
-            ThisAssembly.AssemblyTitle,
-            ThisAssembly.AssemblyConfiguration,
-            ThisAssembly.RootNamespace,
-            ThisAssembly.GitCommitDate,
-            ThisAssembly.GitCommitId
+            AssemblyVersion = ThisAssembly.AssemblyVersion,
+            AssemblyFileVersion = ThisAssembly.AssemblyFileVersion,
+            AssemblyInformationalVersion = ThisAssembly.AssemblyInformationalVersion,
+            AssemblyName = ThisAssembly.AssemblyName,
+            AssemblyTitle = ThisAssembly.AssemblyTitle,
+            AssemblyConfiguration = ThisAssembly.AssemblyConfiguration,
+            RootNamespace = ThisAssembly.RootNamespace,
+            GitCommitDate = ThisAssembly.GitCommitDate,
+            GitCommitId = ThisAssembly.GitCommitId
         });
     }
 
@@ -53,4 +53,17 @@ internal static class AdminEndpoints
             secretValue
         });
     }
+}
+
+internal sealed record ApiVersionModel
+{
+    public required string AssemblyVersion { get; init; }
+    public required string AssemblyFileVersion { get; init; }
+    public required string AssemblyInformationalVersion { get; init; }
+    public required string AssemblyName { get; init; }
+    public required string AssemblyTitle { get; init; }
+    public required string AssemblyConfiguration { get; init; }
+    public required string RootNamespace { get; init; }
+    public required DateTime GitCommitDate { get; init; }
+    public required string GitCommitId { get; init; }
 }

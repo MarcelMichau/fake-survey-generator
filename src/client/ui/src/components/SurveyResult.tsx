@@ -1,17 +1,17 @@
-import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import type { SurveyModel } from "../types";
-import { useApiCall } from "../hooks";
-import ConfirmDialog from "./ConfirmDialog";
-import Alert from "./Alert";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faCalendarAlt,
-	faUsers,
-	faTrophy,
 	faChartBar,
 	faTrash,
+	faTrophy,
+	faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+import { useDeleteSurvey } from "../hooks/useSurveys";
+import type { SurveyModel } from "../types";
+import Alert from "./Alert";
+import ConfirmDialog from "./ConfirmDialog";
 
 type SurveyResultProps = {
 	surveyDetail: SurveyModel;
@@ -25,31 +25,19 @@ const SurveyResult = ({
 	onDeleted,
 }: SurveyResultProps) => {
 	const { user } = useAuth0();
-	const { apiCall } = useApiCall();
+	const deletion = useDeleteSurvey();
 	const [confirmOpen, setConfirmOpen] = useState(false);
-	const [isDeleting, setIsDeleting] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const isDeleting = deletion.isPending;
+	const error = deletion.error?.message;
 	const isOwner = !!user?.sub && user.sub === surveyDetail.ownerExternalUserId;
 
 	const confirmDelete = async () => {
-		setIsDeleting(true);
-		setError(null);
 		try {
-			const response = await apiCall(`api/survey/${surveyDetail.id}`, {
-				method: "DELETE",
-			});
-			if (!response.ok) {
-				setError("Failed to delete survey");
-				return;
-			}
+			await deletion.mutateAsync(surveyDetail.id);
 			setConfirmOpen(false);
 			onDeleted?.(surveyDetail.id);
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "An unexpected error occurred",
-			);
-		} finally {
-			setIsDeleting(false);
+		} catch {
+			// The mutation exposes the failure and leaves the dialog open for retry.
 		}
 	};
 
@@ -62,7 +50,10 @@ const SurveyResult = ({
 						<button
 							type="button"
 							aria-label="Delete this survey"
-							onClick={() => setConfirmOpen(true)}
+							onClick={() => {
+								deletion.reset();
+								setConfirmOpen(true);
+							}}
 							className="brutal-icon-button shrink-0"
 						>
 							<FontAwesomeIcon icon={faTrash} />

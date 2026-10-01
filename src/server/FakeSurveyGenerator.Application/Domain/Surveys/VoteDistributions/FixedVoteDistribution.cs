@@ -7,7 +7,6 @@ internal sealed class FixedVoteDistribution : IVoteDistribution
         ArgumentNullException.ThrowIfNull(survey);
 
         foreach (var surveyOption in survey.Options)
-            for (var i = 0; i < surveyOption.PreferredNumberOfVotes; i++)
-                surveyOption.AddVote();
+            surveyOption.AddVotes(surveyOption.PreferredNumberOfVotes);
     }
 }

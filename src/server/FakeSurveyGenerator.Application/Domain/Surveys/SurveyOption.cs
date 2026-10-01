@@ -32,6 +32,12 @@ public class SurveyOption
         NumberOfVotes++;
     }
 
+    internal void AddVotes(int count)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
+        NumberOfVotes = checked(NumberOfVotes + count);
+    }
+
     internal void ResetVotes()
     {
         NumberOfVotes = 0;

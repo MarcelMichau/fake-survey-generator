@@ -218,6 +218,12 @@ TYPESAFE_API_KEY=your-key
 
 `TYPESAFE_BASE_URL` and `TYPESAFE_MODEL` are optional and default to `https://api.typesafe.ai/` and `jev-latest`.
 
+TypeSafe uses its own HTTP resilience pipeline: a 60-second attempt and total timeout, a circuit breaker,
+and at most eight concurrent requests per API process with no waiting queue. Analysis POSTs are never retried.
+Settings can be overridden under `TypeSafe:Resilience` (for example,
+`TypeSafe__Resilience__AttemptTimeout__Timeout=00:00:45`); circuit-breaker sampling duration must be at least
+twice the attempt timeout. Other HTTP clients inherit the standard pipeline, with retries disabled for unsafe methods.
+
 For Azure deployments, configure `typeSafeApiKey` as a secret Azure Pipelines variable. The deployment seeds it into Azure Key Vault and exposes it to the API container through a managed-identity-backed secret reference.
 
 ## How do I run this thing?
@@ -240,6 +246,33 @@ The local AppHost uses the Dapr component in `dapr/components/local-file.yml` an
 3. Hit `F5` to debug the application, or `Ctrl` + `F5` to run without debugging.
 
 4. The [Aspire Dashboard](https://aspire.dev/dashboard/overview/) should open automatically, along with the local UI.
+
+## API contracts and UI queries
+
+The UI's API types in `src/client/ui/src/api/generated.d.ts` are generated from the API's native OpenAPI document.
+After changing endpoints or DTOs, run these commands from the repository root:
+
+```sh
+npm ci --prefix tools/api-contracts
+npm ci --prefix src/client/ui
+npm run generate:api --prefix src/client/ui
+npm run check:api --prefix src/client/ui
+```
+
+Generation builds the API using the SDK in `global.json`; SQL Server, Redis, Dapr and identity-provider secrets
+are not needed. Commit the generated declaration file. CI checks for contract drift and builds the UI before
+running browser tests. The generator has a separate tooling package because its compiler API currently requires
+TypeScript 5; the UI continues to use TypeScript 7.
+
+`openapi-fetch` provides typed requests and responses. TanStack Query shares requests, cancels abandoned reads,
+and updates or invalidates survey caches after creation and deletion. Each authenticated session has its own
+query client; changing users or logging out clears the previous cache. Queries and mutations do not retry
+automatically, and user registration must complete before survey actions become available.
+
+Survey creation accepts up to 1,000,000 respondents and 100 options; analysis retains its 20-option limit.
+Fixed distributions preserve unassigned votes, while random distributions still cast one independent vote per
+respondent. JSON numeric fields require numbers rather than quoted strings; date/time fields in generated UI
+contracts are ISO strings.
 
 ## How do I contribute?
 

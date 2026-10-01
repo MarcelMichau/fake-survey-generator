@@ -17,10 +17,12 @@ public sealed record CreateSurveyCommand : ICommand<Result<SurveyModel, Error>>
 {
     public required string SurveyTopic { get; init; }
 
+    [System.ComponentModel.DataAnnotations.Range(1, CreateSurveyCommandValidator.MaximumRespondents)]
     public required int NumberOfRespondents { get; init; }
 
     public required string RespondentType { get; init; }
 
+    [System.ComponentModel.DataAnnotations.MaxLength(CreateSurveyCommandValidator.MaximumOptions)]
     public required IEnumerable<SurveyOptionDto> SurveyOptions { get; init; } = [];
 }
 
@@ -32,6 +34,9 @@ public sealed record SurveyOptionDto
 
 public sealed class CreateSurveyCommandValidator : AbstractValidator<CreateSurveyCommand>
 {
+    public const int MaximumRespondents = 1_000_000;
+    public const int MaximumOptions = 100;
+
     public CreateSurveyCommandValidator()
     {
         RuleFor(command => command.SurveyTopic)
@@ -43,10 +48,13 @@ public sealed class CreateSurveyCommandValidator : AbstractValidator<CreateSurve
             .NotEmpty();
 
         RuleFor(command => command.NumberOfRespondents)
-            .GreaterThan(0);
+            .InclusiveBetween(1, MaximumRespondents);
 
         RuleFor(command => command.SurveyOptions)
-            .NotEmpty();
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .Must(options => options.Count() <= MaximumOptions)
+            .WithMessage($"A maximum of {MaximumOptions} options can be created at once.");
 
         RuleForEach(command => command.SurveyOptions)
             .SetValidator(new SurveyOptionValidator());

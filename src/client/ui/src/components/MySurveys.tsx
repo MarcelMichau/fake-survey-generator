@@ -1,94 +1,47 @@
+import { faPaperPlane, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type React from "react";
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { useDeleteSurvey, useUserSurveys } from "../hooks/useSurveys";
 import type * as Types from "../types";
-import SkeletonButton from "./SkeletonButton";
 import Alert from "./Alert";
 import ConfirmDialog from "./ConfirmDialog";
-import { useApiCall } from "../hooks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faTrash } from "@fortawesome/free-solid-svg-icons";
+import SkeletonButton from "./SkeletonButton";
 
 export type MySurveysProps = {
 	loading: boolean;
 };
 
 const MySurveys = ({ loading }: MySurveysProps) => {
-	const { apiCall } = useApiCall();
 	const formRef = useRef<HTMLFormElement>(null);
-	const [userSurveys, setUserSurveys] = useState<Types.UserSurveyModel[]>([]);
-	const [isSearching, setIsSearching] = useState(false);
 	const [hasFetched, setHasFetched] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const query = useUserSurveys(hasFetched);
+	const deletion = useDeleteSurvey();
+	const userSurveys = query.isError ? [] : (query.data ?? []);
+	const isSearching = query.isFetching;
+	const isDeleting = deletion.isPending;
+	const error = deletion.error?.message ?? query.error?.message;
 	const [surveyToDelete, setSurveyToDelete] =
 		useState<Types.UserSurveyModel | null>(null);
-	const [isDeleting, setIsDeleting] = useState(false);
 	const numberFormatter = useMemo(() => new Intl.NumberFormat(), []);
 
-	const fetchSurveys = useCallback(async () => {
-		setIsSearching(true);
-		setError(null);
-
-		try {
-			const response = await apiCall("api/survey/user");
-
-			if (!response.ok) {
-				setError("Failed to fetch surveys");
-				setUserSurveys([]);
-				return;
-			}
-
-			const data: Types.UserSurveyModel[] = await response.json();
-			setUserSurveys(data);
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "An unexpected error occurred",
-			);
-			setUserSurveys([]);
-		} finally {
-			setIsSearching(false);
-			setHasFetched(true);
-		}
-	}, [apiCall]);
-
-	const submitForm = async (e: React.FormEvent) => {
+	const submitForm = (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		await fetchSurveys();
+		deletion.reset();
+		if (hasFetched) void query.refetch();
+		else setHasFetched(true);
 	};
 
 	const confirmDelete = async () => {
 		if (!surveyToDelete) return;
-		setIsDeleting(true);
-		setError(null);
-
 		try {
-			const response = await apiCall(`api/survey/${surveyToDelete.id}`, {
-				method: "DELETE",
-			});
-
-			if (!response.ok) {
-				setError("Failed to delete survey");
-				return;
-			}
-
-			setUserSurveys((current) =>
-				current.filter((s) => s.id !== surveyToDelete.id),
-			);
+			await deletion.mutateAsync(surveyToDelete.id);
 			setSurveyToDelete(null);
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "An unexpected error occurred",
-			);
-		} finally {
-			setIsDeleting(false);
+		} catch {
+			// The mutation exposes the failure and leaves the dialog open for retry.
 		}
 	};
-
-	type TableHeaderProps = { children: React.ReactNode };
-	const TableHeader = ({ children }: TableHeaderProps) => <th>{children}</th>;
-
-	type TableDataProps = { children: React.ReactNode };
-	const TableData = ({ children }: TableDataProps) => <td>{children}</td>;
 
 	return (
 		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
@@ -117,47 +70,50 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 						<table className="brutal-table min-w-[850px]">
 							<thead>
 								<tr>
-									<TableHeader>Question</TableHeader>
-									<TableHeader>Audience</TableHeader>
-									<TableHeader># Respondents</TableHeader>
-									<TableHeader># Options</TableHeader>
-									<TableHeader>Winning Option</TableHeader>
-									<TableHeader>Winning # Votes</TableHeader>
-									<TableHeader>Actions</TableHeader>
+									<th>Question</th>
+									<th>Audience</th>
+									<th># Respondents</th>
+									<th># Options</th>
+									<th>Winning Option</th>
+									<th>Winning # Votes</th>
+									<th>Actions</th>
 								</tr>
 							</thead>
 							<tbody>
 								{userSurveys.map((survey) => (
 									<tr key={survey.id}>
-										<TableData>{survey.topic}</TableData>
-										<TableData>{survey.respondentType}</TableData>
-										<TableData>
+										<td>{survey.topic}</td>
+										<td>{survey.respondentType}</td>
+										<td>
 											{numberFormatter.format(survey.numberOfRespondents)}
-										</TableData>
-										<TableData>{survey.numberOfOptions}</TableData>
-										<TableData>{survey.winningOption}</TableData>
-										<TableData>
+										</td>
+										<td>{survey.numberOfOptions}</td>
+										<td>{survey.winningOption}</td>
+										<td>
 											{numberFormatter.format(
 												survey.winningOptionNumberOfVotes,
 											)}
-										</TableData>
-										<TableData>
+										</td>
+										<td>
 											<button
 												type="button"
 												aria-label={`Delete survey ${survey.topic}`}
-												onClick={() => setSurveyToDelete(survey)}
+												onClick={() => {
+													deletion.reset();
+													setSurveyToDelete(survey);
+												}}
 												className="brutal-icon-button"
 											>
 												<FontAwesomeIcon icon={faTrash} />
 											</button>
-										</TableData>
+										</td>
 									</tr>
 								))}
 							</tbody>
 						</table>
 					</div>
 				)}
-				{hasFetched && userSurveys?.length === 0 && (
+				{query.isSuccess && userSurveys.length === 0 && (
 					<Alert
 						title="No Surveys"
 						message={"You have not created any surveys yet. :("}

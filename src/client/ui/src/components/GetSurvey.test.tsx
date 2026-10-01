@@ -1,11 +1,14 @@
 import * as auth0 from "@auth0/auth0-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as hooks from "../hooks";
+import * as apiHooks from "../hooks/useApiClient";
+import { mockApiClient } from "../test/mock-api-client";
 import { render } from "../test/test-utils";
 import type { SurveyModel } from "../types";
 import GetSurvey from "./GetSurvey";
 
 vi.mock("../hooks");
+vi.mock("../hooks/useApiClient");
 
 describe("GetSurvey Component", () => {
 	const mockSurveyData: SurveyModel = {
@@ -14,7 +17,12 @@ describe("GetSurvey Component", () => {
 		topic: "What's your favorite color?",
 		respondentType: "Color Enthusiasts",
 		numberOfRespondents: 100,
-		createdOn: new Date("2026-01-20T00:00:00Z"),
+		createdOn: "2026-01-20T00:00:00Z",
+		ownerId: 1,
+		isRigged: false,
+		createdBy: null,
+		modifiedBy: null,
+		modifiedOn: null,
 		options: [
 			{
 				optionText: "Red",
@@ -37,11 +45,12 @@ describe("GetSurvey Component", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+			refetch: vi.fn(),
 			survey: null,
 			loading: false,
 			error: "",
 		});
-		vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: vi.fn() });
+		vi.mocked(apiHooks.useApiClient).mockReturnValue(mockApiClient(vi.fn()));
 	});
 
 	describe("Rendering", () => {
@@ -110,6 +119,7 @@ describe("GetSurvey Component", () => {
 			expect(hooks.useSurveyFetch).toHaveBeenCalledWith(null);
 
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
@@ -122,6 +132,7 @@ describe("GetSurvey Component", () => {
 		it("renders API options without React key warnings", async () => {
 			const consoleError = vi.spyOn(console, "error");
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
@@ -141,6 +152,7 @@ describe("GetSurvey Component", () => {
 
 		it("should display survey results when data is fetched", async () => {
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
@@ -160,6 +172,7 @@ describe("GetSurvey Component", () => {
 
 		it("should display error message when survey not found", async () => {
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: null,
 				loading: false,
 				error: "Looks like that survey does not exist",
@@ -175,6 +188,7 @@ describe("GetSurvey Component", () => {
 
 		it("should display error message for API failures", async () => {
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: null,
 				loading: false,
 				error: "Something did not go as planned",
@@ -190,6 +204,7 @@ describe("GetSurvey Component", () => {
 
 		it("should show loading state while fetching", async () => {
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: null,
 				loading: true,
 				error: "",
@@ -207,6 +222,7 @@ describe("GetSurvey Component", () => {
 	describe("Survey Display", () => {
 		beforeEach(() => {
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
@@ -232,6 +248,7 @@ describe("GetSurvey Component", () => {
 
 		it("should not display survey results initially", async () => {
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: null,
 				loading: false,
 				error: "",
@@ -298,6 +315,7 @@ describe("GetSurvey Component", () => {
 			);
 
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: null,
 				loading: true,
 				error: "",
@@ -308,6 +326,7 @@ describe("GetSurvey Component", () => {
 				.toBeInTheDocument();
 
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
@@ -325,6 +344,7 @@ describe("GetSurvey Component", () => {
 	describe("Delete button visibility (owner-gated)", () => {
 		it("should show the delete button when current user owns the survey", async () => {
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
@@ -348,6 +368,7 @@ describe("GetSurvey Component", () => {
 				// biome-ignore lint/suspicious/noExplicitAny: test mock
 			} as any);
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
@@ -363,8 +384,11 @@ describe("GetSurvey Component", () => {
 
 		it("should send DELETE request and clear the survey on confirm", async () => {
 			const mockApiCall = vi.fn().mockResolvedValue({ ok: true, status: 204 });
-			vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+			vi.mocked(apiHooks.useApiClient).mockReturnValue(
+				mockApiClient(mockApiCall),
+			);
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
+				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",

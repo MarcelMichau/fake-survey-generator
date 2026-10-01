@@ -12,6 +12,9 @@ internal static class OpenApiConfigurationExtensions
     {
         public IHostApplicationBuilder AddOpenApiConfiguration()
         {
+            builder.Services.ConfigureHttpJsonOptions(options =>
+                options.SerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.Strict);
+
             builder.Services.AddOpenApi(options =>
             {
                 // Scalar.AspNetCore 2.17.3 supports OpenAPI 3.1, but not the OpenAPI 3.2

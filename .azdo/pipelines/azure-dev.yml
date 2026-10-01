@@ -10,6 +10,7 @@ trigger:
       - src/client/ui/*
       - infra/*
       - global.json
+      - tools/api-contracts/*
 
 pr:
   branches:
@@ -26,6 +27,7 @@ pr:
       - src/client/ui/*
       - infra/*
       - global.json
+      - tools/api-contracts/*
 
 variables:
   isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
@@ -154,8 +156,29 @@ stages:
           - task: Npm@1
             displayName: "Install Frontend Dependencies"
             inputs:
-              command: "install"
+              command: "ci"
               workingDir: "src/client/ui"
+
+          - task: UseDotNet@2
+            displayName: "Install .NET SDK for API contracts"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+              includePreviewVersions: true
+
+          - task: Npm@1
+            displayName: "Install API Contract Tooling"
+            inputs:
+              command: "ci"
+              workingDir: "tools/api-contracts"
+
+          - script: npm run check:api
+            workingDirectory: "src/client/ui"
+            displayName: "Check Generated API Contracts"
+
+          - script: npm run build
+            workingDirectory: "src/client/ui"
+            displayName: "Build Frontend"
 
           - script: npx playwright install --with-deps chromium
             workingDirectory: "src/client/ui"

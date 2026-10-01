@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as hooks from "../hooks";
+import * as hooks from "../hooks/useApiClient";
+import { mockApiClient } from "../test/mock-api-client";
 import { render } from "../test/test-utils";
 import CreateSurvey from "./CreateSurvey";
 
-vi.mock("../hooks");
+vi.mock("../hooks/useApiClient");
 
 describe("CreateSurvey Component", () => {
 	const mockApiCall = vi.fn();
@@ -16,7 +17,7 @@ describe("CreateSurvey Component", () => {
 			status: 201,
 			json: async () => ({ id: 123, topic: "Test Survey" }),
 		});
-		vi.mocked(hooks.useApiCall).mockReturnValue({ apiCall: mockApiCall });
+		vi.mocked(hooks.useApiClient).mockReturnValue(mockApiClient(mockApiCall));
 	});
 
 	describe("Rendering", () => {
