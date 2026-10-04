@@ -200,19 +200,17 @@ stages:
               failTaskOnFailedTests: true
             condition: succeededOrFailed()
 
-  - stage: App_Deployment
-    displayName: "Deploy App"
+  - stage: Infrastructure_Database_Deployment
     condition: and(succeeded(), eq(variables.isMain, true))
     dependsOn:
       - BuildTestApi
       - BuildTestUI
+    displayName: "Provision Infrastructure + Deploy Database"
     jobs:
-      - job: Deploy
-        displayName: "Provision Infra + Deploy App"
+      - job: ProvisionInfrastructure
+        displayName: Provision Infrastructure
         pool:
           vmImage: "ubuntu-latest"
-        variables:
-          apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
         steps:
           - task: setup-azd@1
             displayName: Install azd
@@ -245,31 +243,8 @@ stages:
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
               TYPE_SAFE_API_KEY: $(typeSafeApiKey)
 
-          - task: AzureCLI@2
-            displayName: Deploy Application
-            inputs:
-              azureSubscription: $(azureResourceManagerConnection)
-              scriptType: bash
-              scriptLocation: inlineScript
-              visibleAzLogin: false
-              inlineScript: |
-                azd deploy --no-prompt
-            env:
-              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
-              AZURE_ENV_NAME: $(azureEnvName)
-              AZURE_LOCATION: $(azureLocation)
-              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
-              API_VERSION: $(apiSemVerVersionTag)
-              VITE_APP_VERSION: $(apiSemVerVersionTag)
-              CUSTOM_DOMAIN_NAME: fakesurveygenerator.mysecondarydomain.com
-
-  - stage: Database_Deployment
-    condition: and(succeeded(), eq(variables.isMain, true))
-    dependsOn:
-      - App_Deployment
-    displayName: "Deploy Database"
-    jobs:
       - deployment: Deployment_Job
+        dependsOn: ProvisionInfrastructure
         displayName: Deploy Database Migration Script
         pool:
           vmImage: "windows-latest"
@@ -290,3 +265,53 @@ stages:
                     DatabaseName: "$(sqlDatabaseName)"
                     deployType: SqlTask
                     SqlFile: "$(Pipeline.Workspace)/DbMigrationScript/DbMigrationScript.sql"
+
+  - stage: App_Deployment
+    displayName: "Deploy App"
+    condition: and(succeeded(), eq(variables.isMain, true))
+    dependsOn:
+      - BuildTestApi
+      - BuildTestUI
+      - Infrastructure_Database_Deployment
+    jobs:
+      - job: Deploy
+        displayName: "Deploy App"
+        pool:
+          vmImage: "ubuntu-latest"
+        variables:
+          apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
+        steps:
+          - task: setup-azd@1
+            displayName: Install azd
+
+          - pwsh: |
+              azd config set auth.useAzCliAuth "true"
+              azd config set alpha.deployment.stacks on
+            displayName: Configure AZD
+
+          - task: UseDotNet@2
+            displayName: "Install .NET SDK"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+              includePreviewVersions: true
+
+          - task: AzureCLI@2
+            displayName: Deploy Application
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              visibleAzLogin: false
+              inlineScript: |
+                azd env new "$AZURE_ENV_NAME" --subscription "$AZURE_SUBSCRIPTION_ID" --location "$AZURE_LOCATION" --no-prompt
+                azd env refresh "$AZURE_ENV_NAME" --no-prompt
+                azd deploy --no-prompt
+            env:
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              API_VERSION: $(apiSemVerVersionTag)
+              VITE_APP_VERSION: $(apiSemVerVersionTag)
+              CUSTOM_DOMAIN_NAME: fakesurveygenerator.mysecondarydomain.com
