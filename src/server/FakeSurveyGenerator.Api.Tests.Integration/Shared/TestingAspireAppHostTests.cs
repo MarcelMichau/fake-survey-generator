@@ -10,6 +10,22 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Shared;
 public sealed class TestingAspireAppHostTests
 {
     [Test]
+    public async Task GivenIntegrationTestHost_WhenConfiguringResources_ThenSqlServerDataVolumeIsRemoved()
+    {
+        await using var builder = await DistributedApplicationTestingBuilder.CreateAsync<AppHostProject>();
+        var sqlServer = builder.Resources.Single(resource => resource.Name == "sql-server");
+
+        // Local development keeps persistent data; integration tests must not reuse it.
+        await Assert.That(sqlServer.Annotations.OfType<ContainerMountAnnotation>()
+            .Any(annotation => annotation.Type == ContainerMountType.Volume)).IsTrue();
+
+        TestingAspireAppHost.ConfigureResourcesForIntegrationTests(builder);
+
+        await Assert.That(sqlServer.Annotations.OfType<ContainerMountAnnotation>()
+            .Any(annotation => annotation.Type == ContainerMountType.Volume)).IsFalse();
+    }
+
+    [Test]
     public async Task GivenIntegrationTestHost_WhenConfiguringResources_ThenUiInstallerIsDeferredAndInfrastructureRemainsAutomatic()
     {
         // Inspect the real AppHost model without starting processes or containers.
