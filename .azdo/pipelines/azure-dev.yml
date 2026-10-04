@@ -10,16 +10,18 @@ trigger:
       - src/client/ui/*
       - infra/*
       - global.json
+      - azure.yaml
+      - NuGet.config
+      - FakeSurveyGenerator.slnx
+      - .config/dotnet-tools.json
+      - .dockerignore
+      - dapr/*
       - tools/api-contracts/*
 
 pr:
   branches:
     include:
       - main
-      - feat/*
-      - fix/*
-      - chore/*
-      - refactor/*
   paths:
     include:
       - .azdo/*
@@ -27,6 +29,12 @@ pr:
       - src/client/ui/*
       - infra/*
       - global.json
+      - azure.yaml
+      - NuGet.config
+      - FakeSurveyGenerator.slnx
+      - .config/dotnet-tools.json
+      - .dockerignore
+      - dapr/*
       - tools/api-contracts/*
 
 variables:
@@ -37,16 +45,25 @@ variables:
   azureResourceManagerConnection: "Azure Service Connection"
   azureLocation: "South Africa North"
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+  azdVersion: "1.35.0"
+  daprCliVersion: "1.18.2"
+  daprRuntimeVersion: "1.18.4"
 
 stages:
   - stage: BuildTestApi
     displayName: "Build + Test API"
     jobs:
-      - job: VersionSetup
-        displayName: "Set Version Tags"
+      # No dependency on Build or BuildTestUI: publish a candidate while validation runs.
+      # Only trusted main builds receive registry-writing credentials.
+      - job: Package
+        displayName: "Package + Publish Candidate Image"
+        condition: and(succeeded(), eq(variables.isMain, true))
         pool:
-          vmImage: "ubuntu-latest"
+          vmImage: "ubuntu-24.04"
         steps:
+          - checkout: self
+            fetchDepth: 0
+
           - task: UseDotNet@2
             displayName: "Install .NET SDK"
             inputs:
@@ -66,15 +83,50 @@ stages:
             displayName: Set Build Number & Version Variables
 
           - script: |
-              echo "##vso[task.setvariable variable=VersionTag;isOutput=true]$(NBGV_SemVer1)"
-            name: "SetVersionTag"
-            displayName: "Set SemVer Version Tag from NBGV"
+              set -euo pipefail
+              echo "##vso[task.setvariable variable=ReleaseVersion;isOutput=true]$(NBGV_SemVer1)-build$(Build.BuildId)-attempt$(System.JobAttempt)"
+            name: "SetReleaseVersion"
+            displayName: "Set unique image and revision version"
+
+          - task: setup-azd@1
+            displayName: Install azd
+            inputs:
+              version: $(azdVersion)
+
+          - task: AzureCLI@2
+            name: PublishImage
+            displayName: "Build and publish candidate image (no deployment)"
+            inputs:
+              azureSubscription: $(azureResourceManagerConnection)
+              scriptType: bash
+              scriptLocation: scriptPath
+              scriptPath: .azdo/scripts/publish-image.sh
+              visibleAzLogin: false
+            env:
+              AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
+              AZURE_ENV_NAME: $(azureEnvName)
+              AZURE_LOCATION: $(azureLocation)
+              AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              TYPE_SAFE_API_KEY: $(typeSafeApiKey)
+              API_VERSION: $(SetReleaseVersion.ReleaseVersion)
+              VITE_APP_VERSION: $(NBGV_SemVer1)
 
       - job: Build
         displayName: "Build + Test"
         pool:
-          vmImage: "ubuntu-latest"
+          vmImage: "ubuntu-24.04"
         steps:
+          - checkout: self
+            fetchDepth: 0
+
+          - script: python3 .azdo/tests/test_pipeline.py
+            displayName: "Check CI workflow invariants"
+
+          - task: UseNode@1
+            displayName: "Install Node.js for acceptance tests"
+            inputs:
+              version: "26.x"
+
           - task: UseDotNet@2
             displayName: "Install .NET SDK"
             inputs:
@@ -94,10 +146,14 @@ stages:
             displayName: "Measure disk usage after Docker image prune"
             condition: always()
 
+          - script: dotnet restore FakeSurveyGenerator.slnx --locked-mode
+            displayName: "Restore locked solution dependencies"
+
           - task: DotNetCoreCLI@2
             inputs:
               command: "build"
               projects: "FakeSurveyGenerator.slnx"
+              arguments: "--no-restore --configuration Debug"
             displayName: "Build Solution"
 
           - script: bash .azdo/scripts/report-disk-usage.sh "After solution build"
@@ -106,11 +162,19 @@ stages:
 
           # Cert Trust Related Issue: https://github.com/dotnet/aspire/issues/13612
           - script: |
-              wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
-              dapr init --slim
+              set -euo pipefail
+              curl --fail --silent --show-error --location \
+                "https://raw.githubusercontent.com/dapr/cli/v${DAPR_CLI_VERSION}/install/install.sh" \
+                --output "$AGENT_TEMPDIRECTORY/install-dapr.sh"
+              bash "$AGENT_TEMPDIRECTORY/install-dapr.sh" "$DAPR_CLI_VERSION"
+              dapr init --slim --runtime-version "$DAPR_RUNTIME_VERSION"
+              dapr --version
 
-              SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust dotnet dev-certs https --trust
+              SSL_CERT_DIR="$HOME/.aspnet/dev-certs/trust" dotnet dev-certs https --trust
             displayName: "Test Preparation"
+            env:
+              DAPR_CLI_VERSION: $(daprCliVersion)
+              DAPR_RUNTIME_VERSION: $(daprRuntimeVersion)
 
           - script: bash .azdo/scripts/report-disk-usage.sh "After test preparation"
             displayName: "Measure disk usage after test preparation"
@@ -119,18 +183,43 @@ stages:
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
-              publishTestResults: true
-              arguments: "--no-build --coverage"
+              projects: "FakeSurveyGenerator.slnx"
+              publishTestResults: false
+              arguments: >-
+                --no-build --configuration Debug --coverage --report-trx
+                --results-directory "$(Agent.TempDirectory)/backend-tests"
             displayName: "Run Tests"
+
+          - script: bash .azdo/scripts/select-test-results.sh
+            displayName: "Select non-duplicated backend test reports"
+            condition: succeededOrFailed()
+            env:
+              TEST_RESULTS_DIRECTORY: $(Agent.TempDirectory)/backend-tests
+
+          - task: PublishTestResults@2
+            displayName: "Publish Backend Test Results and Coverage Attachments"
+            condition: succeededOrFailed()
+            inputs:
+              testResultsFormat: "VSTest"
+              searchFolder: "$(Agent.TempDirectory)/backend-tests"
+              testResultsFiles: "$(BackendTestResultsPattern)"
+              mergeTestResults: true
+              publishRunAttachments: true
+              failTaskOnFailedTests: true
+              failTaskOnMissingResultsFile: true
 
           - script: bash .azdo/scripts/report-disk-usage.sh "After tests"
             displayName: "Measure disk usage after tests"
             condition: always()
 
           - script: |
-              dotnet tool restore
-              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
-            workingDirectory: src/server/FakeSurveyGenerator.Application
+              set -euo pipefail
+              # Reuse the existing manifest's pin without restoring Stryker or dotnet-outdated.
+              ef_version=$(python3 -c 'import json; print(json.load(open(".config/dotnet-tools.json"))["tools"]["dotnet-ef"]["version"])')
+              dotnet tool install dotnet-ef --tool-path "$AGENT_TEMPDIRECTORY/ef-tools" --version "$ef_version"
+              cd src/server/FakeSurveyGenerator.Application
+              "$AGENT_TEMPDIRECTORY/ef-tools/dotnet-ef" migrations script \
+                --no-build --configuration Debug --output DbMigrationScript.sql --idempotent
             displayName: "Create Database Migration Script"
 
           - task: PublishPipelineArtifact@1
@@ -146,8 +235,11 @@ stages:
       - job: BuildAndTest
         displayName: "Build + Test"
         pool:
-          vmImage: "ubuntu-latest"
+          vmImage: "ubuntu-24.04"
         steps:
+          - checkout: self
+            fetchDepth: 0
+
           - task: UseNode@1
             displayName: "Install Node.js"
             inputs:
@@ -180,7 +272,7 @@ stages:
             workingDirectory: "src/client/ui"
             displayName: "Build Frontend"
 
-          - script: npx playwright install --with-deps chromium
+          - script: npx playwright install --with-deps --only-shell chromium
             workingDirectory: "src/client/ui"
             displayName: "Install Playwright Chromium"
 
@@ -210,22 +302,18 @@ stages:
       - job: ProvisionInfrastructure
         displayName: Provision Infrastructure
         pool:
-          vmImage: "ubuntu-latest"
+          vmImage: "ubuntu-24.04"
         steps:
           - task: setup-azd@1
             displayName: Install azd
+            inputs:
+              version: $(azdVersion)
 
-          - pwsh: |
+          - script: |
+              set -euo pipefail
               azd config set auth.useAzCliAuth "true"
               azd config set alpha.deployment.stacks on
             displayName: Configure AZD
-
-          - task: UseDotNet@2
-            displayName: "Install .NET SDK"
-            inputs:
-              packageType: "sdk"
-              useGlobalJson: true
-              includePreviewVersions: true
 
           - task: AzureCLI@2
             displayName: Provision Infrastructure
@@ -235,6 +323,7 @@ stages:
               scriptLocation: inlineScript
               visibleAzLogin: false
               inlineScript: |
+                set -euo pipefail
                 azd provision --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
@@ -256,6 +345,11 @@ stages:
           runOnce:
             deploy:
               steps:
+                # Disable the automatic all-artifact download, then fetch only migration SQL.
+                - download: none
+                - download: current
+                  artifact: DbMigrationScript
+
                 - task: SqlAzureDacpacDeployment@1
                   displayName: "Execute SQL Migration Script"
                   inputs:
@@ -277,43 +371,30 @@ stages:
       - job: Deploy
         displayName: "Deploy App"
         pool:
-          vmImage: "ubuntu-latest"
+          vmImage: "ubuntu-24.04"
         variables:
-          apiSemVerVersionTag: $[stageDependencies.BuildTestApi.VersionSetup.outputs['SetVersionTag.VersionTag']]
+          releaseVersion: $[stageDependencies.BuildTestApi.Package.outputs['SetReleaseVersion.ReleaseVersion']]
+          imageDigest: $[stageDependencies.BuildTestApi.Package.outputs['PublishImage.ImageDigest']]
         steps:
           - task: setup-azd@1
             displayName: Install azd
-
-          - pwsh: |
-              azd config set auth.useAzCliAuth "true"
-              azd config set alpha.deployment.stacks on
-            displayName: Configure AZD
-
-          - task: UseDotNet@2
-            displayName: "Install .NET SDK"
             inputs:
-              packageType: "sdk"
-              useGlobalJson: true
-              includePreviewVersions: true
+              version: $(azdVersion)
 
           - task: AzureCLI@2
             displayName: Deploy Application
             inputs:
               azureSubscription: $(azureResourceManagerConnection)
               scriptType: bash
-              scriptLocation: inlineScript
+              scriptLocation: scriptPath
+              scriptPath: .azdo/scripts/deploy-image.sh
               visibleAzLogin: false
-              inlineScript: |
-                set -e
-                azd env new "$AZURE_ENV_NAME" --subscription "$AZURE_SUBSCRIPTION_ID" --location "$AZURE_LOCATION" --no-prompt
-                azd env refresh "$AZURE_ENV_NAME" --no-prompt
-                azd deploy --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
               AZURE_ENV_NAME: $(azureEnvName)
               AZURE_LOCATION: $(azureLocation)
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
               TYPE_SAFE_API_KEY: $(typeSafeApiKey)
-              API_VERSION: $(apiSemVerVersionTag)
-              VITE_APP_VERSION: $(apiSemVerVersionTag)
+              API_VERSION: $(releaseVersion)
+              IMAGE_DIGEST: $(imageDigest)
               CUSTOM_DOMAIN_NAME: fakesurveygenerator.mysecondarydomain.com
