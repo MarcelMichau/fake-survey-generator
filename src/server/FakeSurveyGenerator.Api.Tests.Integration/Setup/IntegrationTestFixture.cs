@@ -1,8 +1,6 @@
 ﻿using FakeSurveyGenerator.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-using Respawn;
 using TUnit.Core.Interfaces;
 
 namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
@@ -12,7 +10,6 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
     private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(300);
 
     private TestingAspireAppHost? _appHost;
-    private IServiceScopeFactory? _serviceScopeFactory;
     public IntegrationTestWebApplicationFactory? Factory;
 
     public async Task InitializeAsync()
@@ -34,26 +31,16 @@ public class IntegrationTestFixture : IAsyncInitializer, IAsyncDisposable
         Factory = new IntegrationTestWebApplicationFactory(
             new AspireTestSettings(sqlConnectionString!, cacheConnectionString!));
 
-        _serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
+        var serviceScopeFactory = Factory.Services.GetRequiredService<IServiceScopeFactory>();
 
-        using var scope = _serviceScopeFactory.CreateScope();
+        using var scope = serviceScopeFactory.CreateScope();
 
         var scopedServiceProvider = scope.ServiceProvider;
 
         var context = scopedServiceProvider.GetRequiredService<SurveyContext>();
 
+        // SQL Server and Redis start fresh for the session; tests create their own data.
         await context.Database.MigrateAsync();
-
-        await using var connection = context.Database.GetDbConnection();
-        await connection.OpenAsync();
-
-        var respawner = await Respawner.CreateAsync(connection);
-
-        var cache = scopedServiceProvider.GetRequiredService<IDistributedCache>();
-        await cache.RemoveAsync("FakeSurveyGenerator");
-
-        await respawner.ResetAsync(connection);
-        await connection.CloseAsync();
     }
 
     public async ValueTask DisposeAsync()
