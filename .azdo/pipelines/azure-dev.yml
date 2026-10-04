@@ -304,6 +304,8 @@ stages:
               scriptLocation: inlineScript
               visibleAzLogin: false
               inlineScript: |
+                azd env new "$AZURE_ENV_NAME" --subscription "$AZURE_SUBSCRIPTION_ID" --location "$AZURE_LOCATION" --no-prompt
+                azd env refresh "$AZURE_ENV_NAME" --no-prompt
                 azd deploy --no-prompt
             env:
               AZURE_SUBSCRIPTION_ID: $(azureSubscriptionId)
