@@ -50,6 +50,12 @@ class PipelineStructureTests(unittest.TestCase):
         self.assertIn('testResultsFiles: "$(BackendTestResultsPattern)"', PIPELINE)
         self.assertIn("publishRunAttachments: true", PIPELINE)
         self.assertIn("failTaskOnMissingResultsFile: true", PIPELINE)
+        self.assertEqual(PIPELINE.count("task: PublishCodeCoverageResults@2"), 1)
+        coverage = PIPELINE.split("- task: PublishCodeCoverageResults@2", 1)[1].split("- script:", 1)[0]
+        self.assertIn("condition: succeededOrFailed()", coverage)
+        self.assertIn('summaryFileLocation: "$(Agent.TempDirectory)/backend-tests/$(BackendCoveragePattern)"', coverage)
+        self.assertIn('pathToSources: "$(Build.SourcesDirectory)"', coverage)
+        self.assertIn("failIfCoverageEmpty: true", coverage)
         self.assertIn("--only-shell chromium", PIPELINE)
 
     def test_locked_restore_and_no_redundant_build_or_tools(self):
@@ -168,6 +174,31 @@ echo "$MOCK_DIGEST"
         result = self.run_script("select-test-results.sh")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("BackendTestResultsPattern]merged/*.trx", result.stdout)
+
+    def test_coverage_prefers_merged_without_duplicate_attachment_copies(self):
+        results = self.directory / "results"
+        merged = results / "merged"
+        attachments = results / "test-run/In/agent"
+        merged.mkdir(parents=True)
+        attachments.mkdir(parents=True)
+        (results / "project.coverage").write_bytes(b"coverage")
+        (attachments / "project.coverage").write_bytes(b"coverage")
+        (merged / "merged.coverage").write_bytes(b"merged coverage")
+        result = self.run_script("select-test-results.sh")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("BackendCoveragePattern]merged/*.coverage", result.stdout)
+        self.assertNotIn("BackendCoveragePattern]**/*.coverage", result.stdout)
+
+    def test_coverage_fallback_is_independent_of_trx_post_processing(self):
+        merged = self.directory / "results/merged"
+        merged.mkdir(parents=True)
+        (merged / "merged.trx").write_text("<TestRun />")
+        (self.directory / "results/project.coverage").write_bytes(b"coverage")
+        result = self.run_script("select-test-results.sh")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("BackendTestResultsPattern]merged/*.trx", result.stdout)
+        self.assertIn("BackendCoveragePattern]*.coverage", result.stdout)
+        self.assertNotIn("BackendCoveragePattern]**/*.coverage", result.stdout)
 
 
 if __name__ == "__main__":

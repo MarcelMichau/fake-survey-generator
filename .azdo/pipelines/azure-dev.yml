@@ -191,7 +191,7 @@ stages:
             displayName: "Run Tests"
 
           - script: bash .azdo/scripts/select-test-results.sh
-            displayName: "Select non-duplicated backend test reports"
+            displayName: "Select non-duplicated backend test and coverage reports"
             condition: succeededOrFailed()
             env:
               TEST_RESULTS_DIRECTORY: $(Agent.TempDirectory)/backend-tests
@@ -207,6 +207,16 @@ stages:
               publishRunAttachments: true
               failTaskOnFailedTests: true
               failTaskOnMissingResultsFile: true
+
+          # TRX attachment publication alone did not populate the coverage UI in run 7123.
+          # Publish MTP's merged coverage explicitly, without re-collecting or duplicating it.
+          - task: PublishCodeCoverageResults@2
+            displayName: "Publish Backend Code Coverage"
+            condition: succeededOrFailed()
+            inputs:
+              summaryFileLocation: "$(Agent.TempDirectory)/backend-tests/$(BackendCoveragePattern)"
+              pathToSources: "$(Build.SourcesDirectory)"
+              failIfCoverageEmpty: true
 
           - script: bash .azdo/scripts/report-disk-usage.sh "After tests"
             displayName: "Measure disk usage after tests"

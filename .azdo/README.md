@@ -25,7 +25,7 @@ Parallel publication requires the dev environment, its deployment outputs, and A
 ## Validation details
 
 - `TF_BUILD` enables `ContinuousIntegrationBuild` and locked NuGet restore for every server project, including the API-contract generator. The Docker build sets the CI property explicitly.
-- Backend tests still run in Debug with `--coverage --report-trx`. MTP produces individual reports plus a merged report. CI publishes **only the merged report**, or individual reports if post-processing did not produce a merged report. Standard TRX coverage attachments are preserved; there is no additional coverage publisher.
+- Backend tests still run in Debug with `--coverage --report-trx`. MTP produces individual reports plus a merged report. CI publishes **only the merged TRX**, or individual reports if post-processing did not produce a merged report. Standard TRX coverage attachments are preserved. `PublishCodeCoverageResults@2` explicitly publishes the merged `.coverage` file to populate the pipeline coverage UI; it falls back to top-level per-project `.coverage` files if coverage post-processing did not complete. Nested attachment copies are excluded. Test reports and coverage are selected independently, and no tests are rerun.
 - Missing test reports and failed tests fail validation. Results are published on both success and failure.
 - EF is installed from the version in `.config/dotnet-tools.json`; unrelated tools are not restored. Migration SQL is generated with `--no-build`, including on PRs.
 - Browser installation uses Chromium headless shell in CI. Acceptance tests retain full Chromium installation outside Azure Pipelines for local headed debugging.
@@ -44,6 +44,12 @@ These standard-library tests check workflow invariants and execute the shell scr
 ```bash
 BASH_EXECUTABLE="$(cygpath -w "$(command -v bash)")" python .azdo/tests/test_pipeline.py
 ```
+
+## Hosted validation findings
+
+PR validation run [7123](https://dev.azure.com/marcelmichau/Personal/_build/results?buildId=7123&view=results) succeeded with 188 backend tests and 83 UI tests. Backend validation took 248s (versus 272s in run 7122); UI validation took 104s (versus 164s). Playwright UI installation fell from 84s to 27s. These are single-run comparisons, not guaranteed savings.
+
+Run 7123 generated merged coverage, but Azure's coverage API returned an empty `coverageData` array. The merged TRX's coverage references were not sufficient to populate the coverage UI. Explicit coverage publication was added as a follow-up; the next hosted run must verify that the UI is restored. Candidate packaging and application deployment were skipped, as expected for a PR.
 
 ## First pipeline-run checklist
 
