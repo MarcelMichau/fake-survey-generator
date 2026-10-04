@@ -304,6 +304,7 @@ stages:
               scriptLocation: inlineScript
               visibleAzLogin: false
               inlineScript: |
+                set -e
                 azd env new "$AZURE_ENV_NAME" --subscription "$AZURE_SUBSCRIPTION_ID" --location "$AZURE_LOCATION" --no-prompt
                 azd env refresh "$AZURE_ENV_NAME" --no-prompt
                 azd deploy --no-prompt
@@ -312,6 +313,7 @@ stages:
               AZURE_ENV_NAME: $(azureEnvName)
               AZURE_LOCATION: $(azureLocation)
               AZURE_RESOURCE_GROUP: $(azureResourceGroup)
+              TYPE_SAFE_API_KEY: $(typeSafeApiKey)
               API_VERSION: $(apiSemVerVersionTag)
               VITE_APP_VERSION: $(apiSemVerVersionTag)
               CUSTOM_DOMAIN_NAME: fakesurveygenerator.mysecondarydomain.com
