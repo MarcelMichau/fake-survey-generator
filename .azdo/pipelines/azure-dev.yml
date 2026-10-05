@@ -223,13 +223,9 @@ stages:
             condition: always()
 
           - script: |
-              set -euo pipefail
-              # Reuse the existing manifest's pin without restoring Stryker or dotnet-outdated.
-              ef_version=$(python3 -c 'import json; print(json.load(open(".config/dotnet-tools.json"))["tools"]["dotnet-ef"]["version"])')
-              dotnet tool install dotnet-ef --tool-path "$AGENT_TEMPDIRECTORY/ef-tools" --version "$ef_version"
-              cd src/server/FakeSurveyGenerator.Application
-              "$AGENT_TEMPDIRECTORY/ef-tools/dotnet-ef" migrations script \
-                --no-build --configuration Debug --output DbMigrationScript.sql --idempotent
+              dotnet tool restore
+              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
+            workingDirectory: src/server/FakeSurveyGenerator.Application
             displayName: "Create Database Migration Script"
 
           - task: PublishPipelineArtifact@1

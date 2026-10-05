@@ -82,11 +82,13 @@ class PipelineStructureTests(unittest.TestCase):
         self.assertIn("failIfCoverageEmpty: true", coverage)
         self.assertIn("--only-shell chromium", PIPELINE)
 
-    def test_locked_restore_and_no_redundant_build_or_tools(self):
+    def test_locked_restore_and_simple_migration_tooling(self):
         self.assertIn("dotnet restore FakeSurveyGenerator.slnx --locked-mode", PIPELINE)
         self.assertIn('--no-restore --configuration Debug', PIPELINE)
-        self.assertNotIn("dotnet tool restore", PIPELINE)
-        self.assertIn("--no-build --configuration Debug --output DbMigrationScript.sql", PIPELINE)
+        self.assertIn("dotnet tool restore\n              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i", PIPELINE)
+        self.assertIn("workingDirectory: src/server/FakeSurveyGenerator.Application", PIPELINE)
+        self.assertNotIn("ef_version=", PIPELINE)
+        self.assertNotIn("ef-tools", PIPELINE)
         props = (ROOT / "src/server/Directory.Build.props").read_text(encoding="utf-8-sig")
         self.assertIn("$(WarningsAsErrors);NU1900", props)
         self.assertIn("<RestoreLockedMode Condition=", props)
