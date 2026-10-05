@@ -2,12 +2,12 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM node:26 AS frontend-build
-ARG VITE_APP_VERSION
 WORKDIR /src/client/ui
 COPY ["src/client/ui/package.json", "."]
 COPY ["src/client/ui/package-lock.json", "."]
 RUN npm ci
 COPY ["src/client/ui/", "."]
+ARG VITE_APP_VERSION
 RUN npm run build
 
 FROM mcr.microsoft.com/dotnet/aspnet:11.0.0-rc.1-resolute-chiseled-extra AS base
@@ -32,16 +32,15 @@ RUN --mount=type=bind,source=.,target=/context,readonly \
     mkdir -p "/src/$(dirname "$file")"; \
     cp "/context/$file" "/src/$file"; \
     done
-RUN dotnet restore "./src/server/FakeSurveyGenerator.Api/./FakeSurveyGenerator.Api.csproj" --locked-mode
+RUN dotnet restore "./src/server/FakeSurveyGenerator.Api/FakeSurveyGenerator.Api.csproj" --locked-mode -p:Configuration=$BUILD_CONFIGURATION -p:ContinuousIntegrationBuild=true
 COPY . .
 WORKDIR /
 COPY .git .git
 WORKDIR "/src/src/server/FakeSurveyGenerator.Api"
-RUN dotnet build "./FakeSurveyGenerator.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./FakeSurveyGenerator.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./FakeSurveyGenerator.Api.csproj" --no-restore -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:ContinuousIntegrationBuild=true
 
 FROM publish AS publish-with-frontend
 RUN mkdir -p /app/publish/wwwroot

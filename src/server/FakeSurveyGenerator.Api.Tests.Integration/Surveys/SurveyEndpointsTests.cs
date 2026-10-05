@@ -6,6 +6,7 @@ using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using FakeSurveyGenerator.Application.TestHelpers;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -210,7 +211,14 @@ public sealed class SurveyEndpointsTests
     public async Task
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenValidationErrorsShouldBeLogged()
     {
-        var logIndexBefore = TestLogSink.Shared.Entries.Count;
+        var logSink = new TestLogSink();
+        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+            builder.ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddProvider(new TestLoggerProvider(logSink));
+            }));
+        using var client = factory.WithSpecificUser(_testUser);
 
         var createSurveyCommand = new CreateSurveyCommand
         {
@@ -226,19 +234,21 @@ public sealed class SurveyEndpointsTests
             ]
         };
 
-        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+        using var response = await client.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
 
-        var validationLog = TestLogSink.Shared.Entries.Skip(logIndexBefore).LastOrDefault(entry =>
+        var validationLog = logSink.Entries.SingleOrDefault(entry =>
             entry.Level == LogLevel.Warning
             && entry.EventId.Id == 1
-            && entry.Category == "FakeSurveyGenerator.Api.Filters.ValidationLoggingEndpointFilter");
+            && entry.Category == "FakeSurveyGenerator.Api.Filters.ValidationLoggingEndpointFilter"
+            && entry.State?.Any(item => item.Key == "EndpointName" && Equals(item.Value, "CreateSurvey")) == true
+            && entry.State?.Any(item => item.Key == "UserIdentity" && Equals(item.Value, _testUser.Id)) == true);
 
         await Assert.That(validationLog).IsNotNull();
 
         await Assert.That(validationLog!.Message.Contains("Validation failure on Endpoint: CreateSurvey")).IsTrue();
-        await Assert.That(validationLog.Message.Contains("User:")).IsTrue();
+        await Assert.That(validationLog.Message.Contains($"User: {_testUser.Id}.")).IsTrue();
         await Assert.That(validationLog.Message.Contains("Unknown Identity")).IsFalse();
 
         var state = validationLog.State;
@@ -259,7 +269,14 @@ public sealed class SurveyEndpointsTests
     public async Task
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenRequestShouldBeLogged()
     {
-        var logIndexBefore = TestLogSink.Shared.Entries.Count;
+        var logSink = new TestLogSink();
+        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+            builder.ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddProvider(new TestLoggerProvider(logSink));
+            }));
+        using var client = factory.WithSpecificUser(_testUser);
 
         var createSurveyCommand = new CreateSurveyCommand
         {
@@ -275,15 +292,15 @@ public sealed class SurveyEndpointsTests
             ]
         };
 
-        using var response = await AuthenticatedClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+        using var response = await client.PostAsJsonAsync("/api/survey", createSurveyCommand);
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.UnprocessableEntity);
 
-        var hasRequestLog = TestLogSink.Shared.Entries.Skip(logIndexBefore).Any(entry =>
-            entry.Category == "FakeSurveyGenerator.Api.Filters.RequestLoggingEndpointFilter"
-            && entry.Message.Contains("Request to Endpoint: CreateSurvey")
-            && entry.Message.Contains("User:")
-            && !entry.Message.Contains("Unknown Identity"));
+        var hasRequestLog = logSink.Entries.Any(entry =>
+            entry.Level == LogLevel.Information
+            && entry.EventId.Id == 0
+            && entry.Category == "FakeSurveyGenerator.Api.Filters.RequestLoggingEndpointFilter"
+            && entry.Message == $"Request to Endpoint: CreateSurvey for User: {_testUser.Id}");
 
         await Assert.That(hasRequestLog).IsTrue();
     }

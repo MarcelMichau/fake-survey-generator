@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'True'">true</ContinuousIntegrationBuild>
+    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning">
@@ -19,8 +21,8 @@
     <!-- Report low, moderate, high and critical advisories -->
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <!-- Fails the build on CI or on release when a vulnerability is detected -->
-    <WarningsAsErrors Condition="$(ContinuousIntegrationBuild) == 'true' OR '$(Configuration)' == 'Release'">
-      (WarningsAsErrors);NU1900;NU1901;NU1902;NU1903;NU1904
+    <WarningsAsErrors Condition="'$(ContinuousIntegrationBuild)' == 'true' OR '$(Configuration)' == 'Release'">
+      $(WarningsAsErrors);NU1900;NU1901;NU1902;NU1903;NU1904
     </WarningsAsErrors>
   </PropertyGroup>
 </Project>

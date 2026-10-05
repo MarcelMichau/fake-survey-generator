@@ -14,8 +14,12 @@ public sealed class AcceptanceTestFixture : IAsyncInitializer, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        // Only Chromium is used by the acceptance tests.
-        var exitCode = Microsoft.Playwright.Program.Main(["install", "chromium"]);
+        // CI uses default-channel headless Chromium; retain headed support for local debugging.
+        string[] browserInstallArguments = string.Equals(
+            Environment.GetEnvironmentVariable("TF_BUILD"), "True", StringComparison.OrdinalIgnoreCase)
+            ? ["install", "--only-shell", "chromium"]
+            : ["install", "chromium"];
+        var exitCode = Microsoft.Playwright.Program.Main(browserInstallArguments);
         if (exitCode != 0)
         {
             throw new Exception($"Playwright exited with code {exitCode}");
