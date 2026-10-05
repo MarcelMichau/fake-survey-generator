@@ -135,7 +135,8 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
       }
     }
     template: {
-      revisionSuffix: replace(version, '.', '-')
+      // Keep the full revision name within Azure's 54-character limit without losing build/attempt identity.
+      revisionSuffix: 'r${uniqueString(version)}'
       containers: [
         {
           name: 'fake-survey-generator-api'
