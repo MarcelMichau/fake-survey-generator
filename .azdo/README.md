@@ -14,7 +14,7 @@ The `Package` job is main-only and uses the existing Azure service connection. I
 
 `publish-image.sh` refreshes the existing azd environment, runs `azd publish api`, resolves the published tag to a SHA-256 digest, and emits that digest as a job output. Failed validation may leave an unused candidate in ACR, but cannot deploy it. Registry retention/cleanup is a separate operational concern; this pipeline does not delete images.
 
-After both validation stages (including candidate publication) succeed, infrastructure is provisioned and the SQL migration artifact is applied. Only then does `deploy-image.sh` call `azd deploy api --from-package <registry/repository@sha256:...>`. This deploys the exact candidate without building or pushing again. `API_VERSION` supplies the unique revision suffix to `infra/api.bicepparam`.
+After both validation stages (including candidate publication) succeed, infrastructure is provisioned and the SQL migration artifact is applied. Only then does `deploy-image.sh` call `azd deploy api --from-package <registry/repository@sha256:...>`. This deploys the exact candidate without building or pushing again. `API_VERSION` supplies the full release identity to `infra/api.bicepparam`; `infra/api.bicep` hashes it into a fixed-length revision suffix (`r` plus the 13-character `uniqueString`) to stay within Azure's 54-character full revision-name limit.
 
 Each hosted job initializes and refreshes its own azd environment. `.azure` is excluded from Docker context and is never published as an artifact. The TypeSafe API key is still required when evaluating the infrastructure parameters during refresh.
 
@@ -60,5 +60,5 @@ Main run [7126](https://dev.azure.com/marcelmichau/Personal/_build/results?build
 - Main: packaging overlaps validation; the published image uses the build/attempt-qualified tag.
 - Backend results show 188 tests for the current test suite, not 376; coverage remains visible (run 7122 reported 80.80%). Test totals will naturally change as tests are added.
 - Deployment logs show the `--from-package` digest and no Docker packaging/push step.
-- The deployed revision references that digest and the build/attempt-qualified suffix; the displayed application version remains SemVer.
+- The deployed revision references that digest and a short suffix derived from the full build/attempt-qualified release identity; the displayed application version remains SemVer.
 - Compare total duration with run 7122 (9m 42s), accounting for hosted-agent queues and image-download variability.

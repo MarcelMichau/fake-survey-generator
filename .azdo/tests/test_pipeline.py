@@ -55,6 +55,19 @@ class PipelineStructureTests(unittest.TestCase):
                 self.assertIn("includePreviewVersions: true", sdk)
                 self.assertLess(section.index("task: UseDotNet@2"), section.index("task: AzureCLI@2"))
 
+    def test_revision_suffix_is_bounded_and_uses_the_full_release_identity(self):
+        template = (ROOT / "infra/api.bicep").read_text(encoding="utf-8")
+        suffix = re.search(r"revisionSuffix: (.+)", template).group(1)
+        # Bicep uniqueString returns 13 lowercase alphanumeric characters; the
+        # alphabetic prefix gives a valid, fixed-length suffix for any release.
+        self.assertEqual(suffix, "'r${uniqueString(version)}'")
+        app_name = "ca-fake-survey-generator-api"
+        failed_release = "6.0.248-build7128-attempt1"
+        self.assertGreater(len(f"{app_name}--{failed_release.replace('.', '-')}"), 54)
+        self.assertLessEqual(len(f"{app_name}--r") + 13, 54)
+        parameters = (ROOT / "infra/api.bicepparam").read_text(encoding="utf-8")
+        self.assertIn("param version = readEnvironmentVariable('API_VERSION', 'latest')", parameters)
+
     def test_coverage_and_single_report_publication_are_preserved(self):
         self.assertIn("publishTestResults: false", PIPELINE)
         self.assertIn("--coverage --report-trx", PIPELINE)
