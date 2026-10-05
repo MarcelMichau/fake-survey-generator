@@ -42,7 +42,18 @@ class PipelineStructureTests(unittest.TestCase):
         self.assertIn("condition: and(succeeded(), eq(variables.isMain, true))", deploy)
         self.assertIn("Package.outputs['PublishImage.ImageDigest']", deploy)
         self.assertIn("Package.outputs['SetReleaseVersion.ReleaseVersion']", deploy)
-        self.assertNotIn("UseDotNet@", deploy)
+
+    def test_azd_jobs_install_the_global_json_sdk_before_service_initialization(self):
+        for job in ["Package", "ProvisionInfrastructure", "Deploy"]:
+            with self.subTest(job=job):
+                section = PIPELINE.split(f"      - job: {job}\n", 1)[1]
+                section = re.split(r"\n(?:      - job:|      - deployment:|  - stage:)", section, maxsplit=1)[0]
+                self.assertIn("task: UseDotNet@2", section)
+                sdk = section.split("task: UseDotNet@2", 1)[1].split("- task:", 1)[0]
+                self.assertIn('packageType: "sdk"', sdk)
+                self.assertIn("useGlobalJson: true", sdk)
+                self.assertIn("includePreviewVersions: true", sdk)
+                self.assertLess(section.index("task: UseDotNet@2"), section.index("task: AzureCLI@2"))
 
     def test_coverage_and_single_report_publication_are_preserved(self):
         self.assertIn("publishTestResults: false", PIPELINE)

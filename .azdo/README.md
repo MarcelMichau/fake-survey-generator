@@ -31,6 +31,7 @@ Parallel publication requires the dev environment, its deployment outputs, and A
 - Browser installation uses Chromium headless shell in CI. Acceptance tests retain full Chromium installation outside Azure Pipelines for local headed debugging.
 - Docker pruning, disk snapshots, development-certificate trust and Dapr initialization remain in place. Dapr CLI/runtime and azd versions are pinned in pipeline variables; update those pins deliberately.
 - Linux jobs use `ubuntu-24.04`. The Node major is explicitly selected in both validation jobs.
+- Every azd service job installs the SDK pinned in `global.json`, including infrastructure provisioning and prebuilt-image deployment. azd initializes C# user secrets on the host even when no host compilation is needed.
 - No persistent dependency caches or conditional infrastructure provisioning are introduced.
 
 ## Regression checks
@@ -50,6 +51,8 @@ BASH_EXECUTABLE="$(cygpath -w "$(command -v bash)")" python .azdo/tests/test_pip
 PR validation run [7123](https://dev.azure.com/marcelmichau/Personal/_build/results?buildId=7123&view=results) succeeded with 188 backend tests and 83 UI tests. Backend validation took 248s (versus 272s in run 7122); UI validation took 104s (versus 164s). Playwright UI installation fell from 84s to 27s. These are single-run comparisons, not guaranteed savings.
 
 Run 7123 generated merged coverage, but Azure's coverage API returned an empty `coverageData` array. The merged TRX's coverage references were not sufficient to populate the coverage UI. Explicit coverage publication was added as a follow-up; the next hosted run must verify that the UI is restored. Candidate packaging and application deployment were skipped, as expected for a PR.
+
+Main run [7126](https://dev.azure.com/marcelmichau/Personal/_build/results?buildId=7126&view=results) successfully published the candidate image and digest but failed in infrastructure provisioning: azd invoked `dotnet user-secrets` during C# service initialization, and the hosted agent lacked the SDK pinned in `global.json`. SDK setup was restored for both provisioning and prebuilt application deployment; those jobs must not rely on the hosted image's preinstalled SDKs. The next main run must verify provisioning and the digest-based deployment handoff.
 
 ## First pipeline-run checklist
 

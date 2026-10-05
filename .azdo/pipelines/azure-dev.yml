@@ -314,6 +314,14 @@ stages:
         pool:
           vmImage: "ubuntu-24.04"
         steps:
+          # azd initializes C# user secrets even when provisioning only Bicep.
+          - task: UseDotNet@2
+            displayName: "Install .NET SDK for azd service initialization"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+              includePreviewVersions: true
+
           - task: setup-azd@1
             displayName: Install azd
             inputs:
@@ -386,6 +394,14 @@ stages:
           releaseVersion: $[stageDependencies.BuildTestApi.Package.outputs['SetReleaseVersion.ReleaseVersion']]
           imageDigest: $[stageDependencies.BuildTestApi.Package.outputs['PublishImage.ImageDigest']]
         steps:
+          # Prebuilt-image deployment still initializes the C# service through dotnet.
+          - task: UseDotNet@2
+            displayName: "Install .NET SDK for azd service initialization"
+            inputs:
+              packageType: "sdk"
+              useGlobalJson: true
+              includePreviewVersions: true
+
           - task: setup-azd@1
             displayName: Install azd
             inputs:
