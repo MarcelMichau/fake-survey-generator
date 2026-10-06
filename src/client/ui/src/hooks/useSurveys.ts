@@ -1,6 +1,10 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { ApiError, validationMessages } from "../api/ApiError";
+import {
+	useRegisteredSurveyMutation,
+	useRegisteredSurveyQuery,
+	useSurveySession,
+} from "../api/SurveySession";
 import type {
 	AnalyzeSurveyCommand,
 	CreateSurveyCommand,
@@ -17,10 +21,10 @@ export const surveyKeys = {
 
 export function useUserSurveys(enabled: boolean) {
 	const client = useApiClient();
-	const { user, isAuthenticated } = useAuth0();
-	return useQuery({
-		queryKey: surveyKeys.list(user?.sub),
-		enabled: enabled && isAuthenticated,
+	const { userId } = useSurveySession();
+	return useRegisteredSurveyQuery({
+		queryKey: surveyKeys.list(userId),
+		enabled,
 		queryFn: async ({ signal }) => {
 			const { data, response } = await client.GET("/api/survey/user", {
 				signal,
@@ -35,11 +39,12 @@ export function useUserSurveys(enabled: boolean) {
 export function useCreateSurvey() {
 	const client = useApiClient();
 	const cache = useQueryClient();
-	const { user } = useAuth0();
-	return useMutation({
+	const session = useSurveySession();
+	return useRegisteredSurveyMutation({
 		mutationFn: async (body: CreateSurveyCommand) => {
 			const { data, error, response } = await client.POST("/api/survey", {
 				body,
+				signal: session.signal,
 			});
 			if (response.status !== 201 || !data) {
 				throw new ApiError(
@@ -51,21 +56,25 @@ export function useCreateSurvey() {
 			return data;
 		},
 		onSuccess: async (survey) => {
-			const key = surveyKeys.detail(user?.sub, survey.id);
+			const key = surveyKeys.detail(session.userId, survey.id);
 			await cache.cancelQueries({ queryKey: key });
+			session.requireReady();
 			cache.setQueryData(key, survey);
-			await cache.invalidateQueries({ queryKey: surveyKeys.list(user?.sub) });
+			await cache.invalidateQueries({
+				queryKey: surveyKeys.list(session.userId),
+			});
 		},
 	});
 }
 
 export function useAnalyzeSurvey() {
 	const client = useApiClient();
-	return useMutation({
+	const session = useSurveySession();
+	return useRegisteredSurveyMutation({
 		mutationFn: async (body: AnalyzeSurveyCommand) => {
 			const { data, error, response } = await client.POST(
 				"/api/survey/analyze",
-				{ body },
+				{ body, signal: session.signal },
 			);
 			if (!response.ok || !data) {
 				throw new ApiError(
@@ -82,11 +91,12 @@ export function useAnalyzeSurvey() {
 export function useDeleteSurvey() {
 	const client = useApiClient();
 	const cache = useQueryClient();
-	const { user } = useAuth0();
-	return useMutation({
+	const session = useSurveySession();
+	return useRegisteredSurveyMutation({
 		mutationFn: async (id: number) => {
 			const { response } = await client.DELETE("/api/survey/{id}", {
 				params: { path: { id } },
+				signal: session.signal,
 			});
 			if (!response.ok)
 				throw new ApiError("Failed to delete survey", response.status);
@@ -94,16 +104,21 @@ export function useDeleteSurvey() {
 		},
 		onSuccess: async (id) => {
 			await Promise.all([
-				cache.cancelQueries({ queryKey: surveyKeys.detail(user?.sub, id) }),
-				cache.cancelQueries({ queryKey: surveyKeys.list(user?.sub) }),
+				cache.cancelQueries({
+					queryKey: surveyKeys.detail(session.userId, id),
+				}),
+				cache.cancelQueries({ queryKey: surveyKeys.list(session.userId) }),
 			]);
+			session.requireReady();
 			// An active detail view must clear immediately, without refetching the deleted record.
-			cache.setQueryData(surveyKeys.detail(user?.sub, id), null);
+			cache.setQueryData(surveyKeys.detail(session.userId, id), null);
 			cache.setQueryData<UserSurveyModel[]>(
-				surveyKeys.list(user?.sub),
+				surveyKeys.list(session.userId),
 				(surveys) => surveys?.filter((survey) => survey.id !== id),
 			);
-			await cache.invalidateQueries({ queryKey: surveyKeys.list(user?.sub) });
+			await cache.invalidateQueries({
+				queryKey: surveyKeys.list(session.userId),
+			});
 		},
 	});
 }

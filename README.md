@@ -271,6 +271,13 @@ and updates or invalidates survey caches after creation and deletion. Each authe
 query client; changing users or logging out clears the previous cache. Queries and mutations do not retry
 automatically, and user registration must complete before survey actions become available.
 
+The session query module enforces registration readiness for every Survey read and mutation, including manual refreshes;
+disabled controls are presentation, not the only safeguard. Requested reads resume after successful registration, while
+mutations requested too early fail without being queued. Failed registration requires the explicit **Retry registration**
+action; mounting another caller or refreshing a Survey does not retry registration. Switching users or logging out cancels
+session-owned registration and mutation requests and discards late outcomes. Cancellation cannot undo a mutation already
+accepted by the server.
+
 Survey creation accepts up to 1,000,000 respondents and 100 options; analysis retains its 20-option limit.
 Fixed distributions preserve unassigned votes, while random distributions still cast one independent vote per
 respondent. JSON numeric fields require numbers rather than quoted strings; date/time fields in generated UI

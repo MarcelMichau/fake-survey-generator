@@ -359,27 +359,28 @@ describe("GetSurvey Component", () => {
 		});
 
 		it("should hide the delete button when current user does not own the survey", async () => {
-			vi.mocked(auth0.useAuth0).mockReturnValueOnce({
-				isAuthenticated: true,
-				isLoading: false,
+			const auth = auth0.useAuth0();
+			vi.mocked(auth0.useAuth0).mockReturnValue({
+				...auth,
 				user: { sub: "different-user-id", name: "Other User" },
-				// biome-ignore lint/suspicious/noExplicitAny: test mock
-				getAccessTokenSilently: vi.fn(async () => "test-token") as any,
-				// biome-ignore lint/suspicious/noExplicitAny: test mock
-			} as any);
+			});
 			vi.mocked(hooks.useSurveyFetch).mockReturnValue({
 				refetch: vi.fn(),
 				survey: mockSurveyData,
 				loading: false,
 				error: "",
 			});
-			const screen = await render(
-				<GetSurvey loading={false} newSurveyId={null} />,
-			);
+			try {
+				const screen = await render(
+					<GetSurvey loading={false} newSurveyId={null} />,
+				);
 
-			await expect
-				.element(screen.getByRole("button", { name: /Delete this survey/i }))
-				.not.toBeInTheDocument();
+				await expect
+					.element(screen.getByRole("button", { name: /Delete this survey/i }))
+					.not.toBeInTheDocument();
+			} finally {
+				vi.mocked(auth0.useAuth0).mockReturnValue(auth);
+			}
 		});
 
 		it("should send DELETE request and clear the survey on confirm", async () => {

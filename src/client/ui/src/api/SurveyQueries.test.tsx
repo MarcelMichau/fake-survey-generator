@@ -204,10 +204,17 @@ describe("Survey query lifecycle", () => {
 
 	it("starts with an empty cache after switching authenticated users", async () => {
 		const auth = useAuth0();
-		const fetch = vi
-			.fn()
-			.mockResolvedValueOnce(response(survey))
-			.mockResolvedValue(response({ ...survey, topic: "Other user's survey" }));
+		let detailRequests = 0;
+		const fetch = vi.fn(async (request: Request) => {
+			if (request.url.endsWith("/api/user/register"))
+				return response({ id: 1 }, 201);
+			detailRequests += 1;
+			return response(
+				detailRequests === 1
+					? survey
+					: { ...survey, topic: "Other user's survey" },
+			);
+		});
 		vi.mocked(useApiClient).mockReturnValue(
 			createClient<paths>({ baseUrl: window.location.origin, fetch }),
 		);
@@ -233,7 +240,8 @@ describe("Survey query lifecycle", () => {
 			await expect
 				.element(screen.getByText(survey.topic))
 				.not.toBeInTheDocument();
-			expect(fetch).toHaveBeenCalledTimes(2);
+			expect(detailRequests).toBe(2);
+			expect(fetch).toHaveBeenCalledTimes(4);
 		} finally {
 			vi.mocked(useAuth0).mockReturnValue(auth);
 		}
