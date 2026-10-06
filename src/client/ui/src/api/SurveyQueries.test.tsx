@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import createClient from "openapi-fetch";
-import { StrictMode, useState } from "react";
+import { act, StrictMode, useState } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render as browserRender } from "vitest-browser-react";
 import { useApiClient } from "../hooks/useApiClient";
@@ -15,6 +16,7 @@ import { render } from "../test/test-utils";
 import type { SurveyModel } from "../types";
 import { ApiQueryProvider } from "./ApiQueryProvider";
 import type { paths } from "./generated";
+import { registrationKey, useRegisteredSurveyMutation } from "./SurveySession";
 
 vi.mock("../hooks/useApiClient");
 
@@ -202,12 +204,179 @@ describe("Survey query lifecycle", () => {
 		expect(fetch).toHaveBeenCalledTimes(4);
 	});
 
+	it.each(["creation", "deletion"] as const)(
+		"keeps accepted %s successful when cache synchronization rejects",
+		async (operation) => {
+			const fetch = vi.fn(async () =>
+				operation === "creation" ? response(survey, 201) : response(null, 204),
+			);
+			vi.mocked(useApiClient).mockReturnValue(
+				createClient<paths>({ baseUrl: window.location.origin, fetch }),
+			);
+			let workflow:
+				| {
+						cache: QueryClient;
+						creation: ReturnType<typeof useCreateSurvey>;
+						deletion: ReturnType<typeof useDeleteSurvey>;
+				  }
+				| undefined;
+			function Probe() {
+				workflow = {
+					cache: useQueryClient(),
+					creation: useCreateSurvey(),
+					deletion: useDeleteSurvey(),
+				};
+				return null;
+			}
+			await render(<Probe />);
+			if (!workflow) throw new Error("Workflow did not render");
+			const { cache, creation, deletion } = workflow;
+			const cacheError = new Error("Cache synchronization failed");
+			const invalidate = vi
+				.spyOn(cache, "invalidateQueries")
+				.mockRejectedValue(cacheError);
+			const report = vi.spyOn(console, "error").mockImplementation(() => {});
+			const onSuccess = vi.fn();
+			try {
+				await act(async () => {
+					if (operation === "creation") {
+						await expect(
+							creation.mutateAsync(
+								{
+									surveyTopic: survey.topic,
+									respondentType: survey.respondentType,
+									numberOfRespondents: 100,
+									surveyOptions: [{ optionText: "Tabs" }],
+								},
+								{ onSuccess },
+							),
+						).resolves.toEqual(survey);
+					} else {
+						await expect(deletion.mutateAsync(1, { onSuccess })).resolves.toBe(
+							1,
+						);
+					}
+				});
+				expect(
+					operation === "creation"
+						? workflow.creation.isSuccess
+						: workflow.deletion.isSuccess,
+				).toBe(true);
+				expect(onSuccess).toHaveBeenCalledTimes(1);
+				expect(fetch).toHaveBeenCalledTimes(1);
+				expect(report).toHaveBeenCalledWith(
+					"Survey mutation succeeded, but cache synchronization failed.",
+					cacheError,
+				);
+			} finally {
+				invalidate.mockRestore();
+				report.mockRestore();
+			}
+		},
+	);
+
+	it.each([false, true])(
+		"propagates readiness loss during cache synchronization (cache also rejects: %s)",
+		async (cacheRejects) => {
+			const fetch = vi.fn(async () => response(survey, 201));
+			vi.mocked(useApiClient).mockReturnValue(
+				createClient<paths>({ baseUrl: window.location.origin, fetch }),
+			);
+			let workflow:
+				| { cache: QueryClient; creation: ReturnType<typeof useCreateSurvey> }
+				| undefined;
+			function Probe() {
+				workflow = { cache: useQueryClient(), creation: useCreateSurvey() };
+				return null;
+			}
+			await render(<Probe />);
+			if (!workflow) throw new Error("Workflow did not render");
+			const { cache, creation } = workflow;
+			const invalidate = vi
+				.spyOn(cache, "invalidateQueries")
+				.mockImplementation(async () => {
+					cache
+						.getQueryCache()
+						.find({ queryKey: registrationKey("test-user-id") })
+						?.setState({ status: "error" });
+					if (cacheRejects)
+						throw new Error("Cache sync failed during readiness loss");
+				});
+			const report = vi.spyOn(console, "error").mockImplementation(() => {});
+			const onSuccess = vi.fn();
+			try {
+				await act(async () => {
+					await expect(
+						creation.mutateAsync(
+							{
+								surveyTopic: survey.topic,
+								respondentType: survey.respondentType,
+								numberOfRespondents: 100,
+								surveyOptions: [{ optionText: "Tabs" }],
+							},
+							{ onSuccess },
+						),
+					).rejects.toThrow("until user registration succeeds");
+				});
+				expect(onSuccess).not.toHaveBeenCalled();
+				expect(report).not.toHaveBeenCalledWith(
+					"Survey mutation succeeded, but cache synchronization failed.",
+					expect.anything(),
+				);
+				expect(fetch).toHaveBeenCalledTimes(1);
+			} finally {
+				invalidate.mockRestore();
+				report.mockRestore();
+			}
+		},
+	);
+
+	it("does not swallow unrelated success callback failures as cache failures", async () => {
+		vi.mocked(useApiClient).mockReturnValue(
+			createClient<paths>({ baseUrl: window.location.origin }),
+		);
+		const callbackError = new Error("Unrelated success callback failed");
+		let mutation:
+			| ReturnType<typeof useRegisteredSurveyMutation<number, void>>
+			| undefined;
+		function Probe() {
+			mutation = useRegisteredSurveyMutation({
+				mutationFn: async () => 1,
+				onSuccess: () => {
+					throw callbackError;
+				},
+			});
+			return null;
+		}
+		await render(<Probe />);
+		if (!mutation) throw new Error("Mutation did not render");
+		const report = vi.spyOn(console, "error").mockImplementation(() => {});
+		try {
+			await act(async () => {
+				await expect(mutation?.mutateAsync()).rejects.toBe(callbackError);
+			});
+			expect(report).not.toHaveBeenCalledWith(
+				"Survey mutation succeeded, but cache synchronization failed.",
+				expect.anything(),
+			);
+		} finally {
+			report.mockRestore();
+		}
+	});
+
 	it("starts with an empty cache after switching authenticated users", async () => {
 		const auth = useAuth0();
-		const fetch = vi
-			.fn()
-			.mockResolvedValueOnce(response(survey))
-			.mockResolvedValue(response({ ...survey, topic: "Other user's survey" }));
+		let detailRequests = 0;
+		const fetch = vi.fn(async (request: Request) => {
+			if (request.url.endsWith("/api/user/register"))
+				return response({ id: 1 }, 201);
+			detailRequests += 1;
+			return response(
+				detailRequests === 1
+					? survey
+					: { ...survey, topic: "Other user's survey" },
+			);
+		});
 		vi.mocked(useApiClient).mockReturnValue(
 			createClient<paths>({ baseUrl: window.location.origin, fetch }),
 		);
@@ -233,7 +402,8 @@ describe("Survey query lifecycle", () => {
 			await expect
 				.element(screen.getByText(survey.topic))
 				.not.toBeInTheDocument();
-			expect(fetch).toHaveBeenCalledTimes(2);
+			expect(detailRequests).toBe(2);
+			expect(fetch).toHaveBeenCalledTimes(4);
 		} finally {
 			vi.mocked(useAuth0).mockReturnValue(auth);
 		}

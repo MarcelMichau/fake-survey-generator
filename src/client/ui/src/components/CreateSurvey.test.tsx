@@ -371,6 +371,34 @@ describe("CreateSurvey Component", () => {
 				.toBeDisabled();
 		});
 
+		it("should clear stale success and allow analysis after editing a retained successful draft", async () => {
+			const screen = await render(
+				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
+			);
+			const question = screen.getByPlaceholder("Do you prefer tabs or spaces?");
+			await question.fill("Tabs or spaces?");
+			await screen
+				.getByRole("button", { name: "Create Survey", exact: true })
+				.click();
+
+			await expect
+				.element(screen.getByText(/Survey created with ID: 123/))
+				.toBeInTheDocument();
+			await expect
+				.element(screen.getByRole("button", { name: "Analyse Survey" }))
+				.toBeDisabled();
+
+			await question.fill("Tea or coffee?");
+
+			await expect
+				.element(screen.getByText(/Survey created with ID: 123/))
+				.not.toBeInTheDocument();
+			await expect
+				.element(screen.getByRole("button", { name: "Analyse Survey" }))
+				.not.toBeDisabled();
+			await expect.element(question).toHaveValue("Tea or coffee?");
+		});
+
 		it("should show error message on failed submission", async () => {
 			const screen = await render(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,

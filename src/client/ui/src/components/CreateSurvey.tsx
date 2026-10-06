@@ -6,11 +6,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type React from "react";
-import { useCallback, useRef, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { ApiError } from "../api/ApiError";
-import { useAnalyzeSurvey, useCreateSurvey } from "../hooks/useSurveys";
-import type * as Types from "../types";
+import { useSurveyDraft } from "../hooks/useSurveyDraft";
 import Alert from "./Alert";
 import Button from "./Button";
 import Field from "./Field";
@@ -22,253 +19,18 @@ type CreateSurveyProps = {
 	resetOnSuccess?: boolean;
 };
 
-// Form option type - doesn't include numberOfVotes which is only on response
-interface FormSurveyOption {
-	id: number;
-	optionText: string;
-	preferredNumberOfVotes: number;
-}
-
-// Consolidated form state interface
-interface SurveyFormState {
-	survey: {
-		respondentType: string;
-		topic: string;
-		numberOfRespondents: number;
-		options: FormSurveyOption[];
-	};
-	messages: {
-		success: string;
-		error: string;
-		validationErrors: string[];
-	};
-	ui: {
-		isCreated: boolean;
-	};
-	analysis: {
-		completed: boolean;
-		warnings: Types.SurveyAnalysisWarningModel[];
-		hasAcknowledgedWarnings: boolean;
-		error: string;
-	};
-}
-
-const initialFormState: SurveyFormState = {
-	survey: {
-		respondentType: "",
-		topic: "",
-		numberOfRespondents: 0,
-		options: [{ id: 1, optionText: "", preferredNumberOfVotes: 0 }],
-	},
-	messages: {
-		success: "",
-		error: "",
-		validationErrors: [],
-	},
-	ui: {
-		isCreated: false,
-	},
-	analysis: {
-		completed: false,
-		warnings: [],
-		hasAcknowledgedWarnings: false,
-		error: "",
-	},
-};
-
 const CreateSurvey = ({
 	loading,
 	onSurveyCreated,
-	resetOnSuccess = !onSurveyCreated,
+	resetOnSuccess,
 }: CreateSurveyProps): React.ReactElement => {
-	const creation = useCreateSurvey();
-	const analysis = useAnalyzeSurvey();
-	const [formState, setFormState] = useState<SurveyFormState>(initialFormState);
-	// Counter for generating unique option IDs used as React keys. Display labels
-	// are based on each option's current position instead.
-	const nextOptionIdRef = useRef(2);
-
-	const updateSurveyField = useCallback(
-		<K extends keyof SurveyFormState["survey"]>(
-			key: K,
-			value: SurveyFormState["survey"][K],
-		) => {
-			setFormState((prev) => ({
-				...prev,
-				survey: {
-					...prev.survey,
-					[key]: value,
-				},
-				analysis: initialFormState.analysis,
-			}));
-		},
-		[],
-	);
-
-	const resetMessages = useCallback(() => {
-		setFormState((prev) => ({
-			...prev,
-			messages: {
-				success: "",
-				error: "",
-				validationErrors: [],
-			},
-		}));
-	}, []);
-
-	const resetForm = useCallback(() => {
-		setFormState(initialFormState);
-		nextOptionIdRef.current = 2; // Reset counter to 2 (next ID after initial option with ID 1)
-	}, []);
-
-	const updateOption = useCallback((optionId: number, optionText: string) => {
-		setFormState((prev) => ({
-			...prev,
-			survey: {
-				...prev.survey,
-				options: prev.survey.options.map((option) =>
-					option.id === optionId ? { ...option, optionText } : option,
-				),
-			},
-			analysis: initialFormState.analysis,
-		}));
-	}, []);
-
-	const updatePreferredVotes = useCallback(
-		(optionId: number, preferredVotes: number) => {
-			setFormState((prev) => ({
-				...prev,
-				survey: {
-					...prev.survey,
-					options: prev.survey.options.map((option) =>
-						option.id === optionId
-							? { ...option, preferredNumberOfVotes: preferredVotes }
-							: option,
-					),
-				},
-				analysis: initialFormState.analysis,
-			}));
-		},
-		[],
-	);
-
-	const removeOption = useCallback((optionId: number) => {
-		setFormState((prev) => ({
-			...prev,
-			survey: {
-				...prev.survey,
-				options: prev.survey.options.filter((o) => o.id !== optionId),
-			},
-			analysis: initialFormState.analysis,
-		}));
-	}, []);
-
-	const addOption = useCallback(() => {
-		setFormState((prev) => {
-			const newId = nextOptionIdRef.current;
-			nextOptionIdRef.current += 1;
-			return {
-				...prev,
-				survey: {
-					...prev.survey,
-					options: [
-						...prev.survey.options,
-						{
-							id: newId,
-							optionText: "",
-							preferredNumberOfVotes: 0,
-						},
-					],
-				},
-				analysis: initialFormState.analysis,
-			};
-		});
-	}, []);
-
-	const createSurvey = async (surveyCommand: Types.CreateSurveyCommand) => {
-		resetMessages();
-		try {
-			const data = await creation.mutateAsync(surveyCommand);
-			if (resetOnSuccess) resetForm();
-			setFormState((prev) => ({
-				...prev,
-				messages: {
-					success: `Survey created with ID: ${data.id}. Get the survey to see the outcome.`,
-					error: "",
-					validationErrors: [],
-				},
-				ui: { isCreated: !resetOnSuccess },
-				analysis: initialFormState.analysis,
-			}));
-			onSurveyCreated?.(data.id);
-		} catch (error) {
-			setFormState((prev) => ({
-				...prev,
-				messages: {
-					...prev.messages,
-					error:
-						error instanceof ApiError
-							? error.validationErrors.length > 0
-								? ""
-								: error.message
-							: "An unexpected error occurred",
-					validationErrors:
-						error instanceof ApiError ? error.validationErrors : [],
-				},
-			}));
-		}
-	};
-
-	const buildSurveyCommand = useCallback(
-		(): Types.CreateSurveyCommand => ({
-			surveyTopic: formState.survey.topic,
-			numberOfRespondents: formState.survey.numberOfRespondents,
-			respondentType: formState.survey.respondentType,
-			surveyOptions: formState.survey.options.map(
-				(option) =>
-					({
-						optionText: option.optionText,
-						preferredNumberOfVotes: option.preferredNumberOfVotes,
-					}) satisfies Types.SurveyOptionDto,
-			),
-		}),
-		[formState.survey],
-	);
-
-	const analyzeSurvey = async () => {
-		resetMessages();
-		setFormState((prev) => ({ ...prev, analysis: initialFormState.analysis }));
-		const { numberOfRespondents: _respondents, ...command } =
-			buildSurveyCommand();
-		try {
-			const data = await analysis.mutateAsync(command);
-			setFormState((prev) => ({
-				...prev,
-				analysis: {
-					...initialFormState.analysis,
-					completed: true,
-					warnings: data.warnings,
-				},
-			}));
-		} catch (error) {
-			setFormState((prev) => ({
-				...prev,
-				analysis: {
-					...initialFormState.analysis,
-					error:
-						error instanceof ApiError
-							? error.validationErrors.join(" ") || error.message
-							: "An unexpected error occurred while analyzing the survey.",
-				},
-			}));
-		}
-	};
+	const draft = useSurveyDraft({ loading, onSurveyCreated, resetOnSuccess });
 
 	const onSubmit = async (
 		e: React.SubmitEvent<HTMLFormElement>,
 	): Promise<void> => {
 		e.preventDefault();
-		await createSurvey(buildSurveyCommand());
+		await draft.create();
 	};
 
 	return (
@@ -279,33 +41,33 @@ const CreateSurvey = ({
 				</h2>
 				<form
 					onSubmit={onSubmit}
-					aria-busy={analysis.isPending || creation.isPending}
+					aria-busy={draft.isAnalyzing || draft.isCreating}
 				>
-					<fieldset
-						disabled={loading || analysis.isPending || creation.isPending}
-					>
+					<fieldset disabled={!draft.canEdit}>
 						<Field
 							label="Target Audience (Respondent Type)"
-							value={formState.survey.respondentType}
-							onChange={(value) => updateSurveyField("respondentType", value)}
+							value={draft.survey.respondentType}
+							onChange={(value) =>
+								draft.updateSurveyField("respondentType", value)
+							}
 							loading={loading}
 							placeholder="Pragmatic Developers"
 						/>
 						<Field
 							label="Question (Survey Topic)"
-							value={formState.survey.topic}
-							onChange={(value) => updateSurveyField("topic", value)}
+							value={draft.survey.topic}
+							onChange={(value) => draft.updateSurveyField("topic", value)}
 							loading={loading}
 							placeholder="Do you prefer tabs or spaces?"
 						/>
 						<Field
 							label="Number of Respondents"
-							value={formState.survey.numberOfRespondents}
+							value={draft.survey.numberOfRespondents}
 							onChange={(value) =>
-								updateSurveyField(
+								draft.updateSurveyField(
 									"numberOfRespondents",
 									Number.isNaN(Number(value))
-										? formState.survey.numberOfRespondents
+										? draft.survey.numberOfRespondents
 										: Number(value),
 								)
 							}
@@ -314,7 +76,7 @@ const CreateSurvey = ({
 						<span className="ui-label">
 							{loading ? <Skeleton /> : <span>Options</span>}
 						</span>
-						{formState.survey.options.map((option, index) => {
+						{draft.survey.options.map((option, index) => {
 							const optionNumber = index + 1;
 
 							return (
@@ -322,7 +84,9 @@ const CreateSurvey = ({
 									<Field
 										label={`#${optionNumber}`}
 										value={option.optionText}
-										onChange={(value) => updateOption(option.id, value)}
+										onChange={(value) =>
+											draft.updateOption(option.id, { optionText: value })
+										}
 										loading={loading}
 										placeholder={
 											index === 0 ? "Most definitely tabs" : "Some other option"
@@ -331,7 +95,7 @@ const CreateSurvey = ({
 										{index > 0 && (
 											<Button
 												actionType="destructive"
-												onClick={() => removeOption(option.id)}
+												onClick={() => draft.removeOption(option.id)}
 												additionalClasses={["text-base!"]}
 											>
 												{`Remove #${optionNumber}`}
@@ -350,14 +114,15 @@ const CreateSurvey = ({
 											id={`preferred-votes-${option.id}`}
 											type="number"
 											min="0"
-											max={formState.survey.numberOfRespondents}
+											max={draft.survey.numberOfRespondents}
 											value={option.preferredNumberOfVotes}
 											onChange={(e) => {
 												const value = Number.parseInt(e.target.value, 10);
-												updatePreferredVotes(
-													option.id,
-													Number.isNaN(value) ? 0 : value,
-												);
+												draft.updateOption(option.id, {
+													preferredNumberOfVotes: Number.isNaN(value)
+														? 0
+														: value,
+												});
 											}}
 											disabled={loading}
 											className="brutal-input max-w-40"
@@ -366,7 +131,7 @@ const CreateSurvey = ({
 											{loading ? (
 												<Skeleton width={200} />
 											) : (
-												`Set to 0 for random distribution or specify the desired number of votes (max: ${formState.survey.numberOfRespondents})`
+												`Set to 0 for random distribution or specify the desired number of votes (max: ${draft.survey.numberOfRespondents})`
 											)}
 										</p>
 									</div>
@@ -375,7 +140,7 @@ const CreateSurvey = ({
 						})}
 						<div className="my-2">
 							<SkeletonButton
-								onClick={addOption}
+								onClick={draft.addOption}
 								loading={loading}
 								actionType="secondary"
 							>
@@ -383,21 +148,15 @@ const CreateSurvey = ({
 							</SkeletonButton>
 						</div>
 						<div className="mt-6 border-t-2 border-white pt-4">
-							{formState.analysis.warnings.length > 0 && (
+							{draft.analysis.warnings.length > 0 && (
 								<label className="my-3 flex items-start gap-3 text-sm text-paper">
 									<input
 										type="checkbox"
-										checked={formState.analysis.hasAcknowledgedWarnings}
+										checked={draft.analysis.hasAcknowledgedWarnings}
 										onChange={(event) =>
-											setFormState((prev) => ({
-												...prev,
-												analysis: {
-													...prev.analysis,
-													hasAcknowledgedWarnings: event.target.checked,
-												},
-											}))
+											draft.acknowledgeWarnings(event.target.checked)
 										}
-										disabled={creation.isPending}
+										disabled={!draft.canEdit}
 									/>
 									I confirm that I want to create this survey with bad data
 									&amp; that I feel bad about it
@@ -407,14 +166,9 @@ const CreateSurvey = ({
 								<SkeletonButton
 									type="submit"
 									loading={loading}
-									disabled={
-										creation.isPending ||
-										analysis.isPending ||
-										(formState.analysis.warnings.length > 0 &&
-											!formState.analysis.hasAcknowledgedWarnings)
-									}
+									disabled={!draft.canCreate}
 								>
-									{formState.analysis.warnings.length > 0
+									{draft.analysis.warnings.length > 0
 										? "Create Survey (Despite All The Issues Identified)"
 										: "Create Survey"}{" "}
 									<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
@@ -426,37 +180,29 @@ const CreateSurvey = ({
 								Analyse provided survey information for potential issues.
 							</p>
 							<SkeletonButton
-								onClick={() => void analyzeSurvey()}
+								onClick={() => void draft.analyze()}
 								loading={loading}
-								disabled={
-									creation.isPending ||
-									analysis.isPending ||
-									formState.analysis.completed ||
-									formState.ui.isCreated
-								}
+								disabled={!draft.canAnalyze}
 								actionType="secondary"
 							>
-								{analysis.isPending ? "Analysing..." : "Analyse Survey"}
+								{draft.isAnalyzing ? "Analysing..." : "Analyse Survey"}
 								<FontAwesomeIcon icon={faMicroscope} className="ml-1" />
 							</SkeletonButton>
 						</div>
 					</fieldset>
 				</form>
 				<div>
-					{formState.messages.success !== "" && (
-						<Alert
-							title="Survey Created"
-							message={formState.messages.success}
-						/>
+					{draft.messages.success !== "" && (
+						<Alert title="Survey Created" message={draft.messages.success} />
 					)}
-					{formState.messages.error !== "" && (
+					{draft.messages.error !== "" && (
 						<Alert
 							type="error"
 							title="Oh no! Something did not go as planned."
-							message={formState.messages.error}
+							message={draft.messages.error}
 						/>
 					)}
-					{formState.messages.validationErrors.map((error, index) => (
+					{draft.messages.validationErrors.map((error, index) => (
 						<Alert
 							// biome-ignore lint/suspicious/noArrayIndexKey: no unique identifier available
 							key={index}
@@ -465,21 +211,20 @@ const CreateSurvey = ({
 							message={error}
 						/>
 					))}
-					{formState.analysis.error !== "" && (
+					{draft.analysis.error !== "" && (
 						<Alert
 							type="error"
 							title="Survey Analysis Failed"
-							message={formState.analysis.error}
+							message={draft.analysis.error}
 						/>
 					)}
-					{formState.analysis.completed &&
-						formState.analysis.warnings.length === 0 && (
-							<Alert
-								title="The Fun Police Report"
-								message="No questionable survey decisions detected."
-							/>
-						)}
-					{formState.analysis.warnings.map((warning) => (
+					{draft.analysis.completed && draft.analysis.warnings.length === 0 && (
+						<Alert
+							title="The Fun Police Report"
+							message="No questionable survey decisions detected."
+						/>
+					)}
+					{draft.analysis.warnings.map((warning) => (
 						<Alert
 							key={warning.code}
 							type="warning"
