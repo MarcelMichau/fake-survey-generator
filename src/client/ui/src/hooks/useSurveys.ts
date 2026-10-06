@@ -55,7 +55,7 @@ export function useCreateSurvey() {
 			}
 			return data;
 		},
-		onSuccess: async (survey) => {
+		onCacheSync: async (survey) => {
 			const key = surveyKeys.detail(session.userId, survey.id);
 			await cache.cancelQueries({ queryKey: key });
 			session.requireReady();
@@ -102,7 +102,7 @@ export function useDeleteSurvey() {
 				throw new ApiError("Failed to delete survey", response.status);
 			return id;
 		},
-		onSuccess: async (id) => {
+		onCacheSync: async (id) => {
 			await Promise.all([
 				cache.cancelQueries({
 					queryKey: surveyKeys.detail(session.userId, id),

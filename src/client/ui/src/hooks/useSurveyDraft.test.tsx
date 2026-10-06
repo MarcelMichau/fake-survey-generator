@@ -1,3 +1,4 @@
+import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { act, StrictMode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockApiClient } from "../test/mock-api-client";
@@ -31,7 +32,9 @@ const creationResponse = {
 
 async function renderDraft(settings: Settings = { loading: false }) {
 	let draft: Draft;
+	let cache: QueryClient | undefined;
 	function Probe() {
+		cache = useQueryClient();
 		draft = useSurveyDraft(settings);
 		return null;
 	}
@@ -43,6 +46,10 @@ async function renderDraft(settings: Settings = { loading: false }) {
 	return {
 		get draft() {
 			return draft;
+		},
+		get cache() {
+			if (!cache) throw new Error("Draft did not render");
+			return cache;
 		},
 	};
 }
@@ -111,6 +118,62 @@ describe("Survey draft workflow", () => {
 		expect(probe.draft.canAnalyze).toBe(false);
 		expect(probe.draft.canCreate).toBe(true);
 	});
+
+	it("preserves accepted creation and its notification when cache synchronization fails", async () => {
+		const onSurveyCreated = vi.fn();
+		const probe = await renderDraft({ loading: false, onSurveyCreated });
+		const cacheError = new Error("Cache synchronization failed");
+		const invalidate = vi
+			.spyOn(probe.cache, "invalidateQueries")
+			.mockRejectedValue(cacheError);
+		const report = vi.spyOn(console, "error").mockImplementation(() => {});
+		try {
+			await act(async () => {
+				fillDraft(probe.draft);
+				await probe.draft.create();
+			});
+			expect(probe.draft.messages.success).toContain("123");
+			expect(probe.draft.messages.error).toBe("");
+			expect(probe.draft.canAnalyze).toBe(false);
+			expect(probe.draft.survey.topic).toBe("Tabs or spaces?");
+			expect(onSurveyCreated).toHaveBeenCalledExactlyOnceWith(123);
+			expect(transport).toHaveBeenCalledTimes(1);
+			expect(report).toHaveBeenCalledWith(
+				"Survey mutation succeeded, but cache synchronization failed.",
+				cacheError,
+			);
+		} finally {
+			invalidate.mockRestore();
+			report.mockRestore();
+		}
+	});
+
+	it.each([false, true])(
+		"preserves accepted creation when the caller callback throws (reset: %s)",
+		async (resetOnSuccess) => {
+			const callbackError = new Error("Caller callback failed");
+			const onSurveyCreated = vi.fn(() => {
+				throw callbackError;
+			});
+			const probe = await renderDraft({
+				loading: false,
+				onSurveyCreated,
+				resetOnSuccess,
+			});
+			await act(async () => {
+				fillDraft(probe.draft);
+				await expect(probe.draft.create()).rejects.toBe(callbackError);
+			});
+			expect(probe.draft.messages.success).toContain("123");
+			expect(probe.draft.messages.error).toBe("");
+			expect(probe.draft.survey.topic).toBe(
+				resetOnSuccess ? "" : "Tabs or spaces?",
+			);
+			expect(probe.draft.canAnalyze).toBe(resetOnSuccess);
+			expect(transport).toHaveBeenCalledTimes(1);
+			expect(onSurveyCreated).toHaveBeenCalledExactlyOnceWith(123);
+		},
+	);
 
 	it("requires acknowledgement through the draft interface before creating analysed warnings", async () => {
 		transport

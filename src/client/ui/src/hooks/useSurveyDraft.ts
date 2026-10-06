@@ -209,19 +209,9 @@ export function useSurveyDraft({
 		const draft = current.current;
 		if (!canCreate(draft)) return;
 		commit({ ...draft, messages: emptyMessages(), phase: "creating" });
+		let survey: Awaited<ReturnType<typeof creation.mutateAsync>>;
 		try {
-			const survey = await creation.mutateAsync(buildCommand(draft.survey));
-			commit({
-				...(resetOnSuccess ? initialDraft() : current.current),
-				phase: "editing",
-				isCreated: !resetOnSuccess,
-				messages: {
-					...emptyMessages(),
-					success: `Survey created with ID: ${survey.id}. Get the survey to see the outcome.`,
-				},
-				analysis: emptyAnalysis(),
-			});
-			onSurveyCreated?.(survey.id);
+			survey = await creation.mutateAsync(buildCommand(draft.survey));
 		} catch (error) {
 			commit({
 				...current.current,
@@ -238,7 +228,19 @@ export function useSurveyDraft({
 						error instanceof ApiError ? error.validationErrors : [],
 				},
 			});
+			return;
 		}
+		commit({
+			...(resetOnSuccess ? initialDraft() : current.current),
+			phase: "editing",
+			isCreated: !resetOnSuccess,
+			messages: {
+				...emptyMessages(),
+				success: `Survey created with ID: ${survey.id}. Get the survey to see the outcome.`,
+			},
+			analysis: emptyAnalysis(),
+		});
+		onSurveyCreated?.(survey.id);
 	}
 
 	async function analyze() {

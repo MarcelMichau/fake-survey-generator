@@ -136,11 +136,13 @@ export function useRegisteredSurveyQuery<T>(
 export function useRegisteredSurveyMutation<T, V>(
 	options: UseMutationOptions<T, Error, V> & {
 		mutationFn: NonNullable<UseMutationOptions<T, Error, V>["mutationFn"]>;
+		onCacheSync?: UseMutationOptions<T, Error, V>["onSuccess"];
 	},
 ) {
 	const session = useSurveySession();
+	const { onCacheSync, ...mutationOptions } = options;
 	return useMutation({
-		...options,
+		...mutationOptions,
 		mutationFn: async (variables, context) => {
 			session.requireReady();
 			const result = await options.mutationFn(variables, context);
@@ -148,6 +150,18 @@ export function useRegisteredSurveyMutation<T, V>(
 			return result;
 		},
 		onSuccess: async (...args) => {
+			session.requireReady();
+			try {
+				await onCacheSync?.(...args);
+			} catch (error) {
+				// Session changes must still discard accepted results; only cache
+				// failures in a ready session are separate from mutation failure.
+				session.requireReady();
+				console.error(
+					"Survey mutation succeeded, but cache synchronization failed.",
+					error,
+				);
+			}
 			session.requireReady();
 			await options.onSuccess?.(...args);
 			session.requireReady();
