@@ -1,15 +1,14 @@
 import {
 	faMicroscope,
-	faMinus,
 	faPaperPlane,
 	faPlus,
+	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type React from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useSurveyDraft } from "../hooks/useSurveyDraft";
 import Alert from "./Alert";
-import Button from "./Button";
 import Field from "./Field";
 import SkeletonButton from "./SkeletonButton";
 
@@ -36,7 +35,7 @@ const CreateSurvey = ({
 	return (
 		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
 			<div className="brutal-panel h-full">
-				<h2 className="display-title text-4xl lg:text-5xl mb-5">
+				<h2 className="display-title mb-6 text-4xl lg:text-5xl">
 					{loading ? <Skeleton /> : <span>Create Survey</span>}
 				</h2>
 				<form
@@ -73,85 +72,95 @@ const CreateSurvey = ({
 							}
 							loading={loading}
 						/>
-						<span className="ui-label">
+						<span className="ui-label mt-7 mb-3 border-b-2 border-line pb-2 text-base!">
 							{loading ? <Skeleton /> : <span>Options</span>}
 						</span>
-						{draft.survey.options.map((option, index) => {
-							const optionNumber = index + 1;
+						<div className="space-y-3">
+							{draft.survey.options.map((option, index) => {
+								const optionNumber = index + 1;
 
-							return (
-								<div key={option.id}>
-									<Field
-										label={`#${optionNumber}`}
-										value={option.optionText}
-										onChange={(value) =>
-											draft.updateOption(option.id, { optionText: value })
-										}
-										loading={loading}
-										placeholder={
-											index === 0 ? "Most definitely tabs" : "Some other option"
-										}
+								return (
+									<div
+										key={option.id}
+										className="flex flex-wrap items-end gap-3 border-2 border-line border-l-lime border-l-[6px] bg-ink/40 p-3 sm:p-4"
 									>
-										{index > 0 && (
-											<Button
-												actionType="destructive"
-												onClick={() => draft.removeOption(option.id)}
-												additionalClasses={["text-base!"]}
-											>
-												{`Remove #${optionNumber}`}
-												<FontAwesomeIcon icon={faMinus} className="ml-1" />
-											</Button>
-										)}
-									</Field>
-									<div className="mt-1 mb-5">
-										<label
-											htmlFor={`preferred-votes-${option.id}`}
-											className="ui-label"
-										>
-											{loading ? <Skeleton width={100} /> : "Preferred Votes"}
-										</label>
-										<input
-											id={`preferred-votes-${option.id}`}
-											type="number"
-											min="0"
-											max={draft.survey.numberOfRespondents}
-											value={option.preferredNumberOfVotes}
-											onChange={(e) => {
-												const value = Number.parseInt(e.target.value, 10);
-												draft.updateOption(option.id, {
-													preferredNumberOfVotes: Number.isNaN(value)
-														? 0
-														: value,
-												});
-											}}
-											disabled={loading}
-											className="brutal-input max-w-40"
+										<Field
+											label={`#${optionNumber}`}
+											value={option.optionText}
+											onChange={(value) =>
+												draft.updateOption(option.id, { optionText: value })
+											}
+											loading={loading}
+											className="min-w-48 flex-1"
+											placeholder={
+												index === 0
+													? "Most definitely tabs"
+													: "Some other option"
+											}
 										/>
-										<p className="text-gray-300 text-xs mt-2">
-											{loading ? (
-												<Skeleton width={200} />
-											) : (
-												`Set to 0 for random distribution or specify the desired number of votes (max: ${draft.survey.numberOfRespondents})`
-											)}
-										</p>
+										<div className="w-32">
+											<label
+												htmlFor={`preferred-votes-${option.id}`}
+												className="ui-label"
+											>
+												{loading ? <Skeleton width={100} /> : "Preferred Votes"}
+											</label>
+											<input
+												id={`preferred-votes-${option.id}`}
+												type="number"
+												min="0"
+												max={draft.survey.numberOfRespondents}
+												value={option.preferredNumberOfVotes}
+												onChange={(e) => {
+													const value = Number.parseInt(e.target.value, 10);
+													draft.updateOption(option.id, {
+														preferredNumberOfVotes: Number.isNaN(value)
+															? 0
+															: value,
+													});
+												}}
+												disabled={loading}
+												className="brutal-input"
+											/>
+										</div>
+										{index > 0 && (
+											<button
+												type="button"
+												aria-label={`Remove #${optionNumber}`}
+												title={`Remove #${optionNumber}`}
+												onClick={() => draft.removeOption(option.id)}
+												className="brutal-icon-button min-h-11! min-w-11!"
+											>
+												<FontAwesomeIcon icon={faXmark} />
+											</button>
+										)}
 									</div>
-								</div>
-							);
-						})}
-						<div className="my-2">
+								);
+							})}
+						</div>
+						<p className="ui-hint mt-3">
+							{loading ? (
+								<Skeleton width={200} />
+							) : (
+								`Set preferred votes to 0 for a random distribution, or specify the desired number of votes (max: ${draft.survey.numberOfRespondents}).`
+							)}
+						</p>
+						<div className="mt-4">
 							<SkeletonButton
 								onClick={draft.addOption}
 								loading={loading}
 								actionType="secondary"
+								additionalClasses={["text-base!"]}
 							>
-								Add Option <FontAwesomeIcon icon={faPlus} className="ml-1" />
+								Add Option <FontAwesomeIcon icon={faPlus} />
 							</SkeletonButton>
 						</div>
-						<div className="mt-6 border-t-2 border-white pt-4">
+						<div className="mt-7 border-t-2 border-line pt-6">
 							{draft.analysis.warnings.length > 0 && (
-								<label className="my-3 flex items-start gap-3 text-sm text-paper">
+								<label className="mb-5 flex cursor-pointer items-start gap-3 text-sm text-paper">
 									<input
 										type="checkbox"
+										className="mt-0.5 size-4 shrink-0"
 										checked={draft.analysis.hasAcknowledgedWarnings}
 										onChange={(event) =>
 											draft.acknowledgeWarnings(event.target.checked)
@@ -162,7 +171,7 @@ const CreateSurvey = ({
 									&amp; that I feel bad about it
 								</label>
 							)}
-							<div className="my-2">
+							<div className="flex flex-wrap gap-4">
 								<SkeletonButton
 									type="submit"
 									loading={loading}
@@ -171,23 +180,21 @@ const CreateSurvey = ({
 									{draft.analysis.warnings.length > 0
 										? "Create Survey (Despite All The Issues Identified)"
 										: "Create Survey"}{" "}
-									<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
+									<FontAwesomeIcon icon={faPaperPlane} />
+								</SkeletonButton>
+								<SkeletonButton
+									onClick={() => void draft.analyze()}
+									loading={loading}
+									disabled={!draft.canAnalyze}
+									actionType="secondary"
+								>
+									{draft.isAnalyzing ? "Analysing..." : "Analyse Survey"}
+									<FontAwesomeIcon icon={faMicroscope} />
 								</SkeletonButton>
 							</div>
-						</div>
-						<div className="mt-4">
-							<p className="mb-2 text-sm text-gray-300">
+							<p className="ui-hint mt-4">
 								Analyse provided survey information for potential issues.
 							</p>
-							<SkeletonButton
-								onClick={() => void draft.analyze()}
-								loading={loading}
-								disabled={!draft.canAnalyze}
-								actionType="secondary"
-							>
-								{draft.isAnalyzing ? "Analysing..." : "Analyse Survey"}
-								<FontAwesomeIcon icon={faMicroscope} className="ml-1" />
-							</SkeletonButton>
 						</div>
 					</fieldset>
 				</form>

@@ -4,8 +4,14 @@
 	--color-ink: #101214;
 	--color-panel: #222629;
 	--color-surface: #30353a;
+	--color-line: #4a5157;
+	--color-muted: #a9b0b3;
 	--color-lime: #c7ff18;
 	--color-paper: #f5f6f3;
+	--font-sans:
+		system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+		sans-serif;
+	--font-display: Impact, "Arial Narrow", "Franklin Gothic Heavy", sans-serif;
 }
 
 @layer base {
@@ -23,7 +29,9 @@
 		min-height: 100vh;
 		background: var(--color-ink);
 		color: var(--color-paper);
-		font-family: Arial, Helvetica, sans-serif;
+		font-family: var(--font-sans);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 	button,
 	input {
@@ -34,6 +42,9 @@
 	}
 	button:disabled {
 		cursor: not-allowed;
+	}
+	input[type="checkbox"] {
+		accent-color: var(--color-lime);
 	}
 	:focus-visible {
 		outline: 3px solid var(--color-lime) !important;
@@ -46,44 +57,65 @@
 }
 
 @layer components {
-	.display-title {
-		font-family: Impact, "Arial Narrow", "Franklin Gothic Heavy", sans-serif;
-		font-stretch: condensed;
-		font-weight: 900;
-		line-height: 0.98;
+	/* Impact ships a single weight; never let the browser synthesise a bolder one. */
+	.display-title,
+	.brutal-button,
+	.brutal-table th {
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-synthesis: none;
 		text-transform: uppercase;
+	}
+	.display-title {
+		line-height: 0.98;
 		letter-spacing: 0.015em;
 	}
 	.ui-label {
 		display: block;
-		margin-bottom: 0.4rem;
-		font-family: Impact, "Arial Narrow", sans-serif;
-		font-size: 1rem;
+		margin-bottom: 0.45rem;
+		font-size: 0.78rem;
+		font-weight: 700;
 		line-height: 1.3;
 		text-transform: uppercase;
-		letter-spacing: 0.025em;
+		letter-spacing: 0.08em;
 		color: var(--color-paper);
+	}
+	.ui-hint {
+		font-size: 0.8125rem;
+		line-height: 1.45;
+		color: var(--color-muted);
 	}
 	.brutal-panel {
 		min-width: 0;
 		border: 2px solid var(--color-paper);
 		background: var(--color-panel);
-		box-shadow: 7px 7px 0 var(--color-paper);
-		padding: clamp(1rem, 2vw, 1.5rem);
+		box-shadow: 6px 6px 0 var(--color-paper);
+		padding: clamp(1.1rem, 2vw, 1.75rem);
 	}
 	.brutal-input {
 		display: block;
 		width: 100%;
 		min-height: 2.75rem;
 		padding: 0.55rem 0.85rem;
-		border: 2px solid var(--color-paper);
+		border: 2px solid var(--color-line);
 		border-radius: 0;
 		background: var(--color-surface);
 		color: var(--color-paper);
 		box-shadow: none;
+		transition:
+			border-color 0.12s,
+			box-shadow 0.12s;
+	}
+	.brutal-input:hover:not(:disabled) {
+		border-color: var(--color-muted);
+	}
+	.brutal-input:focus-visible {
+		outline: none !important;
+		border-color: var(--color-lime);
+		box-shadow: 4px 4px 0 var(--color-lime);
 	}
 	.brutal-input::placeholder {
-		color: #c3c8c9;
+		color: #7d858a;
 		opacity: 1;
 	}
 	.brutal-input:disabled {
@@ -93,36 +125,35 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: 0.35rem;
+		gap: 0.6rem;
 		max-width: 100%;
 		min-height: 2.75rem;
-		padding: 0.48rem 1.2rem;
+		padding: 0.5rem 1.2rem;
 		border: 2px solid #050605;
 		border-radius: 0;
 		background: var(--color-lime);
 		color: #080a04;
-		box-shadow: 6px 6px 0 #050605;
-		font-family: Impact, "Arial Narrow", sans-serif;
+		box-shadow: 5px 5px 0 #050605;
 		font-size: 1.25rem;
 		line-height: 1.1;
-		text-transform: uppercase;
-		letter-spacing: 0.02em;
+		letter-spacing: 0.03em;
 		transition:
-			transform 0.12s,
-			box-shadow 0.12s,
+			transform 0.1s,
+			box-shadow 0.1s,
 			background-color 0.12s;
 	}
 	.brutal-button:hover:not(:disabled) {
 		background: #dcff6b;
 		transform: translate(2px, 2px);
-		box-shadow: 4px 4px 0 #050605;
+		box-shadow: 3px 3px 0 #050605;
 	}
 	.brutal-button:active:not(:disabled) {
-		transform: translate(6px, 6px);
+		transform: translate(5px, 5px);
 		box-shadow: none;
 	}
 	.brutal-button:disabled {
-		opacity: 0.56;
+		opacity: 0.5;
+		box-shadow: 3px 3px 0 #050605;
 	}
 	.brutal-button--secondary {
 		background: var(--color-paper);
@@ -137,15 +168,25 @@
 		background: #ffb4ac;
 	}
 	.brutal-icon-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		min-height: 2.5rem;
 		min-width: 2.5rem;
 		border: 2px solid #ff8e83;
 		color: #ffb4ac;
 		background: #282122;
+		transition:
+			background-color 0.12s,
+			color 0.12s,
+			box-shadow 0.12s,
+			transform 0.12s;
 	}
-	.brutal-icon-button:hover {
+	.brutal-icon-button:hover:not(:disabled) {
 		background: #ff8e83;
 		color: #101214;
+		box-shadow: 3px 3px 0 #050605;
+		transform: translate(-1px, -1px);
 	}
 	.brutal-table {
 		width: 100%;
@@ -154,18 +195,32 @@
 	}
 	.brutal-table th,
 	.brutal-table td {
-		border: 2px solid #aeb4b2;
-		padding: 0.65rem 0.8rem;
+		border: 2px solid var(--color-line);
+		padding: 0.7rem 0.9rem;
 	}
 	.brutal-table th {
+		border-color: #050605;
 		background: var(--color-lime);
 		color: var(--color-ink);
-		font-family: Impact, "Arial Narrow", sans-serif;
-		text-transform: uppercase;
-		font-weight: 400;
+		font-size: 1.05rem;
+		letter-spacing: 0.03em;
+		white-space: nowrap;
+	}
+	.brutal-table td {
+		vertical-align: middle;
+	}
+	.brutal-table .is-numeric {
+		text-align: right;
+		font-variant-numeric: tabular-nums;
+	}
+	.brutal-table tbody tr {
+		transition: background-color 0.12s;
 	}
 	.brutal-table tbody tr:nth-child(even) {
 		background: var(--color-surface);
+	}
+	.brutal-table tbody tr:hover {
+		background: #3a4046;
 	}
 	.react-loading-skeleton {
 		border-radius: 0 !important;
@@ -174,7 +229,7 @@
 
 @media (max-width: 640px) {
 	.brutal-panel {
-		box-shadow: 5px 5px 0 var(--color-paper);
+		box-shadow: 4px 4px 0 var(--color-paper);
 	}
 	.brutal-button {
 		font-size: 1.1rem;

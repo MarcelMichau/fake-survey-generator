@@ -9,13 +9,14 @@ type FieldProps<T extends FieldValue> = {
 	placeholder?: string;
 	onChange: (value: string) => void;
 	loading: boolean;
+	className?: string;
 	children?: React.ReactNode;
 };
 
 function Field<T extends FieldValue>(props: FieldProps<T>) {
 	const id = useId();
 	return (
-		<div className="mb-4">
+		<div className={props.className ?? "mb-5"}>
 			<label className="ui-label" htmlFor={id}>
 				<span data-testid="field-label">
 					{props.loading ? <Skeleton width={200} /> : props.label}

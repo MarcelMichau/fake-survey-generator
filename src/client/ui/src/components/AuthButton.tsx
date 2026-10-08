@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignInAlt, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AuthButton = () => {
 	const { isAuthenticated, loginWithRedirect, logout, isLoading, user } =
@@ -28,8 +28,7 @@ const AuthButton = () => {
 					type="button"
 					onClick={() => loginWithRedirect({})}
 				>
-					Log in / Register{" "}
-					<FontAwesomeIcon icon={faSignInAlt} className="ml-2" />
+					Log in / Register <FontAwesomeIcon icon={faSignInAlt} />
 				</button>
 			)}
 
@@ -43,8 +42,7 @@ const AuthButton = () => {
 						})
 					}
 				>
-					Log out ({user?.name}){" "}
-					<FontAwesomeIcon icon={faSignOutAlt} className="ml-2" />
+					Log out ({user?.name}) <FontAwesomeIcon icon={faSignOutAlt} />
 				</button>
 			)}
 		</span>
