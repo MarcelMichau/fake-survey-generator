@@ -46,7 +46,7 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
 			<div className="space-y-5">
 				<section className="brutal-panel">
-					<h2 className="display-title text-4xl lg:text-5xl mb-5">
+					<h2 className="display-title mb-6 text-4xl lg:text-5xl">
 						{loading ? <Skeleton width={100} /> : <span>Get Survey</span>}
 					</h2>
 					<form ref={formRef} onSubmit={submitForm} className="space-y-2">
@@ -73,7 +73,7 @@ const GetSurvey = ({ loading, newSurveyId }: GetSurveyProps) => {
 								}
 							>
 								{isSearching ? "Searching..." : "Get Survey"}
-								<FontAwesomeIcon icon={faPaperPlane} className="ml-2" />
+								<FontAwesomeIcon icon={faPaperPlane} />
 							</SkeletonButton>
 						</div>
 					</form>

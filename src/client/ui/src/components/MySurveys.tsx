@@ -46,7 +46,7 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 	return (
 		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
 			<div className="brutal-panel">
-				<div className="flex flex-wrap items-center justify-between gap-4 mb-2">
+				<div className="flex flex-wrap items-center justify-between gap-4">
 					<h2 className="display-title text-4xl lg:text-5xl">
 						{loading ? <Skeleton width={100} /> : <span>My Surveys</span>}
 					</h2>
@@ -60,23 +60,23 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 							}
 						>
 							{isSearching ? "Searching..." : "Get My Surveys"}
-							<FontAwesomeIcon icon={faPaperPlane} className="ml-1" />
+							<FontAwesomeIcon icon={faPaperPlane} />
 						</SkeletonButton>
 					</form>
 				</div>
 
 				{userSurveys.length > 0 && (
-					<div className="overflow-x-auto mt-5">
+					<div className="mt-6 overflow-x-auto">
 						<table className="brutal-table min-w-[850px]">
 							<thead>
 								<tr>
 									<th>Question</th>
 									<th>Audience</th>
-									<th># Respondents</th>
-									<th># Options</th>
+									<th className="is-numeric"># Respondents</th>
+									<th className="is-numeric"># Options</th>
 									<th>Winning Option</th>
-									<th>Winning # Votes</th>
-									<th>Actions</th>
+									<th className="is-numeric">Winning # Votes</th>
+									<th className="w-px">Actions</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -84,17 +84,17 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 									<tr key={survey.id}>
 										<td>{survey.topic}</td>
 										<td>{survey.respondentType}</td>
-										<td>
+										<td className="is-numeric">
 											{numberFormatter.format(survey.numberOfRespondents)}
 										</td>
-										<td>{survey.numberOfOptions}</td>
+										<td className="is-numeric">{survey.numberOfOptions}</td>
 										<td>{survey.winningOption}</td>
-										<td>
+										<td className="is-numeric">
 											{numberFormatter.format(
 												survey.winningOptionNumberOfVotes,
 											)}
 										</td>
-										<td>
+										<td className="text-center">
 											<button
 												type="button"
 												aria-label={`Delete survey ${survey.topic}`}
