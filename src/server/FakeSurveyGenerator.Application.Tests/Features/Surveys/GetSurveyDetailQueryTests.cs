@@ -1,10 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Errors;
+using FakeSurveyGenerator.Application.Shared.Identity;
+using FakeSurveyGenerator.Application.TestHelpers;
 using FakeSurveyGenerator.Application.Tests.Setup;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Hybrid;
 using NSubstitute;
 
@@ -16,9 +19,12 @@ public sealed class GetSurveyDetailQueryTests
     public required TestFixture Fixture { get; init; }
     private static HybridCache Cache => TestFixture.GetHybridCache();
     private readonly IValidator<GetSurveyDetailQuery> _mockValidator = Substitute.For<IValidator<GetSurveyDetailQuery>>();
+    private readonly IUserService _mockUserService = Substitute.For<IUserService>();
 
     public GetSurveyDetailQueryTests()
     {
+        _mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
+
         // Setup mock validator to always return successful validation
         _mockValidator.ValidateAsync(Arg.Any<GetSurveyDetailQuery>(), Arg.Any<CancellationToken>())
             .Returns(new ValidationResult());
@@ -31,7 +37,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -45,7 +51,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -62,7 +68,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -80,7 +86,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -97,7 +103,7 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -149,10 +155,63 @@ public sealed class GetSurveyDetailQueryTests
 
         var query = new GetSurveyDetailQuery(id);
 
-        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, Cache, _mockValidator);
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, Cache, _mockValidator);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         await Assert.That(result.Error).IsEqualTo(Errors.General.NotFound());
+    }
+
+    [Test]
+    public async Task GivenSurveyOwnedBySomeoneElse_WhenCallingHandle_ThenForbiddenErrorShouldBeReturned()
+    {
+        var otherUserService = Substitute.For<IUserService>();
+        otherUserService.GetUserInfo(Arg.Any<CancellationToken>())
+            .Returns(new TestUser("someone-else", "Someone Else", "someone.else@test.com"));
+
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, otherUserService, Cache, _mockValidator);
+
+        var result = await handler.Handle(new GetSurveyDetailQuery(1), CancellationToken.None);
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error).IsEqualTo(Errors.General.Forbidden());
+    }
+
+    [Test]
+    public async Task GivenSurveyOwnedBySomeoneElseAndAlreadyCached_WhenCallingHandle_ThenForbiddenErrorShouldBeReturned()
+    {
+        using var services = new ServiceCollection().AddHybridCache().Services.BuildServiceProvider();
+        var cache = services.GetRequiredService<HybridCache>();
+
+        var ownerHandler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, cache, _mockValidator);
+        var ownerResult = await ownerHandler.Handle(new GetSurveyDetailQuery(1), CancellationToken.None);
+
+        var otherUserService = Substitute.For<IUserService>();
+        otherUserService.GetUserInfo(Arg.Any<CancellationToken>())
+            .Returns(new TestUser("someone-else", "Someone Else", "someone.else@test.com"));
+        var otherHandler = new GetSurveyDetailQueryHandler(Fixture.Context, otherUserService, cache, _mockValidator);
+        var otherResult = await otherHandler.Handle(new GetSurveyDetailQuery(1), CancellationToken.None);
+
+        await Assert.That(ownerResult.IsSuccess).IsTrue();
+        await Assert.That(otherResult.Error).IsEqualTo(Errors.General.Forbidden());
+    }
+
+    [Test]
+    public async Task GivenSurveyIdWhichDoesNotExist_WhenCallingHandle_ThenNotFoundShouldNotBeCached()
+    {
+        const int id = 100;
+
+        using var services = new ServiceCollection().AddHybridCache().Services.BuildServiceProvider();
+        var cache = services.GetRequiredService<HybridCache>();
+        var handler = new GetSurveyDetailQueryHandler(Fixture.Context, _mockUserService, cache, _mockValidator);
+
+        var result = await handler.Handle(new GetSurveyDetailQuery(id), CancellationToken.None);
+
+        // If the miss had been cached, the factory below would not run and the cached null would be returned.
+        var cached = await cache.GetOrCreateAsync<string?>($"survey:{id}",
+            _ => ValueTask.FromResult<string?>("created later"));
+
+        await Assert.That(result.Error).IsEqualTo(Errors.General.NotFound());
+        await Assert.That(cached).IsEqualTo("created later");
     }
 }

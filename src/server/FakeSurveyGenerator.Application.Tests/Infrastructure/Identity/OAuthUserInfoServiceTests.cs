@@ -56,6 +56,32 @@ public sealed class OAuthUserInfoServiceTests
             .ThrowsException().And.IsTypeOf<InvalidOperationException>();
     }
 
+    [Test]
+    [Arguments("""{"sub":"subject-123","email":"user@example.test"}""", "user@example.test", "user@example.test")]
+    [Arguments("""{"sub":"subject-123","preferred_username":"jdoe","email":"user@example.test"}""", "jdoe", "user@example.test")]
+    [Arguments("""{"sub":"subject-123","name":"","email":"user@example.test"}""", "user@example.test", "user@example.test")]
+    [Arguments("""{"sub":"subject-123","name":"Survey User"}""", "Survey User", "")]
+    public async Task GetUserInfo_WhenProfileClaimsAreMissing_FallsBackWithoutThrowing(
+        string userInfoBody, string expectedDisplayName, string expectedEmail)
+    {
+        var tokenProvider = Substitute.For<ITokenProviderService>();
+        tokenProvider.GetToken().Returns(CreateAccessToken("subject-123"));
+        var handler = new StubHttpMessageHandler((request, _) =>
+        {
+            var responseBody = request.RequestUri!.AbsolutePath.EndsWith("openid-configuration", StringComparison.Ordinal)
+                ? CreateDiscoveryDocument()
+                : userInfoBody;
+            return Task.FromResult(JsonResponse(HttpStatusCode.OK, responseBody));
+        });
+        var service = CreateService(handler, tokenProvider);
+
+        var user = await service.GetUserInfo(CancellationToken.None);
+
+        await Assert.That(user.Id).IsEqualTo("subject-123");
+        await Assert.That(user.DisplayName).IsEqualTo(expectedDisplayName);
+        await Assert.That(user.EmailAddress).IsEqualTo(expectedEmail);
+    }
+
     private static OAuthUserInfoService CreateService(
         HttpMessageHandler handler,
         ITokenProviderService tokenProvider)

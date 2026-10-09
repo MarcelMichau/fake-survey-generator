@@ -55,10 +55,14 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
             throw new SurveyDomainException(
                 $"Preferred number of votes cannot be negative: {preferredNumberOfVotes}");
 
-        if (preferredNumberOfVotes > NumberOfRespondents ||
-            _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes > NumberOfRespondents)
+        if (preferredNumberOfVotes > NumberOfRespondents)
             throw new SurveyDomainException(
                 $"Preferred number of votes: {preferredNumberOfVotes} is higher than the number of respondents: {NumberOfRespondents}");
+
+        var totalPreferredNumberOfVotes = _options.Sum(option => option.PreferredNumberOfVotes) + preferredNumberOfVotes;
+        if (totalPreferredNumberOfVotes > NumberOfRespondents)
+            throw new SurveyDomainException(
+                $"Total preferred number of votes: {totalPreferredNumberOfVotes} is higher than the number of respondents: {NumberOfRespondents}");
 
         var newOption = new SurveyOption(optionText, preferredNumberOfVotes);
 
@@ -127,6 +131,20 @@ public sealed class Survey : AuditableEntity, IAggregateRoot
 
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this);
+        // Serializing the aggregate itself would walk Owner -> OwnedSurveys -> Survey... and never terminate,
+        // so only serialize the Survey's own state.
+        return JsonSerializer.Serialize(new
+        {
+            Id,
+            Topic = Topic?.Value,
+            RespondentType = RespondentType?.Value,
+            NumberOfRespondents,
+            Options = _options.Select(option => new
+            {
+                OptionText = option.OptionText.Value,
+                option.NumberOfVotes,
+                option.PreferredNumberOfVotes
+            })
+        });
     }
 }

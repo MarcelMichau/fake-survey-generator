@@ -5,6 +5,7 @@ using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.ComponentModel;
 using FakeSurveyGenerator.Api.Filters;
+using FakeSurveyGenerator.Api.Shared;
 
 namespace FakeSurveyGenerator.Api.Surveys;
 
@@ -161,9 +162,6 @@ internal static class SurveyEndpoints
 
     private static int MapErrorToStatusCode(Error error)
     {
-        if (Equals(error, Errors.General.NotFound()))
-            return StatusCodes.Status404NotFound;
-
-        return Equals(error, Errors.General.Forbidden()) ? StatusCodes.Status403Forbidden : StatusCodes.Status400BadRequest;
+        return ApiResultExtensions.MapErrorToStatusCode(error);
     }
 }

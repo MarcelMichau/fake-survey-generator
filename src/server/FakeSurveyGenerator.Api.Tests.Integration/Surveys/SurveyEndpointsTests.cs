@@ -325,6 +325,22 @@ public sealed class SurveyEndpointsTests
     }
 
     [Test]
+    public async Task GivenSurveyOwnedBySomeoneElse_WhenCallingGetSurvey_ThenForbiddenResponseShouldBeReturnedWithoutSurveyDetails()
+    {
+        await RegisterNewUser();
+        var newSurvey = await CreateSurvey();
+
+        var otherClient = TestFixture.Factory!.WithSpecificUser(new Fixture().Create<TestUser>());
+        (await otherClient.PostAsJsonAsync("/api/user/register", new RegisterUserCommand())).EnsureSuccessStatusCode();
+
+        using var response = await otherClient.GetAsync($"api/survey/{newSurvey.Id}");
+        var body = await response.Content.ReadAsStringAsync();
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
+        await Assert.That(body).DoesNotContain(newSurvey.Topic);
+    }
+
+    [Test]
     public async Task GivenExistingUserWithSurveys_WhenCallingGetUserSurveys_ThenExistingSurveysShouldBeReturned()
     {
         await RegisterNewUser();

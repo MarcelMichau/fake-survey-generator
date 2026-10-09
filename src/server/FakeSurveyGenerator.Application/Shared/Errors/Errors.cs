@@ -25,5 +25,17 @@ public static class Errors
         {
             return new Error("forbidden", message);
         }
+
+        public static Error UserProfileIncomplete()
+        {
+            return new Error("user.profile.incomplete",
+                "The identity provider did not supply a display name and email address for the current user.");
+        }
+
+        public static Error UserNotRegistered()
+        {
+            return new Error("user.not.registered",
+                "The current user is not registered. Register the user before performing this action.");
+        }
     }
 }

@@ -60,6 +60,7 @@ public sealed class AnalyzeSurveyCommandValidator : AbstractValidator<AnalyzeSur
             .WithMessage($"A maximum of {MaximumOptionsForAnalysis} options can be analyzed at once.");
 
         RuleForEach(command => command.SurveyOptions)
+            .NotNull()
             .SetValidator(new SurveyOptionValidator());
     }
 }

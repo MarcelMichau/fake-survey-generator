@@ -93,7 +93,7 @@ public static class HostApplicationBuilderConfiguration
                 .AddCommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>, CreateSurveyCommandHandler>()
                 .AddCommandHandler<AnalyzeSurveyCommand, Result<SurveyAnalysisModel, Error>, AnalyzeSurveyCommandHandler>()
                 .AddCommandHandler<DeleteSurveyCommand, Result<int, Error>, DeleteSurveyCommandHandler>()
-                .AddCommandHandler<RegisterUserCommand, RegisterUserResult, RegisterUserCommandHandler>();
+                .AddCommandHandler<RegisterUserCommand, Result<RegisterUserResult, Error>, RegisterUserCommandHandler>();
 
             // Query Handlers
             builder.Services.AddQueryHandler<GetUserSurveysQuery, Result<List<UserSurveyModel>, Error>, GetUserSurveysQueryHandler>()

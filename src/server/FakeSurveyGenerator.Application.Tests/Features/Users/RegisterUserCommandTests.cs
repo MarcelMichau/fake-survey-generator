@@ -34,7 +34,7 @@ public sealed class RegisterUserCommandTests
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-        await Assert.That(result.IsNewRegistration).IsTrue();
+        await Assert.That(result.Value.IsNewRegistration).IsTrue();
     }
 
     [Test]
@@ -52,11 +52,11 @@ public sealed class RegisterUserCommandTests
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-        await Assert.That(result.User.Id).IsPositive();
-        await Assert.That(result.User.ExternalUserId).IsEqualTo(newUserId);
-        await Assert.That(result.User.DisplayName).IsEqualTo(newUserDisplayName);
-        await Assert.That(result.User.EmailAddress).IsEqualTo(newUserEmailAddress);
-        await Assert.That(result.IsNewRegistration).IsTrue();
+        await Assert.That(result.Value.User.Id).IsPositive();
+        await Assert.That(result.Value.User.ExternalUserId).IsEqualTo(newUserId);
+        await Assert.That(result.Value.User.DisplayName).IsEqualTo(newUserDisplayName);
+        await Assert.That(result.Value.User.EmailAddress).IsEqualTo(newUserEmailAddress);
+        await Assert.That(result.Value.IsNewRegistration).IsTrue();
     }
 
     [Test]
@@ -68,8 +68,8 @@ public sealed class RegisterUserCommandTests
 
         var result = await sut.Handle(registerUserCommand, CancellationToken.None);
 
-        await Assert.That(result.IsNewRegistration).IsFalse();
-        await Assert.That(result.User.ExternalUserId).IsEqualTo(TestUser.Instance.Id);
+        await Assert.That(result.Value.IsNewRegistration).IsFalse();
+        await Assert.That(result.Value.User.ExternalUserId).IsEqualTo(TestUser.Instance.Id);
     }
 
     public static class RegisterUserCommandTestDataSources

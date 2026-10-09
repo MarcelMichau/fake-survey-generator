@@ -10,7 +10,7 @@ namespace FakeSurveyGenerator.Application.Tests.Setup;
 
 public static class SurveyContextFactory
 {
-    public static SurveyContext Create()
+    public static AuditableEntitySaveChangesInterceptor CreateAuditInterceptor()
     {
         var mockUserService = Substitute.For<IUserService>();
         mockUserService.GetUserInfo(Arg.Any<CancellationToken>()).Returns(TestUser.Instance);
@@ -21,8 +21,12 @@ public static class SurveyContextFactory
         var fakeTimeProvider = new FakeTimeProvider();
         fakeTimeProvider.SetUtcNow(fixedDateTime);
 
-        var auditableEntitySaveChangesInterceptor =
-            new AuditableEntitySaveChangesInterceptor(mockUserService, fakeTimeProvider);
+        return new AuditableEntitySaveChangesInterceptor(mockUserService, fakeTimeProvider);
+    }
+
+    public static SurveyContext Create()
+    {
+        var auditableEntitySaveChangesInterceptor = CreateAuditInterceptor();
 
         var options = new DbContextOptionsBuilder<SurveyContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())

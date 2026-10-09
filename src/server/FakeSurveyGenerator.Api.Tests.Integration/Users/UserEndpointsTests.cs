@@ -39,6 +39,20 @@ public sealed class UserEndpointsTests
     }
 
     [Test]
+    public async Task GivenUserIdOfAnotherUser_WhenCallingGetUser_ThenForbiddenResponseIsReturnedWithoutUserDetails()
+    {
+        var owner = await RegisterNewUser(TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>()));
+        var otherClient = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
+        await RegisterNewUser(otherClient);
+
+        using var response = await otherClient.GetAsync($"api/user/{owner.Id}");
+        var body = await response.Content.ReadAsStringAsync();
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
+        await Assert.That(body).DoesNotContain(owner.EmailAddress);
+    }
+
+    [Test]
     public async Task GivenExistingRegisteredUser_WhenCallingIsUserRegistered_ThenResponseShouldBeTrue()
     {
         var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
@@ -55,14 +69,24 @@ public sealed class UserEndpointsTests
     [Test]
     public async Task GivenNewUser_WhenCallingIsUserRegistered_ThenResponseShouldBeFalse()
     {
-        const string userId = "non-existent-id";
+        var newUser = _fixture.Create<TestUser>();
 
-        var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
+        var client = TestFixture.Factory.WithSpecificUser(newUser);
 
         var result =
-            await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={userId}");
+            await client.GetFromJsonAsync<UserRegistrationStatusModel>($"api/user/isRegistered?userId={newUser.Id}");
 
         await Assert.That(result!.IsUserRegistered).IsFalse();
+    }
+
+    [Test]
+    public async Task GivenUserIdOfAnotherUser_WhenCallingIsUserRegistered_ThenForbiddenResponseIsReturned()
+    {
+        var client = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
+
+        using var response = await client.GetAsync("api/user/isRegistered?userId=some-other-users-id");
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
     }
 
     [Test]
