@@ -325,6 +325,23 @@ public sealed class SurveyEndpointsTests
     }
 
     [Test]
+    public async Task GivenUnregisteredUser_WhenCallingPostSurvey_ThenForbiddenResponseShouldBeReturned()
+    {
+        var unregisteredClient = TestFixture.Factory!.WithSpecificUser(new Fixture().Create<TestUser>());
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "Tabs or spaces?",
+            NumberOfRespondents = 10,
+            RespondentType = "Developers",
+            SurveyOptions = [new SurveyOptionDto { OptionText = "Tabs" }, new SurveyOptionDto { OptionText = "Spaces" }]
+        };
+
+        using var response = await unregisteredClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
+    }
+
+    [Test]
     public async Task GivenSurveyOwnedBySomeoneElse_WhenCallingGetSurvey_ThenForbiddenResponseShouldBeReturnedWithoutSurveyDetails()
     {
         await RegisterNewUser();
