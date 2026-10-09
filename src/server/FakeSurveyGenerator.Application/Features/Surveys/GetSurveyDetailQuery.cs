@@ -77,9 +77,10 @@ public sealed class GetSurveyDetailQueryHandler(
         }
 
         // Users may only read their own Surveys. Checked after the cache lookup as the cached model is not user-specific.
+        // Someone else's Survey is reported exactly like a missing one, so that ids cannot be probed for existence.
         var userInfo = await _userService.GetUserInfo(cancellationToken);
         if (survey.OwnerExternalUserId != userInfo.Id)
-            return Errors.General.Forbidden();
+            return Errors.General.NotFound(nameof(Survey), request.Id);
 
         return survey;
     }

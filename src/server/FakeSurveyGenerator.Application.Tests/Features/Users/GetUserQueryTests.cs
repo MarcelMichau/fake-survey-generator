@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Domain.Users;
 using FakeSurveyGenerator.Application.Features.Users;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
@@ -108,7 +109,7 @@ public sealed class GetUserQueryTests
     }
 
     [Test]
-    public async Task GivenUserIdOfAnotherUser_WhenCallingHandle_ThenForbiddenErrorShouldBeReturnedWithoutUserDetails()
+    public async Task GivenUserIdOfAnotherUser_WhenCallingHandle_ThenSameNotFoundErrorAsAMissingUserShouldBeReturned()
     {
         var otherUserService = Substitute.For<IUserService>();
         otherUserService.GetUserInfo(Arg.Any<CancellationToken>())
@@ -119,7 +120,8 @@ public sealed class GetUserQueryTests
         var result = await handler.Handle(new GetUserQuery(1), CancellationToken.None);
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error).IsEqualTo(Errors.General.Forbidden());
+        await Assert.That(result.Error).IsEqualTo(Errors.General.NotFound());
+        await Assert.That(result.Error.Message).IsEqualTo(Errors.General.NotFound(nameof(User), 1).Message);
     }
 
     [Test]

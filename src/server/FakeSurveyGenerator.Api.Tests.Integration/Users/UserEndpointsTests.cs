@@ -39,7 +39,7 @@ public sealed class UserEndpointsTests
     }
 
     [Test]
-    public async Task GivenUserIdOfAnotherUser_WhenCallingGetUser_ThenForbiddenResponseIsReturnedWithoutUserDetails()
+    public async Task GivenUserIdOfAnotherUser_WhenCallingGetUser_ThenNotFoundResponseIsReturnedWithoutUserDetails()
     {
         var owner = await RegisterNewUser(TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>()));
         var otherClient = TestFixture.Factory.WithSpecificUser(_fixture.Create<TestUser>());
@@ -48,7 +48,7 @@ public sealed class UserEndpointsTests
         using var response = await otherClient.GetAsync($"api/user/{owner.Id}");
         var body = await response.Content.ReadAsStringAsync();
 
-        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
         await Assert.That(body).DoesNotContain(owner.EmailAddress);
     }
 

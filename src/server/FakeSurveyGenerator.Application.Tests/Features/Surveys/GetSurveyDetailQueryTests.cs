@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Errors;
 using FakeSurveyGenerator.Application.Shared.Identity;
@@ -163,7 +164,7 @@ public sealed class GetSurveyDetailQueryTests
     }
 
     [Test]
-    public async Task GivenSurveyOwnedBySomeoneElse_WhenCallingHandle_ThenForbiddenErrorShouldBeReturned()
+    public async Task GivenSurveyOwnedBySomeoneElse_WhenCallingHandle_ThenSameNotFoundErrorAsAMissingSurveyShouldBeReturned()
     {
         var otherUserService = Substitute.For<IUserService>();
         otherUserService.GetUserInfo(Arg.Any<CancellationToken>())
@@ -173,12 +174,16 @@ public sealed class GetSurveyDetailQueryTests
 
         var result = await handler.Handle(new GetSurveyDetailQuery(1), CancellationToken.None);
 
+        var missingResult = await handler.Handle(new GetSurveyDetailQuery(int.MaxValue), CancellationToken.None);
+
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error).IsEqualTo(Errors.General.Forbidden());
+        await Assert.That(result.Error).IsEqualTo(Errors.General.NotFound());
+        await Assert.That(result.Error.Message).IsEqualTo(Errors.General.NotFound(nameof(Survey), 1).Message);
+        await Assert.That(result.Error.Code).IsEqualTo(missingResult.Error.Code);
     }
 
     [Test]
-    public async Task GivenSurveyOwnedBySomeoneElseAndAlreadyCached_WhenCallingHandle_ThenForbiddenErrorShouldBeReturned()
+    public async Task GivenSurveyOwnedBySomeoneElseAndAlreadyCached_WhenCallingHandle_ThenSameNotFoundErrorAsAMissingSurveyShouldBeReturned()
     {
         using var services = new ServiceCollection().AddHybridCache().Services.BuildServiceProvider();
         var cache = services.GetRequiredService<HybridCache>();
@@ -193,7 +198,8 @@ public sealed class GetSurveyDetailQueryTests
         var otherResult = await otherHandler.Handle(new GetSurveyDetailQuery(1), CancellationToken.None);
 
         await Assert.That(ownerResult.IsSuccess).IsTrue();
-        await Assert.That(otherResult.Error).IsEqualTo(Errors.General.Forbidden());
+        await Assert.That(otherResult.Error).IsEqualTo(Errors.General.NotFound());
+        await Assert.That(otherResult.Error.Message).IsEqualTo(Errors.General.NotFound(nameof(Survey), 1).Message);
     }
 
     [Test]

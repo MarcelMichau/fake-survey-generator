@@ -46,9 +46,10 @@ public sealed class GetUserQueryHandler(
             return Errors.General.NotFound(nameof(User), request.Id);
 
         // Users may only read their own record - it contains personal information (e.g. email address).
+        // Someone else's record is reported exactly like a missing one, so that ids cannot be probed for existence.
         var userInfo = await _userService.GetUserInfo(cancellationToken);
         if (user.ExternalUserId.Value != userInfo.Id)
-            return Errors.General.Forbidden();
+            return Errors.General.NotFound(nameof(User), request.Id);
 
         return user.MapToModel();
     }
