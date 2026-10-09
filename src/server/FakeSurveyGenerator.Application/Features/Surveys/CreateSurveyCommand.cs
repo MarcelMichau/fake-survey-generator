@@ -57,6 +57,7 @@ public sealed class CreateSurveyCommandValidator : AbstractValidator<CreateSurve
             .WithMessage($"A maximum of {MaximumOptions} options can be created at once.");
 
         RuleForEach(command => command.SurveyOptions)
+            .NotNull()
             .SetValidator(new SurveyOptionValidator());
     }
 }
@@ -98,8 +99,11 @@ public sealed class CreateSurveyCommandHandler(
             var userInfo = await _userService.GetUserInfo(cancellationToken);
 
             var surveyOwner =
-                await _surveyContext.Users.FirstAsync(user => user.ExternalUserId == userInfo.Id,
+                await _surveyContext.Users.FirstOrDefaultAsync(user => user.ExternalUserId == userInfo.Id,
                     cancellationToken);
+
+            if (surveyOwner is null)
+                return Errors.General.UserNotRegistered();
 
             var survey = new Survey(surveyOwner, NonEmptyString.Create(request.SurveyTopic),
                 request.NumberOfRespondents, NonEmptyString.Create(request.RespondentType));

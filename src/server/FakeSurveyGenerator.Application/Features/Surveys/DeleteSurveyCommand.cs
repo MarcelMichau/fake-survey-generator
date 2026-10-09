@@ -53,8 +53,11 @@ public sealed class DeleteSurveyCommandHandler(
 
         var currentUserId = await _surveyContext.Users
             .Where(user => user.ExternalUserId == userInfo.Id)
-            .Select(user => user.Id)
-            .FirstAsync(cancellationToken);
+            .Select(user => (int?)user.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (currentUserId is null)
+            return Errors.General.UserNotRegistered();
 
         var surveyToDelete = await _surveyContext.Surveys
             .Where(survey => survey.Id == request.Id)

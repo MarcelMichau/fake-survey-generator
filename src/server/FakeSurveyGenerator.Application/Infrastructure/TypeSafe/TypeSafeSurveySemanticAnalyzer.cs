@@ -387,7 +387,7 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
 
     private static string GetString(JsonElement answer, string propertyName)
     {
-        if (!answer.TryGetProperty(propertyName, out var property))
+        if (answer.ValueKind != JsonValueKind.Object || !answer.TryGetProperty(propertyName, out var property))
         {
             throw new JsonException($"TypeSafe answer did not contain property '{propertyName}'.");
         }
@@ -402,7 +402,7 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
 
     private static double GetDouble(JsonElement answer, string propertyName)
     {
-        if (!answer.TryGetProperty(propertyName, out var property))
+        if (answer.ValueKind != JsonValueKind.Object || !answer.TryGetProperty(propertyName, out var property))
         {
             throw new JsonException($"TypeSafe answer did not contain property '{propertyName}'.");
         }

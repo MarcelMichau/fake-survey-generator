@@ -54,15 +54,19 @@ internal static class UserEndpoints
         return ApiResultExtensions.FromResult(result);
     }
 
-    private static async Task<Results<CreatedAtRoute<UserModel>, Ok<UserModel>>> Register(
-        ICommandHandler<RegisterUserCommand, RegisterUserResult> handler,
+    private static async Task<Results<CreatedAtRoute<UserModel>, Ok<UserModel>, ProblemHttpResult>> Register(
+        ICommandHandler<RegisterUserCommand, Result<RegisterUserResult, Error>> handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(new RegisterUserCommand(), cancellationToken);
 
-        if (result.IsNewRegistration)
-            return TypedResults.CreatedAtRoute(result.User, nameof(GetUser), new { id = result.User.Id });
+        if (result.IsFailure)
+            return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
+                statusCode: ApiResultExtensions.MapErrorToStatusCode(result.Error));
 
-        return TypedResults.Ok(result.User);
+        if (result.Value.IsNewRegistration)
+            return TypedResults.CreatedAtRoute(result.Value.User, nameof(GetUser), new { id = result.Value.User.Id });
+
+        return TypedResults.Ok(result.Value.User);
     }
 }

@@ -17,9 +17,20 @@ public static class ApiResultExtensions
         return result.IsSuccess
             ? TypedResults.Ok(result.Value)
             : BuildProblemDetails(result,
-                Equals(result.Error, Errors.General.NotFound())
-                    ? StatusCodes.Status404NotFound
-                    : StatusCodes.Status400BadRequest);
+                MapErrorToStatusCode(result.Error));
+    }
+
+    public static int MapErrorToStatusCode(Error error)
+    {
+        if (Equals(error, Errors.General.NotFound()))
+            return StatusCodes.Status404NotFound;
+
+        if (Equals(error, Errors.General.Forbidden()) || Equals(error, Errors.General.UserNotRegistered()))
+            return StatusCodes.Status403Forbidden;
+
+        return Equals(error, Errors.General.UserProfileIncomplete())
+            ? StatusCodes.Status422UnprocessableEntity
+            : StatusCodes.Status400BadRequest;
     }
 
     private static ProblemHttpResult BuildProblemDetails<T>(Result<T, Error> result, int statusCode)

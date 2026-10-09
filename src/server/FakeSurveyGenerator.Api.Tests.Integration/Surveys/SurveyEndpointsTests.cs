@@ -325,6 +325,39 @@ public sealed class SurveyEndpointsTests
     }
 
     [Test]
+    public async Task GivenUnregisteredUser_WhenCallingPostSurvey_ThenForbiddenResponseShouldBeReturned()
+    {
+        var unregisteredClient = TestFixture.Factory!.WithSpecificUser(new Fixture().Create<TestUser>());
+        var createSurveyCommand = new CreateSurveyCommand
+        {
+            SurveyTopic = "Tabs or spaces?",
+            NumberOfRespondents = 10,
+            RespondentType = "Developers",
+            SurveyOptions = [new SurveyOptionDto { OptionText = "Tabs" }, new SurveyOptionDto { OptionText = "Spaces" }]
+        };
+
+        using var response = await unregisteredClient.PostAsJsonAsync("/api/survey", createSurveyCommand);
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Forbidden);
+    }
+
+    [Test]
+    public async Task GivenSurveyOwnedBySomeoneElse_WhenCallingGetSurvey_ThenNotFoundResponseShouldBeReturnedWithoutSurveyDetails()
+    {
+        await RegisterNewUser();
+        var newSurvey = await CreateSurvey();
+
+        var otherClient = TestFixture.Factory!.WithSpecificUser(new Fixture().Create<TestUser>());
+        (await otherClient.PostAsJsonAsync("/api/user/register", new RegisterUserCommand())).EnsureSuccessStatusCode();
+
+        using var response = await otherClient.GetAsync($"api/survey/{newSurvey.Id}");
+        var body = await response.Content.ReadAsStringAsync();
+
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
+        await Assert.That(body).DoesNotContain(newSurvey.Topic);
+    }
+
+    [Test]
     public async Task GivenExistingUserWithSurveys_WhenCallingGetUserSurveys_ThenExistingSurveysShouldBeReturned()
     {
         await RegisterNewUser();

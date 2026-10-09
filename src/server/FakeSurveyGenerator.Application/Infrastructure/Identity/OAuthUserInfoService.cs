@@ -49,12 +49,28 @@ internal sealed class OAuthUserInfoService(
             if (isFailure)
                 throw new InvalidOperationException($"Failed to get user info from Identity Provider: {error}");
 
-            var id = userInfo.Claims.First(claim => claim.Type == "sub").Value;
-            var name = userInfo.Claims.First(claim => claim.Type == "name").Value;
-            var email = userInfo.Claims.First(claim => claim.Type == "email").Value;
+            var id = GetClaim(userInfo, "sub");
+            if (string.IsNullOrWhiteSpace(id))
+                throw new InvalidOperationException("Identity Provider did not return a 'sub' claim for the user");
+
+            // Not every identity provider (or account) supplies every profile claim. Missing values are surfaced as
+            // empty strings so that callers which need them (user registration) can reject them explicitly, rather
+            // than every call failing with an opaque error.
+            var email = GetClaim(userInfo, "email");
+            var name = FirstNonBlank(GetClaim(userInfo, "name"), GetClaim(userInfo, "preferred_username"), email);
 
             return new OAuthUser(id, name, email);
         }, cancellationToken: cancellationToken);
+    }
+
+    private static string GetClaim(UserInfoResponse userInfo, string claimType)
+    {
+        return userInfo.Claims.FirstOrDefault(claim => claim.Type == claimType)?.Value ?? string.Empty;
+    }
+
+    private static string FirstNonBlank(params string[] values)
+    {
+        return values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
     }
 
     private async Task<Result<UserInfoResponse>> GetUserInfoFromIdentityProvider(string? accessToken,

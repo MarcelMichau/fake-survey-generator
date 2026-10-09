@@ -4,6 +4,8 @@ using AutoFixture.Idioms;
 using FakeSurveyGenerator.Application.Domain.Shared;
 using FakeSurveyGenerator.Application.Domain.Surveys;
 using FakeSurveyGenerator.Application.Domain.Users;
+using FakeSurveyGenerator.Application.Tests.Setup;
+using Microsoft.EntityFrameworkCore;
 
 namespace FakeSurveyGenerator.Application.Tests.Domain.Surveys;
 
@@ -1364,6 +1366,25 @@ public sealed class SurveyTests
         await Assert.That(() => { survey.AddSurveyOption(optionText, preferredVotes); }).ThrowsException()
             .And.IsTypeOf<SurveyDomainException>()
             .And.HasMessageEqualTo(
-                $"Preferred number of votes: {preferredVotes} is higher than the number of respondents: {numberOfRespondents}");
+                $"Total preferred number of votes: {60 + preferredVotes} is higher than the number of respondents: {numberOfRespondents}");
+    }
+
+    /// <summary>
+    /// Tests that ToString does not recurse through Owner.OwnedSurveys when the Survey is part of its Owner's graph.
+    /// </summary>
+    [Test]
+    public async Task ToString_SurveyLoadedWithItsOwner_DoesNotThrowOnObjectCycle()
+    {
+        // Arrange
+        using var context = SurveyContextFactory.Create();
+        await SurveyContextFactory.SeedSampleData(context);
+        var survey = await context.Surveys.Include(s => s.Owner).ThenInclude(o => o.OwnedSurveys).FirstAsync();
+
+        // Act
+        var result = survey.ToString();
+
+        // Assert
+        using var doc = JsonSerializer.Deserialize<JsonDocument>(result);
+        await Assert.That(doc!.RootElement.GetProperty("Topic").GetString()).IsEqualTo(survey.Topic.Value);
     }
 }

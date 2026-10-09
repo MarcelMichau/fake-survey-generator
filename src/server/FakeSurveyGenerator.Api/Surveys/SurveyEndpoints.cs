@@ -5,6 +5,7 @@ using FakeSurveyGenerator.Application.Shared.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.ComponentModel;
 using FakeSurveyGenerator.Api.Filters;
+using FakeSurveyGenerator.Api.Shared;
 
 namespace FakeSurveyGenerator.Api.Surveys;
 
@@ -67,7 +68,7 @@ internal static class SurveyEndpoints
 
     private static async
         Task<Results<CreatedAtRoute<SurveyModel>,
-            UnprocessableEntity<IDictionary<string, string[]>>>> CreateSurvey(
+            UnprocessableEntity<IDictionary<string, string[]>>, ProblemHttpResult>> CreateSurvey(
             ICommandHandler<CreateSurveyCommand, Result<SurveyModel, Error>> handler,
             CreateSurveyCommand command,
             HttpContext httpContext,
@@ -83,6 +84,11 @@ internal static class SurveyEndpoints
             httpContext.Items[ValidationLoggingEndpointFilter.ValidationErrorsKey] = validationError.Errors;
             return TypedResults.UnprocessableEntity(validationError.Errors);
         }
+
+        // Same response as the other endpoints for a caller who is not allowed to perform the action.
+        if (MapErrorToStatusCode(result.Error) == StatusCodes.Status403Forbidden)
+            return TypedResults.Problem($"Error Code: {result.Error.Code}. Error Message: {result.Error.Message}",
+                statusCode: StatusCodes.Status403Forbidden);
 
         return TypedResults.UnprocessableEntity(
             (IDictionary<string, string[]>)new Dictionary<string, string[]>
@@ -161,9 +167,6 @@ internal static class SurveyEndpoints
 
     private static int MapErrorToStatusCode(Error error)
     {
-        if (Equals(error, Errors.General.NotFound()))
-            return StatusCodes.Status404NotFound;
-
-        return Equals(error, Errors.General.Forbidden()) ? StatusCodes.Status403Forbidden : StatusCodes.Status400BadRequest;
+        return ApiResultExtensions.MapErrorToStatusCode(error);
     }
 }

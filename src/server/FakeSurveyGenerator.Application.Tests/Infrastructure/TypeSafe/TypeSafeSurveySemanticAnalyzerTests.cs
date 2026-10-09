@@ -106,6 +106,22 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
     }
 
     [Test]
+    [Arguments("""{"answers":{"response_shape":null}}""")]
+    [Arguments("""{"answers":{"response_shape":"single_choice"}}""")]
+    [Arguments("""{"answers":{"response_shape":[1,2,3]}}""")]
+    [Arguments("""{"answers":{"response_shape":{"choice":"single_choice","confidence":"high"}}}""")]
+    [Arguments("""{"answers":{"response_shape":{"choice":7,"confidence":1.0}}}""")]
+    public async Task GivenAnswerWithUnexpectedShape_WhenAnalyzing_ThenReturnsInvalidResponseError(string responseBody)
+    {
+        var analyzer = CreateAnalyzer(new StaticResponseHandler(responseBody));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.invalid_response");
+    }
+
+    [Test]
     public async Task GivenProviderRequestFails_WhenAnalyzing_ThenReturnsRequestFailedError()
     {
         var analyzer = CreateAnalyzer(new ExceptionResponseHandler(new HttpRequestException("network failure")));
