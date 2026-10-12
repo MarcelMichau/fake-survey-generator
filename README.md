@@ -218,6 +218,21 @@ TYPESAFE_API_KEY=your-key
 
 `TYPESAFE_BASE_URL` and `TYPESAFE_MODEL` are optional and default to `https://api.typesafe.ai/` and `jev-latest`.
 
+The analyzer can instead target a [Microsoft-Decision-1](https://ai.azure.com/catalog/models/Microsoft-Decision-1)
+deployment in Microsoft Foundry, which serves the same SystemOne API. Foundry authenticates with Microsoft Entra ID through
+`DefaultAzureCredential` (for example, your Azure CLI or Visual Studio sign-in locally), so no API key is needed. The identity
+needs a data-plane role, such as **Cognitive Services User** or **Azure AI User**, on the Foundry resource:
+
+```bash
+TYPESAFE_AUTH_MODE=AzureCredential
+TYPESAFE_BASE_URL=https://<foundry-resource>.services.ai.azure.com/providers/microsoft/
+TYPESAFE_MODEL=<deployment-name>
+# Optional: pin the Foundry resource's tenant when your developer tools are signed in to several tenants.
+TYPESAFE_TENANT_ID=<tenant-id>
+```
+
+`TYPESAFE_AUTH_MODE` defaults to `ApiKey`.
+
 TypeSafe uses its own HTTP resilience pipeline: a 55-second attempt timeout, a 60-second total timeout, a circuit breaker,
 and at most eight concurrent requests per API process with no waiting queue. These policies cover the complete response body,
 and analysis POSTs are never retried. The native `HttpClient.Timeout` is disabled so it cannot preempt the resilience timeouts.
