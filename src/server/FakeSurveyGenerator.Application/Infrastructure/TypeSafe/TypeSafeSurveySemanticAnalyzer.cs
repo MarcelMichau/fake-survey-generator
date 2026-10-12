@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Azure.Identity;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Errors;
@@ -14,6 +15,7 @@ namespace FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
 
 internal sealed class TypeSafeSurveySemanticAnalyzer(
     HttpClient httpClient,
+    ITypeSafeAuthorizationProvider authorizationProvider,
     IConfiguration configuration,
     ILogger<TypeSafeSurveySemanticAnalyzer> logger)
     : ISurveySemanticAnalyzer
@@ -30,6 +32,9 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
 
     private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
+    private readonly ITypeSafeAuthorizationProvider _authorizationProvider =
+        authorizationProvider ?? throw new ArgumentNullException(nameof(authorizationProvider));
+
     private readonly IConfiguration _configuration =
         configuration ?? throw new ArgumentNullException(nameof(configuration));
 
@@ -40,14 +45,6 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
         AnalyzeSurveyCommand command,
         CancellationToken cancellationToken = default)
     {
-        var apiKey = _configuration["TYPESAFE_API_KEY"];
-        if (string.IsNullOrWhiteSpace(apiKey))
-        {
-            return new Error(
-                "typesafe.not.configured",
-                "Survey analysis is unavailable because TYPESAFE_API_KEY is not configured.");
-        }
-
         var options = command.SurveyOptions
             .Select((option, index) => new SurveyOptionState(
                 index,
@@ -73,9 +70,21 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
 
         try
         {
+            var bearerToken = await _authorizationProvider.GetBearerTokenAsync(cancellationToken);
+            if (bearerToken is null)
+            {
+                return new Error(
+                    "typesafe.not.configured",
+                    "Survey analysis is unavailable because TYPESAFE_API_KEY is not configured.");
+            }
+
             using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "v1/systemone");
-            httpRequest.Content = JsonContent.Create(request, options: JsonOptions);
-            httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            // Microsoft Foundry rejects chunked request bodies, so send a buffered body with a Content-Length.
+            httpRequest.Content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(request, JsonOptions))
+            {
+                Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
+            };
+            httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
 
             using var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -101,6 +110,13 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
             }
 
             return BuildAnalysis(options, systemOneResponse.Answers);
+        }
+        catch (AuthenticationFailedException exception)
+        {
+            _logger.LogError(exception, "Could not obtain an Azure credential for survey analysis.");
+            return new Error(
+                "typesafe.authentication.failed",
+                "Survey analysis is unavailable because its credential could not be obtained.");
         }
         catch (TimeoutRejectedException)
         {

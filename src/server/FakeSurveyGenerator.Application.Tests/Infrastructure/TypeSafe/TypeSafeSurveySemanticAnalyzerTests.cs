@@ -1,6 +1,8 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Azure.Identity;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
 using Microsoft.Extensions.Configuration;
@@ -70,6 +72,46 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
 
         await Assert.That(result.IsFailure).IsTrue();
         await Assert.That(result.Error.Code).IsEqualTo("typesafe.not.configured");
+    }
+
+    [Test]
+    public async Task GivenAuthorizationProviderToken_WhenAnalyzing_ThenSendsItAsBearerToken()
+    {
+        var handler = new StaticResponseHandler(ValidResponse());
+        var analyzer = CreateAnalyzer(handler, authorizationProvider: new StaticAuthorizationProvider("entra-token"));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(handler.LastAuthorization?.Scheme).IsEqualTo("Bearer");
+        await Assert.That(handler.LastAuthorization?.Parameter).IsEqualTo("entra-token");
+    }
+
+    [Test]
+    public async Task GivenASurvey_WhenAnalyzing_ThenSendsJsonBodyWithContentLength()
+    {
+        var handler = new StaticResponseHandler(ValidResponse());
+        var analyzer = CreateAnalyzer(handler);
+
+        await analyzer.AnalyzeAsync(CreateCommand());
+
+        // Microsoft Foundry rejects chunked request bodies.
+        await Assert.That(handler.LastContentLength).IsNotNull();
+        await Assert.That(handler.LastContentType).IsEqualTo("application/json");
+    }
+
+    [Test]
+    public async Task GivenAzureCredentialCannotBeObtained_WhenAnalyzing_ThenReturnsAuthenticationFailedErrorWithoutCallingProvider()
+    {
+        var handler = new ExceptionResponseHandler(new HttpRequestException());
+        var analyzer = CreateAnalyzer(handler, authorizationProvider: new StaticAuthorizationProvider(
+            exception: new CredentialUnavailableException("No developer credential is signed in.")));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsFailure).IsTrue();
+        await Assert.That(result.Error.Code).IsEqualTo("typesafe.authentication.failed");
+        await Assert.That(handler.RequestCount).IsEqualTo(0);
     }
 
     [Test]
@@ -149,7 +191,17 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         double audiencePlotTwistProbability,
         double profanityProbability)
     {
-        var response = JsonSerializer.Serialize(new
+        return CreateAnalyzer(new StaticResponseHandler(ValidResponse(bikeSheddingProbability, contextVacuumProbability,
+            audiencePlotTwistProbability, profanityProbability)));
+    }
+
+    private static string ValidResponse(
+        double bikeSheddingProbability = 0.1,
+        double contextVacuumProbability = 0.1,
+        double audiencePlotTwistProbability = 0.1,
+        double profanityProbability = 0.1)
+    {
+        return JsonSerializer.Serialize(new
         {
             answers = new
             {
@@ -164,12 +216,12 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
                 duplicate_0_1 = new { noul = 0.9 }
             }
         });
-        return CreateAnalyzer(new StaticResponseHandler(response));
     }
 
     private static TypeSafeSurveySemanticAnalyzer CreateAnalyzer(
         HttpMessageHandler handler,
-        string? apiKey = "test-key")
+        string? apiKey = "test-key",
+        ITypeSafeAuthorizationProvider? authorizationProvider = null)
     {
         var client = new HttpClient(handler)
         {
@@ -181,6 +233,7 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
 
         return new TypeSafeSurveySemanticAnalyzer(
             client,
+            authorizationProvider ?? new ApiKeyTypeSafeAuthorizationProvider(configuration),
             configuration,
             NullLogger<TypeSafeSurveySemanticAnalyzer>.Instance);
     }
@@ -199,10 +252,17 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
     private sealed class StaticResponseHandler(string response, HttpStatusCode statusCode = HttpStatusCode.OK)
         : HttpMessageHandler
     {
+        public AuthenticationHeaderValue? LastAuthorization { get; private set; }
+        public long? LastContentLength { get; private set; }
+        public string? LastContentType { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
+            LastAuthorization = request.Headers.Authorization;
+            LastContentLength = request.Content?.Headers.ContentLength;
+            LastContentType = request.Content?.Headers.ContentType?.MediaType;
             return Task.FromResult(new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(response, Encoding.UTF8, "application/json")
@@ -212,11 +272,21 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
 
     private sealed class ExceptionResponseHandler(Exception exception) : HttpMessageHandler
     {
+        public int RequestCount { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
+            RequestCount++;
             return Task.FromException<HttpResponseMessage>(exception);
         }
+    }
+
+    private sealed class StaticAuthorizationProvider(string? token = null, Exception? exception = null)
+        : ITypeSafeAuthorizationProvider
+    {
+        public ValueTask<string?> GetBearerTokenAsync(CancellationToken cancellationToken) =>
+            exception is null ? ValueTask.FromResult(token) : ValueTask.FromException<string?>(exception);
     }
 }
