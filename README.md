@@ -125,6 +125,8 @@ The server side consists of the following main components:
 
 The Aspire AppHost also runs SQL Server, Redis, Redis Insight, a Dapr sidecar, and the Vite UI during local development.
 
+Browser acceptance-test failures attach a screenshot (`page.png`), page HTML (`page.html`), browser console/JavaScript/network errors (`browser.log`), and a Playwright trace (`trace.zip`) to the test result. In Azure Pipelines, download these from the failed test's attachments. Open the trace with `pwsh src/server/FakeSurveyGenerator.Acceptance.Tests/bin/Debug/net11.0/playwright.ps1 show-trace <path-to-trace.zip>`. Each diagnostic capture is awaited sequentially with a 10-second limit; operations that finish after their timeout do not attach artifacts. Diagnostic capture errors are logged without replacing the original test failure.
+
 The server side makes use of the following tools, libraries & frameworks:
 
 - Fake Survey Generator API

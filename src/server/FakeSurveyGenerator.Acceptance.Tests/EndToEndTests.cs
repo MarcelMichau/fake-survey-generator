@@ -30,11 +30,12 @@ public class EndToEndTests : ContextTest
 
         Console.WriteLine($"Navigating to {url}");
 
-        var page = await Context.NewPageAsync();
+        await UiTestDiagnostics.RunAsync(Context, async page =>
+        {
+            await page.GotoAsync(url);
 
-        await page.GotoAsync(url);
-
-        var title = await page.TextContentAsync("h1");
-        await Assert.That(title).IsEqualTo("Fake Survey Generator");
+            var title = await page.TextContentAsync("h1");
+            await Assert.That(title).IsEqualTo("Fake Survey Generator");
+        });
     }
 }
