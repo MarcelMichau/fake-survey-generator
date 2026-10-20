@@ -54,7 +54,7 @@ public sealed class SurveyEndpointsTests
     public async Task GivenSurveyCreatedThroughApi_WhenSaved_ThenSaveChangesInterceptorPublishesNotification()
     {
         var notificationService = Substitute.For<INotificationService>();
-        using var notificationFactory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        using var notificationFactory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
             builder.ConfigureTestServices(services =>
             {
                 services.RemoveAll<INotificationService>();
@@ -127,7 +127,7 @@ public sealed class SurveyEndpointsTests
     [Test]
     public async Task GivenTypeSafeApiKeyIsMissing_WhenCallingAnalyzeSurvey_ThenServiceUnavailableIsReturned()
     {
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureAppConfiguration((_, configuration) =>
                 configuration.AddInMemoryCollection(new Dictionary<string, string?>
@@ -212,7 +212,7 @@ public sealed class SurveyEndpointsTests
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenValidationErrorsShouldBeLogged()
     {
         var logSink = new TestLogSink();
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
             builder.ConfigureLogging(logging =>
             {
                 logging.ClearProviders();
@@ -270,7 +270,7 @@ public sealed class SurveyEndpointsTests
         GivenInvalidCreateSurveyCommand_WhenCallingPostSurvey_ThenRequestShouldBeLogged()
     {
         var logSink = new TestLogSink();
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
             builder.ConfigureLogging(logging =>
             {
                 logging.ClearProviders();

@@ -1,5 +1,7 @@
-﻿using FakeSurveyGenerator.Application.Shared.Identity;
+﻿using System.Runtime.CompilerServices;
+using FakeSurveyGenerator.Application.Shared.Identity;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,9 +11,22 @@ namespace FakeSurveyGenerator.Api.Tests.Integration.Setup;
 
 public static class WebApplicationFactoryExtensions
 {
+    private static readonly ConditionalWeakTable<WebApplicationFactory<Program>, Lock> FactoryLocks = new();
+
+    public static WebApplicationFactory<Program> WithWebHostBuilderLocked(
+        this WebApplicationFactory<Program> factory, Action<IWebHostBuilder> configuration)
+    {
+        // Work around ASP.NET Core's unsynchronized child-factory list without serializing tests.
+        // https://github.com/dotnet/aspnetcore/issues/67223
+        lock (FactoryLocks.GetValue(factory, _ => new Lock()))
+        {
+            return factory.WithWebHostBuilder(configuration);
+        }
+    }
+
     public static HttpClient WithSpecificUser(this WebApplicationFactory<Program>? factory, IUser user)
     {
-        return factory!.WithWebHostBuilder(builder =>
+        return factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureTestServices(ConfigureAuthenticationHandler)
                 .ConfigureServices(services => ConfigureNewUserUserService(services, user));

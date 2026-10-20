@@ -23,7 +23,7 @@ public sealed class ForwardedHeadersTests
     [Test]
     public async Task GivenForwardedHeadersEnabled_WhenRequestIncludesXForwardedProtoHttps_ThenRequestIsNotRedirectedToHttps()
     {
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
@@ -51,7 +51,7 @@ public sealed class ForwardedHeadersTests
     [Test]
     public async Task GivenForwardedHeadersEnabled_WhenRequestDoesNotIncludeXForwardedProtoHeader_ThenRequestIsRedirectedToHttps()
     {
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
@@ -78,7 +78,7 @@ public sealed class ForwardedHeadersTests
     {
         const string forwardedHost = "fakesurveygenerator.mysecondarydomain.com";
 
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
@@ -118,7 +118,7 @@ public sealed class ForwardedHeadersTests
     {
         const string disallowedHost = "not-an-allowed-host.example.com";
 
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
@@ -156,7 +156,7 @@ public sealed class ForwardedHeadersTests
     [Test]
     public async Task GivenForwardedHeadersEnabled_WhenCreatingSurveyWithoutXForwardedHost_ThenLocationHeaderContainsDefaultHost()
     {
-        await using var factory = TestFixture.Factory!.WithWebHostBuilder(builder =>
+        await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
