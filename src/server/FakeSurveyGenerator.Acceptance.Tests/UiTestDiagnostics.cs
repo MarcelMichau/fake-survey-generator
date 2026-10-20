@@ -20,12 +20,8 @@ internal static class UiTestDiagnostics
             if (response.Status >= 400) Log($"http: {response.Status} {response.Url}");
         };
 
-        var tracing = false;
-        await TryCaptureAsync("start trace", async () =>
-        {
-            await browserContext.Tracing.StartAsync(new() { Screenshots = true, Snapshots = true, Sources = true });
-            tracing = true;
-        });
+        var tracing = await TryCaptureAsync("start trace", () =>
+            browserContext.Tracing.StartAsync(new() { Screenshots = true, Snapshots = true, Sources = true }));
 
         try
         {
@@ -34,19 +30,17 @@ internal static class UiTestDiagnostics
         catch
         {
             // Diagnostics must never replace the original navigation/assertion failure.
-            await TryCaptureAsync("failure diagnostics", async () =>
+            // Await each bounded step here; an outer timeout would abandon this orchestration.
+            try
             {
                 var directory = Path.Combine(TestContext.ResultsDirectory, "ui-diagnostics", Guid.NewGuid().ToString("N"));
                 Directory.CreateDirectory(directory);
 
                 async Task SaveAsync(string name, Func<string, Task> capture)
                 {
-                    await TryCaptureAsync(name, async () =>
-                    {
-                        var path = Path.Combine(directory, name);
-                        await capture(path);
-                        testContext.Output.AttachArtifact(path, name);
-                    });
+                    var path = Path.Combine(directory, name);
+                    await TryCaptureAsync(name, () => capture(path),
+                        () => testContext.Output.AttachArtifact(path, name));
                 }
 
                 await SaveAsync("page.png", path => page.ScreenshotAsync(new() { Path = path, FullPage = true, Timeout = 5000 }));
@@ -59,24 +53,37 @@ internal static class UiTestDiagnostics
 
                 Log($"Final page URL: {page.Url}");
                 await SaveAsync("browser.log", path => File.WriteAllLinesAsync(path, messages));
-            });
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine($"Could not capture UI diagnostics: {exception.Message}");
+            }
             throw;
         }
         finally
         {
-            if (tracing) await TryCaptureAsync("discard trace", () => browserContext.Tracing.StopAsync());
+            if (tracing)
+            {
+                tracing = false;
+                await TryCaptureAsync("discard trace", () => browserContext.Tracing.StopAsync());
+            }
         }
     }
 
-    private static async Task TryCaptureAsync(string description, Func<Task> capture)
+    internal static async Task<bool> TryCaptureAsync(
+        string description, Func<Task> capture, Action? onCaptured = null, TimeSpan? timeout = null)
     {
         try
         {
-            await capture().WaitAsync(TimeSpan.FromSeconds(10));
+            await capture().WaitAsync(timeout ?? TimeSpan.FromSeconds(10));
+            // WaitAsync does not cancel capture: never attach from the potentially late task.
+            onCaptured?.Invoke();
+            return true;
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine($"Could not capture UI diagnostics ({description}): {exception.Message}");
+            return false;
         }
     }
 }
