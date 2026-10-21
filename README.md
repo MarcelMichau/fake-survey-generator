@@ -222,7 +222,7 @@ Configuration lives under `SurveyAnalysis`:
 | --- | --- |
 | `SurveyAnalysis:Endpoint` | The Foundry resource endpoint, for example `https://aif-fake-survey-generator.services.ai.azure.com/`. Analysis returns `503 Service Unavailable` when this is not configured. |
 | `SurveyAnalysis:Deployment` | The Microsoft-Decision-1 deployment name. Defaults to `decision-1`. |
-| `SurveyAnalysis:TenantId` | Optional. Pins the Microsoft Entra tenant when your developer tools are signed in to several tenants (otherwise Foundry may return 401 with an incorrect audience). |
+| `SurveyAnalysis:TenantId` | Optional. Pins the Microsoft Entra tenant that `DefaultAzureCredential` requests tokens from, which helps when your developer tools are signed in to several tenants. A token issued by another tenant is rejected with `401` (Foundry reports it as an incorrect audience). |
 
 `src/server/FakeSurveyGenerator.Api/appsettings.Development.json` points local development at the dev Foundry resource. Deployed environments receive the endpoint and deployment name from the infrastructure outputs.
 
