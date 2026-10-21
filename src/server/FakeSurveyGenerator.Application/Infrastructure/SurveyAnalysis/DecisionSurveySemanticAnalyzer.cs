@@ -23,13 +23,17 @@ internal sealed class DecisionSurveySemanticAnalyzer(
     ILogger<DecisionSurveySemanticAnalyzer> logger)
     : ISurveySemanticAnalyzer
 {
-    private const double ChoiceWarningThreshold = 0.60;
+    // Tuned against labelled surveys for Microsoft-Decision-1, whose probabilities sit near 0 or 1.
+    private const double ChoiceWarningThreshold = 0.50;
     private const double LeadingWarningThreshold = 0.70;
     private const double MultipleChoiceWarningThreshold = 0.70;
     private const double DuplicateWarningThreshold = 0.75;
-    private const double CoverageWarningThreshold = 0.30;
+    // Complete option lists can still score 0.13-0.22; genuinely incomplete ones score below 0.10.
+    private const double CoverageWarningThreshold = 0.10;
     private const double FunWarningThreshold = 0.70;
-    private const double BikeSheddingWarningThreshold = 0.85;
+    // Plain preferences such as "coffee or tea?" can score up to ~0.65; real context vacuums score ~1.
+    private const double ContextVacuumWarningThreshold = 0.80;
+    private const double BikeSheddingWarningThreshold = 0.75;
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -263,7 +267,8 @@ internal sealed class DecisionSurveySemanticAnalyzer(
         var profanityProbability = GetNoul(answers, "profanity");
         var warnings = new List<SurveyAnalysisWarningModel>();
 
-        if (responseShape != "single_choice" && responseShapeConfidence >= ChoiceWarningThreshold)
+        // "unclear" means the model could not tell the shape, not that the question needs a different one.
+        if (responseShape is not ("single_choice" or "unclear") && responseShapeConfidence >= ChoiceWarningThreshold)
         {
             warnings.Add(new SurveyAnalysisWarningModel
             {
@@ -319,7 +324,8 @@ internal sealed class DecisionSurveySemanticAnalyzer(
             });
         }
 
-        if (bikeSheddingProbability < BikeSheddingWarningThreshold && contextVacuumProbability >= FunWarningThreshold)
+        if (bikeSheddingProbability < BikeSheddingWarningThreshold &&
+            contextVacuumProbability >= ContextVacuumWarningThreshold)
         {
             warnings.Add(new SurveyAnalysisWarningModel
             {
