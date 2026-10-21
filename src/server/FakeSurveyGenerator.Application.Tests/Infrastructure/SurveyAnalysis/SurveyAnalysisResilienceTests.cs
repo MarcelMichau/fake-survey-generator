@@ -1,6 +1,6 @@
 using System.Net;
 using FakeSurveyGenerator.Application.Features.Surveys;
-using FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
+using FakeSurveyGenerator.Application.Infrastructure.SurveyAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,9 +8,9 @@ using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FakeSurveyGenerator.Application.Tests.Infrastructure.TypeSafe;
+namespace FakeSurveyGenerator.Application.Tests.Infrastructure.SurveyAnalysis;
 
-public sealed class TypeSafeResilienceTests
+public sealed class SurveyAnalysisResilienceTests
 {
     [Test]
     public async Task GivenInheritedResilience_WhenProviderFails_ThenPostIsSentOnlyOnce()
@@ -20,7 +20,7 @@ public sealed class TypeSafeResilienceTests
 
         var result = await host.Services.GetRequiredService<ISurveySemanticAnalyzer>().AnalyzeAsync(Command());
 
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.request.failed");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.request.failed");
         await Assert.That(handler.RequestCount).IsEqualTo(1);
     }
 
@@ -30,14 +30,14 @@ public sealed class TypeSafeResilienceTests
         using var handler = new RecordingHandler(WaitForCancellation);
         using var host = CreateHost(handler, new Dictionary<string, string?>
         {
-            ["TypeSafe:Resilience:AttemptTimeout:Timeout"] = "00:00:01",
-            ["TypeSafe:Resilience:TotalRequestTimeout:Timeout"] = "00:00:05",
-            ["TypeSafe:Resilience:CircuitBreaker:SamplingDuration"] = "00:00:02"
+            ["SurveyAnalysis:Resilience:AttemptTimeout:Timeout"] = "00:00:01",
+            ["SurveyAnalysis:Resilience:TotalRequestTimeout:Timeout"] = "00:00:05",
+            ["SurveyAnalysis:Resilience:CircuitBreaker:SamplingDuration"] = "00:00:02"
         });
 
         var result = await host.Services.GetRequiredService<ISurveySemanticAnalyzer>().AnalyzeAsync(Command());
 
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.timeout");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.timeout");
         await Assert.That(handler.RequestCount).IsEqualTo(1);
     }
 
@@ -51,14 +51,14 @@ public sealed class TypeSafeResilienceTests
         }));
         using var host = CreateHost(handler, new Dictionary<string, string?>
         {
-            ["TypeSafe:Resilience:AttemptTimeout:Timeout"] = "00:00:01",
-            ["TypeSafe:Resilience:TotalRequestTimeout:Timeout"] = "00:00:05",
-            ["TypeSafe:Resilience:CircuitBreaker:SamplingDuration"] = "00:00:02"
+            ["SurveyAnalysis:Resilience:AttemptTimeout:Timeout"] = "00:00:01",
+            ["SurveyAnalysis:Resilience:TotalRequestTimeout:Timeout"] = "00:00:05",
+            ["SurveyAnalysis:Resilience:CircuitBreaker:SamplingDuration"] = "00:00:02"
         });
 
         var result = await host.Services.GetRequiredService<ISurveySemanticAnalyzer>().AnalyzeAsync(Command());
 
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.timeout");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.timeout");
         await Assert.That(handler.RequestCount).IsEqualTo(1);
         await Assert.That(content.IsDisposed).IsTrue();
     }
@@ -73,8 +73,8 @@ public sealed class TypeSafeResilienceTests
     {
         using var handler = new RecordingHandler(WaitForCancellation);
         var settings = new Dictionary<string, string?>();
-        if (attemptTimeout is not null) settings["TypeSafe:Resilience:AttemptTimeout:Timeout"] = attemptTimeout;
-        if (totalTimeout is not null) settings["TypeSafe:Resilience:TotalRequestTimeout:Timeout"] = totalTimeout;
+        if (attemptTimeout is not null) settings["SurveyAnalysis:Resilience:AttemptTimeout:Timeout"] = attemptTimeout;
+        if (totalTimeout is not null) settings["SurveyAnalysis:Resilience:TotalRequestTimeout:Timeout"] = totalTimeout;
         using var host = CreateHost(handler, settings);
 
         await Assert.That(() => host.Services.GetRequiredService<ISurveySemanticAnalyzer>())
@@ -112,8 +112,8 @@ public sealed class TypeSafeResilienceTests
         using var handler = new RecordingHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)));
         using var host = CreateHost(handler, new Dictionary<string, string?>
         {
-            ["TypeSafe:Resilience:CircuitBreaker:MinimumThroughput"] = "2",
-            ["TypeSafe:Resilience:CircuitBreaker:FailureRatio"] = "0.5"
+            ["SurveyAnalysis:Resilience:CircuitBreaker:MinimumThroughput"] = "2",
+            ["SurveyAnalysis:Resilience:CircuitBreaker:FailureRatio"] = "0.5"
         });
         var analyzer = host.Services.GetRequiredService<ISurveySemanticAnalyzer>();
         await analyzer.AnalyzeAsync(Command());
@@ -121,7 +121,7 @@ public sealed class TypeSafeResilienceTests
 
         var result = await analyzer.AnalyzeAsync(Command());
 
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.unavailable");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.unavailable");
         await Assert.That(handler.RequestCount).IsEqualTo(2);
     }
 
@@ -135,11 +135,11 @@ public sealed class TypeSafeResilienceTests
             : WaitForCancellation);
         using var host = CreateHost(handler, new Dictionary<string, string?>
         {
-            ["TypeSafe:Resilience:AttemptTimeout:Timeout"] = "00:00:01",
-            ["TypeSafe:Resilience:TotalRequestTimeout:Timeout"] = "00:00:05",
-            ["TypeSafe:Resilience:CircuitBreaker:SamplingDuration"] = "00:00:10",
-            ["TypeSafe:Resilience:CircuitBreaker:MinimumThroughput"] = "2",
-            ["TypeSafe:Resilience:CircuitBreaker:FailureRatio"] = "0.5"
+            ["SurveyAnalysis:Resilience:AttemptTimeout:Timeout"] = "00:00:01",
+            ["SurveyAnalysis:Resilience:TotalRequestTimeout:Timeout"] = "00:00:05",
+            ["SurveyAnalysis:Resilience:CircuitBreaker:SamplingDuration"] = "00:00:10",
+            ["SurveyAnalysis:Resilience:CircuitBreaker:MinimumThroughput"] = "2",
+            ["SurveyAnalysis:Resilience:CircuitBreaker:FailureRatio"] = "0.5"
         });
         var analyzer = host.Services.GetRequiredService<ISurveySemanticAnalyzer>();
 
@@ -147,9 +147,9 @@ public sealed class TypeSafeResilienceTests
         var second = await analyzer.AnalyzeAsync(Command());
         var rejected = await analyzer.AnalyzeAsync(Command());
 
-        await Assert.That(first.Error.Code).IsEqualTo("typesafe.timeout");
-        await Assert.That(second.Error.Code).IsEqualTo("typesafe.timeout");
-        await Assert.That(rejected.Error.Code).IsEqualTo("typesafe.unavailable");
+        await Assert.That(first.Error.Code).IsEqualTo("survey-analysis.timeout");
+        await Assert.That(second.Error.Code).IsEqualTo("survey-analysis.timeout");
+        await Assert.That(rejected.Error.Code).IsEqualTo("survey-analysis.unavailable");
         await Assert.That(handler.RequestCount).IsEqualTo(2);
     }
 
@@ -167,7 +167,7 @@ public sealed class TypeSafeResilienceTests
             : WaitForCancellation);
         using var host = CreateHost(handler, new Dictionary<string, string?>
         {
-            ["TypeSafe:Resilience:RateLimiter:DefaultRateLimiterOptions:PermitLimit"] = "1"
+            ["SurveyAnalysis:Resilience:RateLimiter:DefaultRateLimiterOptions:PermitLimit"] = "1"
         });
         var analyzer = host.Services.GetRequiredService<ISurveySemanticAnalyzer>();
         using var cancellation = new CancellationTokenSource();
@@ -180,7 +180,7 @@ public sealed class TypeSafeResilienceTests
         await cancellation.CancelAsync();
         await Assert.That(async () => await inFlight).Throws<OperationCanceledException>();
 
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.busy");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.busy");
         await Assert.That(handler.RequestCount).IsEqualTo(1);
         if (stallBody) await Assert.That(content.IsDisposed).IsTrue();
 
@@ -196,12 +196,13 @@ public sealed class TypeSafeResilienceTests
     {
         var builder = Host.CreateApplicationBuilder();
         builder.Logging.ClearProviders();
-        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["TYPESAFE_API_KEY"] = "test-key" });
+        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?> { ["SurveyAnalysis:Endpoint"] = "https://foundry.test/" });
         if (settings is not null) builder.Configuration.AddInMemoryCollection(settings);
         // Exercise removal of the inherited default, as configured by ServiceDefaults.
         builder.Services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
-        builder.AddTypeSafeConfiguration();
-        builder.Services.AddHttpClient<ISurveySemanticAnalyzer, TypeSafeSurveySemanticAnalyzer>()
+        builder.AddSurveyAnalysisConfiguration();
+        builder.Services.AddSingleton<ISurveyAnalysisTokenProvider, StaticTokenProvider>();
+        builder.Services.AddHttpClient<ISurveySemanticAnalyzer, DecisionSurveySemanticAnalyzer>()
             .ConfigurePrimaryHttpMessageHandler(() => handler);
         return builder.Build();
     }
@@ -258,5 +259,10 @@ public sealed class TypeSafeResilienceTests
             Started.TrySetResult();
             return send(request, cancellationToken);
         }
+    }
+
+    private sealed class StaticTokenProvider : ISurveyAnalysisTokenProvider
+    {
+        public ValueTask<string> GetTokenAsync(CancellationToken cancellationToken) => ValueTask.FromResult("test-token");
     }
 }

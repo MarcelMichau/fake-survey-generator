@@ -8,7 +8,7 @@ using FakeSurveyGenerator.Application.Infrastructure.Caching;
 using FakeSurveyGenerator.Application.Infrastructure.Identity;
 using FakeSurveyGenerator.Application.Infrastructure.Notifications;
 using FakeSurveyGenerator.Application.Infrastructure.Persistence;
-using FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
+using FakeSurveyGenerator.Application.Infrastructure.SurveyAnalysis;
 using FakeSurveyGenerator.Application.Shared.Identity;
 using FakeSurveyGenerator.Application.Shared.Notifications;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,7 +60,7 @@ public static class HostApplicationBuilderConfiguration
 
             builder.AddDatabaseConfiguration();
             builder.AddCacheConfiguration();
-            builder.AddTypeSafeConfiguration();
+            builder.AddSurveyAnalysisConfiguration();
 
             return builder;
         }

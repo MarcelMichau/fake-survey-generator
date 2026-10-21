@@ -125,14 +125,14 @@ public sealed class SurveyEndpointsTests
     }
 
     [Test]
-    public async Task GivenTypeSafeApiKeyIsMissing_WhenCallingAnalyzeSurvey_ThenServiceUnavailableIsReturned()
+    public async Task GivenSurveyAnalysisEndpointIsMissing_WhenCallingAnalyzeSurvey_ThenServiceUnavailableIsReturned()
     {
         await using var factory = TestFixture.Factory!.WithWebHostBuilderLocked(builder =>
         {
             builder.ConfigureAppConfiguration((_, configuration) =>
                 configuration.AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    ["TYPESAFE_API_KEY"] = ""
+                    ["SurveyAnalysis:Endpoint"] = ""
                 }));
             builder.ConfigureTestServices(services =>
             {

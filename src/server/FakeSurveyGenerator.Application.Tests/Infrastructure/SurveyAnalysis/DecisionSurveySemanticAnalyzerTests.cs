@@ -4,16 +4,16 @@ using System.Text;
 using System.Text.Json;
 using Azure.Identity;
 using FakeSurveyGenerator.Application.Features.Surveys;
-using FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
-using Microsoft.Extensions.Configuration;
+using FakeSurveyGenerator.Application.Infrastructure.SurveyAnalysis;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
-namespace FakeSurveyGenerator.Application.Tests.Infrastructure.TypeSafe;
+namespace FakeSurveyGenerator.Application.Tests.Infrastructure.SurveyAnalysis;
 
-public sealed class TypeSafeSurveySemanticAnalyzerTests
+public sealed class DecisionSurveySemanticAnalyzerTests
 {
     [Test]
-    public async Task GivenTypeSafeReportsProfanityForAContextFreeTechDebateAndRiggedVotes_WhenAnalyzing_ThenReturnsFunWarnings()
+    public async Task GivenProviderReportsProfanityForAContextFreeTechDebateAndRiggedVotes_WhenAnalyzing_ThenReturnsFunWarnings()
     {
         var analyzer = CreateAnalyzer(bikeSheddingProbability: 0.9, contextVacuumProbability: 0.9,
             audiencePlotTwistProbability: 0.8, profanityProbability: 0.9);
@@ -64,21 +64,40 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
     }
 
     [Test]
-    public async Task GivenMissingApiKey_WhenAnalyzing_ThenReturnsNotConfiguredErrorWithoutCallingProvider()
+    [Arguments(null)]
+    [Arguments(" ")]
+    public async Task GivenMissingEndpoint_WhenAnalyzing_ThenReturnsNotConfiguredErrorWithoutCallingProvider(string? endpoint)
     {
-        var analyzer = CreateAnalyzer(new ExceptionResponseHandler(new HttpRequestException()), apiKey: null);
+        var handler = new ExceptionResponseHandler(new HttpRequestException());
+        var tokenProvider = new StaticTokenProvider("entra-token");
+        var analyzer = CreateAnalyzer(handler, endpoint: endpoint, tokenProvider: tokenProvider);
 
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.not.configured");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.not.configured");
+        await Assert.That(handler.RequestCount).IsEqualTo(0);
+        await Assert.That(tokenProvider.RequestCount).IsEqualTo(0);
     }
 
     [Test]
-    public async Task GivenAuthorizationProviderToken_WhenAnalyzing_ThenSendsItAsBearerToken()
+    public async Task GivenADeployment_WhenAnalyzing_ThenPostsToSystemOneWithTheDeploymentAsModel()
     {
         var handler = new StaticResponseHandler(ValidResponse());
-        var analyzer = CreateAnalyzer(handler, authorizationProvider: new StaticAuthorizationProvider("entra-token"));
+        var analyzer = CreateAnalyzer(handler, deployment: "decision-1-canary");
+
+        await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(handler.LastRequestUri?.AbsolutePath).IsEqualTo("/providers/microsoft/v1/systemone");
+        using var body = JsonDocument.Parse(handler.LastBody!);
+        await Assert.That(body.RootElement.GetProperty("model").GetString()).IsEqualTo("decision-1-canary");
+    }
+
+    [Test]
+    public async Task GivenTokenProviderToken_WhenAnalyzing_ThenSendsItAsBearerToken()
+    {
+        var handler = new StaticResponseHandler(ValidResponse());
+        var analyzer = CreateAnalyzer(handler, tokenProvider: new StaticTokenProvider("entra-token"));
 
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
@@ -104,13 +123,13 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
     public async Task GivenAzureCredentialCannotBeObtained_WhenAnalyzing_ThenReturnsAuthenticationFailedErrorWithoutCallingProvider()
     {
         var handler = new ExceptionResponseHandler(new HttpRequestException());
-        var analyzer = CreateAnalyzer(handler, authorizationProvider: new StaticAuthorizationProvider(
+        var analyzer = CreateAnalyzer(handler, tokenProvider: new StaticTokenProvider(
             exception: new CredentialUnavailableException("No developer credential is signed in.")));
 
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.authentication.failed");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.authentication.failed");
         await Assert.That(handler.RequestCount).IsEqualTo(0);
     }
 
@@ -122,7 +141,7 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.request.failed");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.request.failed");
     }
 
     [Test]
@@ -133,7 +152,7 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.invalid_response");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.invalid_response");
     }
 
     [Test]
@@ -144,7 +163,7 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.invalid_response");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.invalid_response");
     }
 
     [Test]
@@ -160,7 +179,7 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.invalid_response");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.invalid_response");
     }
 
     [Test]
@@ -171,7 +190,7 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.request.failed");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.request.failed");
     }
 
     [Test]
@@ -182,10 +201,10 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsFailure).IsTrue();
-        await Assert.That(result.Error.Code).IsEqualTo("typesafe.timeout");
+        await Assert.That(result.Error.Code).IsEqualTo("survey-analysis.timeout");
     }
 
-    private static TypeSafeSurveySemanticAnalyzer CreateAnalyzer(
+    private static DecisionSurveySemanticAnalyzer CreateAnalyzer(
         double bikeSheddingProbability,
         double contextVacuumProbability,
         double audiencePlotTwistProbability,
@@ -218,24 +237,22 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         });
     }
 
-    private static TypeSafeSurveySemanticAnalyzer CreateAnalyzer(
+    private static DecisionSurveySemanticAnalyzer CreateAnalyzer(
         HttpMessageHandler handler,
-        string? apiKey = "test-key",
-        ITypeSafeAuthorizationProvider? authorizationProvider = null)
+        string? endpoint = "https://foundry.test/",
+        string deployment = "decision-1",
+        ISurveyAnalysisTokenProvider? tokenProvider = null)
     {
         var client = new HttpClient(handler)
         {
-            BaseAddress = new Uri("https://typesafe.test/")
+            BaseAddress = new Uri("https://foundry.test/providers/microsoft/")
         };
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["TYPESAFE_API_KEY"] = apiKey })
-            .Build();
 
-        return new TypeSafeSurveySemanticAnalyzer(
+        return new DecisionSurveySemanticAnalyzer(
             client,
-            authorizationProvider ?? new ApiKeyTypeSafeAuthorizationProvider(configuration),
-            configuration,
-            NullLogger<TypeSafeSurveySemanticAnalyzer>.Instance);
+            tokenProvider ?? new StaticTokenProvider("test-token"),
+            Options.Create(new SurveyAnalysisOptions { Endpoint = endpoint, Deployment = deployment }),
+            NullLogger<DecisionSurveySemanticAnalyzer>.Instance);
     }
 
     private static AnalyzeSurveyCommand CreateCommand() => new()
@@ -255,18 +272,22 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         public AuthenticationHeaderValue? LastAuthorization { get; private set; }
         public long? LastContentLength { get; private set; }
         public string? LastContentType { get; private set; }
+        public Uri? LastRequestUri { get; private set; }
+        public string? LastBody { get; private set; }
 
-        protected override Task<HttpResponseMessage> SendAsync(
+        protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
             LastAuthorization = request.Headers.Authorization;
             LastContentLength = request.Content?.Headers.ContentLength;
             LastContentType = request.Content?.Headers.ContentType?.MediaType;
-            return Task.FromResult(new HttpResponseMessage(statusCode)
+            LastRequestUri = request.RequestUri;
+            LastBody = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
+            return new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(response, Encoding.UTF8, "application/json")
-            });
+            };
         }
     }
 
@@ -283,10 +304,15 @@ public sealed class TypeSafeSurveySemanticAnalyzerTests
         }
     }
 
-    private sealed class StaticAuthorizationProvider(string? token = null, Exception? exception = null)
-        : ITypeSafeAuthorizationProvider
+    private sealed class StaticTokenProvider(string token = "test-token", Exception? exception = null)
+        : ISurveyAnalysisTokenProvider
     {
-        public ValueTask<string?> GetBearerTokenAsync(CancellationToken cancellationToken) =>
-            exception is null ? ValueTask.FromResult(token) : ValueTask.FromException<string?>(exception);
+        public int RequestCount { get; private set; }
+
+        public ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
+        {
+            RequestCount++;
+            return exception is null ? ValueTask.FromResult(token) : ValueTask.FromException<string>(exception);
+        }
     }
 }

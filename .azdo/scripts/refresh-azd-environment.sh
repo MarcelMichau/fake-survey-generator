@@ -5,7 +5,6 @@ set -euo pipefail
 : "${AZURE_ENV_NAME:?AZURE_ENV_NAME is required}"
 : "${AZURE_SUBSCRIPTION_ID:?AZURE_SUBSCRIPTION_ID is required}"
 : "${AZURE_LOCATION:?AZURE_LOCATION is required}"
-: "${TYPE_SAFE_API_KEY:?TYPE_SAFE_API_KEY is required to evaluate the Bicep parameters}"
 
 azd config set auth.useAzCliAuth true
 azd config set alpha.deployment.stacks on

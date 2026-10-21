@@ -1,34 +1,20 @@
 using Azure.Core;
-using Microsoft.Extensions.Configuration;
 
-namespace FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
+namespace FakeSurveyGenerator.Application.Infrastructure.SurveyAnalysis;
 
 /// <summary>
-/// Supplies the bearer token sent to a SystemOne-compatible provider.
+/// Supplies the Microsoft Entra bearer token sent to the Microsoft Foundry survey analysis deployment.
 /// </summary>
-internal interface ITypeSafeAuthorizationProvider
+internal interface ISurveyAnalysisTokenProvider
 {
-    /// <returns>The bearer token, or <see langword="null"/> when no credential is configured.</returns>
-    ValueTask<string?> GetBearerTokenAsync(CancellationToken cancellationToken);
+    ValueTask<string> GetTokenAsync(CancellationToken cancellationToken);
 }
 
 /// <summary>
-/// Authenticates against the hosted TypeSafe API with a static API key.
+/// Acquires and caches Microsoft Entra tokens for Microsoft Foundry from an Azure credential.
 /// </summary>
-internal sealed class ApiKeyTypeSafeAuthorizationProvider(IConfiguration configuration) : ITypeSafeAuthorizationProvider
-{
-    public ValueTask<string?> GetBearerTokenAsync(CancellationToken cancellationToken)
-    {
-        var apiKey = configuration["TYPESAFE_API_KEY"];
-        return ValueTask.FromResult(string.IsNullOrWhiteSpace(apiKey) ? null : apiKey);
-    }
-}
-
-/// <summary>
-/// Authenticates against a Microsoft Foundry deployment (for example, Microsoft-Decision-1) with a Microsoft Entra token.
-/// </summary>
-internal sealed class AzureCredentialTypeSafeAuthorizationProvider(TokenCredential credential, TimeProvider timeProvider)
-    : ITypeSafeAuthorizationProvider, IDisposable
+internal sealed class AzureCredentialSurveyAnalysisTokenProvider(TokenCredential credential, TimeProvider timeProvider)
+    : ISurveyAnalysisTokenProvider, IDisposable
 {
     internal const string Scope = "https://cognitiveservices.azure.com/.default";
 
@@ -38,7 +24,7 @@ internal sealed class AzureCredentialTypeSafeAuthorizationProvider(TokenCredenti
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private volatile CachedToken? _cachedToken;
 
-    public async ValueTask<string?> GetBearerTokenAsync(CancellationToken cancellationToken)
+    public async ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
     {
         if (TryGetCachedToken() is { } token) return token;
 
