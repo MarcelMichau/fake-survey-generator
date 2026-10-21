@@ -54,13 +54,80 @@ public sealed class DecisionSurveySemanticAnalyzerTests
     [Test]
     public async Task GivenAWeakBikeSheddingSignal_WhenAnalyzing_ThenDoesNotRaiseBikeShedding()
     {
-        var analyzer = CreateAnalyzer(bikeSheddingProbability: 0.84, contextVacuumProbability: 0.1,
+        var analyzer = CreateAnalyzer(bikeSheddingProbability: 0.74, contextVacuumProbability: 0.1,
             audiencePlotTwistProbability: 0.1, profanityProbability: 0.1);
 
         var result = await analyzer.AnalyzeAsync(CreateCommand());
 
         await Assert.That(result.IsSuccess).IsTrue();
         await Assert.That(result.Value.Warnings.Any(warning => warning.Code == "question.bike_shedding")).IsFalse();
+    }
+
+    [Test]
+    public async Task GivenAModerateBikeSheddingSignal_WhenAnalyzing_ThenRaisesBikeSheddingInsteadOfContextVacuum()
+    {
+        var analyzer = CreateAnalyzer(bikeSheddingProbability: 0.8, contextVacuumProbability: 0.9,
+            audiencePlotTwistProbability: 0.1, profanityProbability: 0.1);
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsSuccess).IsTrue();
+        var codes = result.Value.Warnings.Select(warning => warning.Code).ToList();
+        await Assert.That(codes).Contains("question.bike_shedding");
+        await Assert.That(codes).DoesNotContain("question.context_vacuum");
+    }
+
+    [Test]
+    [Arguments(0.75, false)]
+    [Arguments(0.85, true)]
+    public async Task GivenContextVacuumProbability_WhenAnalyzing_ThenRaisesContextVacuumOnlyForStrongSignals(
+        double contextVacuumProbability,
+        bool expectWarning)
+    {
+        var analyzer = CreateAnalyzer(bikeSheddingProbability: 0.1, contextVacuumProbability: contextVacuumProbability,
+            audiencePlotTwistProbability: 0.1, profanityProbability: 0.1);
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(result.Value.Warnings.Any(warning => warning.Code == "question.context_vacuum"))
+            .IsEqualTo(expectWarning);
+    }
+
+    [Test]
+    [Arguments(0.05, true)]
+    [Arguments(0.15, false)]
+    public async Task GivenCoverageProbability_WhenAnalyzing_ThenRaisesCoverageOnlyForClearlyIncompleteOptions(
+        double coverageProbability,
+        bool expectWarning)
+    {
+        var analyzer = CreateAnalyzer(new StaticResponseHandler(ValidResponse(coverageProbability: coverageProbability)));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(result.Value.Warnings.Any(warning => warning.Code == "options.coverage"))
+            .IsEqualTo(expectWarning);
+    }
+
+    [Test]
+    [Arguments("rating_or_scale", 0.55, true)]
+    [Arguments("open_ended", 0.45, false)]
+    [Arguments("unclear", 0.95, false)]
+    [Arguments("single_choice", 1.0, false)]
+    public async Task GivenResponseShape_WhenAnalyzing_ThenRaisesShapeWarningOnlyForAConfidentDifferentShape(
+        string responseShape,
+        double responseShapeConfidence,
+        bool expectWarning)
+    {
+        var analyzer = CreateAnalyzer(new StaticResponseHandler(ValidResponse(
+            responseShape: responseShape, responseShapeConfidence: responseShapeConfidence)));
+
+        var result = await analyzer.AnalyzeAsync(CreateCommand());
+
+        await Assert.That(result.IsSuccess).IsTrue();
+        await Assert.That(result.Value.Warnings.Any(warning => warning.Code == "response.shape"))
+            .IsEqualTo(expectWarning);
     }
 
     [Test]
@@ -218,16 +285,19 @@ public sealed class DecisionSurveySemanticAnalyzerTests
         double bikeSheddingProbability = 0.1,
         double contextVacuumProbability = 0.1,
         double audiencePlotTwistProbability = 0.1,
-        double profanityProbability = 0.1)
+        double profanityProbability = 0.1,
+        string responseShape = "single_choice",
+        double responseShapeConfidence = 1.0,
+        double coverageProbability = 0.05)
     {
         return JsonSerializer.Serialize(new
         {
             answers = new
             {
-                response_shape = new { choice = "single_choice", confidence = 1.0 },
+                response_shape = new { choice = responseShape, confidence = responseShapeConfidence },
                 leading = new { noul = 0.9 },
                 multiple_choice = new { noul = 0.9 },
-                coverage = new { noul = 0.1 },
+                coverage = new { noul = coverageProbability },
                 bike_shedding = new { noul = bikeSheddingProbability },
                 context_vacuum = new { noul = contextVacuumProbability },
                 audience_plot_twist = new { noul = audiencePlotTwistProbability },
