@@ -1,21 +1,26 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Azure.Identity;
 using CSharpFunctionalExtensions;
 using FakeSurveyGenerator.Application.Features.Surveys;
 using FakeSurveyGenerator.Application.Shared.Errors;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polly.CircuitBreaker;
 using Polly.RateLimiting;
 using Polly.Timeout;
 
-namespace FakeSurveyGenerator.Application.Infrastructure.TypeSafe;
+namespace FakeSurveyGenerator.Application.Infrastructure.SurveyAnalysis;
 
-internal sealed class TypeSafeSurveySemanticAnalyzer(
+/// <summary>
+/// Analyses surveys with a Microsoft-Decision-1 deployment in Microsoft Foundry through its SystemOne API.
+/// </summary>
+internal sealed class DecisionSurveySemanticAnalyzer(
     HttpClient httpClient,
-    IConfiguration configuration,
-    ILogger<TypeSafeSurveySemanticAnalyzer> logger)
+    ISurveyAnalysisTokenProvider tokenProvider,
+    IOptions<SurveyAnalysisOptions> surveyAnalysisOptions,
+    ILogger<DecisionSurveySemanticAnalyzer> logger)
     : ISurveySemanticAnalyzer
 {
     private const double ChoiceWarningThreshold = 0.60;
@@ -30,22 +35,24 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
 
     private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
-    private readonly IConfiguration _configuration =
-        configuration ?? throw new ArgumentNullException(nameof(configuration));
+    private readonly ISurveyAnalysisTokenProvider _tokenProvider =
+        tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
 
-    private readonly ILogger<TypeSafeSurveySemanticAnalyzer> _logger =
+    private readonly SurveyAnalysisOptions _options =
+        surveyAnalysisOptions?.Value ?? throw new ArgumentNullException(nameof(surveyAnalysisOptions));
+
+    private readonly ILogger<DecisionSurveySemanticAnalyzer> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task<Result<SurveyAnalysisModel, Error>> AnalyzeAsync(
         AnalyzeSurveyCommand command,
         CancellationToken cancellationToken = default)
     {
-        var apiKey = _configuration["TYPESAFE_API_KEY"];
-        if (string.IsNullOrWhiteSpace(apiKey))
+        if (string.IsNullOrWhiteSpace(_options.Endpoint))
         {
             return new Error(
-                "typesafe.not.configured",
-                "Survey analysis is unavailable because TYPESAFE_API_KEY is not configured.");
+                "survey-analysis.not.configured",
+                "Survey analysis is unavailable because SurveyAnalysis:Endpoint is not configured.");
         }
 
         var options = command.SurveyOptions
@@ -56,7 +63,7 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
             .ToList();
 
         var questions = BuildQuestions(options.Count);
-        var request = new TypeSafeRequest
+        var request = new SystemOneRequest
         {
             State = new
             {
@@ -67,15 +74,21 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
                     options
                 }
             },
-            Model = _configuration["TYPESAFE_MODEL"] ?? "jev-latest",
+            Model = _options.Deployment,
             Questions = questions
         };
 
         try
         {
+            var bearerToken = await _tokenProvider.GetTokenAsync(cancellationToken);
+
             using var httpRequest = new HttpRequestMessage(HttpMethod.Post, "v1/systemone");
-            httpRequest.Content = JsonContent.Create(request, options: JsonOptions);
-            httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            // Microsoft Foundry rejects chunked request bodies, so send a buffered body with a Content-Length.
+            httpRequest.Content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(request, JsonOptions))
+            {
+                Headers = { ContentType = new MediaTypeHeaderValue("application/json") }
+            };
+            httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
 
             using var response = await _httpClient.SendAsync(httpRequest, cancellationToken);
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -83,64 +96,71 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning(
-                    "TypeSafe survey analysis returned HTTP status {StatusCode}: {ResponseBody}",
+                    "Survey analysis returned HTTP status {StatusCode}: {ResponseBody}",
                     (int)response.StatusCode,
                     responseBody);
 
                 return new Error(
-                    "typesafe.request.failed",
+                    "survey-analysis.request.failed",
                     "Survey analysis is temporarily unavailable. Please try again.");
             }
 
-            var systemOneResponse = JsonSerializer.Deserialize<TypeSafeResponse>(responseBody, JsonOptions);
+            var systemOneResponse = JsonSerializer.Deserialize<SystemOneResponse>(responseBody, JsonOptions);
             if (systemOneResponse?.Answers is null)
             {
                 return new Error(
-                    "typesafe.invalid_response",
+                    "survey-analysis.invalid_response",
                     "Survey analysis returned an invalid response.");
             }
 
             return BuildAnalysis(options, systemOneResponse.Answers);
         }
+        catch (AuthenticationFailedException exception)
+        {
+            _logger.LogError(exception, "Could not obtain an Azure credential for survey analysis.");
+            return new Error(
+                "survey-analysis.authentication.failed",
+                "Survey analysis is unavailable because its credential could not be obtained.");
+        }
         catch (TimeoutRejectedException)
         {
-            _logger.LogWarning("TypeSafe survey analysis timed out.");
-            return new Error("typesafe.timeout", "Survey analysis timed out. Please try again.");
+            _logger.LogWarning("Survey analysis timed out.");
+            return new Error("survey-analysis.timeout", "Survey analysis timed out. Please try again.");
         }
         catch (BrokenCircuitException)
         {
-            return new Error("typesafe.unavailable", "Survey analysis is temporarily unavailable. Please try again.");
+            return new Error("survey-analysis.unavailable", "Survey analysis is temporarily unavailable. Please try again.");
         }
         catch (RateLimiterRejectedException)
         {
-            return new Error("typesafe.busy", "Survey analysis is busy. Please try again shortly.");
+            return new Error("survey-analysis.busy", "Survey analysis is busy. Please try again shortly.");
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            _logger.LogWarning("TypeSafe survey analysis timed out.");
+            _logger.LogWarning("Survey analysis timed out.");
             return new Error(
-                "typesafe.timeout",
+                "survey-analysis.timeout",
                 "Survey analysis timed out. Please try again.");
         }
         catch (HttpRequestException exception)
         {
-            _logger.LogError(exception, "TypeSafe survey analysis request failed.");
+            _logger.LogError(exception, "Survey analysis request failed.");
             return new Error(
-                "typesafe.request.failed",
+                "survey-analysis.request.failed",
                 "Survey analysis is temporarily unavailable. Please try again.");
         }
         catch (JsonException exception)
         {
-            _logger.LogError(exception, "TypeSafe survey analysis returned malformed JSON.");
+            _logger.LogError(exception, "Survey analysis returned malformed JSON.");
             return new Error(
-                "typesafe.invalid_response",
+                "survey-analysis.invalid_response",
                 "Survey analysis returned an invalid response.");
         }
     }
 
-    private static Dictionary<string, TypeSafeQuestion> BuildQuestions(int optionCount)
+    private static Dictionary<string, SystemOneQuestion> BuildQuestions(int optionCount)
     {
-        var questions = new Dictionary<string, TypeSafeQuestion>
+        var questions = new Dictionary<string, SystemOneQuestion>
         {
             ["response_shape"] = ChoiceQuestion(
                 "What response shape does `survey.topic` describe for `survey.audience`?",
@@ -198,11 +218,11 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
         return questions;
     }
 
-    private static TypeSafeQuestion ChoiceQuestion(
+    private static SystemOneQuestion ChoiceQuestion(
         string instructions,
         Dictionary<string, string> criteria)
     {
-        return new TypeSafeQuestion
+        return new SystemOneQuestion
         {
             Type = "choice",
             Instructions = instructions,
@@ -210,12 +230,12 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
         };
     }
 
-    private static TypeSafeQuestion NoulQuestion(
+    private static SystemOneQuestion NoulQuestion(
         string instructions,
         string trueCriteria,
         string falseCriteria)
     {
-        return new TypeSafeQuestion
+        return new SystemOneQuestion
         {
             Type = "noul",
             Instructions = instructions,
@@ -382,19 +402,19 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
     {
         return answers.TryGetValue(questionId, out var answer)
             ? answer
-            : throw new JsonException($"TypeSafe response did not contain answer '{questionId}'.");
+            : throw new JsonException($"Survey analysis response did not contain answer '{questionId}'.");
     }
 
     private static string GetString(JsonElement answer, string propertyName)
     {
         if (answer.ValueKind != JsonValueKind.Object || !answer.TryGetProperty(propertyName, out var property))
         {
-            throw new JsonException($"TypeSafe answer did not contain property '{propertyName}'.");
+            throw new JsonException($"Survey analysis answer did not contain property '{propertyName}'.");
         }
 
         if (property.ValueKind != JsonValueKind.String)
         {
-            throw new JsonException($"TypeSafe answer property '{propertyName}' was not a string.");
+            throw new JsonException($"Survey analysis answer property '{propertyName}' was not a string.");
         }
 
         return property.GetString()!;
@@ -404,12 +424,12 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
     {
         if (answer.ValueKind != JsonValueKind.Object || !answer.TryGetProperty(propertyName, out var property))
         {
-            throw new JsonException($"TypeSafe answer did not contain property '{propertyName}'.");
+            throw new JsonException($"Survey analysis answer did not contain property '{propertyName}'.");
         }
 
         if (property.ValueKind != JsonValueKind.Number || !property.TryGetDouble(out var value))
         {
-            throw new JsonException($"TypeSafe answer property '{propertyName}' was not a number.");
+            throw new JsonException($"Survey analysis answer property '{propertyName}' was not a number.");
         }
 
         return value;
@@ -435,21 +455,21 @@ internal sealed class TypeSafeSurveySemanticAnalyzer(
 
     private sealed record SurveyOptionState(int Id, string Text, int PreferredNumberOfVotes);
 
-    private sealed class TypeSafeRequest
+    private sealed class SystemOneRequest
     {
         public required object State { get; init; }
         public required string Model { get; init; }
-        public required Dictionary<string, TypeSafeQuestion> Questions { get; init; }
+        public required Dictionary<string, SystemOneQuestion> Questions { get; init; }
     }
 
-    private sealed class TypeSafeQuestion
+    private sealed class SystemOneQuestion
     {
         public required string Type { get; init; }
         public required string Instructions { get; init; }
         public required object Criteria { get; init; }
     }
 
-    private sealed class TypeSafeResponse
+    private sealed class SystemOneResponse
     {
         [JsonPropertyName("answers")] public Dictionary<string, JsonElement>? Answers { get; init; }
     }

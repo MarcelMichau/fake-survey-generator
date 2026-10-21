@@ -107,7 +107,7 @@ class ScriptTests(unittest.TestCase):
         self.log = self.directory / "commands.log"
         self.env = dict(os.environ,
                         AZURE_ENV_NAME="dev", AZURE_SUBSCRIPTION_ID="test-subscription",
-                        AZURE_LOCATION="South Africa North", TYPE_SAFE_API_KEY="test-only",
+                        AZURE_LOCATION="South Africa North",
                         API_VERSION=RELEASE, VITE_APP_VERSION="6.0.247",
                         IMAGE_DIGEST=f"{IMAGE}@{DIGEST}", MOCK_REGISTRY=REGISTRY,
                         MOCK_IMAGE=f"{IMAGE}:{RELEASE}", MOCK_DIGEST=DIGEST,

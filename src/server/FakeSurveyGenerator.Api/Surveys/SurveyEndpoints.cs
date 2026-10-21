@@ -117,7 +117,7 @@ internal static class SurveyEndpoints
             return TypedResults.UnprocessableEntity(validationError.Errors);
         }
 
-        var statusCode = result.Error.Code.StartsWith("typesafe.", StringComparison.Ordinal)
+        var statusCode = result.Error.Code.StartsWith("survey-analysis.", StringComparison.Ordinal)
             ? StatusCodes.Status503ServiceUnavailable
             : StatusCodes.Status400BadRequest;
 

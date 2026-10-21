@@ -7,9 +7,11 @@ param applicationName string
 
 param dnsZoneName string
 
-@secure()
-@minLength(1)
-param typeSafeApiKey string
+@description('Region of the Microsoft Foundry resource. Microsoft-Decision-1 is not available in every region.')
+param foundryLocation string
+
+@description('Principal IDs of developers who call Microsoft Foundry from local development')
+param foundryDeveloperPrincipalIds array = []
 
 var tags = { 'azd-env-name': environment }
 
@@ -77,10 +79,6 @@ module keyVault 'modules/keyVault.bicep' = {
         {
           secretName: 'HealthCheckSecret'
           secretValue: 'healthy'
-        }
-        {
-          secretName: 'TypeSafeApiKey'
-          secretValue: typeSafeApiKey
         }
       ]
     }
@@ -169,6 +167,19 @@ module managedIdentity 'modules/managedIdentity.bicep' = {
   scope: fakeSurveyGeneratorResourceGroup
 }
 
+module foundry 'modules/foundry.bicep' = {
+  name: 'foundry'
+  params: {
+    location: foundryLocation
+    tags: tags
+    name: '${abbrs.aiFoundryAccounts}-${applicationName}'
+    projectName: applicationName
+    apiPrincipalId: managedIdentity.outputs.principalId
+    developerPrincipalIds: foundryDeveloperPrincipalIds
+  }
+  scope: fakeSurveyGeneratorResourceGroup
+}
+
 module compute 'modules/compute.bicep' = {
   name: 'compute'
   params: {
@@ -192,7 +203,8 @@ output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.cont
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = compute.outputs.containerAppEnvironmentId
 output REDIS_CACHE_HOST_NAME string = redisCache.outputs.hostName
 output REDIS_KEY_VAULT_URL string = redisPassword.outputs.secretUrl
-output TYPESAFE_API_KEY_VAULT_URL string = '${keyVault.outputs.keyVaultUri}secrets/TypeSafeApiKey'
+output SURVEY_ANALYSIS_ENDPOINT string = foundry.outputs.endpoint
+output SURVEY_ANALYSIS_DEPLOYMENT string = foundry.outputs.decisionDeploymentName
 output AZURE_APPLICATION_INSIGHTS_NAME string = applicationInsights.outputs.applicationInsightsName
 
 output SQL_SERVER_NAME string = azureSql.outputs.sqlServerName

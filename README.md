@@ -212,23 +212,27 @@ configurations and configure its allowed callback/logout URLs for the local and 
 
 ### Semantic survey analysis
 
-The **Analyse Survey** button uses TypeSafe to check survey wording and options for potential issues such as leading questions, multiple-choice ambiguity, incomplete coverage, and semantically duplicate options. Configure the API key on the server; never expose it to the browser:
+The **Analyse Survey** button uses [Microsoft-Decision-1](https://ai.azure.com/catalog/models/Microsoft-Decision-1) to check survey wording and options for potential issues such as leading questions, multiple-choice ambiguity, incomplete coverage, and semantically duplicate options. The model is deployed to a Microsoft Foundry resource and project provisioned by `infra/modules/foundry.bicep` in France Central (Decision-1 is not offered to new deployments in South Africa North; `DataZoneStandard` keeps processing in the EU data zone), and the API calls its SystemOne endpoint server-side; the browser never talks to Foundry.
 
-```bash
-TYPESAFE_API_KEY=your-key
-```
+Foundry accepts Microsoft Entra ID only (local/key authentication is disabled). The API authenticates with `DefaultAzureCredential`: the API's user-assigned managed identity in Azure, or your Azure CLI or Visual Studio sign-in locally. The identity needs the **Cognitive Services User** role on the Foundry resource. The deployment grants it to the API's managed identity and to every principal in `foundryDeveloperPrincipalIds` in `infra/main.bicepparam`; add your Microsoft Entra object ID there to call the dev resource locally.
 
-`TYPESAFE_BASE_URL` and `TYPESAFE_MODEL` are optional and default to `https://api.typesafe.ai/` and `jev-latest`.
+Configuration lives under `SurveyAnalysis`:
 
-TypeSafe uses its own HTTP resilience pipeline: a 55-second attempt timeout, a 60-second total timeout, a circuit breaker,
+| Setting | Description |
+| --- | --- |
+| `SurveyAnalysis:Endpoint` | The Foundry resource endpoint, for example `https://aif-fake-survey-generator.services.ai.azure.com/`. Analysis returns `503 Service Unavailable` when this is not configured. |
+| `SurveyAnalysis:Deployment` | The Microsoft-Decision-1 deployment name. Defaults to `decision-1`. |
+| `SurveyAnalysis:TenantId` | Optional. Pins the Microsoft Entra tenant that `DefaultAzureCredential` requests tokens from, which helps when your developer tools are signed in to several tenants. A token issued by another tenant is rejected with `401` (Foundry reports it as an incorrect audience). |
+
+`src/server/FakeSurveyGenerator.Api/appsettings.Development.json` points local development at the dev Foundry resource. Deployed environments receive the endpoint and deployment name from the infrastructure outputs.
+
+Survey analysis uses its own HTTP resilience pipeline: a 55-second attempt timeout, a 60-second total timeout, a circuit breaker,
 and at most eight concurrent requests per API process with no waiting queue. These policies cover the complete response body,
 and analysis POSTs are never retried. The native `HttpClient.Timeout` is disabled so it cannot preempt the resilience timeouts.
-Settings can be overridden under `TypeSafe:Resilience` (for example,
-`TypeSafe__Resilience__AttemptTimeout__Timeout=00:00:45`); the attempt timeout must be strictly shorter than the total timeout
+Settings can be overridden under `SurveyAnalysis:Resilience` (for example,
+`SurveyAnalysis__Resilience__AttemptTimeout__Timeout=00:00:45`); the attempt timeout must be strictly shorter than the total timeout
 (invalid overrides are rejected), and circuit-breaker sampling duration must be at least twice the attempt timeout.
 Other HTTP clients inherit the standard pipeline, with retries disabled for unsafe methods.
-
-For Azure deployments, configure `typeSafeApiKey` as a secret Azure Pipelines variable. The deployment seeds it into Azure Key Vault and exposes it to the API container through a managed-identity-backed secret reference.
 
 ## How do I run this thing?
 
