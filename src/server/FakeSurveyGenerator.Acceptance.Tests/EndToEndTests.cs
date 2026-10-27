@@ -4,6 +4,9 @@ using TUnit.Playwright;
 
 namespace FakeSurveyGenerator.Acceptance.Tests;
 
+// Browser tests share one Chromium instance. A context created concurrently (with different TLS settings)
+// appears to make Chromium drop in-flight connections with ERR_NETWORK_CHANGED, so never overlap them.
+[NotInParallel("browser")]
 public class EndToEndTests : ContextTest
 {
     [ClassDataSource<AcceptanceTestFixture>(Shared = SharedType.PerTestSession)]
@@ -40,8 +43,8 @@ public class EndToEndTests : ContextTest
         });
     }
 
-    // On CI agents, Chromium intermittently aborts every in-flight request with net::ERR_NETWORK_CHANGED
-    // (e.g. when containers alter the host's network interfaces), leaving the Vite shell without its modules.
+    // Safety net: if Chromium still aborts every in-flight request with net::ERR_NETWORK_CHANGED (e.g. a host
+    // network change outside the test run), the Vite shell is left without its modules.
     // Reload only for that failure, so genuine UI regressions still fail on the first attempt.
     // Each reload is recorded in ui-load-retries.log, which the pipeline surfaces as a build warning,
     // because output from passing tests is not retained anywhere visible.
