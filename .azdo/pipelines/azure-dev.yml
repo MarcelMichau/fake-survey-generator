@@ -45,9 +45,9 @@ variables:
   azureResourceManagerConnection: "Azure Service Connection"
   azureLocation: "South Africa North"
   NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
-  azdVersion: "1.35.0"
-  daprCliVersion: "1.18.2"
-  daprRuntimeVersion: "1.18.4"
+  azdVersion: "1.37.1"
+  daprCliVersion: "1.19.1"
+  daprRuntimeVersion: "1.19.0"
 
 stages:
   - stage: BuildTestApi
