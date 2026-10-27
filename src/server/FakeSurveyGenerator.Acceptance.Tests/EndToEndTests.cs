@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using System.Collections.Concurrent;
+using Microsoft.Playwright;
 using TUnit.Playwright;
 
 namespace FakeSurveyGenerator.Acceptance.Tests;
@@ -42,18 +43,20 @@ public class EndToEndTests : ContextTest
     // On CI agents, Chromium intermittently aborts every in-flight request with net::ERR_NETWORK_CHANGED
     // (e.g. when containers alter the host's network interfaces), leaving the Vite shell without its modules.
     // Reload only for that failure, so genuine UI regressions still fail on the first attempt.
+    // Each reload is recorded in ui-load-retries.log, which the pipeline surfaces as a build warning,
+    // because output from passing tests is not retained anywhere visible.
     private static async Task GotoUntilRenderedAsync(IPage page, string url, int maxAttempts = 3)
     {
         const string networkChanged = "ERR_NETWORK_CHANGED";
-        var networkChangedDuringAttempt = false;
+        var failedUrls = new ConcurrentQueue<string>();
         page.RequestFailed += (_, request) =>
         {
-            if (request.Failure?.Contains(networkChanged) == true) networkChangedDuringAttempt = true;
+            if (request.Failure?.Contains(networkChanged) == true) failedUrls.Enqueue(request.Url);
         };
 
         for (var attempt = 1; ; attempt++)
         {
-            networkChangedDuringAttempt = false;
+            failedUrls.Clear();
             try
             {
                 await page.GotoAsync(url);
@@ -61,9 +64,14 @@ public class EndToEndTests : ContextTest
                 return;
             }
             catch (PlaywrightException exception) when (attempt < maxAttempts &&
-                (networkChangedDuringAttempt || exception.Message.Contains(networkChanged)))
+                (!failedUrls.IsEmpty || exception.Message.Contains(networkChanged)))
             {
-                Console.WriteLine($"UI load attempt {attempt} hit {networkChanged}; reloading.");
+                var failed = failedUrls.IsEmpty ? url : string.Join(", ", failedUrls.Distinct());
+                var message = $"UI load attempt {attempt} of {maxAttempts} hit {networkChanged}; reloading. Failed: {failed}";
+                Console.WriteLine(message);
+                await File.AppendAllTextAsync(
+                    Path.Combine(TestContext.ResultsDirectory, "ui-load-retries.log"),
+                    $"{DateTimeOffset.UtcNow:O} {message}{Environment.NewLine}");
             }
         }
     }

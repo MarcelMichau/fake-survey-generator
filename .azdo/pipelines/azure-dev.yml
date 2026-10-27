@@ -189,6 +189,17 @@ stages:
                 --results-directory "$(Agent.TempDirectory)/backend-tests"
             displayName: "Run Tests"
 
+          # Passing tests' output is not retained, so surface UI reloads after ERR_NETWORK_CHANGED as warnings.
+          - script: |
+              retries="$(Agent.TempDirectory)/backend-tests/ui-load-retries.log"
+              if [[ -f "$retries" ]]; then
+                while IFS= read -r line; do echo "##vso[task.logissue type=warning]$line"; done < "$retries"
+              else
+                echo "No UI load retries."
+              fi
+            displayName: "Report UI Load Retries"
+            condition: succeededOrFailed()
+
           - script: bash .azdo/scripts/select-test-results.sh
             displayName: "Select non-duplicated backend test and coverage reports"
             condition: succeededOrFailed()
