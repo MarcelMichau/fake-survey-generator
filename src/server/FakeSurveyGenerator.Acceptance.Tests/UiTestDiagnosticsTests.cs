@@ -3,6 +3,8 @@ using TUnit.Playwright;
 
 namespace FakeSurveyGenerator.Acceptance.Tests;
 
+// Shares the "browser" key with EndToEndTests; see the note there.
+[NotInParallel("browser")]
 public sealed class UiTestDiagnosticsTests : ContextTest
 {
     // Reuse browser installation and startup ordering from the other acceptance tests.
