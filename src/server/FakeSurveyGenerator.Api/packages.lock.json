@@ -99,9 +99,9 @@
       },
       "Scalar.AspNetCore": {
         "type": "Direct",
-        "requested": "[2.18.7, )",
-        "resolved": "2.18.7",
-        "contentHash": "JrNu0Sm4TVeJ//ptvAS3yRbT0oobfR8qp0ecf3HIS9zX4V7uSABr+VYEyWT7uyXjhN2ZTrZ/cpwKv7zHjlK8Gg=="
+        "requested": "[2.19.0, )",
+        "resolved": "2.19.0",
+        "contentHash": "nTXL9wsg6UhQ27KPUhuMr3/BE02H3zjuii2I5x7vbx7myPHkJzvzGDj7hfd1lKZBmJgUcKI+W7wcIzDdV/N/Dg=="
       },
       "Aspire.StackExchange.Redis": {
         "type": "Transitive",
@@ -748,8 +748,8 @@
           "Microsoft.Extensions.ServiceDiscovery": "[10.11.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.20.1, )",
           "OpenTelemetry.Extensions.Hosting": "[1.20.1, )",
-          "OpenTelemetry.Instrumentation.AspNetCore": "[1.20.1, )",
-          "OpenTelemetry.Instrumentation.Http": "[1.20.1, )",
+          "OpenTelemetry.Instrumentation.AspNetCore": "[1.20.2, )",
+          "OpenTelemetry.Instrumentation.Http": "[1.20.2, )",
           "OpenTelemetry.Instrumentation.Runtime": "[1.20.1, )"
         }
       },
@@ -963,18 +963,18 @@
       },
       "OpenTelemetry.Instrumentation.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[1.20.1, )",
-        "resolved": "1.20.1",
-        "contentHash": "pDO+Ed5iblMTvSVGcXzoLp8q20XHhXmK0wD/H3PGNHwDFlwZpV+bDWd/Euo6hNB4E0ruqzTFD76Btm+m0uCYNw==",
+        "requested": "[1.20.2, )",
+        "resolved": "1.20.2",
+        "contentHash": "WVCabg8epzvm3Ogvrz3AYlUnfgNpOnuCgkHpN9a78e7SCg9K1GDQYHKGjgV6QubHasi6toXdq1IrI9G5FIxL3Q==",
         "dependencies": {
           "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.20.1, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.Http": {
         "type": "CentralTransitive",
-        "requested": "[1.20.1, )",
-        "resolved": "1.20.1",
-        "contentHash": "XJTM6imVztxLraOrzsdlZf5shdH9TVeEWNBxpyepB5e3Gy+KNeQf2hyic398210UxqlPtt4iOkBELtjfIFTzug==",
+        "requested": "[1.20.2, )",
+        "resolved": "1.20.2",
+        "contentHash": "B84T2n4U7r3l+N5qP8vmoztGhbliWXc+vSz0BefjYNXbW9BA9q7iqU9+xn5dtCPlMNdHb+9Horgk8YhcO+eNTw==",
         "dependencies": {
           "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.20.1, 2.0.0)"
         }
