@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useLayoutEffect, useRef } from "react";
 import Alert from "./Alert";
 import Button from "./Button";
 
@@ -35,7 +35,9 @@ const ConfirmDialog = ({
 	const panelRef = useRef<HTMLDivElement>(null);
 	const pressedOutside = useRef(false);
 	const latest = useRef({ open, busy, onCancel, fallbackFocus });
-	latest.current = { open, busy, onCancel, fallbackFocus };
+	useLayoutEffect(() => {
+		latest.current = { open, busy, onCancel, fallbackFocus };
+	});
 
 	useEffect(() => {
 		const dialog = dialogRef.current;
