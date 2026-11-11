@@ -1,18 +1,18 @@
 import { useRef, useState } from "react";
-import { ApiError } from "../api/ApiError";
+import { ApiError, type FieldErrors } from "../api/ApiError";
 import type { CreateSurveyCommand, SurveyAnalysisWarningModel } from "../types";
 import { useAnalyzeSurvey, useCreateSurvey } from "./useSurveys";
 
 type DraftOption = {
 	id: number;
 	optionText: string;
-	preferredNumberOfVotes: number;
+	preferredNumberOfVotes: number | "";
 };
 
 type DraftSurvey = {
 	respondentType: string;
 	topic: string;
-	numberOfRespondents: number;
+	numberOfRespondents: number | "";
 	options: DraftOption[];
 };
 
@@ -22,12 +22,14 @@ type DraftState = {
 		success: string;
 		error: string;
 		validationErrors: string[];
+		fieldErrors: FieldErrors;
 	};
 	analysis: {
 		completed: boolean;
 		warnings: SurveyAnalysisWarningModel[];
 		hasAcknowledgedWarnings: boolean;
 		error: string;
+		fieldErrors: FieldErrors;
 	};
 	phase: "editing" | "analyzing" | "creating";
 	isCreated: boolean;
@@ -41,7 +43,7 @@ type DraftSettings = {
 };
 
 function emptyMessages(): DraftState["messages"] {
-	return { success: "", error: "", validationErrors: [] };
+	return { success: "", error: "", validationErrors: [], fieldErrors: {} };
 }
 
 function emptyAnalysis(): DraftState["analysis"] {
@@ -50,6 +52,7 @@ function emptyAnalysis(): DraftState["analysis"] {
 		warnings: [],
 		hasAcknowledgedWarnings: false,
 		error: "",
+		fieldErrors: {},
 	};
 }
 
@@ -73,11 +76,11 @@ function buildCommand(survey: DraftSurvey): CreateSurveyCommand {
 	return {
 		surveyTopic: survey.topic,
 		respondentType: survey.respondentType,
-		numberOfRespondents: survey.numberOfRespondents,
+		numberOfRespondents: Number(survey.numberOfRespondents),
 		surveyOptions: survey.options.map(
 			({ optionText, preferredNumberOfVotes }) => ({
 				optionText,
-				preferredNumberOfVotes,
+				preferredNumberOfVotes: Number(preferredNumberOfVotes),
 			}),
 		),
 	};
@@ -124,7 +127,7 @@ export function useSurveyDraft({
 		if (next === draft) return;
 		commit({
 			...next,
-			messages: { ...next.messages, success: "" },
+			messages: emptyMessages(),
 			analysis: emptyAnalysis(),
 			isCreated: false,
 		});
@@ -208,7 +211,12 @@ export function useSurveyDraft({
 	async function create() {
 		const draft = current.current;
 		if (!canCreate(draft)) return;
-		commit({ ...draft, messages: emptyMessages(), phase: "creating" });
+		commit({
+			...draft,
+			messages: emptyMessages(),
+			analysis: { ...draft.analysis, error: "", fieldErrors: {} },
+			phase: "creating",
+		});
 		let survey: Awaited<ReturnType<typeof creation.mutateAsync>>;
 		try {
 			survey = await creation.mutateAsync(buildCommand(draft.survey));
@@ -226,6 +234,7 @@ export function useSurveyDraft({
 							: "An unexpected error occurred",
 					validationErrors:
 						error instanceof ApiError ? error.validationErrors : [],
+					fieldErrors: error instanceof ApiError ? error.fieldErrors : {},
 				},
 			});
 			return;
@@ -272,6 +281,7 @@ export function useSurveyDraft({
 				phase: "editing",
 				analysis: {
 					...emptyAnalysis(),
+					fieldErrors: error instanceof ApiError ? error.fieldErrors : {},
 					error:
 						error instanceof ApiError
 							? error.validationErrors.join(" ") || error.message

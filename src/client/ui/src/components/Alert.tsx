@@ -5,9 +5,19 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type AlertType = "error" | "success" | "warning";
-type AlertProps = { title: string; message: string; type?: AlertType };
+type AlertProps = {
+	title: string;
+	message: string;
+	type?: AlertType;
+	announcement?: "polite" | "assertive" | "off";
+};
 
-const Alert = ({ title, message, type = "success" }: AlertProps) => {
+const Alert = ({
+	title,
+	message,
+	type = "success",
+	announcement = type === "error" ? "assertive" : "polite",
+}: AlertProps) => {
 	const icon = type === "success" ? faCircleCheck : faCircleExclamation;
 	const accents = {
 		success: "border-lime bg-[#263923]",
@@ -17,7 +27,13 @@ const Alert = ({ title, message, type = "success" }: AlertProps) => {
 	return (
 		<div
 			className={`my-4 flex gap-4 border-2 p-4 ${accents[type]}`}
-			role="alert"
+			role={
+				announcement === "off"
+					? undefined
+					: announcement === "assertive"
+						? "alert"
+						: "status"
+			}
 		>
 			<FontAwesomeIcon
 				icon={icon}

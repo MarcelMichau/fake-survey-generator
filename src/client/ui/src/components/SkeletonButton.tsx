@@ -1,19 +1,8 @@
-import type React from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import Button from "./Button";
+import Button, { type ButtonProps } from "./Button";
 
-type ButtonType = "button" | "submit";
-
-type ButtonActionType = "primary" | "secondary" | "destructive";
-
-type SkeletonButtonProps = {
+type SkeletonButtonProps = ButtonProps & {
 	loading: boolean;
-	type?: ButtonType;
-	onClick?: (e: React.MouseEvent) => void;
-	disabled?: boolean;
-	actionType?: ButtonActionType;
-	additionalClasses?: string[];
-	children: React.ReactNode;
 };
 
 const SkeletonButton = ({
@@ -24,6 +13,7 @@ const SkeletonButton = ({
 	actionType = "primary",
 	additionalClasses = [],
 	children,
+	...buttonProps
 }: SkeletonButtonProps) => {
 	const styleMap = {
 		primary: {
@@ -45,6 +35,7 @@ const SkeletonButton = ({
 				<Skeleton height={44} width={150} className="px-5 py-2.5" />
 			) : (
 				<Button
+					{...buttonProps}
 					type={type}
 					onClick={onClick}
 					disabled={disabled}

@@ -99,15 +99,17 @@ describe("GetSurvey Component", () => {
 			await expect.element(surveyIdInput).toHaveValue("123");
 		});
 
-		it("should ignore non-numeric input", async () => {
+		it("should allow clearing the survey ID", async () => {
 			const screen = await render(
 				<GetSurvey loading={false} newSurveyId={null} />,
 			);
 			const surveyIdInput = screen.getByPlaceholder("Enter survey ID number");
 
-			await expect.element(surveyIdInput).toHaveValue("0");
+			await expect.element(surveyIdInput).toHaveValue("");
 			await surveyIdInput.fill("123");
 			await expect.element(surveyIdInput).toHaveValue("123");
+			await surveyIdInput.fill("");
+			await expect.element(surveyIdInput).toHaveValue("");
 		});
 	});
 
@@ -272,6 +274,21 @@ describe("GetSurvey Component", () => {
 	});
 
 	describe("Form Submission", () => {
+		it.each(["", "0", "-1", "1.5", "abc"])(
+			"rejects invalid survey ID %s without fetching",
+			async (value) => {
+				const screen = await render(
+					<GetSurvey loading={false} newSurveyId={null} />,
+				);
+				const input = screen.getByRole("textbox", { name: "Survey ID" });
+				await input.fill(value);
+				await screen.getByRole("button", { name: "Get Survey" }).click();
+				await expect.element(input).toHaveFocus();
+				await expect.element(input).toHaveAttribute("aria-invalid", "true");
+				expect(hooks.useSurveyFetch).toHaveBeenLastCalledWith(null);
+			},
+		);
+
 		it("should trigger fetch when Get Survey button is clicked", async () => {
 			const screen = await render(
 				<GetSurvey loading={false} newSurveyId={null} />,
@@ -301,7 +318,7 @@ describe("GetSurvey Component", () => {
 			);
 			await expect
 				.element(screen.getByPlaceholder("Enter survey ID number"))
-				.toHaveValue("0");
+				.toHaveValue("");
 
 			await screen.rerender(<GetSurvey loading={false} newSurveyId={999} />);
 			await expect

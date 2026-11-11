@@ -4,6 +4,77 @@ import { render } from "../test/test-utils";
 import ConfirmDialog from "./ConfirmDialog";
 
 describe("ConfirmDialog", () => {
+	it("requires press and release outside for the light-dismiss fallback", async () => {
+		const descriptor = Object.getOwnPropertyDescriptor(
+			HTMLDialogElement.prototype,
+			"closedBy",
+		);
+		Reflect.deleteProperty(HTMLDialogElement.prototype, "closedBy");
+		try {
+			const onCancel = vi.fn();
+			const screen = await render(
+				<ConfirmDialog
+					open
+					title="Delete survey?"
+					message="Sure?"
+					onConfirm={vi.fn()}
+					onCancel={onCancel}
+				/>,
+			);
+			const dialog = screen.container.querySelector("dialog");
+			if (!dialog) throw new Error("Expected dialog");
+			const rect = dialog.getBoundingClientRect();
+			const pointer = (type: string, outside: boolean) =>
+				dialog.dispatchEvent(
+					new PointerEvent(type, {
+						bubbles: true,
+						clientX: outside ? rect.left - 10 : rect.left + 10,
+						clientY: rect.top + 10,
+					}),
+				);
+			pointer("pointerdown", true);
+			pointer("pointerup", false);
+			expect(onCancel).not.toHaveBeenCalled();
+			pointer("pointerdown", false);
+			pointer("pointerup", true);
+			expect(onCancel).not.toHaveBeenCalled();
+			pointer("pointerdown", true);
+			pointer("pointerup", true);
+			expect(onCancel).toHaveBeenCalledTimes(1);
+		} finally {
+			if (descriptor)
+				Object.defineProperty(
+					HTMLDialogElement.prototype,
+					"closedBy",
+					descriptor,
+				);
+		}
+	});
+
+	it("uses native modality to prevent focus moving to the background", async () => {
+		const screen = await render(
+			<>
+				<button type="button" id="background">
+					Background
+				</button>
+				<ConfirmDialog
+					open
+					title="Delete survey?"
+					message="Sure?"
+					onConfirm={vi.fn()}
+					onCancel={vi.fn()}
+				/>
+			</>,
+		);
+		const dialog = screen.container.querySelector("dialog");
+		expect(dialog?.matches(":modal")).toBe(true);
+		expect(dialog?.hasAttribute("aria-modal")).toBe(false);
+		screen.container.querySelector<HTMLElement>("#background")?.focus();
+		await expect
+			.element(screen.getByRole("button", { name: "Cancel" }))
+			.toHaveFocus();
+	});
+
 	it("does not render when closed", async () => {
 		const screen = await render(
 			<ConfirmDialog
@@ -89,8 +160,9 @@ describe("ConfirmDialog", () => {
 			.element(screen.getByRole("button", { name: /Working\.\.\./ }))
 			.toBeInTheDocument();
 
-		await userEvent.keyboard("{Escape}");
+		await userEvent.keyboard("{Escape}{Escape}{Escape}");
 		expect(onCancel).not.toHaveBeenCalled();
+		await expect.element(screen.getByRole("dialog")).toBeVisible();
 	});
 
 	it("calls onCancel when Escape is pressed and not busy", async () => {
@@ -120,6 +192,7 @@ describe("ConfirmDialog", () => {
 				</button>
 				<ConfirmDialog
 					open={open}
+					invoker={document.getElementById("trigger")}
 					title="Delete survey?"
 					message="Sure?"
 					fallbackFocus={() => document.getElementById("fallback")}
@@ -153,6 +226,7 @@ describe("ConfirmDialog", () => {
 				</button>
 				<ConfirmDialog
 					open={open}
+					invoker={document.getElementById("trigger")}
 					title="Delete survey?"
 					message="Sure?"
 					fallbackFocus={() => document.getElementById("fallback")}

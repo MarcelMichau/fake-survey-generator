@@ -1,8 +1,12 @@
 const Splash = () => (
-	<main className="my-6 grid gap-5 md:grid-cols-[1.2fr_1fr]">
+	<div className="my-6 grid gap-5 md:grid-cols-[1.2fr_1fr]">
 		<section className="brutal-panel flex flex-col justify-center gap-6 py-10 sm:py-16">
 			<p className="ui-label text-lime!">Create • Retrieve • Explore</p>
-			<h1 className="display-title text-[clamp(3.5rem,8vw,7rem)]">
+			<h1
+				id="main-content"
+				tabIndex={-1}
+				className="display-title text-[clamp(3.5rem,8vw,7rem)]"
+			>
 				Fake Survey Generator
 			</h1>
 			<p className="max-w-xl text-lg sm:text-xl">
@@ -23,7 +27,7 @@ const Splash = () => (
 				<div className="h-8 w-3/5 bg-ink" />
 			</div>
 		</div>
-	</main>
+	</div>
 );
 
 export default Splash;

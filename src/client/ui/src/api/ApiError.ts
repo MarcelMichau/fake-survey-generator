@@ -1,22 +1,31 @@
+export type FieldErrors = Record<string, string[]>;
+
 export class ApiError extends Error {
 	readonly status: number;
 	readonly validationErrors: string[];
+	readonly fieldErrors: FieldErrors;
 	constructor(
 		message: string,
 		status: number,
-		validationErrors: string[] = [],
+		validationErrors: string[] | FieldErrors = [],
 	) {
 		super(message);
 		this.status = status;
-		this.validationErrors = validationErrors;
+		this.fieldErrors = Array.isArray(validationErrors) ? {} : validationErrors;
+		this.validationErrors = Array.isArray(validationErrors)
+			? validationErrors
+			: Object.values(validationErrors).flat();
 	}
 }
 
-export function validationMessages(error: unknown): string[] {
-	if (!error || typeof error !== "object") return [];
-	return Object.values(error).flatMap((value) =>
-		Array.isArray(value)
-			? value.filter((item): item is string => typeof item === "string")
-			: [],
+export function validationFields(error: unknown): FieldErrors {
+	if (!error || typeof error !== "object") return {};
+	return Object.fromEntries(
+		Object.entries(error).flatMap(([field, value]) => {
+			const messages = Array.isArray(value)
+				? value.filter((item): item is string => typeof item === "string")
+				: [];
+			return messages.length ? [[field, messages]] : [];
+		}),
 	);
 }

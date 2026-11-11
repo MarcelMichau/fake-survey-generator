@@ -239,11 +239,14 @@ describe("Authenticated Survey readiness", () => {
 		}
 		function Probe() {
 			first = useWorkflow();
+			// Read the tracked Query property during render, before a fast response can settle.
+			const registrationFailed = first.registration.isError;
 			const [extra, setExtra] = useState(false);
 			addCaller = () => setExtra(true);
 			return (
 				<>
 					<ReadPresentation workflow={first} />
+					{registrationFailed && <span>Registration failed</span>}
 					{extra && <ExtraCaller />}
 				</>
 			);
@@ -253,7 +256,9 @@ describe("Authenticated Survey readiness", () => {
 				<Probe />
 			</ApiQueryProvider>,
 		);
-		await expect.poll(() => first.registration.isError).toBe(true);
+		await expect
+			.element(screen.getByText("Registration failed"))
+			.toBeInTheDocument();
 		await act(async () => {
 			addCaller();
 			await first.detail.refetch();
