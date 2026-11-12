@@ -1,5 +1,8 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
+import "./index.css";
 import App from "./App";
 import { ApiQueryProvider } from "./api/ApiQueryProvider";
 import { useApiClient } from "./hooks/useApiClient";
@@ -34,6 +37,45 @@ vi.mock("./components/MySurveys", () => ({
 
 describe("App registration presentation", () => {
 	beforeEach(() => vi.clearAllMocks());
+
+	it.each([false, true])(
+		"provides one main landmark and a working skip link when authenticated=%s",
+		async (authenticated) => {
+			const previous = useAuth0();
+			vi.mocked(useAuth0).mockReturnValue({
+				...previous,
+				isAuthenticated: authenticated,
+			});
+			vi.mocked(useApiClient).mockReturnValue(
+				mockApiClient(
+					vi.fn().mockResolvedValue({
+						ok: true,
+						status: 201,
+						json: async () => ({ id: 1 }),
+					}),
+				),
+			);
+			try {
+				const screen = await render(
+					<ApiQueryProvider>
+						<App />
+					</ApiQueryProvider>,
+				);
+				expect(screen.getByRole("main").all()).toHaveLength(1);
+				expect(screen.getByRole("heading", { level: 1 }).all()).toHaveLength(1);
+				screen
+					.getByRole("link", { name: "Skip to main content" })
+					.element()
+					.focus();
+				await userEvent.keyboard("{Enter}");
+				await expect
+					.element(screen.getByRole("heading", { level: 1 }))
+					.toHaveFocus();
+			} finally {
+				vi.mocked(useAuth0).mockReturnValue(previous);
+			}
+		},
+	);
 
 	it("keeps controls unavailable after failure and enables them after explicit registration retry", async () => {
 		const transport = vi

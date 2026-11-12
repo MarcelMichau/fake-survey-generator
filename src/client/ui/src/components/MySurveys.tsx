@@ -1,7 +1,8 @@
+// biome-ignore-all lint/a11y/noNoninteractiveTabindex: the named table overflow region needs consistent keyboard scrolling across browsers.
 import { faPaperPlane, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type React from "react";
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useDeleteSurvey, useUserSurveys } from "../hooks/useSurveys";
 import type * as Types from "../types";
@@ -15,13 +16,15 @@ export type MySurveysProps = {
 
 const MySurveys = ({ loading }: MySurveysProps) => {
 	const formRef = useRef<HTMLFormElement>(null);
+	const deleteTrigger = useRef<HTMLButtonElement>(null);
+	const id = useId();
 	const [hasFetched, setHasFetched] = useState(false);
 	const query = useUserSurveys(hasFetched);
 	const deletion = useDeleteSurvey();
 	const userSurveys = query.isError ? [] : (query.data ?? []);
 	const isSearching = query.isFetching;
 	const isDeleting = deletion.isPending;
-	const error = deletion.error?.message ?? query.error?.message;
+	const error = query.error?.message;
 	const [surveyToDelete, setSurveyToDelete] =
 		useState<Types.UserSurveyModel | null>(null);
 	const numberFormatter = useMemo(() => new Intl.NumberFormat(), []);
@@ -47,10 +50,14 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 		<SkeletonTheme baseColor="#30353a" highlightColor="#c7ff18">
 			<div className="brutal-panel">
 				<div className="flex flex-wrap items-center justify-between gap-4">
-					<h2 className="display-title text-4xl lg:text-5xl">
+					<h2 id={`${id}-title`} className="display-title text-4xl lg:text-5xl">
 						{loading ? <Skeleton width={100} /> : <span>My Surveys</span>}
 					</h2>
-					<form ref={formRef} onSubmit={submitForm}>
+					<form
+						ref={formRef}
+						onSubmit={submitForm}
+						aria-labelledby={`${id}-title`}
+					>
 						<SkeletonButton
 							loading={loading}
 							type="submit"
@@ -65,24 +72,44 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 					</form>
 				</div>
 
+				<p role="status" className="ui-hint mt-4">
+					{query.isSuccess && !isSearching
+						? `${userSurveys.length} ${userSurveys.length === 1 ? "survey" : "surveys"} loaded.`
+						: ""}
+				</p>
 				{userSurveys.length > 0 && (
-					<div className="mt-6 overflow-x-auto">
+					<section
+						className="survey-table-wrapper mt-6"
+						tabIndex={0}
+						aria-labelledby={`${id}-caption`}
+					>
 						<table className="brutal-table min-w-[850px]">
+							<caption id={`${id}-caption`} className="sr-only">
+								Your surveys
+							</caption>
 							<thead>
 								<tr>
-									<th>Question</th>
-									<th>Audience</th>
-									<th className="is-numeric"># Respondents</th>
-									<th className="is-numeric"># Options</th>
-									<th>Winning Option</th>
-									<th className="is-numeric">Winning # Votes</th>
-									<th className="w-px">Actions</th>
+									<th scope="col">Question</th>
+									<th scope="col">Audience</th>
+									<th scope="col" className="is-numeric">
+										# Respondents
+									</th>
+									<th scope="col" className="is-numeric">
+										# Options
+									</th>
+									<th scope="col">Winning Option</th>
+									<th scope="col" className="is-numeric">
+										Winning # Votes
+									</th>
+									<th scope="col" className="w-px">
+										Actions
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								{userSurveys.map((survey) => (
 									<tr key={survey.id}>
-										<td>{survey.topic}</td>
+										<th scope="row">{survey.topic}</th>
 										<td>{survey.respondentType}</td>
 										<td className="is-numeric">
 											{numberFormatter.format(survey.numberOfRespondents)}
@@ -98,7 +125,8 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 											<button
 												type="button"
 												aria-label={`Delete survey ${survey.topic}`}
-												onClick={() => {
+												onClick={(event) => {
+													deleteTrigger.current = event.currentTarget;
 													deletion.reset();
 													setSurveyToDelete(survey);
 												}}
@@ -111,11 +139,12 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 								))}
 							</tbody>
 						</table>
-					</div>
+					</section>
 				)}
 				{query.isSuccess && userSurveys.length === 0 && (
 					<Alert
 						title="No Surveys"
+						announcement="off"
 						message={"You have not created any surveys yet. :("}
 					/>
 				)}
@@ -137,6 +166,8 @@ const MySurveys = ({ loading }: MySurveysProps) => {
 					}
 					confirmLabel="Delete"
 					busy={isDeleting}
+					invoker={deleteTrigger.current}
+					error={deletion.error?.message}
 					fallbackFocus={() => formRef.current?.querySelector("button") ?? null}
 					onConfirm={confirmDelete}
 					onCancel={() => {

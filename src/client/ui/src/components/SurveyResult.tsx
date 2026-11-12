@@ -7,10 +7,9 @@ import {
 	faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDeleteSurvey } from "../hooks/useSurveys";
 import type { SurveyModel } from "../types";
-import Alert from "./Alert";
 import ConfirmDialog from "./ConfirmDialog";
 
 const shareFormatter = new Intl.NumberFormat(undefined, {
@@ -32,6 +31,7 @@ const SurveyResult = ({
 	const { user } = useAuth0();
 	const deletion = useDeleteSurvey();
 	const [confirmOpen, setConfirmOpen] = useState(false);
+	const deleteTrigger = useRef<HTMLButtonElement>(null);
 	const isDeleting = deletion.isPending;
 	const error = deletion.error?.message;
 	const isOwner = !!user?.sub && user.sub === surveyDetail.ownerExternalUserId;
@@ -59,7 +59,8 @@ const SurveyResult = ({
 						<button
 							type="button"
 							aria-label="Delete this survey"
-							onClick={() => {
+							onClick={(event) => {
+								deleteTrigger.current = event.currentTarget;
 								deletion.reset();
 								setConfirmOpen(true);
 							}}
@@ -137,13 +138,6 @@ const SurveyResult = ({
 						day: "numeric",
 					}).format(new Date(surveyDetail.createdOn))}
 				</p>
-				{error && (
-					<Alert
-						type="error"
-						title="Oh no! Something did not go as planned."
-						message={error}
-					/>
-				)}
 			</section>
 			<ConfirmDialog
 				open={confirmOpen}
@@ -151,6 +145,8 @@ const SurveyResult = ({
 				message={`This will permanently delete "${surveyDetail.topic}". This action cannot be undone.`}
 				confirmLabel="Delete"
 				busy={isDeleting}
+				invoker={deleteTrigger.current}
+				error={error}
 				fallbackFocus={fallbackFocus}
 				onConfirm={confirmDelete}
 				onCancel={() => {

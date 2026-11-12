@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { type ReactElement, useEffect } from "react";
 import { render as browserRender } from "vitest-browser-react";
+import "../index.css";
 import { createQueryClient } from "../api/ApiQueryProvider";
 import { registrationKey, SurveySession } from "../api/SurveySession";
 

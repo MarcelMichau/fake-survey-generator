@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { page, userEvent } from "vitest/browser";
 import * as hooks from "../hooks/useApiClient";
 import { mockApiClient } from "../test/mock-api-client";
 import { render } from "../test/test-utils";
@@ -130,6 +131,48 @@ describe("MySurveys Component", () => {
 			await screen.getByRole("button", { name: /Get My Surveys/i }).click();
 			return screen;
 		}
+
+		it("supports keyboard scrolling at a narrow viewport without making the page overflow", async () => {
+			const previous = { width: window.innerWidth, height: window.innerHeight };
+			await page.viewport(320, 800);
+			try {
+				const screen = await loadSurveys();
+				await expect
+					.element(screen.getByRole("region", { name: "Your surveys" }))
+					.toBeInTheDocument();
+				const region = screen.container.querySelector<HTMLElement>(
+					".survey-table-wrapper",
+				);
+				if (!region) throw new Error("Expected table scroll region");
+				expect(region.scrollWidth).toBeGreaterThan(region.clientWidth);
+				expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(
+					window.innerWidth,
+				);
+				region.focus();
+				await userEvent.keyboard("{ArrowRight}");
+				await expect.poll(() => region.scrollLeft).toBeGreaterThan(0);
+			} finally {
+				await page.viewport(previous.width, previous.height);
+			}
+		});
+
+		it("provides a named keyboard-scrollable table with column and row headers", async () => {
+			const screen = await loadSurveys();
+			await expect
+				.element(screen.getByRole("table", { name: "Your surveys" }))
+				.toBeInTheDocument();
+			expect(screen.getByRole("columnheader").all()).toHaveLength(7);
+			expect(screen.getByRole("rowheader").all()).toHaveLength(2);
+			screen.container
+				.querySelector<HTMLElement>(".survey-table-wrapper")
+				?.focus();
+			await expect
+				.element(screen.getByRole("region", { name: "Your surveys" }))
+				.toHaveFocus();
+			await expect
+				.element(screen.getByRole("status"))
+				.toHaveTextContent("2 surveys loaded.");
+		});
 
 		it("should display survey data in correct columns", async () => {
 			const screen = await loadSurveys();
@@ -371,11 +414,29 @@ describe("MySurveys Component", () => {
 			await screen.getByRole("button", { name: /^Delete$/ }).click();
 
 			await expect
+				.element(
+					screen
+						.getByRole("dialog")
+						.getByRole("alert")
+						.getByText("Failed to delete survey"),
+				)
+				.toBeVisible();
+			await expect
 				.element(screen.getByText(/Failed to delete survey/i))
 				.toBeInTheDocument();
 			await expect
 				.element(screen.getByText("What's your favorite programming language?"))
 				.toBeInTheDocument();
+			apiCall.mockResolvedValueOnce({ ok: true, status: 204 });
+			apiCall.mockResolvedValue({
+				ok: true,
+				json: async () => [mockSurveysData[1]],
+			});
+			await screen.getByRole("button", { name: /^Delete$/ }).click();
+			await expect.element(screen.getByRole("dialog")).not.toBeInTheDocument();
+			await expect
+				.element(screen.getByRole("button", { name: "Get My Surveys" }))
+				.toHaveFocus();
 		});
 
 		it("should close the dialog when Cancel is clicked", async () => {

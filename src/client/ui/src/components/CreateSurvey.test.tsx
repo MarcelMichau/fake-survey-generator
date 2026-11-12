@@ -1,10 +1,24 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { page } from "vitest/browser";
 import * as hooks from "../hooks/useApiClient";
 import { mockApiClient } from "../test/mock-api-client";
 import { render } from "../test/test-utils";
 import CreateSurvey from "./CreateSurvey";
 
 vi.mock("../hooks/useApiClient");
+
+async function renderValidSurvey(ui: Parameters<typeof render>[0]) {
+	const screen = await render(ui);
+	await screen.getByPlaceholder("Pragmatic Developers").fill("Developers");
+	await screen
+		.getByPlaceholder("Do you prefer tabs or spaces?")
+		.fill("Tabs or spaces?");
+	await screen
+		.getByRole("spinbutton", { name: "Number of Respondents" })
+		.fill("100");
+	await screen.getByPlaceholder("Most definitely tabs").fill("Tabs");
+	return screen;
+}
 
 describe("CreateSurvey Component", () => {
 	const mockApiCall = vi.fn();
@@ -179,7 +193,7 @@ describe("CreateSurvey Component", () => {
 							} as Response);
 					}),
 			);
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			const respondentInput = screen.getByPlaceholder("Pragmatic Developers");
@@ -192,7 +206,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should analyze survey data and show semantic suggestions", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -246,7 +260,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should clear analysis warnings after creating a survey", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall
@@ -296,7 +310,7 @@ describe("CreateSurvey Component", () => {
 
 	describe("Form Submission", () => {
 		it("should submit form with survey data", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -323,7 +337,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should call onSurveyCreated callback on successful submission", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -338,7 +352,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should show success message on successful submission", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -355,7 +369,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should keep the analysis button disabled after successful submission", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -372,7 +386,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should clear stale success and allow analysis after editing a retained successful draft", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			const question = screen.getByPlaceholder("Do you prefer tabs or spaces?");
@@ -400,7 +414,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should show error message on failed submission", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({ ok: false, status: 500 });
@@ -415,7 +429,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should show validation errors on 422 response", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -430,15 +444,37 @@ describe("CreateSurvey Component", () => {
 			await screen.getByRole("button", { name: /Create Survey/i }).click();
 
 			await expect
-				.element(screen.getByText("Topic is required"))
+				.element(
+					screen.getByRole("link", { name: "Question: Topic is required" }),
+				)
 				.toBeInTheDocument();
 			await expect
-				.element(screen.getByText("Must be greater than 0"))
+				.element(
+					screen.getByRole("link", {
+						name: "Number of Respondents: Must be greater than 0",
+					}),
+				)
 				.toBeInTheDocument();
+			await expect
+				.element(screen.getByRole("region", { name: "Check survey details" }))
+				.toHaveFocus();
+			await screen
+				.getByRole("link", { name: "Question: Topic is required" })
+				.click();
+			const question = screen.getByRole("textbox", {
+				name: "Question (Survey Topic)",
+			});
+			await expect.element(question).toHaveFocus();
+			await expect.element(question).toHaveAttribute("aria-invalid", "true");
+			await expect
+				.element(question)
+				.toHaveAccessibleDescription("Error: Topic is required");
+			await question.fill("Updated question");
+			await expect.element(question).toHaveAttribute("aria-invalid", "false");
 		});
 
 		it("should show duplicate option error on 422 domain exception response", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -457,7 +493,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should reset form after successful submission when resetOnSuccess is true", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} resetOnSuccess />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -479,7 +515,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should not reset form after successful submission when onSurveyCreated is provided", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey loading={false} onSurveyCreated={mockOnSurveyCreated} />,
 			);
 			mockApiCall.mockResolvedValue({
@@ -502,7 +538,7 @@ describe("CreateSurvey Component", () => {
 		});
 
 		it("should reset form after successful submission when resetOnSuccess is explicitly true with onSurveyCreated", async () => {
-			const screen = await render(
+			const screen = await renderValidSurvey(
 				<CreateSurvey
 					loading={false}
 					onSurveyCreated={mockOnSurveyCreated}
@@ -541,6 +577,262 @@ describe("CreateSurvey Component", () => {
 			await expect
 				.element(screen.getByPlaceholder("Do you prefer tabs or spaces?"))
 				.toHaveValue("");
+		});
+	});
+
+	describe("Accessible validation and option editing", () => {
+		it.each([800, 320])(
+			"aligns remove buttons with their vote inputs at %spx",
+			async (width) => {
+				const previous = {
+					width: window.innerWidth,
+					height: window.innerHeight,
+				};
+				await page.viewport(width, 900);
+				try {
+					const screen = await render(<CreateSurvey loading={false} />);
+					await screen.getByRole("button", { name: "Add Option" }).click();
+					await expect
+						.element(screen.getByRole("textbox", { name: "#2", exact: true }))
+						.toBeInTheDocument();
+					const votes = screen.getByRole("spinbutton", {
+						name: "Preferred Votes for #2",
+					});
+					const input = votes.element();
+					const button = screen
+						.getByRole("button", { name: "Remove #2", exact: true })
+						.element();
+					const assertAligned = () => {
+						const inputBounds = input.getBoundingClientRect();
+						const buttonBounds = button.getBoundingClientRect();
+						expect(
+							Math.abs(
+								(inputBounds.top + inputBounds.bottom) / 2 -
+									(buttonBounds.top + buttonBounds.bottom) / 2,
+							),
+						).toBeLessThanOrEqual(1);
+					};
+					assertAligned();
+					await votes.fill("-1");
+					await screen
+						.getByRole("textbox", { name: "#2", exact: true })
+						.fill("Another option");
+					await expect.element(votes).toHaveAttribute("aria-invalid", "true");
+					assertAligned();
+				} finally {
+					await page.viewport(previous.width, previous.height);
+				}
+			},
+		);
+
+		it("replaces failed analysis feedback with the current creation errors", async () => {
+			const screen = await renderValidSurvey(<CreateSurvey loading={false} />);
+			mockApiCall.mockResolvedValueOnce({
+				ok: false,
+				status: 422,
+				json: async () => ({
+					SurveyTopic: ["Analysis rejected this question"],
+				}),
+			});
+			mockApiCall.mockResolvedValueOnce({
+				ok: false,
+				status: 422,
+				json: async () => ({
+					NumberOfRespondents: ["Creation rejected this count"],
+				}),
+			});
+			await screen.getByRole("button", { name: "Analyse Survey" }).click();
+			await expect
+				.element(
+					screen.getByRole("link", {
+						name: "Question: Analysis rejected this question",
+					}),
+				)
+				.toBeInTheDocument();
+			await screen
+				.getByRole("button", { name: "Create Survey", exact: true })
+				.click();
+			await expect
+				.element(
+					screen.getByRole("link", {
+						name: "Number of Respondents: Creation rejected this count",
+					}),
+				)
+				.toBeInTheDocument();
+			await expect
+				.element(
+					screen.getByRole("link", {
+						name: "Question: Analysis rejected this question",
+					}),
+				)
+				.not.toBeInTheDocument();
+		});
+
+		it("keeps form controls within a narrow viewport", async () => {
+			const previous = { width: window.innerWidth, height: window.innerHeight };
+			await page.viewport(320, 800);
+			try {
+				const screen = await render(<CreateSurvey loading={false} />);
+				await screen.getByRole("button", { name: "Add Option" }).click();
+				await expect
+					.element(screen.getByRole("textbox", { name: "#2", exact: true }))
+					.toBeInTheDocument();
+				expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(
+					window.innerWidth,
+				);
+				for (const control of screen.container.querySelectorAll(
+					"input, button",
+				)) {
+					const bounds = control.getBoundingClientRect();
+					expect(bounds.left).toBeGreaterThanOrEqual(0);
+					expect(bounds.right).toBeLessThanOrEqual(window.innerWidth);
+				}
+			} finally {
+				await page.viewport(previous.width, previous.height);
+			}
+		});
+
+		it.each(["-1", "1.5", "101"])(
+			"rejects invalid preferred votes %s without truncating the value",
+			async (value) => {
+				const screen = await renderValidSurvey(
+					<CreateSurvey loading={false} />,
+				);
+				const votes = screen.getByRole("spinbutton", {
+					name: "Preferred Votes for #1",
+				});
+				await votes.fill(value);
+				await screen
+					.getByRole("button", { name: "Create Survey", exact: true })
+					.click();
+				expect(mockApiCall).not.toHaveBeenCalled();
+				await expect.element(votes).toHaveFocus();
+				await expect.element(votes).toHaveValue(Number(value));
+			},
+		);
+
+		it.each(["", "0", "-1", "1.5", "1000001"])(
+			"blocks creation with respondent count %s and focuses the invalid field",
+			async (value) => {
+				const screen = await renderValidSurvey(
+					<CreateSurvey loading={false} />,
+				);
+				const count = screen.getByRole("spinbutton", {
+					name: "Number of Respondents",
+				});
+				await count.fill(value);
+				await screen
+					.getByRole("button", { name: "Create Survey", exact: true })
+					.click();
+				expect(mockApiCall).not.toHaveBeenCalled();
+				await expect.element(count).toHaveFocus();
+				await expect.element(count).toHaveAttribute("aria-invalid", "true");
+			},
+		);
+
+		it("blocks analysis of missing text and focuses the first invalid field", async () => {
+			const screen = await render(<CreateSurvey loading={false} />);
+			const audience = screen.getByRole("textbox", {
+				name: "Target Audience (Respondent Type)",
+			});
+			await expect.element(audience).toHaveAttribute("aria-invalid", "false");
+			await screen.getByRole("button", { name: "Analyse Survey" }).click();
+			expect(mockApiCall).not.toHaveBeenCalled();
+			await expect.element(audience).toHaveFocus();
+			await expect.element(audience).toHaveAttribute("aria-invalid", "true");
+		});
+
+		it("analyses valid text without requiring a respondent count or vote allocation", async () => {
+			const screen = await renderValidSurvey(<CreateSurvey loading={false} />);
+			await screen
+				.getByRole("spinbutton", { name: "Number of Respondents" })
+				.fill("");
+			await screen
+				.getByRole("spinbutton", { name: "Preferred Votes for #1" })
+				.fill("-1");
+			mockApiCall.mockResolvedValue({
+				ok: true,
+				status: 200,
+				json: async () => ({ warnings: [] }),
+			});
+			await screen.getByRole("button", { name: "Analyse Survey" }).click();
+			await expect.poll(() => mockApiCall).toHaveBeenCalledTimes(1);
+			expect(mockApiCall.mock.calls[0][0]).toBe("api/survey/analyze");
+			expect(JSON.parse(mockApiCall.mock.calls[0][1].body)).not.toHaveProperty(
+				"numberOfRespondents",
+			);
+		});
+
+		it("limits analysis to 20 options while allowing creation of a larger valid survey", async () => {
+			const screen = await renderValidSurvey(<CreateSurvey loading={false} />);
+			for (let number = 2; number <= 21; number++) {
+				await screen.getByRole("button", { name: "Add Option" }).click();
+				await screen
+					.getByRole("textbox", { name: `#${number}`, exact: true })
+					.fill(`Option ${number}`);
+			}
+			await screen.getByRole("button", { name: "Analyse Survey" }).click();
+			expect(mockApiCall).not.toHaveBeenCalled();
+			await expect
+				.element(screen.getByRole("region", { name: "Check survey details" }))
+				.toHaveFocus();
+			await screen
+				.getByRole("button", { name: "Create Survey", exact: true })
+				.click();
+			await expect.poll(() => mockApiCall).toHaveBeenCalledTimes(1);
+			expect(mockApiCall.mock.calls[0][0]).toBe("api/survey");
+			await expect
+				.element(screen.getByRole("region", { name: "Check survey details" }))
+				.not.toBeInTheDocument();
+		});
+
+		it("focuses new options and adjacent surviving inputs after removal", async () => {
+			const screen = await render(<CreateSurvey loading={false} />);
+			await screen.getByRole("button", { name: "Add Option" }).click();
+			await expect
+				.element(screen.getByRole("textbox", { name: "#2", exact: true }))
+				.toHaveFocus();
+			await screen.getByRole("button", { name: "Add Option" }).click();
+			const survivingInput = screen.container.querySelector<HTMLInputElement>(
+				'input[name="SurveyOptions[2].OptionText"]',
+			);
+			await expect
+				.element(screen.getByRole("textbox", { name: "#3", exact: true }))
+				.toHaveFocus();
+			await screen
+				.getByRole("button", { name: "Remove #2", exact: true })
+				.click();
+			expect(document.activeElement).toBe(survivingInput);
+			await screen
+				.getByRole("button", { name: "Remove #2", exact: true })
+				.click();
+			await expect
+				.element(screen.getByRole("textbox", { name: "#1", exact: true }))
+				.toHaveFocus();
+		});
+
+		it("associates indexed server errors with the correct stable option input", async () => {
+			const screen = await renderValidSurvey(<CreateSurvey loading={false} />);
+			await screen.getByRole("button", { name: "Add Option" }).click();
+			const option = screen.getByRole("textbox", { name: "#2", exact: true });
+			await option.fill("Another option");
+			mockApiCall.mockResolvedValue({
+				ok: false,
+				status: 422,
+				json: async () => ({
+					"SurveyOptions[1].OptionText": ["Use distinct option text"],
+				}),
+			});
+			await screen
+				.getByRole("button", { name: "Create Survey", exact: true })
+				.click();
+			await screen
+				.getByRole("link", { name: "Option #2: Use distinct option text" })
+				.click();
+			await expect.element(option).toHaveFocus();
+			await expect
+				.element(option)
+				.toHaveAccessibleDescription("Error: Use distinct option text");
 		});
 	});
 });

@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { ApiError, validationMessages } from "../api/ApiError";
+import { ApiError, validationFields } from "../api/ApiError";
 import {
 	useRegisteredSurveyMutation,
 	useRegisteredSurveyQuery,
@@ -50,7 +50,7 @@ export function useCreateSurvey() {
 				throw new ApiError(
 					"Please try again or create an issue on GitHub",
 					response.status,
-					response.status === 422 ? validationMessages(error) : [],
+					response.status === 422 ? validationFields(error) : [],
 				);
 			}
 			return data;
@@ -80,7 +80,7 @@ export function useAnalyzeSurvey() {
 				throw new ApiError(
 					"Survey analysis is temporarily unavailable. Please try again.",
 					response.status,
-					response.status === 422 ? validationMessages(error) : [],
+					response.status === 422 ? validationFields(error) : [],
 				);
 			}
 			return data;

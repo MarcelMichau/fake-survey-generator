@@ -5,6 +5,7 @@
 	--color-panel: #222629;
 	--color-surface: #30353a;
 	--color-line: #4a5157;
+	--color-input-border: #879197;
 	--color-muted: #a9b0b3;
 	--color-lime: #c7ff18;
 	--color-paper: #f5f6f3;
@@ -60,7 +61,7 @@
 	/* Impact ships a single weight; never let the browser synthesise a bolder one. */
 	.display-title,
 	.brutal-button,
-	.brutal-table th {
+	:where(.brutal-table) thead th {
 		font-family: var(--font-display);
 		font-weight: 400;
 		font-synthesis: none;
@@ -97,7 +98,7 @@
 		width: 100%;
 		min-height: 2.75rem;
 		padding: 0.55rem 0.85rem;
-		border: 2px solid var(--color-line);
+		border: 2px solid var(--color-input-border);
 		border-radius: 0;
 		background: var(--color-surface);
 		color: var(--color-paper);
@@ -115,11 +116,56 @@
 		box-shadow: 4px 4px 0 var(--color-lime);
 	}
 	.brutal-input::placeholder {
-		color: #7d858a;
+		color: var(--color-muted);
 		opacity: 1;
 	}
 	.brutal-input:disabled {
 		opacity: 0.65;
+	}
+	.brutal-input:is(:user-invalid, [aria-invalid="true"]) {
+		border-color: #ff8e83;
+	}
+	.field-error {
+		margin-block-start: 0.5rem;
+		color: #ffb4ac;
+		font-size: 0.875rem;
+	}
+	.skip-link {
+		position: fixed;
+		inset-block-start: 0.5rem;
+		inset-inline-start: 0.5rem;
+		z-index: 100;
+		padding: 0.75rem;
+		background: var(--color-paper);
+		color: var(--color-ink);
+		transform: translateY(-200%);
+	}
+	.skip-link:focus {
+		transform: translateY(0);
+	}
+	.confirmation-dialog {
+		margin: auto;
+		padding: 0;
+		border: 0;
+		width: calc(100% - 3rem);
+		max-width: 30rem;
+		max-height: calc(100% - 3rem);
+		background: transparent;
+		color: var(--color-paper);
+		overflow: visible;
+	}
+	.confirmation-dialog > .brutal-panel {
+		max-height: calc(100vh - 3rem);
+		overflow: auto;
+		overscroll-behavior: contain;
+	}
+	.confirmation-dialog:modal {
+		overscroll-behavior: contain;
+	}
+	.confirmation-dialog::backdrop {
+		background: rgb(0 0 0 / 85%);
+		overflow: hidden;
+		overscroll-behavior: contain;
 	}
 	.brutal-button {
 		display: inline-flex;
@@ -190,7 +236,8 @@
 	}
 	.brutal-table {
 		width: 100%;
-		border-collapse: collapse;
+		border-collapse: separate;
+		border-spacing: 0;
 		text-align: left;
 	}
 	.brutal-table th,
@@ -198,13 +245,31 @@
 		border: 2px solid var(--color-line);
 		padding: 0.7rem 0.9rem;
 	}
-	.brutal-table th {
+	.brutal-table thead th {
 		border-color: #050605;
 		background: var(--color-lime);
 		color: var(--color-ink);
 		font-size: 1.05rem;
 		letter-spacing: 0.03em;
 		white-space: nowrap;
+		position: sticky;
+		inset-block-start: 0;
+		z-index: 2;
+	}
+	.survey-table-wrapper {
+		overflow: auto;
+		max-block-size: min(36rem, 70vh);
+		container-type: inline-size;
+	}
+	.brutal-table tbody th {
+		min-inline-size: 12rem;
+		max-inline-size: 24rem;
+		white-space: normal;
+		overflow-wrap: anywhere;
+		background: var(--color-panel);
+		font-family: var(--font-sans);
+		font-weight: 400;
+		text-transform: none;
 	}
 	.brutal-table td {
 		vertical-align: middle;
@@ -219,11 +284,29 @@
 	.brutal-table tbody tr:nth-child(even) {
 		background: var(--color-surface);
 	}
+	.brutal-table tbody tr:nth-child(even) th {
+		background: var(--color-surface);
+	}
 	.brutal-table tbody tr:hover {
+		background: #3a4046;
+	}
+	.brutal-table tbody tr:hover th {
 		background: #3a4046;
 	}
 	.react-loading-skeleton {
 		border-radius: 0 !important;
+	}
+}
+
+@container (min-width: 40rem) {
+	.brutal-table tbody th {
+		position: sticky;
+		inset-inline-start: 0;
+		z-index: 1;
+	}
+	.brutal-table thead th:first-child {
+		inset-inline-start: 0;
+		z-index: 3;
 	}
 }
 

@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useLayoutEffect, useRef } from "react";
+import Alert from "./Alert";
 import Button from "./Button";
 
 type ConfirmDialogProps = {
@@ -8,6 +9,8 @@ type ConfirmDialogProps = {
 	confirmLabel?: string;
 	cancelLabel?: string;
 	busy?: boolean;
+	error?: string;
+	invoker?: HTMLElement | null;
 	fallbackFocus?: () => HTMLElement | null;
 	onConfirm: () => void;
 	onCancel: () => void;
@@ -20,117 +23,119 @@ const ConfirmDialog = ({
 	confirmLabel = "Confirm",
 	cancelLabel = "Cancel",
 	busy = false,
+	error,
+	invoker,
 	fallbackFocus,
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) => {
+	const id = useId();
+	const dialogRef = useRef<HTMLDialogElement>(null);
 	const cancelRef = useRef<HTMLButtonElement>(null);
 	const panelRef = useRef<HTMLDivElement>(null);
-	const onCancelRef = useRef(onCancel);
-	const fallbackFocusRef = useRef(fallbackFocus);
-	onCancelRef.current = onCancel;
-	fallbackFocusRef.current = fallbackFocus;
+	const pressedOutside = useRef(false);
+	const latest = useRef({ open, busy, onCancel, fallbackFocus });
+	useLayoutEffect(() => {
+		latest.current = { open, busy, onCancel, fallbackFocus };
+	});
+
 	useEffect(() => {
-		if (!open) return;
-		const previous = document.activeElement as HTMLElement | null;
+		const dialog = dialogRef.current;
+		if (!open || !dialog) return;
+		const previous = invoker ?? document.activeElement;
+		// Pointer activation need not focus a button in every browser. Give the native
+		// dialog the actual invoker so its built-in focus return still works there.
+		if (invoker?.isConnected) invoker.focus();
+		dialog.showModal();
 		cancelRef.current?.focus();
 		return () => {
-			if (previous?.isConnected) previous.focus();
-			else fallbackFocusRef.current?.()?.focus();
+			dialog.close();
+			// The browser restores the invoker unless a successful deletion removed it.
+			queueMicrotask(() => {
+				if (!previous?.isConnected) latest.current.fallbackFocus?.()?.focus();
+			});
 		};
-	}, [open]);
+	}, [open, invoker]);
+
 	useEffect(() => {
 		if (!open) return;
 		if (busy) panelRef.current?.focus();
-		else if (
-			document.activeElement === panelRef.current ||
-			!panelRef.current?.contains(document.activeElement)
-		)
-			cancelRef.current?.focus();
-	}, [open, busy]);
-	useEffect(() => {
-		if (!open) return;
-		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape" && !busy) onCancelRef.current();
-			if (e.key === "Tab") {
-				const buttons = Array.from(
-					panelRef.current?.querySelectorAll<HTMLButtonElement>(
-						"button:not(:disabled)",
-					) ?? [],
-				);
-				if (!buttons.length) {
-					e.preventDefault();
-					return;
-				}
-				const first = buttons[0];
-				const last = buttons[buttons.length - 1];
-				if (e.shiftKey && document.activeElement === first) {
-					e.preventDefault();
-					last.focus();
-				} else if (!e.shiftKey && document.activeElement === last) {
-					e.preventDefault();
-					first.focus();
-				}
-			}
-		};
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
+		else cancelRef.current?.focus();
 	}, [open, busy]);
 
-	if (!open) return null;
+	const outside = (event: React.PointerEvent<HTMLDialogElement>) => {
+		const rect = event.currentTarget.getBoundingClientRect();
+		return (
+			event.clientX < rect.left ||
+			event.clientX > rect.right ||
+			event.clientY < rect.top ||
+			event.clientY > rect.bottom
+		);
+	};
+
 	return (
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/85"
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="confirm-dialog-title"
-			onClick={(event) => {
-				if (!busy && event.target === event.currentTarget) onCancel();
+		<dialog
+			ref={dialogRef}
+			className="confirmation-dialog"
+			aria-labelledby={`${id}-title`}
+			aria-describedby={`${id}-message`}
+			aria-busy={busy}
+			closedby={busy ? "none" : "any"}
+			onCancel={(event) => {
+				if (busy) event.preventDefault();
 			}}
-			onKeyDown={(event) => {
+			onClose={() => {
+				const state = latest.current;
+				if (!state.open || dialogRef.current?.open) return;
+				// Older implementations can still dismiss on repeated Escape while busy.
+				if (state.busy) {
+					dialogRef.current?.showModal();
+					panelRef.current?.focus();
+				} else state.onCancel();
+			}}
+			onPointerDown={(event) => {
+				pressedOutside.current = outside(event);
+			}}
+			onPointerCancel={() => {
+				pressedOutside.current = false;
+			}}
+			onPointerUp={(event) => {
 				if (
+					!("closedBy" in event.currentTarget) &&
 					!busy &&
-					event.target === event.currentTarget &&
-					(event.key === "Enter" || event.key === " ")
+					pressedOutside.current &&
+					outside(event)
 				)
 					onCancel();
+				pressedOutside.current = false;
 			}}
 		>
-			<div
-				ref={panelRef}
-				tabIndex={-1}
-				className="brutal-panel mx-4 w-full max-w-md p-6"
-			>
-				<h3 id="confirm-dialog-title" className="display-title mb-3 text-3xl">
+			<div ref={panelRef} tabIndex={-1} className="brutal-panel p-6">
+				<h2 id={`${id}-title`} className="display-title mb-3 text-3xl">
 					{title}
-				</h3>
-				<p className="mb-6 text-paper">{message}</p>
+				</h2>
+				<p id={`${id}-message`} className="mb-6 text-paper wrap-break-word">
+					{message}
+				</p>
+				{error && (
+					<Alert type="error" title="Deletion failed" message={error} />
+				)}
 				<div className="flex flex-wrap justify-end gap-4">
-					<span
-						ref={(element) => {
-							cancelRef.current = element?.querySelector("button") ?? null;
-						}}
-					>
-						<Button
-							type="button"
-							actionType="secondary"
-							onClick={onCancel}
-							disabled={busy}
-						>
-							{cancelLabel}
-						</Button>
-					</span>
 					<Button
-						type="button"
-						actionType="destructive"
-						onClick={onConfirm}
+						ref={cancelRef}
+						autoFocus
+						actionType="secondary"
+						onClick={onCancel}
 						disabled={busy}
 					>
+						{cancelLabel}
+					</Button>
+					<Button actionType="destructive" onClick={onConfirm} disabled={busy}>
 						{busy ? "Working..." : confirmLabel}
 					</Button>
 				</div>
 			</div>
-		</div>
+		</dialog>
 	);
 };
 
