@@ -238,6 +238,8 @@ Other HTTP clients inherit the standard pipeline, with retries disabled for unsa
 
 For a Docker Desktop–free Windows setup, see [Run locally with WSLc](docs/running-with-wslc.md).
 
+To run the app on a remote machine and open it from other devices on your tailnet, see [Run on a remote machine over Tailscale](docs/running-on-a-tailnet.md).
+
 For the Docker or Podman setup, you will need the following prerequisites:
 
 - [Visual Studio 2026](https://visualstudio.microsoft.com/vs/) or another IDE that supports the .NET 11 SDK
