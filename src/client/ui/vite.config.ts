@@ -5,7 +5,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
 	plugins: [react()],
 	server: {
-		host: true, // Required for Playwright integration tests to work in CI
+		// Allow Tailscale hostnames for remote access (docs/running-on-a-tailnet.md).
+		allowedHosts: [".ts.net"],
 		proxy: {
 			"/api": {
 				target: process.env.API_HTTPS || process.env.API_HTTP,
