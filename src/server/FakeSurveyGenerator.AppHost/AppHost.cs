@@ -21,7 +21,9 @@ var api = builder.AddDotnetProject("api", "../FakeSurveyGenerator.Api/FakeSurvey
     {
         options.WithOptions(new DaprSidecarOptions
         {
-            ResourcesPaths = ["../../../dapr/components"]
+            ResourcesPaths = ["../../../dapr/components"],
+            PlacementHostAddress = "",
+            SchedulerHostAddress = ""
         });
     });
 

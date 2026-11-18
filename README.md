@@ -236,7 +236,9 @@ Other HTTP clients inherit the standard pipeline, with retries disabled for unsa
 
 ## How do I run this thing?
 
-In order to run FSG on your local machine, you will need the following prerequisites:
+For a Docker Desktop–free Windows setup, see [Run locally with WSLc](docs/running-with-wslc.md).
+
+For the Docker or Podman setup, you will need the following prerequisites:
 
 - [Visual Studio 2026](https://visualstudio.microsoft.com/vs/) or another IDE that supports the .NET 11 SDK
 - The .NET 11 SDK version pinned in `global.json` (currently a prerelease SDK)
