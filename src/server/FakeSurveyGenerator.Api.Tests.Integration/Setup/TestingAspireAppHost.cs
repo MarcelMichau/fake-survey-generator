@@ -1,6 +1,7 @@
 ﻿extern alias AppHost;
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.Dotnet;
 using Aspire.Hosting.JavaScript;
 using Aspire.Hosting.Redis;
 using Aspire.Hosting.Testing;
@@ -48,7 +49,8 @@ public sealed class TestingAspireAppHost()
         // Defer the separate JavaScript installers too: otherwise integration and acceptance
         // test hosts can run npm install concurrently against the same node_modules directory.
         var resourcesToSkip = appBuilder.Resources
-            .Where(r => r is ProjectResource or RedisInsightResource or JavaScriptInstallerResource || r.Name == "ui")
+            .Where(r => r is ProjectResource or DotnetProjectResource or RedisInsightResource or JavaScriptInstallerResource
+                || r.Name == "ui")
             .ToList();
 
         foreach (var resource in resourcesToSkip)
