@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.6.5">
+<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,14 +6,12 @@
     <AspireUseCliBundle>true</AspireUseCliBundle>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Dotnet" />
     <PackageReference Include="Aspire.Hosting.SqlServer" />
     <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="Aspire.Hosting.JavaScript" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.Dapr" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FakeSurveyGenerator.Api\FakeSurveyGenerator.Api.csproj" />
-    <ProjectReference Include="..\FakeSurveyGenerator.Worker\FakeSurveyGenerator.Worker.csproj" />
   </ItemGroup>
 
 </Project>

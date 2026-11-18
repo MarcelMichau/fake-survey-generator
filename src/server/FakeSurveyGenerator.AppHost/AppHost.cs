@@ -1,5 +1,4 @@
 using CommunityToolkit.Aspire.Hosting.Dapr;
-using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -10,7 +9,7 @@ var database = builder.AddSqlServer("sql-server")
 var cache = builder.AddRedis("cache")
     .WithRedisInsight();
 
-var api = builder.AddProject<FakeSurveyGenerator_Api>("api")
+var api = builder.AddDotnetProject("api", "../FakeSurveyGenerator.Api/FakeSurveyGenerator.Api.csproj")
     .WithReference(database)
     .WaitFor(database)
     .WithReference(cache)
@@ -26,7 +25,7 @@ var api = builder.AddProject<FakeSurveyGenerator_Api>("api")
         });
     });
 
-var worker = builder.AddProject<FakeSurveyGenerator_Worker>("worker")
+builder.AddDotnetProject("worker", "../FakeSurveyGenerator.Worker/FakeSurveyGenerator.Worker.csproj")
     .WithReference(database)
     .WaitFor(database)
     .WithReference(cache)
