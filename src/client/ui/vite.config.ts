@@ -5,7 +5,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
 	plugins: [react()],
 	server: {
-		// Allow Tailscale hostnames for remote access (docs/running-on-a-tailnet.md).
+		// Listen on IPv4 loopback only: the Tailscale Service forwards to 127.0.0.1, and
+		// "localhost" may resolve to ::1. Allow Tailscale hostnames (docs/running-on-a-tailnet.md).
+		host: "127.0.0.1",
 		allowedHosts: [".ts.net"],
 		proxy: {
 			"/api": {

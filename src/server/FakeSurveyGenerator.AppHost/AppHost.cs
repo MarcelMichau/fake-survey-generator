@@ -4,7 +4,7 @@ using FakeSurveyGenerator.AppHost;
 var builder = DistributedApplication.CreateBuilder(args);
 
 // Opt-in remote access over a Tailscale Service. See docs/running-on-a-tailnet.md.
-var tailnetHost = builder.Configuration["Tailnet:Host"] is { Length: > 0 } host ? host : null;
+var tailnetHost = builder.Configuration["Tailnet:Host"]?.Trim() is { Length: > 0 } host ? host : null;
 
 var database = builder.AddSqlServer("sql-server")
     .WithDataVolume()

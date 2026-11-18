@@ -8,6 +8,7 @@ The steps below use the service name `fsg`. To use another name, pass `--service
 
 On the remote machine, you need the prerequisites from the [README](../README.md#how-do-i-run-this-thing), plus:
 
+- The [Aspire CLI](https://aspire.dev/reference/cli/overview/), which provides the `aspire` command.
 - [Tailscale](https://tailscale.com/download), signed in with a [tag-based identity](https://tailscale.com/kb/1068/tags). Tailscale Services can't be hosted on a device that's signed in as a user.
 - [MagicDNS](https://tailscale.com/kb/1081/magicdns) and [HTTPS certificates](https://tailscale.com/kb/1153/enabling-https) enabled for the tailnet.
 - Permission to run `tailscale serve`. On Linux, make your user the operator once with `sudo tailscale set --operator=$USER`.
@@ -61,6 +62,9 @@ The first time, approve the machine as a host for `fsg` in the admin console. To
 
 The Service configuration persists across restarts. You only need to run `up` again after you run `down`.
 
+> [!WARNING]
+> The ports stay published after Aspire stops. Tailscale forwards each port to `127.0.0.1` without checking which app listens there, so any HTTPS app that later listens on 17081, 3000, 7223 or 5540 is reachable by every device the Service grant allows. On a machine that runs other apps, run `down` when you stop Aspire.
+
 ## Show tailnet links in the dashboard
 
 The dashboard lists `localhost` links for each resource. To add tailnet links next to them, set this AppHost secret once on the remote machine:
@@ -95,7 +99,7 @@ To see the current configuration, run `dotnet tools/tailnet/tailnet.cs status`.
 
 - **Requests fail with a certificate or connection error.** Make sure the app is running. Tailscale forwards to the local port, so the URLs only work while Aspire is running.
 - **`fsg.<tailnet>.ts.net` doesn't resolve.** The Service isn't defined in the admin console yet. Define it as described above.
-- **The URLs work on the remote machine but time out from other devices.** The tailnet policy doesn't grant access to the Service. Add a tag or a grant as described in [Define the Tailscale Service](#define-the-tailscale-service).
+- **The URLs work on the remote machine but time out from other devices.** The tailnet policy doesn't grant access to the Service. Add a tag or a grant as described in [Define the Tailscale Service](#define-the-tailscale-service). If the grant is in place and a Linux client still times out, run `sudo tailscale set --accept-routes` on that client, or update its Tailscale version. Older Linux clients need route acceptance to reach Services.
 - **The hostname resolves, but connections time out, and the Service shows no pending host.** The machine probably started advertising before the Service was defined. Advertise it again with `tailscale serve drain svc:fsg`, then `tailscale serve advertise svc:fsg`.
 - **The UI shows `Blocked request. This host is not allowed.`** The hostname doesn't end in `.ts.net`. Add it to `server.allowedHosts` in [`vite.config.ts`](../src/client/ui/vite.config.ts).
 - **The tool can't find `tailscale`.** On macOS, install the CLI from the Tailscale app's settings, or set `TAILSCALE_CLI` to the path of the `tailscale` executable.
