@@ -145,6 +145,12 @@ stages:
             displayName: "Measure disk usage after Docker image prune"
             condition: always()
 
+          - script: |
+              set -euo pipefail
+              dotnet tool restore
+              dotnet tool run aspire setup --install-path "$HOME/.aspire"
+            displayName: "Restore local .NET tools and prepare the Aspire bundle"
+
           - script: dotnet restore FakeSurveyGenerator.slnx --locked-mode
             displayName: "Restore locked solution dependencies"
 
@@ -242,9 +248,7 @@ stages:
             displayName: "Measure disk usage after tests"
             condition: always()
 
-          - script: |
-              dotnet tool restore
-              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
+          - script: dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i
             workingDirectory: src/server/FakeSurveyGenerator.Application
             displayName: "Create Database Migration Script"
 

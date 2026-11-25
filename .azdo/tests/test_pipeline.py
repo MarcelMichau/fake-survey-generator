@@ -83,10 +83,15 @@ class PipelineStructureTests(unittest.TestCase):
         self.assertIn("--only-shell chromium", PIPELINE)
 
     def test_locked_restore_and_simple_migration_tooling(self):
-        self.assertIn("dotnet restore FakeSurveyGenerator.slnx --locked-mode", PIPELINE)
-        self.assertIn('--no-restore --configuration Debug', PIPELINE)
-        self.assertIn("dotnet tool restore\n              dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i", PIPELINE)
-        self.assertIn("workingDirectory: src/server/FakeSurveyGenerator.Application", PIPELINE)
+        backend = PIPELINE.split("      - job: Build\n", 1)[1].split("  - stage: BuildTestUI\n", 1)[0]
+        self.assertEqual(backend.count("dotnet tool restore"), 1)
+        setup = 'dotnet tool restore\n              dotnet tool run aspire setup --install-path "$HOME/.aspire"'
+        restore = "dotnet restore FakeSurveyGenerator.slnx --locked-mode"
+        self.assertLess(backend.index("task: UseDotNet@2"), backend.index(setup))
+        self.assertLess(backend.index(setup), backend.index(restore))
+        self.assertIn('--no-restore --configuration Debug', backend)
+        self.assertIn("dotnet dotnet-ef migrations script -o DbMigrationScript.sql -i\n"
+                      "            workingDirectory: src/server/FakeSurveyGenerator.Application", backend)
         self.assertNotIn("ef_version=", PIPELINE)
         self.assertNotIn("ef-tools", PIPELINE)
         props = (ROOT / "src/server/Directory.Build.props").read_text(encoding="utf-8-sig")

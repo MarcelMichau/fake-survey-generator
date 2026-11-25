@@ -4,10 +4,10 @@ On Windows, Aspire can use WSL Containers (WSLc) to run SQL Server, Redis, and R
 
 ## Check prerequisites
 
-Use Aspire CLI 17 or later, WSLc 3.0.4.0 or later, the .NET SDK version in [`global.json`](../global.json), and Node.js and npm. Install the Windows Dapr CLI and make sure `dapr.exe` is on your `PATH`. See [Aspire machine requirements](https://github.com/microsoft/aspire/blob/main/docs/machine-requirements.md), [WSL container setup](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers), and [Dapr CLI installation](https://docs.dapr.io/getting-started/install-dapr-cli/).
+Use WSLc 3.0.4.0 or later, the .NET SDK version in [`global.json`](../global.json), and Node.js and npm. Restore the pinned Aspire CLI and prepare its bundle using the [README setup commands](../README.md#how-do-i-run-this-thing). Install the Windows Dapr CLI and make sure `dapr.exe` is on your `PATH`. See [Aspire machine requirements](https://github.com/microsoft/aspire/blob/main/docs/machine-requirements.md), [WSL container setup](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers), and [Dapr CLI installation](https://docs.dapr.io/getting-started/install-dapr-cli/).
 
 ```powershell
-aspire --version
+dotnet tool run aspire --version
 wslc --version
 dapr --version
 ```
@@ -57,11 +57,11 @@ options.WithOptions(new DaprSidecarOptions
 
 ## Select the runtime and start Aspire
 
-Aspire prefers a running Docker or Podman runtime when either is available. It should detect WSLc when WSLc is the only available runtime. To check automatic detection after uninstalling Docker Desktop, clear the runtime override in the current PowerShell session and run `aspire doctor`. See the [Aspire runtime selection discussion](https://github.com/microsoft/aspire/issues/17865).
+Aspire prefers a running Docker or Podman runtime when either is available. It should detect WSLc when WSLc is the only available runtime. To check automatic detection after uninstalling Docker Desktop, clear the runtime override in the current PowerShell session and run `dotnet tool run aspire doctor`. See the [Aspire runtime selection discussion](https://github.com/microsoft/aspire/issues/17865).
 
 ```powershell
 Remove-Item Env:ASPIRE_CONTAINER_RUNTIME -ErrorAction SilentlyContinue
-aspire doctor
+dotnet tool run aspire doctor
 ```
 
 To explicitly select WSLc for the current session, set the override before starting Aspire.
@@ -74,8 +74,8 @@ Start the AppHost. Check `wslc ps` after the UI is healthy to confirm that WSLc 
 
 ```powershell
 $appHost = "src/server/FakeSurveyGenerator.AppHost/FakeSurveyGenerator.AppHost.csproj"
-aspire start --apphost $appHost
-aspire wait ui --apphost $appHost
+dotnet tool run aspire start --apphost $appHost
+dotnet tool run aspire wait ui --apphost $appHost
 wslc ps
 ```
 
@@ -84,7 +84,7 @@ To verify Dapr separately, request `/v1.0/healthz` on the `api-dapr-cli` resourc
 ## Stop the local environment
 
 ```powershell
-aspire stop --apphost $appHost
+dotnet tool run aspire stop --apphost $appHost
 ```
 
 If you started the Dapr containers, stop them too. WSLc removes them because they were started with `--rm`.
