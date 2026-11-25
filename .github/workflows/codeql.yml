@@ -73,10 +73,16 @@ jobs:
       - name: Setup .NET
         if: matrix.language == 'csharp'
         uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
 
-      - name: Install .NET Aspire workload
+      - name: Restore local .NET tools and prepare the Aspire bundle
         if: matrix.language == 'csharp'
-        run: dotnet workload install aspire
+        shell: bash
+        # Keep the RID-specific Aspire CLI last in the manifest until dotnet/sdk#53783 is fixed.
+        run: |
+          dotnet tool restore
+          dotnet tool run aspire setup --install-path "$HOME/.aspire"
 
       - name: Build
         if: matrix.language == 'csharp'

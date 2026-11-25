@@ -1,14 +1,13 @@
 # Run on a remote machine over Tailscale
 
-Run the app with `aspire run` on another machine, such as a VM, and open the Aspire dashboard, UI, API and Redis Insight from any device on your tailnet. A [Tailscale Service](https://tailscale.com/kb/1552/tailscale-services) gives the app its own hostname, such as `fsg.<tailnet>.ts.net`, with HTTPS certificates that browsers trust. Only devices on your tailnet can reach it. Nothing in the app listens on a public interface.
+Run the app on another machine, such as a VM, and open the Aspire dashboard, UI, API and Redis Insight from any device on your tailnet. A [Tailscale Service](https://tailscale.com/kb/1552/tailscale-services) gives the app its own hostname, such as `fsg.<tailnet>.ts.net`, with HTTPS certificates that browsers trust. Only devices on your tailnet can reach it. Nothing in the app listens on a public interface.
 
 The steps below use the service name `fsg`. To use another name, pass `--service <name>` to the tool and use that name in the admin console.
 
 ## Check prerequisites
 
-On the remote machine, you need the prerequisites from the [README](../README.md#how-do-i-run-this-thing), plus:
+On the remote machine, follow the prerequisites and Aspire tool setup in the [README](../README.md#how-do-i-run-this-thing). Run the commands below from the repository root and check these Tailscale prerequisites.
 
-- The [Aspire CLI](https://aspire.dev/reference/cli/overview/), which provides the `aspire` command.
 - [Tailscale](https://tailscale.com/download), signed in with a [tag-based identity](https://tailscale.com/kb/1068/tags). Tailscale Services can't be hosted on a device that's signed in as a user.
 - [MagicDNS](https://tailscale.com/kb/1081/magicdns) and [HTTPS certificates](https://tailscale.com/kb/1153/enabling-https) enabled for the tailnet.
 - Permission to run `tailscale serve`. On Linux, make your user the operator once with `sudo tailscale set --operator=$USER`.
@@ -70,7 +69,7 @@ The Service configuration persists across restarts. You only need to run `up` ag
 The dashboard lists `localhost` links for each resource. To add tailnet links next to them, set this AppHost secret once on the remote machine:
 
 ```sh
-aspire secret set Tailnet:Host fsg.<tailnet>.ts.net
+dotnet tool run aspire secret set Tailnet:Host "fsg.<tailnet>.ts.net"
 ```
 
 With the secret set, the AppHost also gives Redis Insight the fixed port 5540 instead of a random one. Without it, the AppHost behaves exactly as it does by default.
@@ -82,10 +81,10 @@ The UI uses its own address as the Auth0 redirect address. Add `https://fsg.<tai
 ## Start Aspire
 
 ```sh
-aspire run
+dotnet tool run aspire run
 ```
 
-Open the dashboard login link that `aspire run` prints, with `localhost:17081` replaced by `fsg.<tailnet>.ts.net:17081`.
+Open the dashboard login link printed by the CLI, with `localhost:17081` replaced by `fsg.<tailnet>.ts.net:17081`.
 
 ## Stop publishing the Service
 

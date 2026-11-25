@@ -243,13 +243,23 @@ To run the app on a remote machine and open it from other devices on your tailne
 For the Docker or Podman setup, you will need the following prerequisites:
 
 - [Visual Studio 2026](https://visualstudio.microsoft.com/vs/) or another IDE that supports the .NET 11 SDK
-- The .NET 11 SDK version pinned in `global.json` (currently a prerelease SDK)
+- The .NET 11 SDK version pinned in `global.json`
 - [Docker](https://www.docker.com/products/docker-desktop) or [Podman](https://podman.io/)
 - [Dapr CLI](https://docs.dapr.io/getting-started/install-dapr/), initialized with `dapr init`
 - [Node.js and npm](https://nodejs.org/), required by the Vite UI resource
 
 The local AppHost uses the Dapr component in `dapr/components/local-file.yml` and its accompanying
 `dapr/components/secrets.json` file for development secrets.
+
+Run these commands from the repository root to restore the Aspire CLI pinned in
+[the .NET tool manifest](.config/dotnet-tools.json) and prepare its dashboard and developer control plane bundle.
+
+```sh
+dotnet tool restore
+dotnet tool run aspire setup --install-path "$HOME/.aspire"
+```
+
+Run `dotnet tool run aspire run` from the repository root, or follow the IDE steps below.
 
 1. Open `FakeSurveyGenerator.slnx` in Visual Studio 2026, or in an IDE with .NET 11 SDK support.
 
